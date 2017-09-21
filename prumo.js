@@ -2374,6 +2374,20 @@ function prumoCrudList(objName, ajaxFile) {
 		this.orderBy = field + ' ' + order;
 		this.goSearch(this.page);
 	}
+	
+	/**
+	 * Redirecionamento para o mesmo método em this.pFilter
+	 */
+	this.setFilter = function(fieldName, filterOperator, fieldValue) {
+		this.pFilter.setFilter(fieldName, filterOperator, fieldValue);
+	}
+	
+	/**
+	 * Redirecionamento para o mesmo método em this.pFilter
+	 */
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue) {
+		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue);
+	}
 }
 
 function prumoFilter(objName) {
@@ -3682,6 +3696,20 @@ function prumoSearch(objName,ajaxFile) {
 		}
 		this.orderBy = field + ' ' + order;
 		this.goSearch(this.page);
+	}
+	
+	/**
+	 * Redirecionamento para o mesmo método em this.pFilter
+	 */
+	this.setFilter = function(fieldName, filterOperator, fieldValue) {
+		this.pFilter.setFilter(fieldName, filterOperator, fieldValue);
+	}
+	
+	/**
+	 * Redirecionamento para o mesmo método em this.pFilter
+	 */
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue) {
+		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue);
 	}
 }
 

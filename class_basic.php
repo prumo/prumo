@@ -137,5 +137,31 @@ class prumoBasic {
 		
 		return null;
 	}
+	
+	/**
+	 * Adiciona um filtro no pFilter no lado do cliente (javascript)
+	 *
+	 * @param $fieldName string: nome do campo
+	 * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
+	 * @param $fieldValue string: valor
+	 */
+	public function setFilter($fieldName, $filterOperator, $fieldValue) {
+		echo '<script type="text/javascript">'."\n";
+		echo "	".$this->name.".setFilter('$fieldName', '$filterOperator', '$fieldValue');\n";
+		echo '</script>'."\n";
+	}
+	
+	/**
+	 * Adiciona um filtro invisibel no pFilter no lado do cliente (javascript)
+	 *
+	 * @param $fieldName string: nome do campo
+	 * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
+	 * @param $fieldValue string: valor
+	 */
+	public function setInvisibleFilter($fieldName, $filterOperator, $fieldValue) {
+		echo '<script type="text/javascript">'."\n";
+		echo "	".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue');\n";
+		echo '</script>'."\n";
+	}
 }
 
