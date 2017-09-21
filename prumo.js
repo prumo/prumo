@@ -1804,11 +1804,16 @@ function prumoCrud(objName, ajaxFile) {
 	 * Torna visível os controles do crud
 	 */
 	this.showControls = function() {
-		if (document.getElementById(this.objName+'_controls') == undefined) {
-			alert('Botões de controle não encontrado para objeto "'+this.objName+'".');
+		if (this.parent1x1) {
+			this.parent1x1.showControls();
 		}
 		else {
-			document.getElementById(this.objName+'_controls').style.display = 'block';
+			if (document.getElementById(this.objName+'_controls') == undefined) {
+				alert('Botões de controle não encontrado para objeto "'+this.objName+'".');
+			}
+			else {
+				document.getElementById(this.objName+'_controls').style.display = 'block';
+			}
 		}
 	}
 	
@@ -1816,7 +1821,17 @@ function prumoCrud(objName, ajaxFile) {
 	 * Torna invisível os controles do crud
 	 */
 	this.hideControls = function() {
-		document.getElementById(this.objName+'_controls').style.display = 'none';
+		if (this.parent1x1) {
+			this.parent1x1.hideControls();
+		}
+		else {
+			if (document.getElementById(this.objName+'_controls') == undefined) {
+				alert('Botões de controle não encontrado para objeto "'+this.objName+'".');
+			}
+			else {
+				document.getElementById(this.objName+'_controls').style.display = 'none';
+			}
+		}
 	}
 	
 	/**
