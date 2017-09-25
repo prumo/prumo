@@ -2389,7 +2389,7 @@ function prumoCrudList(objName, ajaxFile) {
 		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue);
 	}
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function prumoFilter(objName) {
 	this.objName = objName;
 	this.pAjax = new prumoAjax();
@@ -2644,6 +2644,26 @@ function prumoFilter(objName) {
 
 		// coloca o foco no campo de pesquisa
 		document.getElementById(this.objName+'_'+index+'_value').focus();
+		
+		// redesenha o input
+		var currentValue = document.getElementById(this.objName+'_'+index+'_value').value;
+		
+		var htmlInput = '';
+		var labelTrue = gettext('Sim');
+		var labelFalse = gettext('Não');
+		if (operatorType == 'boolean') {
+			htmlInput  = '<select id="'+this.objName+'_'+index+'_value" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')">';
+			htmlInput += '<option value="t">'+labelTrue+'</option>';
+			htmlInput += '<option value="f">'+labelFalse+'</option>';
+			htmlInput += '<option value=""></option>';
+			htmlInput += '</select>';
+		}
+		else {
+			htmlInput = '<input id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />';
+		}
+
+		document.getElementById(this.objName+'_'+index+'_input').innerHTML = htmlInput;
+		document.getElementById(this.objName+'_'+index+'_value').value = currentValue;
 	}
 	
 	/**
@@ -2725,7 +2745,7 @@ function prumoFilter(objName) {
 			if (this.filter[i].visible) {
 				// coloca o botão (+)
 				filterIndex = i+1;
-				filterControl  = '<a href="javascript:'+this.objName+'.cmdAddFilter('+filterIndex+')">';
+				filterControl  = '&nbsp;<a href="javascript:'+this.objName+'.cmdAddFilter('+filterIndex+')">';
 				filterControl += '<img src="'+this.prumoWebPath+'/images/add.png" alt="add" />';
 				filterControl += '</a>\n';
 				
@@ -2815,9 +2835,11 @@ function prumoFilter(objName) {
 				htmlFilters += '		<td>\n';
 				htmlFilters += '			<select id="'+this.objName+'_'+i+'_operator" onchange="'+this.objName+'.selectOperatorChange(this,'+i+')"></select>&nbsp;\n';
 				htmlFilters += '		</td>\n';
-				htmlFilters += '		<td>\n';
+				htmlFilters += '		<td id="'+this.objName+'_'+i+'_input">\n';
 				htmlFilters += '			<input id="'+this.objName+'_'+i+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
-				htmlFilters += '			<span id="'+this.objName+'_'+i+'_controls"></span>&nbsp;\n';
+				htmlFilters += '		</td>\n';
+				htmlFilters += '		<td id="'+this.objName+'_'+i+'_controls">\n';
+				htmlFilters += '			<br/>\n';
 				htmlFilters += '		</td>\n';
 				htmlFilters += '	</tr>\n';
 			}
@@ -2940,6 +2962,7 @@ function prumoFilter(objName) {
 		}
 	}
 }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function prumoValidator(validator) {
 	this.validator = validator;
