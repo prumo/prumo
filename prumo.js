@@ -193,6 +193,68 @@ function isTimestamp(value) {
 	}
 }
 
+/**
+ * Valida o formato de um valor
+ *
+ * @param value mixed: valor a ser validado
+ * @param type string: tipo
+ *
+ * @return boolean
+ */
+function prumoIsType(value, type) {
+	
+	var regexInteger = /^-?[0-9]+$/;
+	var regexFloat = /^-?\d*\.?\,?\d*$/;
+	
+	var isValid = true;
+	
+	switch(type) {
+		
+		case 'serial':
+			if (!regexInteger.test(value)) {
+				isValid = false;
+			}
+			break;
+		case 'integer':
+			if (!regexInteger.test(value)) {
+				isValid = false;
+			}
+			break;
+		
+		case 'numeric':
+			if (!regexFloat.test(value)) {
+				isValid = false;
+			}
+			break;
+		
+		case 'date':
+			if (!isDate(value)) {
+				isValid = false;
+			}
+			break;
+	
+		case  'time':
+			if (!isTime(value)) {
+				isValid = false;
+			}
+			break;
+	
+		case  'timestamp':
+			if (!isTimestamp(value)) {
+				isValid = false;
+			}
+			break;
+	
+		case  'boolean':
+			if (value != 't' && value != 'f') {
+				isValid = false;
+			}
+			break;
+	}
+	
+	return isValid;
+}
+
 function gettext(str) {
 	return str;
 }
@@ -1581,77 +1643,65 @@ function prumoCrud(objName, ajaxFile) {
 	 * Valida formato dos campos
 	 */
 	this.errValidateType = function() {
-		var err = '';
-		var regexInteger = /[^0-9,-]/;
-		var regexFloat = /^-?\d*\.?\,?\d*$/;
 		
-		var value = '';
-		for (i in this.fieldName) {
+		var msg = '';
+		var err = '';
+		var fieldValue = '';
+		
+		for (var i in this.fieldName) {
+			
+			msg = '';
 			fieldValue = this.fieldNewValue[this.fieldName[i]];
-			if (fieldValue != '') {
+			if (fieldValue != '' && prumoIsType(fieldValue, this.fieldType[i]) == false) {
 				
-				// inteiro e serial
-				if (this.fieldType[i] == 'integer' || this.fieldType[i] == 'serial') {
-					if (regexInteger.test(fieldValue)) {
-						var msg = '- '+gettext('"%fieldValue%" não é um número inteiro, campo "%fieldLabel%"')+'.\n'
-						msg = msg.replace('%fieldLabel%',this.fieldLabel[i]);
-						err += msg.replace('%fieldValue%',fieldValue);
-					}
+				switch (this.fieldType[i]) {
+					
+					case 'serial':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'integer':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'numeric':
+						msg = '- '+gettext('"%fieldValue%" não é um número válido, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'date':
+						msg = '- '+gettext('"%fieldValue%" não é uma data válida, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'time':
+						msg = '- '+gettext('"%fieldValue%" não é uma hora válida, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'timestamp':
+						msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, campo "%fieldLabel%"')+'.\n';
+						break;
+					case 'boolean':
+						msg = '- '+gettext('"%fieldValue%" não é boleano válido, campo "%fieldLabel%"')+'.\n';
+						break;
 				}
 				
-				// numeric
-				if (this.fieldType[i] == 'numeric') {
-					if (!regexFloat.test(fieldValue)) {
-						var msg = '- '+gettext('"%fieldValue%" não é um número, campo "%fieldLabel%"')+'.\n';
-						msg = msg.replace('%fieldLabel%',this.fieldLabel[i]);
-						err += msg.replace('%fieldValue%',fieldValue);
-					}
-				}
-				
-				// date
-				if (this.fieldType[i] == 'date') {
-					if (!isDate(fieldValue)) {
-						var msg = '- '+gettext('"%fieldValue%" não é uma data válida, campo "%fieldLabel%"')+'.\n'
-						msg = msg.replace('%fieldLabel%',this.fieldLabel[i]);
-						err += msg.replace('%fieldValue%',fieldValue);
-					}
-				}
-				
-				// time
-				if (this.fieldType[i] == 'time') {
-					if (!isTime(fieldValue)) {
-						var msg = '- '+gettext('"%fieldValue%" não é uma hora válida, campo "%fieldLabel%"')+'.\n'
-						msg = msg.replace('%fieldLabel%',this.fieldLabel[i]);
-						err += msg.replace('%fieldValue%',fieldValue);
-					}
-				}
-				
-				// timestamp
-				if (this.fieldType[i] == 'timestamp') {
-					if (!isTimestamp(fieldValue)) {
-						var msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, campo "%fieldLabel%"')+'.\n'
-						msg = msg.replace('%fieldLabel%',this.fieldLabel[i]);
-						err += msg.replace('%fieldValue%',fieldValue);
-					}
+				if (msg != '') {
+					msg = msg.replace('%fieldLabel%', this.fieldLabel[i]);
+					err += msg.replace('%fieldValue%', fieldValue);
 				}
 			}
+			
 			var fieldName = this.fieldName[i];
 			if (this.fieldValidator.hasOwnProperty(fieldName)) {
 				validators = this.fieldValidator[fieldName];
 				for (validator in validators) {
 					pValidator = new prumoValidator({'type': validator, 'value': validators[validator]});
-					var msg = pValidator.validate(fieldValue);
+					msg = pValidator.validate(fieldValue);
 					if (msg != true) {
 						msg = '- ' + gettext('Campo %fieldLabel%: ') + msg + '.\n';
-						err += msg.replace('%fieldLabel%',this.fieldLabel[i]);
+						err += msg.replace('%fieldLabel%', this.fieldLabel[i]);
 					}
 				}
 			}
 		}
 		
-		for (ii in this.son1x1) {
-			if (this.fieldNewValue[this.son1x1[ii].parent1x1Condition['fieldName']] == this.son1x1[ii].parent1x1Condition['value'] || this.son1x1[ii].parent1x1Condition['fieldName'] == '') {
-				err += this.son1x1[ii].errValidateType();
+		for (var i in this.son1x1) {
+			if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+				err += this.son1x1[i].errValidateType();
 			}
 		}
 		
@@ -1664,16 +1714,16 @@ function prumoCrud(objName, ajaxFile) {
 	this.errValidateNotNull = function() {
 		this.readNewValues();
 		var err = '';
-		for (i in this.fieldName) {
+		for (var i in this.fieldName) {
 			if (this.fieldNotNull[i] && this.fieldNewValue[this.fieldName[i]] == '') {
 				var msg = '- '+gettext('Campo "%fieldLabel%" não pode ficar em branco')+'.\n'
 				err += msg.replace('%fieldLabel%',this.fieldLabel[i]);
 			}
 		}
 		
-		for (ii in this.son1x1) {
-			if (this.fieldNewValue[this.son1x1[ii].parent1x1Condition['fieldName']] == this.son1x1[ii].parent1x1Condition['value'] || this.son1x1[ii].parent1x1Condition['fieldName'] == '') {
-				err += this.son1x1[ii].errValidateNotNull();
+		for (var i in this.son1x1) {
+			if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+				err += this.son1x1[i].errValidateNotNull();
 			}
 		}
 		
@@ -2262,7 +2312,9 @@ function prumoCrudList(objName, ajaxFile) {
 	}
 	
 	this.cmdSearch = function() {
-		this.goSearch(1);
+		if (this.pFilter.validateFilters()) {
+			this.goSearch(1);
+		}
 	}
 	
 	this.cmdSearchAll = function() {
@@ -2570,13 +2622,28 @@ function prumoFilter(objName) {
 	}
 	
 	/**
+	 * Pega o rotulo do campo
+	 *
+	 * @param fieldName string: nome do campo
+	 * @returns string: fieldType daquele campo
+	 */
+	this.fieldLabelByName = function(fieldName) {
+		for (i=0; i < this.fieldName.length; i++) {
+			if (fieldName == this.fieldName[i]) {
+				return this.fieldLabel[i];
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Pega o nome do operador
 	 *
 	 * @param fieldName string: nome do campo
 	 * @returns string: tipo de operador daquele campo (text, numeric ou boolean)
 	 */
 	this.operatorTypeByName = function(fieldName) {
-		fieldType = this.fieldTypeByName(fieldName);
+		var fieldType = this.fieldTypeByName(fieldName);
 		
 	    switch (fieldType) {
 		    case 'string':
@@ -2614,10 +2681,13 @@ function prumoFilter(objName) {
 	 * @param selectFieldName string: nome do campo
 	 * @param index integer: número do filtro
 	 */
-	this.selectFieldChange = function(selectFieldName,index) {
-		operatorType = this.operatorTypeByName(selectFieldName.value);
-		selectOperator = document.getElementById(this.objName+'_'+index+'_operator');
-
+	this.selectFieldChange = function(selectFieldName, index) {
+		var operatorType = this.operatorTypeByName(selectFieldName.value);
+		var selectOperator = document.getElementById(this.objName+'_'+index+'_operator');
+		
+		var arrOperators = Array();
+		var arrOperatorsName = Array();
+		
 		if (operatorType == 'text') {
 			arrOperators     = this.textOperators;
 			arrOperatorsName = this.textOperatorsName;
@@ -2640,7 +2710,7 @@ function prumoFilter(objName) {
 		this.filter[index].fieldName = selectFieldName.value;
 		
 		selectOperator.value = arrOperators[0];
-		this.selectOperatorChange(selectOperator,index);
+		this.selectOperatorChange(selectOperator, index);
 
 		// coloca o foco no campo de pesquisa
 		document.getElementById(this.objName+'_'+index+'_value').focus();
@@ -2661,9 +2731,77 @@ function prumoFilter(objName) {
 		else {
 			htmlInput = '<input id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />';
 		}
-
+		
 		document.getElementById(this.objName+'_'+index+'_input').innerHTML = htmlInput;
 		document.getElementById(this.objName+'_'+index+'_value').value = currentValue;
+		document.getElementById(this.objName+'_'+index+'_value').focus();
+	}
+	
+	/**
+	 * Valida o valor dos filtros
+	 *
+	 * @return boolean
+	 */
+	this.validateFilters = function() {
+		
+		var err = '';
+		var msg = '';
+		
+		for (var i in this.filter) {
+			
+			var fieldName = document.getElementById(this.objName+'_'+i+'_field').value;
+			var fieldLabel = this.fieldLabelByName(fieldName);
+			var fieldType = this.fieldTypeByName(fieldName);
+			var fieldOperator = document.getElementById(this.objName+'_'+i+'_operator').value;
+			var fieldValue = document.getElementById(this.objName+'_'+i+'_value').value;
+			var operatorType = this.operatorTypeByName(fieldName);
+			
+			msg = '';
+			if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
+				
+				switch (fieldType) {
+					
+					case 'serial':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+						break;
+					case 'integer':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+						break;
+					case 'numeric':
+						msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
+						break;
+					case 'date':
+						msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
+						break;
+					case 'time':
+						msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
+						break;
+					case 'timestamp':
+						msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
+						break;
+					case 'boolean':
+						msg = '- '+gettext('"%fieldValue%" não é um boleano válido, filtro "%fieldLabel%"');
+						break;
+				}
+				
+				if (msg != '') {
+					msg = msg.replace('%fieldLabel%', fieldLabel);
+					msg = msg.replace('%fieldValue%', fieldValue);
+					if (err == '') {
+						document.getElementById(this.objName+'_'+i+'_value').focus();
+					}
+					err += (err == '') ? msg : '\n'+msg;
+				}
+			}
+		}
+		
+		if (err != '') {
+			alert(err);
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	
 	/**
@@ -2672,9 +2810,16 @@ function prumoFilter(objName) {
 	 * @param selectFieldName string: nome do campo
 	 * @param index integer: número do filtro
 	 */
-	this.selectOperatorChange = function(selectOperator,index) {
+	this.selectOperatorChange = function(selectOperator, index) {
 		// passa o valor escolhido para o objeto filter
 		this.filter[index].operator = selectOperator.value;
+		
+		if (selectOperator.value == 'is null' || selectOperator.value == 'not is null') {
+			document.getElementById(this.objName+'_'+index+'_input').style.display = 'none';
+		}
+		else {
+			document.getElementById(this.objName+'_'+index+'_input').style.display = 'block';
+		}
 		
 		// coloca o foco no campo de pesquisa
 		document.getElementById(this.objName+'_'+index+'_value').focus();
@@ -2776,12 +2921,12 @@ function prumoFilter(objName) {
 	/**
 	 * Configura os filtros, passando as propriedades do objeto para a interface
 	 */
-	this.configureFilter = function(fieldName,filterIndex) {
+	this.configureFilter = function(fieldName, filterIndex) {
 		if (this.filter[filterIndex].visible) {
-			selectFieldName = document.getElementById(this.objName+'_'+filterIndex+'_field');
-			selectOperator  = document.getElementById(this.objName+'_'+filterIndex+'_operator');
-			inputValue      = document.getElementById(this.objName+'_'+filterIndex+'_value');
-			var operator = this.filter[filterIndex].operator;
+			var selectFieldName = document.getElementById(this.objName+'_'+filterIndex+'_field');
+			var selectOperator  = document.getElementById(this.objName+'_'+filterIndex+'_operator');
+			var inputValue      = document.getElementById(this.objName+'_'+filterIndex+'_value');
+			var operator        = this.filter[filterIndex].operator;
 
 			// configura selectFilter e o inputValue com o valor anteriormente passado via XML
 			if (this.filter[filterIndex].fieldName == '') {
@@ -2793,7 +2938,7 @@ function prumoFilter(objName) {
 			inputValue.value = this.filter[filterIndex].value;
 
 			// preenche o combo selectOperator
-			this.selectFieldChange(selectFieldName,filterIndex);
+			this.selectFieldChange(selectFieldName, filterIndex);
 
 			// configura o selectOperator
 			var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
@@ -2811,6 +2956,7 @@ function prumoFilter(objName) {
 				this.filter[filterIndex].operator = arrOperators[0];
 			}
 			selectOperator.value = operator;
+			this.selectOperatorChange(selectOperator, filterIndex);
 			if (operator != '') {
 				this.filter[filterIndex].operator = operator;
 			}
@@ -2835,8 +2981,10 @@ function prumoFilter(objName) {
 				htmlFilters += '		<td>\n';
 				htmlFilters += '			<select id="'+this.objName+'_'+i+'_operator" onchange="'+this.objName+'.selectOperatorChange(this,'+i+')"></select>&nbsp;\n';
 				htmlFilters += '		</td>\n';
-				htmlFilters += '		<td id="'+this.objName+'_'+i+'_input">\n';
-				htmlFilters += '			<input id="'+this.objName+'_'+i+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
+				htmlFilters += '		<td>\n';
+				htmlFilters += '			<span id="'+this.objName+'_'+i+'_input">\n';
+				htmlFilters += '				<input id="'+this.objName+'_'+i+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
+				htmlFilters += '			</span>\n';
 				htmlFilters += '		</td>\n';
 				htmlFilters += '		<td id="'+this.objName+'_'+i+'_controls">\n';
 				htmlFilters += '			<br/>\n';
