@@ -2751,74 +2751,77 @@ function prumoFilter(objName) {
 		
 		for (var i in this.filter) {
 			
-			var fieldName = document.getElementById(this.objName+'_'+i+'_field').value;
-			var fieldLabel = this.fieldLabelByName(fieldName);
-			var fieldType = this.fieldTypeByName(fieldName);
-			var fieldOperator = document.getElementById(this.objName+'_'+i+'_operator').value;
-			var fieldValue = document.getElementById(this.objName+'_'+i+'_value').value;
-			var fieldValue2 = document.getElementById(this.objName+'_'+i+'_value2').value;
-			
-			msg = '';
-			if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
+			if (this.filter[i].visible) {
 				
-				switch (fieldType) {
+				var fieldName = document.getElementById(this.objName+'_'+i+'_field').value;
+				var fieldLabel = this.fieldLabelByName(fieldName);
+				var fieldType = this.fieldTypeByName(fieldName);
+				var fieldOperator = document.getElementById(this.objName+'_'+i+'_operator').value;
+				var fieldValue = document.getElementById(this.objName+'_'+i+'_value').value;
+				var fieldValue2 = document.getElementById(this.objName+'_'+i+'_value2').value;
+				
+				msg = '';
+				if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
 					
-					case 'serial':
-						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
-						break;
-					case 'integer':
-						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
-						break;
-					case 'numeric':
-						msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
-						break;
-					case 'date':
-						msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
-						break;
-					case 'time':
-						msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
-						break;
-					case 'timestamp':
-						msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
-						break;
-					case 'boolean':
-						msg = '- '+gettext('"%fieldValue%" não é um boleano válido, filtro "%fieldLabel%"');
-						break;
-				}
-				
-				msg = msg.replace('%fieldValue%', fieldValue);
-				if (err == '') {
-					document.getElementById(this.objName+'_'+i+'_value').focus();
-				}
-			}
-			
-			if (fieldOperator == 'between' && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
-				
-				switch (fieldType) {
+					switch (fieldType) {
+						
+						case 'serial':
+							msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+							break;
+						case 'integer':
+							msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+							break;
+						case 'numeric':
+							msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
+							break;
+						case 'date':
+							msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
+							break;
+						case 'time':
+							msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
+							break;
+						case 'timestamp':
+							msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
+							break;
+						case 'boolean':
+							msg = '- '+gettext('"%fieldValue%" não é um boleano válido, filtro "%fieldLabel%"');
+							break;
+					}
 					
-					case 'serial':
-						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
-						break;
-					case 'integer':
-						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
-						break;
-					case 'numeric':
-						msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
-						break;
-					case 'date':
-						msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
-						break;
-					case 'time':
-						msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
-						break;
-					case 'timestamp':
-						msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
-						break;
+					msg = msg.replace('%fieldValue%', fieldValue);
+					if (err == '') {
+						document.getElementById(this.objName+'_'+i+'_value').focus();
+					}
 				}
 				
-				msg = msg.replace('%fieldValue%', fieldValue2);
-				if (err == '') {
-					document.getElementById(this.objName+'_'+i+'_value2').focus();
+				if (fieldOperator == 'between' && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
+					
+					switch (fieldType) {
+						
+						case 'serial':
+							msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+							break;
+						case 'integer':
+							msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+							break;
+						case 'numeric':
+							msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
+							break;
+						case 'date':
+							msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
+							break;
+						case 'time':
+							msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
+							break;
+						case 'timestamp':
+							msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
+							break;
+					}
+					
+					msg = msg.replace('%fieldValue%', fieldValue2);
+					if (err == '') {
+						document.getElementById(this.objName+'_'+i+'_value2').focus();
+					}
 				}
 			}
 			
@@ -3730,9 +3733,9 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.cmdSearch = function() {
-		//if (this.pFilter.validateFilters()) {
+		if (this.pFilter.validateFilters()) {
 			this.goSearch(1);
-		//}
+		}
 	}
 	
 	this.cmdSearchAll = function() {
