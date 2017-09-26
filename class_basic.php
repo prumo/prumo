@@ -145,9 +145,9 @@ class prumoBasic {
 	 * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
 	 * @param $fieldValue string: valor
 	 */
-	public function setFilter($fieldName, $filterOperator, $fieldValue) {
+	public function setFilter($fieldName, $filterOperator, $fieldValue, $fieldValue2='') {
 		echo '<script type="text/javascript">'."\n";
-		echo "	".$this->name.".setFilter('$fieldName', '$filterOperator', '$fieldValue');\n";
+		echo "	".$this->name.".setFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
 		echo '</script>'."\n";
 	}
 	
@@ -158,9 +158,9 @@ class prumoBasic {
 	 * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
 	 * @param $fieldValue string: valor
 	 */
-	public function setInvisibleFilter($fieldName, $filterOperator, $fieldValue) {
+	public function setInvisibleFilter($fieldName, $filterOperator, $fieldValue, $fieldValue2='') {
 		echo '<script type="text/javascript">'."\n";
-		echo "	".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue');\n";
+		echo "	".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
 		echo '</script>'."\n";
 	}
 }

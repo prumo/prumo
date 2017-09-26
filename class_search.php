@@ -159,17 +159,16 @@ class prumoSearch extends prumoBasic {
 	/**
 	 * Adiciona um campo onde o registro escolhido deve ser retornado
 	 *
-	 * @param $fieldName string: nome do campo do search
-	 * @param $idReturn string: id do campo no lado do cliente
+	 * @param $fieldName string: nome do campo
+	 * @param $idReturn string: id do input html. Quando não informado, copia do $fieldName
 	 * @param $verbose boolean: quando true imprime o código gerado na tela
 	 * @param $linkInput boolean: quando true vincula o campo HTML com o search
-	 * @param $noRetrieve boolean: quando true não participa do retrieve (busca implicita disparada pelo crud pai)
 	 *
-	 * @return string: código gerado
+	 * @return string: código javascript gerado
 	 */
 	public function addFieldReturn($fieldName, $idReturn='', $verbose=true, $linkInput=true, $noRetrieve=false) {
 		
-		if ($idReturn == '') {
+		if (empty($idReturn)) {
 			$idReturn = $fieldName;
 		}
 		
@@ -280,11 +279,11 @@ class prumoSearch extends prumoBasic {
 		
 		$htmlFilters = $this->pFilter->draw(false);
 		
-		// vinculo do prumoFilter com o prumoSearch
+		// vinculo com o prumoFilter
 		$htmlFilters .= $this->indentation. '		<script type="text/javascript">'."\n";
 		$htmlFilters .= $this->indentation. '			'.$this->name.'.pFilter = pFilter_'.$this->name.";\n";
 		$htmlFilters .= $this->indentation. '		</script>'."\n";
-
+		
 		return $htmlFilters;
 	}
 	
@@ -487,6 +486,7 @@ class prumoSearch extends prumoBasic {
 		$fieldName = $this->pFilter->filter['fieldName'];
 		$operator  = $this->pFilter->filter['operator'];
 		$value     = $this->pFilter->filter['value'];
+		$value2    = $this->pFilter->filter['value2'];
 		
 		$arrCondition = array();
 		$iValue = 0;
@@ -496,6 +496,7 @@ class prumoSearch extends prumoBasic {
 				$condition = $this->pConnection->getSqlOperator($operator[$i]);
 				$condition = str_replace(':field:',$field['sqlname'],$condition);
 				$condition = str_replace(':value:',pFormatSql($value[$i],$field['type'],false,false),$condition);
+				$condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
 				$arrCondition[$iValue] = $condition;
 				$iValue++;
 			}

@@ -1887,20 +1887,20 @@ function prumoCrud(objName, ajaxFile) {
 	/**
 	 * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
 	 */
-	this.setFilter = function(fieldName,filterOperator,fieldValue) {
-		this.pSearch.pFilter.setFilter(fieldName,filterOperator,fieldValue);
+	this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pSearch.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 		if (this.pCrudList != false) {
-			this.pCrudList.pFilter.setFilter(fieldName,filterOperator,fieldValue);
+			this.pCrudList.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 		}
 	}
 	
 	/**
 	 * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
 	 */
-	this.setInvisibleFilter = function(fieldName,filterOperator,fieldValue) {
-		this.pSearch.pFilter.setInvisibleFilter(fieldName,filterOperator,fieldValue);
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pSearch.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 		if (this.pCrudList != false) {
-			this.pCrudList.pFilter.setInvisibleFilter(fieldName,filterOperator,fieldValue);
+			this.pCrudList.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 		}
 	}
 	
@@ -2430,18 +2430,18 @@ function prumoCrudList(objName, ajaxFile) {
 	/**
 	 * Redirecionamento para o mesmo método em this.pFilter
 	 */
-	this.setFilter = function(fieldName, filterOperator, fieldValue) {
-		this.pFilter.setFilter(fieldName, filterOperator, fieldValue);
+	this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 	}
 	
 	/**
 	 * Redirecionamento para o mesmo método em this.pFilter
 	 */
-	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue) {
-		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue);
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 	}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 function prumoFilter(objName) {
 	this.objName = objName;
 	this.pAjax = new prumoAjax();
@@ -2490,6 +2490,7 @@ function prumoFilter(objName) {
 							            'greater than',
 							            'less than or equal',
 							            'greater than or equal',
+							            'between',
    	                                    'is null',
    	                                    'not is null'
 							         );
@@ -2500,6 +2501,7 @@ function prumoFilter(objName) {
 							            gettext('maior que'),
 							            gettext('menor ou igual a'),
 							            gettext('maior ou igual a'),
+							            gettext('entre'),
 							            gettext('é nulo'),
 							            gettext('não é nulo')
 							         );
@@ -2524,22 +2526,22 @@ function prumoFilter(objName) {
 	 * @param fieldName string: nome do campo
 	 * @param operator string: operador inicial
 	 * @param aValue string: valor inicial
-	 * @param aValue2 string: reservado para implementação futura da condição sql BETWEEN
+	 * @param aValue2 string: segundo campo usado em condição BETWEEN
 	 */
-	this.addFilter = function(filterIndex,fieldName,operator,value,value2,visible) {
-		function aFilter(aFieldName,aOperator,aValue,aValue2,aVisible) {
+	this.addFilter = function(filterIndex, fieldName, operator, value, value2, visible) {
+		function aFilter(aFieldName, aOperator, aValue, aValue2, aVisible) {
 			this.fieldName = aFieldName;
 			this.operator  = aOperator;
 			this.value     = aValue;
 			this.value2    = aValue2;
 			this.visible   = aVisible;
 		}
-		var newFilter = new aFilter(fieldName,operator,value,value2,visible);
+		var newFilter = new aFilter(fieldName, operator, value, value2, visible);
 		if (filterIndex == null) {
 			this.filter.push(newFilter);
 		}
 		else {
-			this.filter.splice(filterIndex,0,newFilter);
+			this.filter.splice(filterIndex, 0, newFilter);
 		}
 		this.count++;
 	}
@@ -2729,7 +2731,7 @@ function prumoFilter(objName) {
 			htmlInput += '</select>';
 		}
 		else {
-			htmlInput = '<input id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />';
+			htmlInput = '<input type="text" id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
 		}
 		
 		document.getElementById(this.objName+'_'+index+'_input').innerHTML = htmlInput;
@@ -2754,7 +2756,7 @@ function prumoFilter(objName) {
 			var fieldType = this.fieldTypeByName(fieldName);
 			var fieldOperator = document.getElementById(this.objName+'_'+i+'_operator').value;
 			var fieldValue = document.getElementById(this.objName+'_'+i+'_value').value;
-			var operatorType = this.operatorTypeByName(fieldName);
+			var fieldValue2 = document.getElementById(this.objName+'_'+i+'_value2').value;
 			
 			msg = '';
 			if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
@@ -2784,14 +2786,45 @@ function prumoFilter(objName) {
 						break;
 				}
 				
-				if (msg != '') {
-					msg = msg.replace('%fieldLabel%', fieldLabel);
-					msg = msg.replace('%fieldValue%', fieldValue);
-					if (err == '') {
-						document.getElementById(this.objName+'_'+i+'_value').focus();
-					}
-					err += (err == '') ? msg : '\n'+msg;
+				msg = msg.replace('%fieldValue%', fieldValue);
+				if (err == '') {
+					document.getElementById(this.objName+'_'+i+'_value').focus();
 				}
+			}
+			
+			if (fieldOperator == 'between' && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
+				
+				switch (fieldType) {
+					
+					case 'serial':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+						break;
+					case 'integer':
+						msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
+						break;
+					case 'numeric':
+						msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
+						break;
+					case 'date':
+						msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
+						break;
+					case 'time':
+						msg = '- '+gettext('"%fieldValue%" não é uma hora válida, filtro "%fieldLabel%"');
+						break;
+					case 'timestamp':
+						msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
+						break;
+				}
+				
+				msg = msg.replace('%fieldValue%', fieldValue2);
+				if (err == '') {
+					document.getElementById(this.objName+'_'+i+'_value2').focus();
+				}
+			}
+			
+			if (msg != '') {
+				msg = msg.replace('%fieldLabel%', fieldLabel);
+				err += (err == '') ? msg : '\n'+msg;
 			}
 		}
 		
@@ -2821,6 +2854,13 @@ function prumoFilter(objName) {
 			document.getElementById(this.objName+'_'+index+'_input').style.display = 'block';
 		}
 		
+		if (selectOperator.value == 'between') {
+			document.getElementById(this.objName+'_'+index+'_input2').style.display = 'block';
+		}
+		else {
+			document.getElementById(this.objName+'_'+index+'_input2').style.display = 'none';
+		}
+		
 		// coloca o foco no campo de pesquisa
 		document.getElementById(this.objName+'_'+index+'_value').focus();
 	}
@@ -2833,6 +2873,16 @@ function prumoFilter(objName) {
 	 */
 	this.inputValueChange = function(inputObject,index) {
 		this.filter[index].value = inputObject.value;
+	}
+	
+	/**
+	 * Copia o valor de um input para a propriedade filter[index] do objeto prumoFilter
+	 *
+	 * @param inputObject objeto dom
+	 * @param index integer: número do filtro
+	 */
+	this.input2ValueChange = function(inputObject,index) {
+		this.filter[index].value2 = inputObject.value;
 	}
 	
 	/**
@@ -2926,6 +2976,7 @@ function prumoFilter(objName) {
 			var selectFieldName = document.getElementById(this.objName+'_'+filterIndex+'_field');
 			var selectOperator  = document.getElementById(this.objName+'_'+filterIndex+'_operator');
 			var inputValue      = document.getElementById(this.objName+'_'+filterIndex+'_value');
+			var inputValue2     = document.getElementById(this.objName+'_'+filterIndex+'_value2');
 			var operator        = this.filter[filterIndex].operator;
 
 			// configura selectFilter e o inputValue com o valor anteriormente passado via XML
@@ -2936,6 +2987,7 @@ function prumoFilter(objName) {
 				selectFieldName.value = this.filter[filterIndex].fieldName;
 			}
 			inputValue.value = this.filter[filterIndex].value;
+			inputValue2.value = this.filter[filterIndex].value2;
 
 			// preenche o combo selectOperator
 			this.selectFieldChange(selectFieldName, filterIndex);
@@ -2983,7 +3035,13 @@ function prumoFilter(objName) {
 				htmlFilters += '		</td>\n';
 				htmlFilters += '		<td>\n';
 				htmlFilters += '			<span id="'+this.objName+'_'+i+'_input">\n';
-				htmlFilters += '				<input id="'+this.objName+'_'+i+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
+				htmlFilters += '				<input type="text" id="'+this.objName+'_'+i+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
+				htmlFilters += '			</span>\n';
+				htmlFilters += '		</td>\n';
+				htmlFilters += '		<td>\n';
+				htmlFilters += '			<span id="'+this.objName+'_'+i+'_input2">\n';
+				htmlFilters += '				&nbsp;&nbsp;e&nbsp;\n';
+				htmlFilters += '				<input type="text" id="'+this.objName+'_'+i+'_value2" size="15" onchange="'+this.objName+'.input2ValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
 				htmlFilters += '			</span>\n';
 				htmlFilters += '		</td>\n';
 				htmlFilters += '		<td id="'+this.objName+'_'+i+'_controls">\n';
@@ -3034,25 +3092,25 @@ function prumoFilter(objName) {
 	 */
 	this.assignResponseXML = function(responseXML) {
 		this.xmlData = responseXML.getElementsByTagName(this.xmlIdentification);
-
+		
 		// limpa os filtros
 		this.filter = new Array()
-
+		
 		// laço que percorre o xml
-		for (i=0; i < this.xmlData.length; i++) {
-			fieldName    = this.getValue('fieldName',i);
-			operator     = this.getValue('operator',i);
-			value        = this.getValue('value',i);
-			value2       = this.getValue('value2',i);
-			visible      = this.getValue('visible',i);
+		for (var i=0; i < this.xmlData.length; i++) {
+			fieldName    = this.getValue('fieldName', i);
+			operator     = this.getValue('operator', i);
+			value        = this.getValue('value', i);
+			value2       = this.getValue('value2', i);
+			visible      = this.getValue('visible', i);
 			if (visible == 'false') {
 				visible = false;
 			}
 			else {
 				visible = true;
 			}
-
-			this.addFilter(i,fieldName,operator,value,value2,visible);
+			
+			this.addFilter(i, fieldName, operator, value, value2, visible);
 		}
 		// redesenha
 		this.draw();
@@ -3063,54 +3121,39 @@ function prumoFilter(objName) {
 	/**
 	 * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
 	 */
-	this.setFilter = function(fieldName,filterOperator,fieldValue) {
-		//Caso não possua nenhum filtro então cria
-		if (this.filter.length == 0) {
-			this.addFilter(null,fieldName,filterOperator,fieldValue,'',true);
-		}
+	this.privateSetFilter = function(fieldName, filterOperator, fieldValue, fieldValue2, visible) {
 		
 		// Procura um campo no filtro visivel com o mesmo fieldName
 		var nothing = true;
-		for (iFilter in this.filter) {
-			if (this.filter[iFilter].fieldName == fieldName && this.filter[iFilter].visible) {
+		for (var iFilter in this.filter) {
+			if (this.filter[iFilter].fieldName == fieldName && this.filter[iFilter].visible == visible) {
 				this.filter[iFilter].value = fieldValue;
+				this.filter[iFilter].value2 = fieldValue2;
 				nothing = false;
 				break;
 			}
 		}
 		
+		// caso não encontrou nenhum filtro, cria
 		if (nothing) {
-			// caso não encontre nenhum filtro
-			this.addFilter(null,fieldName,filterOperator,fieldValue,'');
+			this.addFilter(null, fieldName, filterOperator, fieldValue, fieldValue2, visible);
 		}
 	}
 	
 	/**
 	 * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
 	 */
-	this.setInvisibleFilter = function(fieldName,filterOperator,fieldValue) {
-		//Caso não possua nenhum filtro então cria
-		if (this.filter.length == 0) {
-			this.addFilter(null,fieldName,filterOperator,fieldValue,'',false);
-		}
-		
-		// Procura um campo no filtro visivel com o mesmo fieldName
-		var nothing = true;
-		for (iFilter in this.filter) {
-			if (this.filter[iFilter].fieldName == fieldName && this.filter[iFilter].visible == false) {
-				this.filter[iFilter].value = fieldValue;
-				nothing = false;
-				break;
-			}
-		}
-		
-		if (nothing) {
-			// caso não encontre nenhum filtro
-			this.addFilter(null,fieldName,filterOperator,fieldValue,'',false);
-		}
+	this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, true);
+	}
+	
+	/**
+	 * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
+	 */
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, false);
 	}
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function prumoValidator(validator) {
 	this.validator = validator;
@@ -3687,7 +3730,9 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.cmdSearch = function() {
-		this.goSearch(1);
+		//if (this.pFilter.validateFilters()) {
+			this.goSearch(1);
+		//}
 	}
 	
 	this.cmdSearchAll = function() {
@@ -3826,7 +3871,7 @@ function prumoSearch(objName,ajaxFile) {
 							}
 							
 							this.pFilter.clearValues();
-							this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0],operator,objField.value);
+							this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
 							this.goSearch(1);
 						}
 					}
@@ -3872,15 +3917,15 @@ function prumoSearch(objName,ajaxFile) {
 	/**
 	 * Redirecionamento para o mesmo método em this.pFilter
 	 */
-	this.setFilter = function(fieldName, filterOperator, fieldValue) {
-		this.pFilter.setFilter(fieldName, filterOperator, fieldValue);
+	this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 	}
 	
 	/**
 	 * Redirecionamento para o mesmo método em this.pFilter
 	 */
-	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue) {
-		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue);
+	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 	}
 }
 

@@ -49,10 +49,11 @@ class prumoPgConnection {
 		$this->sqlOperator['not equal']             = 'NOT :field: = \':value:\'';
 		$this->sqlOperator['numeric equal']         = ':field: = :value:';
 		$this->sqlOperator['numeric not equal']     = 'NOT :field: = :value:';
-		$this->sqlOperator['less than']             = ':field: < \':value:\'';
-		$this->sqlOperator['greater than']          = ':field: > \':value:\'';
-		$this->sqlOperator['less than or equal']    = ':field: <= \':value:\'';
-		$this->sqlOperator['greater than or equal'] = ':field: >= \':value:\'';
+		$this->sqlOperator['less than']             = ':field: < :value:';
+		$this->sqlOperator['greater than']          = ':field: > :value:';
+		$this->sqlOperator['less than or equal']    = ':field: <= :value:';
+		$this->sqlOperator['greater than or equal'] = ':field: >= :value:';
+		$this->sqlOperator['between']               = ':field: BETWEEN :value: AND :value2:';
 		$this->sqlOperator['is null']               = ':field: IS NULL';
 		$this->sqlOperator['not is null']           = 'NOT :field: IS NULL';
 	}

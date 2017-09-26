@@ -125,11 +125,12 @@ class prumoCrudList extends prumoBasic {
 	}
 	
 	/**
-	 * Adiciona um campo de retorno da consulta quando disparado o clich na linha do grid
+	 * Adiciona um campo onde o registro escolhido deve ser retornado
 	 *
 	 * @param $fieldName string: nome do campo
 	 * @param $idReturn string: id do input html. Quando não informado, copia do $fieldName
 	 * @param $verbose boolean: indica se deve dar eco no código javascript gerado
+	 * @param $noRetrieve boolean: quando true não participa do retrieve (busca implicita disparada pelo crud pai)
 	 *
 	 * @return string: código javascript gerado
 	 */
@@ -137,6 +138,16 @@ class prumoCrudList extends prumoBasic {
 		
 		if (empty($idReturn)) {
 			$idReturn = $fieldName;
+		}
+		
+		// valida duplicidade
+		for ($i=0; $i < count($this->fieldReturn); $i++) {
+		    if ($this->fieldReturn[$i][0] == $fieldName) {
+		    	$msg = _('Campo ":fieldName:" duplicado em :objName:->addFieldReturn.');
+		    	$msg = str_replace(':fieldName:', $fieldName, $msg);
+		    	$msg = str_replace(':objName:', $this->name, $msg);
+		    	throw new Exception($msg);
+		    }
 		}
 		
 		$this->fieldReturn[] = array($fieldName, $idReturn);
@@ -205,7 +216,7 @@ class prumoCrudList extends prumoBasic {
 	 *
 	 * @return string: código HTML dos filtros
 	 */
-	private function makeFilters() {
+	protected function makeFilters() {
 		
 		$useBtNew = (isset($this->param['routine']) && !empty($this->param['routine'])) ? pPermitted($this->param['routine'], 'c') : true;
 		if ($useBtNew) {
@@ -213,7 +224,7 @@ class prumoCrudList extends prumoBasic {
 		}
 		$htmlFilters = $this->pFilter->draw(false);
 		
-		// vinculo do prumoFilter com o prumoCrudList
+		// vinculo com o prumoFilter
 		$htmlFilters .= $this->indentation. '		<script type="text/javascript">'."\n";
 		$htmlFilters .= $this->indentation. '			'.$this->name.'.pFilter = pFilter_'.$this->name.";\n";
 		$htmlFilters .= $this->indentation. '		</script>'."\n";
@@ -226,7 +237,7 @@ class prumoCrudList extends prumoBasic {
 	 *
 	 * @return string: código HTML do grid
 	 */
-	private function makeGrid() {
+	protected function makeGrid() {
 		
 		$htmlGrid = $this->pGrid->draw(false);
 		
@@ -234,51 +245,38 @@ class prumoCrudList extends prumoBasic {
 		$htmlGrid .= $this->indentation.'		<script type="text/javascript">'."\n";
 		
 		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.field = new Array(';
-		
 		for ($i=0; $i < $this->fieldCount(); $i++) {
-			
 			$htmlGrid .= '"'.$this->field[$i]['name'].'"';
-			
 			if ($i < $this->fieldCount() -1) {
 				$htmlGrid .= ',';
 			}
 		}
-		
 		$htmlGrid .= ');'."\n";
 		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.fieldType = new Array(';
-		
 		for ($i=0; $i < $this->fieldCount(); $i++) {
-			
 			$htmlGrid .= '"'.$this->field[$i]['type'].'"';
-			
 			if ($i < $this->fieldCount() -1) {
 				$htmlGrid .= ',';
 			}
 		}
-		
 		$htmlGrid .= ');'."\n";
 		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.fieldVisible = new Array(';
-		
 		for ($i=0; $i < $this->fieldCount(); $i++) {
-			
-			$fieldVisible = $this->field[$i]['visible'] ? 'true' : 'false';
+			$fieldVisible = $this->field[$i]['visible'] == true ? 'true' : 'false';
 			$htmlGrid .= $fieldVisible;
-			
 			if ($i < $this->fieldCount() -1) {
 				$htmlGrid .= ',';
 			}
 		}
-		
 		$htmlGrid .= ');'."\n";
 		
 		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.xmlIdentification = \''.$this->name.'\';'."\n";
 		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.lineEventOnData = \''.$this->pGrid->lineEventOnData.'\';'."\n";
-		
 		if ($this->pGrid->pointerCursorOnData) {
 			$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.pointerCursorOnData = true;'."\n";
 		}
-
-		// vinculo do prumoGrid com o prumoCrudList
+		
+		// vinculo com o prumoGrid
 		$htmlGrid .= $this->indentation. '			'.$this->name.'.pGrid = pGrid_'.$this->name.";\n";
 		
 		$htmlGrid .= $this->indentation.'		</script>'."\n";
@@ -291,14 +289,14 @@ class prumoCrudList extends prumoBasic {
 	 *
 	 * @return string: código HTML da barra de navegação
 	 */
-	private function makeGridNavigation() {
+	protected function makeGridNavigation() {
 		
 		$htmlGridNavigation = $this->indentation.'		<div id="pGridNavigation_'.$this->name.'" class="prumoGridNavigation"></div>'."\n";
 		$htmlGridNavigation .= $this->indentation.'		<br />'."\n";
 		$htmlGridNavigation .= $this->indentation.'		<script type="text/javascript">'."\n";
 		$htmlGridNavigation .= $this->indentation.'			pGridNavigation_'.$this->name.' = new prumoGridNavigation(\''.$this->name.'\');'."\n";
 		
-		// vinculo do prumoGridNavigation com o prumoCrudList
+		// vinculo com o prumoGridNavigation
 		$htmlGridNavigation .= $this->indentation.'			'.$this->name.'.pGridNavigation = pGridNavigation_'.$this->name.';'."\n";
 
 		$htmlGridNavigation .= $this->indentation.'		</script>'."\n";
@@ -367,43 +365,43 @@ class prumoCrudList extends prumoBasic {
 		$fieldName = $this->pFilter->filter['fieldName'];
 		$operator  = $this->pFilter->filter['operator'];
 		$value     = $this->pFilter->filter['value'];
+		$value2    = $this->pFilter->filter['value2'];
 		
 		$arrCondition = array();
 		$iValue = 0;
-		
 		for ($i = 0; $i < count($fieldName); $i++) {
-			
 			if ($value[$i] != '' or $operator[$i] == 'is null' or $operator[$i] == 'not is null') {
-				
 				$field = $this->fieldByName($fieldName[$i]);
 				$condition = $this->pConnection->getSqlOperator($operator[$i]);
 				$condition = str_replace(':field:', $field['sqlname'], $condition);
 				$condition = str_replace(':value:', pFormatSql($value[$i], $field['type'], false, false), $condition);
+				$condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
 				$arrCondition[$iValue] = $condition;
 				$iValue++;
 			}
 		}
 		
 		$conditionOut = '';
-		
 		for ($i = 0; $i < count($arrCondition); $i++) {
-			$conditionOut .= ($i == 0) ? ' WHERE '.$arrCondition[$i] : ' AND '.$arrCondition[$i];
+			$conditionOut .= $i == 0 ? ' WHERE '.$arrCondition[$i] : ' AND '.$arrCondition[$i];
 		}
 		
 		return $conditionOut;
 	}
 	
 	/**
-	 * Seta o campo de ordenação
+	 * Define o campo de ordenação da consulta
+	 *
+	 * @param $orderby string: nome do campo de ordenação
 	 */
 	public function setOrderby($orderby) {
 		$this->orderby = pFormatSql($orderby, 'string', false, false);
 	}
 	
 	/**
-	 * Gera o código SQL do ORDER BY
+	 * Gera o código SQL da ordenação da consulta
 	 *
-	 * @return string: código SQL
+	 * @return string: SQL da ordenação da consulta
 	 */
 	public function sqlOrderby() {
 		
@@ -412,19 +410,16 @@ class prumoCrudList extends prumoBasic {
 		
 		$orderbyOut = '';
 		$iVisible = 0;
-		
 		for ($i = 0; $i < count($fieldName); $i++) {
 			
 			$field = $this->fieldByName($fieldName[$i]);
-			
 			if ($visible[$i]) {
-				
 				$orderbyOut .= $iVisible == 0 ? $field['sqlname'] : ','.$field['sqlname'];
 				$iVisible++;
 			}
 		}
 		
-		$orderbyOut = empty($this->orderby) ? ' ORDER BY ' .$orderbyOut : $orderbyOut = ' ORDER BY ' .$this->orderby;
+		$orderbyOut = empty($this->orderby) ? ' ORDER BY ' .$orderbyOut : ' ORDER BY ' .$this->orderby;
 		
 		return $orderbyOut;
 	}
