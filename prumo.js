@@ -2994,7 +2994,7 @@ function prumoFilter(objName) {
 
 			// configura o selectOperator
 			var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
-			if (this.filter[filterIndex].operator == '') {
+			if (operator == '') {
 				switch (operatorType) {
 					case 'text':
 						arrOperators = this.textOperators;
@@ -3005,7 +3005,7 @@ function prumoFilter(objName) {
 				default:
 					arrOperators = this.textOperators;
 				}
-				this.filter[filterIndex].operator = arrOperators[0];
+				operator = arrOperators[0];
 			}
 			selectOperator.value = operator;
 			this.selectOperatorChange(selectOperator, filterIndex);
@@ -3020,7 +3020,7 @@ function prumoFilter(objName) {
 	 */
 	this.draw = function() {
 		htmlFilters = '<table cellpadding="0" cellspacing="0">\n';
-		for (i=0; i< this.filter.length; i++) {
+		for (var i=0; i< this.filter.length; i++) {
 			if (this.filter[i].visible) {
 				htmlFilters += '	<tr>\n';
 				htmlFilters += '		<td>\n';
@@ -3055,8 +3055,8 @@ function prumoFilter(objName) {
 		document.getElementById(this.objName+'_filters').innerHTML = htmlFilters;
 		
 		// chama o metodo configure filter para passar os valores do objeto para a interface
-		for (ii = 0; ii < this.filter.length; ii++) {
-			this.configureFilter(this.filter[ii].fieldName,ii);
+		for (var i = 0; i < this.filter.length; i++) {
+			this.configureFilter(this.filter[i].fieldName,i);
 		}
 		
 		// redesenha os botões (+) e (-)
