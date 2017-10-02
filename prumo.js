@@ -2026,582 +2026,6 @@ function prumoCrud(objName, ajaxFile) {
 	}
 }
 
-function prumoCrudList(objName, ajaxFile) {
-	this.objName = objName;
-	this.identification = objName;
-	this.page;
-	this.orderBy;
-	
-	this.crudName;
-	
-	this.pAjax;
-	this.pFilter;
-	this.pGrid;
-	this.pGridNavigation;
-	
-	this.autoClick = false;
-	
-	this.fieldReturn = Array();
-	
-	this.selected = false;
-	
-	this.responseXml;
-	
-	this.lineIndex;
-	
-	this.pAjax = new prumoAjax(ajaxFile);
-	this.pAjax.ajaxFormat = 'xml';
-	this.pAjax.parent = this;
-	this.pAjax.identification = this.identification;
-	this.pAjax.pLoading = pLoading; // @todo testar
-	
-	this.fieldValueOnFocus;
-	this.fieldFocusId = '';
-	
-	this.fieldName;
-	this.fieldPk;
-	this.pAjax.ajaxXmlOk = function() {
-		if (this.cmd == 'r') {
-			this.parent.pGrid.assignResponseXML(this.responseXML);
-			this.parent.lineClick(0);
-			this.parent.afterRetrieve();
-		}
-		else {
-			this.parent.assignResponseXML(this.responseXML);
-			if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1 && this.parent.pFilter.count > 0) {
-				this.parent.lineClick(0);
-				this.parent.afterRetrieve();
-			}
-		}
-		document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
-		document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
-		
-		this.parent.afterList();
-	}
-	
-	this.afterRetrieve = function() {
-		//implementar conforme necessidade
-	}
-	
-	this.assignResponseXML = function(responseXML) {
-		
-		this.responseXML = responseXML;
-		this.pGrid.assignResponseXML(responseXML);
-		this.pGridNavigation.assignResponseXML(responseXML);
-		this.pFilter.assignResponseXML(responseXML);
-		this.fastCRUD();
-	}
-	
-	this.fastCRUD = function() {
-		if (this.fastCreate || this.fastUpdate || this.fastDelete) {
-			
-			var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
-			
-			//laço que com a quantidade de linhas do xml
-			if (this.fastDelete) {
-				
-				// pega o id da coluna onde será colocado o botão excluir
-				var iColumnControls = 0;
-				for (j=0; j < this.pGrid.field.length; j++) {
-					if (this.pGrid.fieldVisible[j]) {
-						iColumnControls++;
-					}
-				}
-				
-				for (i=0; i < xmlData.length; i++) {
-					
-					// linha do grid
-					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
-					
-					// botão de excluir
-					var htmlInputDelete = '<button class="pButton-outline" onclick="'+this.crudName+'.bt_fastDelete('+i+')"><img src="prumo/images/bt_remove.png" /></button>';
-					pGridRowCells[iColumnControls].innerHTML = htmlInputDelete;
-				}
-			}
-			
-			if (this.fastCreate) {
-				
-				this.parent.clear();
-				
-				// percorre as colunas
-				var iColumn = 0;
-				for (j=0; j < this.pGrid.field.length; j++) {
-				
-					if (this.pGrid.fieldVisible[j]) {
-						
-						// faz referencia a linha do grid
-						var pGridRowCells = document.getElementById(this.pGrid.objName).rows[xmlData.length+1].cells;
-						
-						var id = this.crudName+'_'+this.pGrid.field[j]+'_add';
-						var htmlInput = this.parent.fieldTemplate[j];
-						var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
-						
-						htmlInput = htmlInput.replace(':id:', id);
-						pGridRowCells[iColumn].innerHTML = htmlInput;
-						document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastCreate_onKeyDown(event)');
-						this.parent.inputSetValue(id, document.getElementById(this.parent.fieldId[j]).value);
-						
-						iColumn++;
-					}
-				}
-				
-				// botão gravar novo
-				var htmlInputNew = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_create" onclick="'+this.crudName+'.bt_fastCreate()"><img src="prumo/images/bt_ok.png" /></button>';
-				pGridRowCells[iColumn].innerHTML = htmlInputNew;
-				
-				this.parent.unFreezeFields();
-			}
-		}
-	}
-	
-	this.afterSearch = function() {
-		//implementar conforme necessidade
-	}
-	
-	this.afterList = function() {
-		//implementar conforme necessidade
-	}
-	
-	this.parametersFilters = function() {
-		
-		param = '';
-		for (i=0; i < this.pFilter.filter.length; i++) {
-			param += '&fField[]='+encodeURIComponent(this.pFilter.filter[i].fieldName);
-			param += '&fOperator[]='+this.pFilter.filter[i].operator;
-			param += '&fValue[]='+encodeURIComponent(this.pFilter.filter[i].value);
-			param += '&fValue2[]='+encodeURIComponent(this.pFilter.filter[i].value2);
-			param += '&fVisible[]='+this.pFilter.filter[i].visible;
-		}
-		
-		return param;
-	}
-	
-	this.parameters = function() {
-		
-		if (this.page == undefined) {
-			this.page = 1;
-		}
-		
-		if (this.crudName != undefined) {
-			var param = 'objName='+this.crudName;
-		}
-		else {
-			var param = 'objName='+this.objName;
-		}
-		
-		param += '&'+this.objName+'_action=makeXml';
-		param += '&page='+this.page;
-		if (this.orderBy != undefined) {
-			param += '&orderBy='+ this.orderBy;
-		}
-		
-		param += this.parametersFilters();
-		
-		return param;
-	}
-	
-	this.lineClick = function(lineIndex) {
-		this.lineIndex = lineIndex;
-		this.assignResponseXML(this.responseXML);
-		
-		if (this.fastUpdate) {
-			
-			// percorre as colunas e adiciona os campos de edição
-			var iColumn = 0;
-			for (j=0; j < this.pGrid.field.length; j++) {
-				
-				if (this.pGrid.fieldVisible[j]) {
-					
-					var value = format(this.pGrid.fieldType[j], this.pGrid.getValue(this.pGrid.field[j], lineIndex), 'text');
-					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[lineIndex+1].cells;
-					var id = this.crudName+'_'+this.pGrid.field[j]+'_edit';
-					var htmlInput = this.parent.fieldTemplate[j];
-					var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
-					
-					pGridRowCells[iColumn].innerHTML = htmlInput;
-					document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastUpdate_onKeyDown(event, '+lineIndex+')');
-					this.parent.inputSetValue(id, value);
-					
-					pGridRowCells[iColumn].removeAttribute('onClick');
-					pGridRowCells[iColumn].style.cursor = 'default';
-					
-					if (j == 0) {
-						document.getElementById(id).focus();
-					}
-					
-					iColumn++;
-				}
-			}
-			
-			//botão de atualizar
-			var htmlInputUpdate = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_update" onclick="'+this.crudName+'.bt_fastUpdate('+lineIndex+')"><img src="prumo/images/bt_ok.png" /></button>';
-			
-			// botão de excluir
-			//var htmlInputDelete = '<button onclick="'+this.crudName+'.bt_fastDelete('+lineIndex+')"><img src="prumo/images/bt_remove.png" /></button>';
-			
-			pGridRowCells[iColumn].innerHTML = htmlInputUpdate;
-			
-			////limpa o campo de inserir
-			var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
-			var i = xmlData.length + 1;
-			
-			var pGridRow = document.getElementById(this.pGrid.objName).rows[i];
-			for (j=0; j < pGridRow.cells.length; j++) {
-				pGridRow.cells[j].style.cursor = 'default';
-				pGridRow.cells[j].removeAttribute('onClick');
-				pGridRow.cells[j].innerHTML = '<br />';
-			}
-			
-			// limpa os botoes de excluir dos outros registros
-			for (i=0; i < xmlData.length; i++) {
-				if (i != lineIndex) {
-					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
-					pGridRowCells[iColumn].innerHTML = '<br />';
-				}
-			}
-			
-			this.parent.unFreezeFields();
-		}
-		else {
-			
-			for (i=0; i < this.fieldReturn.length; i++) {
-			
-				var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
-				var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
-				
-				if (fieldReturn != undefined) {
-					
-					var type = this.fieldReturn[i][2];
-					if (fieldReturn.getAttribute('type') == 'checkbox') {
-						
-						if (value == 't') {
-							fieldReturn.checked = true;
-						}
-						else {
-							fieldReturn.checked = false;
-						}
-					}
-					else {
-						fieldReturn.value = format(type, value, 'text');
-					}
-				}
-				else {
-				
-					var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
-					msg = msg.replace('%fieldName%', this.fieldReturn[i][1]);
-					msg = msg.replace('%objName%', this.objName);
-					alert(msg);
-				}
-			}
-			
-			this.hide();
-			this.parent.doRetrieve();
-			this.parent.backToForms();
-			this.afterSearch();
-		}
-	}
-	
-	this.beforeSearch = function() {
-		//implementar conforme necessidade
-		return true;
-	}
-	
-	this.goSearch = function(page) {
-		
-		if (this.pAjax.working) {
-			alert(this.objName + ': ' + gettext('já está trabalhando'));
-		}
-		else {
-			
-			if (page != undefined) {
-				this.page = page;
-			}
-			
-			if (this.beforeSearch()) {
-				this.selected = false;
-				if (page == undefined) {
-					if (this.pGridNavigation.count == 1 && this.pFilter.count > 0) {
-						this.pFilter.clearValues();
-					}
-					this.pGrid.clear();
-					this.pGridNavigation.clear();
-				}
-				
-				this.show();
-				this.pAjax.cmd = 'search';
-				document.getElementById(this.objName+'_btSearch').setAttribute('disabled', 'disabled');
-				document.getElementById(this.objName+'_btSearchAll').setAttribute('disabled', 'disabled');
-				this.pAjax.goAjax(this.parameters());
-			}
-		}
-	}
-	
-	this.paramRetrieve = function() {
-		var param = 'objName='+this.objName+'&'+this.objName+'_action=r';
-		
-		for (i in this.fieldPk) {
-			if (this.fieldPk[i] == true) {
-				var idReturn = '';
-				for (j in this.fieldReturn) {
-					if (this.fieldName[i] == this.fieldReturn[j][0]) {
-						idReturn = this.fieldReturn[j][1];
-					}
-				}
-				if (document.getElementById(idReturn) == undefined) {
-					var msg = 'Erro: %objName% - id "%id%" não encontrado!';
-					msg = msg.replace('%objName%', this.objName);
-					msg = msg.replace('%id%', idReturn);
-					alert(msg);
-				}
-				param += '&'+this.fieldName[i]+'='+document.getElementById(idReturn).value;
-			}
-		}
-		
-		return param;
-	}
-	
-	this.goRetrieve = function() {
-		
-		var havePk = false;
-		var pkNull = false;
-		for (i in this.fieldPk) {
-			if (this.fieldPk[i] == true) {
-				havePk = true;
-				var idReturn = '';
-				for (j in this.fieldReturn) {
-					if (this.fieldName[i] == this.fieldReturn[j][0]) {
-						idReturn = this.fieldReturn[j][1];
-						if (document.getElementById(idReturn).value == '') {
-							pkNull = true;
-						}
-					}
-				}
-			}
-		}
-		
-		if (havePk && !pkNull) {
-			this.pAjax.cmd = 'r';
-			this.pAjax.goAjax(this.paramRetrieve());
-		}
-	}
-	
-	this.fieldKeyDown = function(event) {
-		if (event.keyCode == 113) { //F2
-			this.goSearch();
-		}
-		if (event.keyCode == 13) { //ENTER
-			this.fieldBlur(document.getElementById(this.fieldFocusId));
-		}
-	}
-	
-	this.cmdSearch = function() {
-		if (this.pFilter.validateFilters()) {
-			this.goSearch(1);
-		}
-	}
-	
-	this.cmdSearchAll = function() {
-		
-		this.pFilter.clearValues();
-		this.cmdSearch();
-		this.pFilter.draw();
-	}
-	
-	this.addFieldReturn = function(fieldName, idReturn, fieldType, noRetrieve) {
-		this.fieldReturn[this.fieldReturn.length] = Array(fieldName, idReturn, fieldType, noRetrieve);
-	}
-	
-	this.afterShow = function() {
-		//
-	}
-	
-	this.show = function() {
-		document.getElementById(this.objName).style.display = 'block';
-		this.afterShow();
-	}
-	
-	this.cancel = function() {
-		if (this.fieldFocusId != '') {
-			inputField = document.getElementById(this.fieldFocusId);
-			// Caso o usuário tenha digitado algum valor no campo
-			if (this.fieldValueOnFocus != inputField.value) {
-				for (i in this.fieldReturn) {			
-					document.getElementById(this.fieldReturn[i][1]).value = "";
-				}
-			}
-			
-			inputField.focus();
-		}
-		this.hide();
-	}
-	
-	this.afterHide = function() {
-		//
-	}
-	
-	this.hide = function() {
-		document.getElementById(this.objName).style.display = 'none';
-		this.afterHide();
-	}
-	
-	this.upArrow = function() {
-		
-		this.selected = true;
-		
-		if (this.pGrid.selectedLine == 0) {
-			this.pGrid.selectedLine = this.pGrid.lines + 1;
-		}
-		
-		var nextLine = this.pGrid.selectedLine - 1;
-		
-		if (this.pGrid.selectedLine > 1) {
-			
-			this.pGrid.selectedLine = nextLine;
-			this.pGrid.onmouseover(this.pGrid.selectedLine);
-		}
-		
-		if (nextLine == 0) {
-			
-			if (this.pGridNavigation.page > 1) {
-				this.goSearch(this.pGridNavigation.page * 1 - 1);
-			}
-		}
-	}
-	
-	this.downArrow = function() {
-		
-		this.selected = true;
-		var nextLine = this.pGrid.selectedLine + 1;
-		
-		if (this.pGrid.selectedLine < this.pGrid.lines) {
-			
-			this.pGrid.selectedLine = nextLine;
-			this.pGrid.onmouseover(this.pGrid.selectedLine);
-		}
-		
-		if (nextLine == this.pGrid.lines + 1) {
-			
-			if (this.pGridNavigation.page < this.pGridNavigation.pages) {
-				this.goSearch(this.pGridNavigation.page * 1 + 1);
-			}
-		}
-	}
-	
-	this.enterKey = function() {
-		
-		if (this.selected) {
-			this.lineClick(this.pGrid.selectedLine-1);
-		}
-		else {
-			this.cmdSearch();
-		}
-	}
-	
-	this.keyDown = function() {
-		this.selected = false;
-	}
-	
-	/**
-	 * Grava o valor em this.fieldValueOnFocus ao receber o foco para posteriormente ser comparado no evento blur
-	 */
-	this.fieldFocus = function(objField) {
-		this.fieldValueOnFocus = objField.value;
-		this.fieldFocusId = objField.getAttribute('id');
-	}
-	
-	/**
-	 * Verifica se o usuário digitou ou alterou alguma informação no field
-	 */
-	this.fieldBlur = function(objField) {
-		
-		if (this.pAjax.working == false) {
-			var objId = objField.getAttribute('id');
-			
-			for (iFieldReturn in this.fieldReturn) {
-				
-				if (this.fieldReturn[iFieldReturn][1] == objId) {
-					//Compara o valor do campo ao entrar e ao sair se houve alteração, e dispara o search
-					if (this.fieldValueOnFocus != objField.value) {
-						
-						if (objField.value == '') {
-							for (iReturn in this.fieldReturn) {
-								document.getElementById(this.fieldReturn[iReturn][1]).value = '';
-							}
-						}
-						else {
-							
-							for (iFieldSearch in this.pFilter.fieldName) {
-								if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
-									var fieldType = this.pFilter.fieldType[iFieldSearch];
-								}
-							}
-							
-							if (fieldType == 'string') {
-								var operator = 'like';
-							}
-							else {
-								var operator = 'equal';
-							}
-							
-							this.pFilter.clearValues();
-							this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
-							this.goSearch(1);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	this.sort = function(field, order) {
-		if (order == undefined) {
-			var element = document.getElementById('prumoGridTh_' + this.objName + '_' + field);
-			var className = element.className;
-			var arr = className.match(/sort(.*)/g) || [''];
-			switch (arr[0]) {
-			case '':
-				element.setAttribute('class', 'prumoGridTh sortAsc');
-				order = 'asc';
-				break;
-			case 'sortAsc':
-				element.className = 'prumoGridTh sortDesc';
-				order = 'desc';
-				break;
-			case 'sortDesc':
-				element.className = 'prumoGridTh sortAsc';
-				order = 'asc';
-				break;
-			default:
-				element.className = 'prumoGridTh sortAsc';
-				order = 'asc';
-			}
-			var elements = this.pGrid.field;
-			for (i in elements) {
-				element = document.getElementById('prumoGridTh_' + this.objName + '_' + elements[i]);
-				if (elements[i] != field && this.pGrid.fieldVisible[i] == true) {
-					element.setAttribute('class', 'prumoGridTh');	
-				}
-			}
-		}
-		this.orderBy = field + ' ' + order;
-		this.goSearch(this.page);
-	}
-	
-	/**
-	 * Redirecionamento para o mesmo método em this.pFilter
-	 */
-	this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
-		this.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
-	}
-	
-	/**
-	 * Redirecionamento para o mesmo método em this.pFilter
-	 */
-	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
-		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
-	}
-}
-
 function prumoFilter(objName) {
 	this.objName = objName;
 	this.pAjax = new prumoAjax();
@@ -3671,7 +3095,7 @@ function prumoSearch(objName, ajaxFile) {
 	this.fieldValueOnFocus;
 	this.fieldFocusId = '';
 	
-	this.pWindow;
+	this.pWindow = false;
 	this.modal = true;
 	
 	this.fieldName;
@@ -3705,6 +3129,11 @@ function prumoSearch(objName, ajaxFile) {
 		this.pGrid.assignResponseXML(responseXML);
 		this.pGridNavigation.assignResponseXML(responseXML);
 		this.pFilter.assignResponseXML(responseXML);
+		this.fastCRUD();
+	}
+	
+	this.fastCRUD = function() {
+		// evento do prumoCrudList
 	}
 	
 	this.afterSearch = function() {
@@ -3918,8 +3347,11 @@ function prumoSearch(objName, ajaxFile) {
 	}
 	
 	this.show = function() {
-		if (this.pWindow != undefined) {
+		if (this.pWindow) {
 			this.pWindow.show(this.modal);
+		}
+		else {
+			document.getElementById(this.objName).style.display = 'block';
 		}
 		this.afterShow();
 	}
@@ -3944,7 +3376,12 @@ function prumoSearch(objName, ajaxFile) {
 	}
 	
 	this.hide = function() {
-		this.pWindow.hide();
+		if (this.pWindow) {
+			this.pWindow.hide();
+		}
+		else {
+			document.getElementById(this.objName).style.display = 'none';
+		}
 		this.afterHide();
 	}
 	
@@ -4103,6 +3540,177 @@ function prumoSearch(objName, ajaxFile) {
 	 */
 	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
 		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
+	}
+}
+
+function prumoCrudList(objName, ajaxFile) {
+    prumoSearch.apply(this, arguments);
+    
+    this.fastCreate = false;
+    this.fastUpdate = false;
+    this.fastDelete = false;
+    
+	this.fastCRUD = function() {
+		if (this.fastCreate || this.fastUpdate || this.fastDelete) {
+			
+			var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
+			
+			//laço que com a quantidade de linhas do xml
+			if (this.fastDelete) {
+				
+				// pega o id da coluna onde será colocado o botão excluir
+				var iColumnControls = 0;
+				for (j=0; j < this.pGrid.field.length; j++) {
+					if (this.pGrid.fieldVisible[j]) {
+						iColumnControls++;
+					}
+				}
+				
+				for (i=0; i < xmlData.length; i++) {
+					
+					// linha do grid
+					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
+					
+					// botão de excluir
+					var htmlInputDelete = '<button class="pButton-outline" onclick="'+this.crudName+'.bt_fastDelete('+i+')"><img src="prumo/images/bt_remove.png" /></button>';
+					pGridRowCells[iColumnControls].innerHTML = htmlInputDelete;
+				}
+			}
+			
+			if (this.fastCreate) {
+				
+				this.parent.clear();
+				
+				// percorre as colunas
+				var iColumn = 0;
+				for (j=0; j < this.pGrid.field.length; j++) {
+				
+					if (this.pGrid.fieldVisible[j]) {
+						
+						// faz referencia a linha do grid
+						var pGridRowCells = document.getElementById(this.pGrid.objName).rows[xmlData.length+1].cells;
+						
+						var id = this.crudName+'_'+this.pGrid.field[j]+'_add';
+						var htmlInput = this.parent.fieldTemplate[j];
+						var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
+						
+						htmlInput = htmlInput.replace(':id:', id);
+						pGridRowCells[iColumn].innerHTML = htmlInput;
+						document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastCreate_onKeyDown(event)');
+						this.parent.inputSetValue(id, document.getElementById(this.parent.fieldId[j]).value);
+						
+						iColumn++;
+					}
+				}
+				
+				// botão gravar novo
+				var htmlInputNew = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_create" onclick="'+this.crudName+'.bt_fastCreate()"><img src="prumo/images/bt_ok.png" /></button>';
+				pGridRowCells[iColumn].innerHTML = htmlInputNew;
+				
+				this.parent.unFreezeFields();
+			}
+		}
+	}
+	
+	this.lineClick = function(lineIndex) {
+		this.lineIndex = lineIndex;
+		this.assignResponseXML(this.responseXML);
+		
+		if (this.fastUpdate) {
+			
+			// percorre as colunas e adiciona os campos de edição
+			var iColumn = 0;
+			for (j=0; j < this.pGrid.field.length; j++) {
+				
+				if (this.pGrid.fieldVisible[j]) {
+					
+					var value = format(this.pGrid.fieldType[j], this.pGrid.getValue(this.pGrid.field[j], lineIndex), 'text');
+					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[lineIndex+1].cells;
+					var id = this.crudName+'_'+this.pGrid.field[j]+'_edit';
+					var htmlInput = this.parent.fieldTemplate[j];
+					var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
+					
+					pGridRowCells[iColumn].innerHTML = htmlInput;
+					document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastUpdate_onKeyDown(event, '+lineIndex+')');
+					this.parent.inputSetValue(id, value);
+					
+					pGridRowCells[iColumn].removeAttribute('onClick');
+					pGridRowCells[iColumn].style.cursor = 'default';
+					
+					if (j == 0) {
+						document.getElementById(id).focus();
+					}
+					
+					iColumn++;
+				}
+			}
+			
+			//botão de atualizar
+			var htmlInputUpdate = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_update" onclick="'+this.crudName+'.bt_fastUpdate('+lineIndex+')"><img src="prumo/images/bt_ok.png" /></button>';
+			
+			// botão de excluir
+			//var htmlInputDelete = '<button onclick="'+this.crudName+'.bt_fastDelete('+lineIndex+')"><img src="prumo/images/bt_remove.png" /></button>';
+			
+			pGridRowCells[iColumn].innerHTML = htmlInputUpdate;
+			
+			////limpa o campo de inserir
+			var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
+			var i = xmlData.length + 1;
+			
+			var pGridRow = document.getElementById(this.pGrid.objName).rows[i];
+			for (j=0; j < pGridRow.cells.length; j++) {
+				pGridRow.cells[j].style.cursor = 'default';
+				pGridRow.cells[j].removeAttribute('onClick');
+				pGridRow.cells[j].innerHTML = '<br />';
+			}
+			
+			// limpa os botoes de excluir dos outros registros
+			for (i=0; i < xmlData.length; i++) {
+				if (i != lineIndex) {
+					var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
+					pGridRowCells[iColumn].innerHTML = '<br />';
+				}
+			}
+			
+			this.parent.unFreezeFields();
+		}
+		else {
+			
+			for (i=0; i < this.fieldReturn.length; i++) {
+			
+				var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
+				var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
+				
+				if (fieldReturn != undefined) {
+					
+					var type = this.fieldReturn[i][2];
+					if (fieldReturn.getAttribute('type') == 'checkbox') {
+						
+						if (value == 't') {
+							fieldReturn.checked = true;
+						}
+						else {
+							fieldReturn.checked = false;
+						}
+					}
+					else {
+						fieldReturn.value = format(type, value, 'text');
+					}
+				}
+				else {
+				
+					var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
+					msg = msg.replace('%fieldName%', this.fieldReturn[i][1]);
+					msg = msg.replace('%objName%', this.objName);
+					alert(msg);
+				}
+			}
+			
+			this.hide();
+			this.parent.doRetrieve();
+			this.parent.backToForms();
+			this.afterSearch();
+		}
 	}
 }
 
