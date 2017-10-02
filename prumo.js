@@ -33,7 +33,7 @@ function prumo() {
 			throw 'unsupported type';
 			break;
 		}
-    }
+	}
 	
 	this.uploadButton = function(elementId) {
 		var inputs = [];
@@ -51,8 +51,8 @@ function prumo() {
 			input.classList.add('inputFile');
 			var label	 = input.nextElementSibling,
 			labelVal = label.innerHTML;
-
-		    input.addEventListener( 'change', function( e ) {
+			
+			input.addEventListener( 'change', function( e ) {
 				var fileName = '';
 				if( this.files && this.files.length > 1 )
 					fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
@@ -63,7 +63,7 @@ function prumo() {
 					label.querySelector( 'span' ).innerHTML = fileName;
 				else
 					label.innerHTML = labelVal;
-		    });
+			});
 		});
 	}
 }
@@ -233,19 +233,19 @@ function prumoIsType(value, type) {
 			}
 			break;
 	
-		case  'time':
+		case 'time':
 			if (!isTime(value)) {
 				isValid = false;
 			}
 			break;
 	
-		case  'timestamp':
+		case 'timestamp':
 			if (!isTimestamp(value)) {
 				isValid = false;
 			}
 			break;
 	
-		case  'boolean':
+		case 'boolean':
 			if (value != 't' && value != 'f') {
 				isValid = false;
 			}
@@ -520,18 +520,18 @@ function classAjax() {
  */
 function prumoAjax(ajaxFile, process) {
 	this.ajaxFile        = ajaxFile;
-	this.ajaxFormat     = 'text';
-	this.ajax           = new classAjax();
-	this.pLoading       = pLoading;
-	this.debug          = false;
-	this.identification = 'Prumo';
-	this.defaultParams  = '';
+	this.ajaxFormat      = 'text';
+	this.ajax            = new classAjax();
+	this.pLoading        = pLoading;
+	this.debug           = false;
+	this.identification  = 'Prumo';
+	this.defaultParams   = '';
 	this.xmlData;
 	this.responseXML;
 	this.responseText;
-	this.working        = false;
-	this.formName = '';
-
+	this.working         = false;
+	this.formName        = '';
+	
 	this.goAjax = function(params) {
 		if (this.working == false) {
 			this.pLoading.show(this);
@@ -675,7 +675,7 @@ function prumoCrud(objName, ajaxFile) {
 	this.fieldOldValue = Array();
 	this.fieldNewValue = Array();
 	this.sonSearch = Array();
-
+	
 	this.pAjax;
 	this.pCrudList = false;
 	this.pSearch;
@@ -823,7 +823,7 @@ function prumoCrud(objName, ajaxFile) {
 			}
 		}
 	}
-
+	
 	this.addParent1x1 = function(parent,parentFieldCondition,conditionValue) {
 		this.parent1x1 = parent;
 		parent.son1x1.push(this);
@@ -844,7 +844,7 @@ function prumoCrud(objName, ajaxFile) {
 	
 	this.assignResponseXML = function(responseXML) {
 		this.xmlData = responseXML.getElementsByTagName(this.objName);
-
+		
 		//limpa o formulário
 		if (this.parent1x1 == false) {
 			this.clear();
@@ -853,7 +853,7 @@ function prumoCrud(objName, ajaxFile) {
 		//limpa o array de valores
 		this.fieldOldValue = Array();
 		this.fieldNewValue = Array();
-
+		
 		// laço que percorre os campos
 		
 		if (this.xmlData.length == 0) {
@@ -1093,7 +1093,7 @@ function prumoCrud(objName, ajaxFile) {
 				parentPk.push(this.fieldId[i]);
 			}
 		}
-
+		
 		//laço que percorre os filhos 1x1
 		for (i in this.son1x1) {
 			var sonPk = Array();
@@ -1111,7 +1111,7 @@ function prumoCrud(objName, ajaxFile) {
 				}
 			}
 		}
-
+		
 		// replica o valor entre os campos chave
 		for (ii in this.son1x1) {
 			for (j in arrRel) {
@@ -1124,7 +1124,7 @@ function prumoCrud(objName, ajaxFile) {
 			this.son1x1[iii].syncPkSon();
 		}
 	}
-
+	
 	this.paramCreate = function() {
 		var params = '';
 		for (i = 0; i < this.fieldPk.length; i++) {
@@ -1140,7 +1140,7 @@ function prumoCrud(objName, ajaxFile) {
 		else {
 			params = this.objName+'_action=c'+params;
 		}
-
+		
 		for (iSon in this.son1x1) {
 			if (this.son1x1[iSon].isVisible) {			
 				if (this.fieldNewValue[this.son1x1[iSon].parent1x1Condition['fieldName']] == this.son1x1[iSon].parent1x1Condition['value'] || this.son1x1[iSon].parent1x1Condition['fieldName'] == '') {
@@ -1155,7 +1155,7 @@ function prumoCrud(objName, ajaxFile) {
 		
 		return params
 	}
-
+	
 	this.doCreate = function() {
 		if (this.beforeCreate()) {
 			if (this.validateDuplicatedIds()) {
@@ -1743,7 +1743,7 @@ function prumoCrud(objName, ajaxFile) {
 			return false;
 		}
 	}
-
+	
 	this.focusNotNull = function() {
 		
 		var fucusOk = false;
@@ -2004,7 +2004,6 @@ function prumoCrud(objName, ajaxFile) {
 		if (event.keyCode == 13) {
 			this.bt_fastUpdate(lineIndex);
 		}
-		
 		//esc
 		if (event.keyCode == 27) {
 			this.pCrudList.assignResponseXML(this.pCrudList.responseXML);
@@ -2012,14 +2011,12 @@ function prumoCrud(objName, ajaxFile) {
 	}
 	
 	this.bt_fastDelete = function(lineIndex) {
-		
 		if(confirm(gettext('Confirma a exclusão do registro?'))){
 			var fieldCount = this.fieldId.length;
 			for (i=0; i < fieldCount; i++) {
 				var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
 				this.inputSetValue(this.fieldId[i], value);
 			}
-			
 			this.freezeFields();
 			this.doFastDelete();
 		}
@@ -2051,8 +2048,8 @@ function prumoFilter(objName) {
 	                                    'not ends with',
 	                                    'equal',
 	                                    'not equal',
-   	                                    'is null',
-   	                                    'not is null'
+	                                    'is null',
+	                                    'not is null'
 							         );
 	this.textOperatorsName    = Array(
 	                                    gettext('contém'),
@@ -2075,8 +2072,8 @@ function prumoFilter(objName) {
 							            'less than or equal',
 							            'greater than or equal',
 							            'between',
-   	                                    'is null',
-   	                                    'not is null'
+	                                    'is null',
+	                                    'not is null'
 							         );
 	this.numericOperatorsName = Array(
 							            gettext('igual a'),
@@ -2093,8 +2090,8 @@ function prumoFilter(objName) {
 	this.booleanOperators        = Array(
 							            'equal',
 							            'not equal',
-   	                                    'is null',
-   	                                    'not is null'
+	                                    'is null',
+	                                    'not is null'
 							         );
 	this.booleanOperatorsName    = Array(
 							            gettext('igual a'),
@@ -2231,7 +2228,7 @@ function prumoFilter(objName) {
 	this.operatorTypeByName = function(fieldName) {
 		var fieldType = this.fieldTypeByName(fieldName);
 		
-	    switch (fieldType) {
+		switch (fieldType) {
 		    case 'string':
 		        return 'text';
 		        break;
@@ -2257,8 +2254,8 @@ function prumoFilter(objName) {
 		        return 'boolean';
 		        break;
 		default:
-            return 'text';
-	    }
+			return 'text';
+		}
 	}
 	
 	/**
@@ -2291,13 +2288,13 @@ function prumoFilter(objName) {
 		for (j=0; j < arrOperators.length; j++) {
 			htmlOptions += '<option value="'+arrOperators[j]+'">'+arrOperatorsName[j]+'</option>\n';
 		}
-
+		
 		selectOperator.innerHTML = htmlOptions;	
 		this.filter[index].fieldName = selectFieldName.value;
 		
 		selectOperator.value = arrOperators[0];
 		this.selectOperatorChange(selectOperator, index);
-
+		
 		// coloca o foco no campo de pesquisa
 		document.getElementById(this.objName+'_'+index+'_value').focus();
 		
@@ -2489,8 +2486,8 @@ function prumoFilter(objName) {
 				break;
 			case 38: //Seta para cima
 				this.parent.upArrow();
-		        break;
-		    case 40: //Seta para baixo
+			break;
+			case 40: //Seta para baixo
 				this.parent.downArrow();
 				break;
 		}
@@ -2507,7 +2504,7 @@ function prumoFilter(objName) {
 			this.parent.keyDown();
 		}
 	}
-
+	
 	/**
 	 * Desenha/Redesenha os botões (+) e (-) dos filtros
 	 */
@@ -2565,7 +2562,7 @@ function prumoFilter(objName) {
 			var inputValue      = document.getElementById(this.objName+'_'+filterIndex+'_value');
 			var inputValue2     = document.getElementById(this.objName+'_'+filterIndex+'_value2');
 			var operator        = this.filter[filterIndex].operator;
-
+			
 			// configura selectFilter e o inputValue com o valor anteriormente passado via XML
 			if (this.filter[filterIndex].fieldName == '') {
 				selectFieldName.value = this.filter[0].fieldName;
@@ -2575,10 +2572,10 @@ function prumoFilter(objName) {
 			}
 			inputValue.value = this.filter[filterIndex].value;
 			inputValue2.value = this.filter[filterIndex].value2;
-
+			
 			// preenche o combo selectOperator
 			this.selectFieldChange(selectFieldName, filterIndex);
-
+			
 			// configura o selectOperator
 			var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
 			if (operator == '') {
@@ -2875,7 +2872,7 @@ function prumoGridNavigation(objName) {
 	this.pageLines;
 	this.page;
 	this.maxPages = 10;
-
+	
 	//recalc
 	this.registersFrom;
 	this.registersTo;
@@ -2949,7 +2946,7 @@ function prumoGridNavigation(objName) {
 		if (bars - thisBar > 1) {
 			htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.objName+'.goSearch('+this.pages+')">...'+this.pages+'</button>';
 		}
-
+		
 		// monta a barra de status
 		htmlOut += '<br />';
 		htmlOut += gettext('Registros encontrados')+': '+this.count+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
@@ -2973,7 +2970,7 @@ function prumoGridNavigation(objName) {
 		this.count     = x[0].getElementsByTagName('count')[0].childNodes[0].nodeValue;
 		this.pageLines = x[0].getElementsByTagName('pageLines')[0].childNodes[0].nodeValue;
 		this.page      = x[0].getElementsByTagName('page')[0].childNodes[0].nodeValue;
-
+		
 		this.redraw();
 		
 		this.afterAssignResponseXML();
@@ -2983,7 +2980,7 @@ function prumoGridNavigation(objName) {
 function prumoLoading(divName) {
 	this.divName = divName;
 	this.count = 0;
-
+	
 	this.show = function(loadId) {
 		this.count++;		
 		this.visible();
@@ -3045,9 +3042,9 @@ function prumoMenu(objName) {
 		var inputMenuValue = document.getElementById('prumo_input_menu').value;
 		var dl = document.getElementById('prumo_list_menu');
 		for (i=0; i < dl.options.length; i++) {
-		    if (inputMenuValue == dl.options[i].value) {
-		    	location.href = 'index.php?page='+dl.options[i].getAttribute('routine');
-		    }
+			if (inputMenuValue == dl.options[i].value) {
+				location.href = 'index.php?page='+dl.options[i].getAttribute('routine');
+			}
 		}
 	}
 	
@@ -3076,7 +3073,7 @@ function prumoSearch(objName, ajaxFile) {
 	this.pGrid;
 	this.pGridNavigation;
 	
-	this.autoClick = false;
+	this.autoClick = true;
 	
 	this.fieldReturn = Array();
 	
@@ -3544,12 +3541,14 @@ function prumoSearch(objName, ajaxFile) {
 }
 
 function prumoCrudList(objName, ajaxFile) {
-    prumoSearch.apply(this, arguments);
-    
-    this.fastCreate = false;
-    this.fastUpdate = false;
-    this.fastDelete = false;
-    
+	prumoSearch.apply(this, arguments);
+	
+	this.autoClick = false;
+	
+	this.fastCreate = false;
+	this.fastUpdate = false;
+	this.fastDelete = false;
+	
 	this.fastCRUD = function() {
 		if (this.fastCreate || this.fastUpdate || this.fastDelete) {
 			
@@ -3715,7 +3714,7 @@ function prumoCrudList(objName, ajaxFile) {
 }
 
 function prumoQueue(objName,ajaxFile) {
-    prumoSearch.apply(this, arguments);
+	prumoSearch.apply(this, arguments);
 	
 	this.pAjax.ajaxXmlOk = function() {
 		this.parent.pGrid.assignResponseXML(this.responseXML);
@@ -3740,19 +3739,19 @@ function prumoQueue(objName,ajaxFile) {
 function prumoTab(objName) {
 	this.objName = objName;		
 	this.tabName = new Array();
-
+	
 	this.addTab = function(tabName) {
 		this.tabName.push(tabName);
 	}
-
+	
 	this.show = function() {
 		document.getElementById(this.objName).style.display = 'block';
 	}
-
+	
 	this.hide = function() {
 		document.getElementById(this.objName).style.display = 'none';
 	}
-
+	
 	this.showTab = function(tabName) {
 		this.show();
 		for (i in this.tabName) {
@@ -3786,12 +3785,12 @@ function prumoWindow(objName) {
 		this.div.style.display = 'block';
 		this.position();
 	}
-  
+	
 	this.hide = function() {
 		document.getElementById(this.objName+'_veil').style.display = 'none';
 		this.div.style.display = 'none';
 	}
-  
+	
 	this.move = function() {
 		thisDiv = document.getElementById(this.objName)
 		diffX = 0;
@@ -3806,10 +3805,8 @@ function prumoWindow(objName) {
 			if (diffY == 0) {
 				diffY = event.clientY - thisDiv.offsetTop;
 			}
-
 			x = event.clientX - diffX;
 			y = event.clientY - diffY;
-
 			thisDiv.style.left = x + "px";
 			thisDiv.style.top  = y + "px";			
 		}
@@ -3820,7 +3817,7 @@ function prumoWindow(objName) {
 		document.getElementById(this.objName+'_title').style.cursor = '';
 		document.onmousemove = false;
 	}
-  
+	
 	this.position = function() {
 		var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
 		var topPosition = 0;
@@ -3836,9 +3833,7 @@ function prumoWindow(objName) {
 		}
 		
 		if (this.vAlign == 'top') {
-			
 			var topPosition = scrollTop + 20;
-			
 			if (topPosition < 0) {
 				topPosition = 1;
 			}
@@ -3846,7 +3841,7 @@ function prumoWindow(objName) {
 		
 		this.div.style.top = topPosition + "px";
 		this.top = topPosition;
-
+		
 		if (this.align == 'center') {
 			leftPosition = (document.body.clientWidth/2)-(this.width/2);
 			if (leftPosition < 0) {
