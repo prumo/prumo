@@ -2026,9 +2026,6 @@ function prumoCrud(objName, ajaxFile) {
 	}
 }
 
-/**
- * class prumoCrudList
- */
 function prumoCrudList(objName, ajaxFile) {
 	this.objName = objName;
 	this.identification = objName;
@@ -2056,6 +2053,7 @@ function prumoCrudList(objName, ajaxFile) {
 	this.pAjax.ajaxFormat = 'xml';
 	this.pAjax.parent = this;
 	this.pAjax.identification = this.identification;
+	this.pAjax.pLoading = pLoading; // @todo testar
 	
 	this.fieldValueOnFocus;
 	this.fieldFocusId = '';
@@ -2063,14 +2061,26 @@ function prumoCrudList(objName, ajaxFile) {
 	this.fieldName;
 	this.fieldPk;
 	this.pAjax.ajaxXmlOk = function() {
-		this.parent.assignResponseXML(this.responseXML);
-		if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1) {
+		if (this.cmd == 'r') {
+			this.parent.pGrid.assignResponseXML(this.responseXML);
 			this.parent.lineClick(0);
+			this.parent.afterRetrieve();
+		}
+		else {
+			this.parent.assignResponseXML(this.responseXML);
+			if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1 && this.parent.pFilter.count > 0) {
+				this.parent.lineClick(0);
+				this.parent.afterRetrieve();
+			}
 		}
 		document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
 		document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
 		
 		this.parent.afterList();
+	}
+	
+	this.afterRetrieve = function() {
+		//implementar conforme necessidade
 	}
 	
 	this.assignResponseXML = function(responseXML) {
@@ -2079,7 +2089,10 @@ function prumoCrudList(objName, ajaxFile) {
 		this.pGrid.assignResponseXML(responseXML);
 		this.pGridNavigation.assignResponseXML(responseXML);
 		this.pFilter.assignResponseXML(responseXML);
-		
+		this.fastCRUD();
+	}
+	
+	this.fastCRUD = function() {
 		if (this.fastCreate || this.fastUpdate || this.fastDelete) {
 			
 			var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
@@ -3626,30 +3639,7 @@ function prumoMenu(objName) {
 	}
 }
 
-function prumoQueue(objName,ajaxFile) {
-    prumoSearch.apply(this, arguments);
-	
-	this.pAjax.ajaxXmlOk = function() {
-		this.parent.pGrid.assignResponseXML(this.responseXML);
-		this.parent.pGridNavigation.assignResponseXML(this.responseXML);
-		this.parent.pFilter.assignResponseXML(this.responseXML);
-		document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
-		document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
-		this.parent.afterList();
-	}
-	
-	this.lineClick = function(lineIndex) {
-		var msg = gettext('Falta implementar o método lineClick do objeto ')+this.objName;
-		alert(msg);
-	}
-	
-	this.afterList = function() {
-		//disponivel para implementação
-	}
-	
-}
-
-function prumoSearch(objName,ajaxFile) {
+function prumoSearch(objName, ajaxFile) {
 	this.objName = objName;
 	this.identification = objName;
 	this.page;
@@ -3662,7 +3652,7 @@ function prumoSearch(objName,ajaxFile) {
 	this.pGrid;
 	this.pGridNavigation;
 	
-	this.autoClick = true;
+	this.autoClick = false;
 	
 	this.fieldReturn = Array();
 	
@@ -3676,6 +3666,7 @@ function prumoSearch(objName,ajaxFile) {
 	this.pAjax.ajaxFormat = 'xml';
 	this.pAjax.parent = this;
 	this.pAjax.identification = this.identification;
+	this.pAjax.pLoading = pLoading; // @todo testar
 	
 	this.fieldValueOnFocus;
 	this.fieldFocusId = '';
@@ -3692,11 +3683,10 @@ function prumoSearch(objName,ajaxFile) {
 			this.parent.afterRetrieve();
 		}
 		else {
-			this.parent.pGrid.assignResponseXML(this.responseXML);
-			this.parent.pGridNavigation.assignResponseXML(this.responseXML);
-			this.parent.pFilter.assignResponseXML(this.responseXML);
+			this.parent.assignResponseXML(this.responseXML);
 			if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1 && this.parent.pFilter.count > 0) {
 				this.parent.lineClick(0);
+				this.parent.afterRetrieve();
 			}
 		}
 		document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
@@ -3707,6 +3697,14 @@ function prumoSearch(objName,ajaxFile) {
 	
 	this.afterRetrieve = function() {
 		//implementar conforme necessidade
+	}
+	
+	this.assignResponseXML = function(responseXML) {
+		
+		this.responseXML = responseXML;
+		this.pGrid.assignResponseXML(responseXML);
+		this.pGridNavigation.assignResponseXML(responseXML);
+		this.pFilter.assignResponseXML(responseXML);
 	}
 	
 	this.afterSearch = function() {
@@ -4106,6 +4104,29 @@ function prumoSearch(objName,ajaxFile) {
 	this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
 		this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
 	}
+}
+
+function prumoQueue(objName,ajaxFile) {
+    prumoSearch.apply(this, arguments);
+	
+	this.pAjax.ajaxXmlOk = function() {
+		this.parent.pGrid.assignResponseXML(this.responseXML);
+		this.parent.pGridNavigation.assignResponseXML(this.responseXML);
+		this.parent.pFilter.assignResponseXML(this.responseXML);
+		document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
+		document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
+		this.parent.afterList();
+	}
+	
+	this.lineClick = function(lineIndex) {
+		var msg = gettext('Falta implementar o método lineClick do objeto ')+this.objName;
+		alert(msg);
+	}
+	
+	this.afterList = function() {
+		//disponivel para implementação
+	}
+	
 }
 
 function prumoTab(objName) {
