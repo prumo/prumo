@@ -2030,15 +2030,13 @@ function prumoCrud(objName, ajaxFile) {
  * class prumoCrudList
  */
 function prumoCrudList(objName, ajaxFile) {
-	
 	this.objName = objName;
-	this.modal;
 	this.identification = objName;
 	this.page;
 	this.orderBy;
 	
 	this.crudName;
-
+	
 	this.pAjax;
 	this.pFilter;
 	this.pGrid;
@@ -2051,13 +2049,19 @@ function prumoCrudList(objName, ajaxFile) {
 	this.selected = false;
 	
 	this.responseXml;
-
-	this.modal = true;
+	
+	this.lineIndex;
+	
 	this.pAjax = new prumoAjax(ajaxFile);
 	this.pAjax.ajaxFormat = 'xml';
 	this.pAjax.parent = this;
 	this.pAjax.identification = this.identification;
-	this.pAjax.pLoading = pLoading;
+	
+	this.fieldValueOnFocus;
+	this.fieldFocusId = '';
+	
+	this.fieldName;
+	this.fieldPk;
 	this.pAjax.ajaxXmlOk = function() {
 		this.parent.assignResponseXML(this.responseXML);
 		if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1) {
@@ -2184,7 +2188,7 @@ function prumoCrudList(objName, ajaxFile) {
 	}
 	
 	this.lineClick = function(lineIndex) {
-		
+		this.lineIndex = lineIndex;
 		this.assignResponseXML(this.responseXML);
 		
 		if (this.fastUpdate) {
@@ -2284,6 +2288,11 @@ function prumoCrudList(objName, ajaxFile) {
 		}
 	}
 	
+	this.beforeSearch = function() {
+		//implementar conforme necessidade
+		return true;
+	}
+	
 	this.goSearch = function(page) {
 		
 		if (this.pAjax.working) {
@@ -2295,19 +2304,80 @@ function prumoCrudList(objName, ajaxFile) {
 				this.page = page;
 			}
 			
-			if (page == undefined) {
-				if (this.pGridNavigation.count == 1 && this.pFilter.count > 0) {
-					this.pFilter.clearValues();
+			if (this.beforeSearch()) {
+				this.selected = false;
+				if (page == undefined) {
+					if (this.pGridNavigation.count == 1 && this.pFilter.count > 0) {
+						this.pFilter.clearValues();
+					}
+					this.pGrid.clear();
+					this.pGridNavigation.clear();
 				}
-				this.pGrid.clear();
-				this.pGridNavigation.clear();
+				
+				this.show();
+				this.pAjax.cmd = 'search';
+				document.getElementById(this.objName+'_btSearch').setAttribute('disabled', 'disabled');
+				document.getElementById(this.objName+'_btSearchAll').setAttribute('disabled', 'disabled');
+				this.pAjax.goAjax(this.parameters());
 			}
-			
-			this.show();
-			document.getElementById(this.objName+'_btSearch').setAttribute('disabled', 'disabled');
-			document.getElementById(this.objName+'_btSearchAll').setAttribute('disabled', 'disabled');
-			
-			this.pAjax.goAjax(this.parameters());
+		}
+	}
+	
+	this.paramRetrieve = function() {
+		var param = 'objName='+this.objName+'&'+this.objName+'_action=r';
+		
+		for (i in this.fieldPk) {
+			if (this.fieldPk[i] == true) {
+				var idReturn = '';
+				for (j in this.fieldReturn) {
+					if (this.fieldName[i] == this.fieldReturn[j][0]) {
+						idReturn = this.fieldReturn[j][1];
+					}
+				}
+				if (document.getElementById(idReturn) == undefined) {
+					var msg = 'Erro: %objName% - id "%id%" não encontrado!';
+					msg = msg.replace('%objName%', this.objName);
+					msg = msg.replace('%id%', idReturn);
+					alert(msg);
+				}
+				param += '&'+this.fieldName[i]+'='+document.getElementById(idReturn).value;
+			}
+		}
+		
+		return param;
+	}
+	
+	this.goRetrieve = function() {
+		
+		var havePk = false;
+		var pkNull = false;
+		for (i in this.fieldPk) {
+			if (this.fieldPk[i] == true) {
+				havePk = true;
+				var idReturn = '';
+				for (j in this.fieldReturn) {
+					if (this.fieldName[i] == this.fieldReturn[j][0]) {
+						idReturn = this.fieldReturn[j][1];
+						if (document.getElementById(idReturn).value == '') {
+							pkNull = true;
+						}
+					}
+				}
+			}
+		}
+		
+		if (havePk && !pkNull) {
+			this.pAjax.cmd = 'r';
+			this.pAjax.goAjax(this.paramRetrieve());
+		}
+	}
+	
+	this.fieldKeyDown = function(event) {
+		if (event.keyCode == 113) { //F2
+			this.goSearch();
+		}
+		if (event.keyCode == 13) { //ENTER
+			this.fieldBlur(document.getElementById(this.fieldFocusId));
 		}
 	}
 	
@@ -2324,16 +2394,41 @@ function prumoCrudList(objName, ajaxFile) {
 		this.pFilter.draw();
 	}
 	
-	this.addFieldReturn = function(fieldName, idReturn, fieldType) {
-		this.fieldReturn[this.fieldReturn.length] = Array(fieldName, idReturn, fieldType);
+	this.addFieldReturn = function(fieldName, idReturn, fieldType, noRetrieve) {
+		this.fieldReturn[this.fieldReturn.length] = Array(fieldName, idReturn, fieldType, noRetrieve);
+	}
+	
+	this.afterShow = function() {
+		//
 	}
 	
 	this.show = function() {
 		document.getElementById(this.objName).style.display = 'block';
+		this.afterShow();
 	}
-  
+	
+	this.cancel = function() {
+		if (this.fieldFocusId != '') {
+			inputField = document.getElementById(this.fieldFocusId);
+			// Caso o usuário tenha digitado algum valor no campo
+			if (this.fieldValueOnFocus != inputField.value) {
+				for (i in this.fieldReturn) {			
+					document.getElementById(this.fieldReturn[i][1]).value = "";
+				}
+			}
+			
+			inputField.focus();
+		}
+		this.hide();
+	}
+	
+	this.afterHide = function() {
+		//
+	}
+	
 	this.hide = function() {
 		document.getElementById(this.objName).style.display = 'none';
+		this.afterHide();
 	}
 	
 	this.upArrow = function() {
@@ -2391,6 +2486,58 @@ function prumoCrudList(objName, ajaxFile) {
 	
 	this.keyDown = function() {
 		this.selected = false;
+	}
+	
+	/**
+	 * Grava o valor em this.fieldValueOnFocus ao receber o foco para posteriormente ser comparado no evento blur
+	 */
+	this.fieldFocus = function(objField) {
+		this.fieldValueOnFocus = objField.value;
+		this.fieldFocusId = objField.getAttribute('id');
+	}
+	
+	/**
+	 * Verifica se o usuário digitou ou alterou alguma informação no field
+	 */
+	this.fieldBlur = function(objField) {
+		
+		if (this.pAjax.working == false) {
+			var objId = objField.getAttribute('id');
+			
+			for (iFieldReturn in this.fieldReturn) {
+				
+				if (this.fieldReturn[iFieldReturn][1] == objId) {
+					//Compara o valor do campo ao entrar e ao sair se houve alteração, e dispara o search
+					if (this.fieldValueOnFocus != objField.value) {
+						
+						if (objField.value == '') {
+							for (iReturn in this.fieldReturn) {
+								document.getElementById(this.fieldReturn[iReturn][1]).value = '';
+							}
+						}
+						else {
+							
+							for (iFieldSearch in this.pFilter.fieldName) {
+								if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
+									var fieldType = this.pFilter.fieldType[iFieldSearch];
+								}
+							}
+							
+							if (fieldType == 'string') {
+								var operator = 'like';
+							}
+							else {
+								var operator = 'equal';
+							}
+							
+							this.pFilter.clearValues();
+							this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
+							this.goSearch(1);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	this.sort = function(field, order) {
@@ -3509,18 +3656,11 @@ function prumoSearch(objName,ajaxFile) {
 	this.orderBy;
 	
 	this.crudName;
-
+	
 	this.pAjax;
-	this.pWindow;
 	this.pFilter;
 	this.pGrid;
 	this.pGridNavigation;
-	
-	this.fieldName;
-	this.fieldPk;
-
-	this.fieldValueOnFocus;
-	this.fieldFocusId = '';
 	
 	this.autoClick = true;
 	
@@ -3528,13 +3668,23 @@ function prumoSearch(objName,ajaxFile) {
 	
 	this.selected = false;
 	
+	this.responseXml;
+	
 	this.lineIndex;
-
-	this.modal = true;
+	
 	this.pAjax = new prumoAjax(ajaxFile);
 	this.pAjax.ajaxFormat = 'xml';
 	this.pAjax.parent = this;
 	this.pAjax.identification = this.identification;
+	
+	this.fieldValueOnFocus;
+	this.fieldFocusId = '';
+	
+	this.pWindow;
+	this.modal = true;
+	
+	this.fieldName;
+	this.fieldPk;
 	this.pAjax.ajaxXmlOk = function() {
 		if (this.cmd == 'r') {
 			this.parent.pGrid.assignResponseXML(this.responseXML);
@@ -3555,11 +3705,11 @@ function prumoSearch(objName,ajaxFile) {
 		this.parent.afterList();
 	}
 	
-	this.afterSearch = function() {
+	this.afterRetrieve = function() {
 		//implementar conforme necessidade
 	}
 	
-	this.afterRetrieve = function() {
+	this.afterSearch = function() {
 		//implementar conforme necessidade
 	}
 	
@@ -3568,18 +3718,21 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.parametersFilters = function() {
+		
 		param = '';
 		for (i=0; i < this.pFilter.filter.length; i++) {
-			param += '&fField[]='+this.pFilter.filter[i].fieldName;
+			param += '&fField[]='+encodeURIComponent(this.pFilter.filter[i].fieldName);
 			param += '&fOperator[]='+this.pFilter.filter[i].operator;
-			param += '&fValue[]='+this.pFilter.filter[i].value;
-			param += '&fValue2[]='+this.pFilter.filter[i].value2;
+			param += '&fValue[]='+encodeURIComponent(this.pFilter.filter[i].value);
+			param += '&fValue2[]='+encodeURIComponent(this.pFilter.filter[i].value2);
 			param += '&fVisible[]='+this.pFilter.filter[i].visible;
 		}
+		
 		return param;
 	}
 	
 	this.parameters = function() {
+		
 		if (this.page == undefined) {
 			this.page = 1;
 		}
@@ -3590,23 +3743,27 @@ function prumoSearch(objName,ajaxFile) {
 		else {
 			var param = 'objName='+this.objName;
 		}
+		
 		param += '&'+this.objName+'_action=makeXml';
 		param += '&page='+this.page;
 		if (this.orderBy != undefined) {
 			param += '&orderBy='+ this.orderBy;
 		}
+		
 		param += this.parametersFilters();
+		
 		return param;
 	}
 	
 	this.lineClick = function(lineIndex) {
 		this.lineIndex = lineIndex;
 		for (i=0; i < this.fieldReturn.length; i++) {
-			var value = this.pGrid.getValue(this.fieldReturn[i][0],lineIndex);
+			var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
 			var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
 			var noRetrieve = this.fieldReturn[i][3];
 			if (noRetrieve == false || this.pAjax.cmd != 'r') {
 				if (fieldReturn != undefined) {
+					
 					var type = this.fieldReturn[i][2];
 					if (type == 'date') {
 						fieldReturn.value = format(type, value, 'text');
@@ -3632,6 +3789,7 @@ function prumoSearch(objName,ajaxFile) {
 					}
 				}
 				else {
+				
 					var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
 					msg = msg.replace('%fieldName%',this.fieldReturn[i][1]);
 					msg = msg.replace('%objName%',this.objName);
@@ -3653,22 +3811,30 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.goSearch = function(page) {
+		
 		if (this.pAjax.working) {
 			alert(this.objName + ': ' + gettext('já está trabalhando'));
 		}
 		else {
-			this.page = page;
+			
+			if (page != undefined) {
+				this.page = page;
+			}
+			
 			if (this.beforeSearch()) {
 				this.selected = false;
 				if (page == undefined) {
-					this.pFilter.clearValues();
+					if (this.pGridNavigation.count == 1 && this.pFilter.count > 0) {
+						this.pFilter.clearValues();
+					}
 					this.pGrid.clear();
 					this.pGridNavigation.clear();
 				}
+				
 				this.show();
 				this.pAjax.cmd = 'search';
-				document.getElementById(this.objName+'_btSearch').setAttribute('disabled','disabled');
-				document.getElementById(this.objName+'_btSearchAll').setAttribute('disabled','disabled');
+				document.getElementById(this.objName+'_btSearch').setAttribute('disabled', 'disabled');
+				document.getElementById(this.objName+'_btSearchAll').setAttribute('disabled', 'disabled');
 				this.pAjax.goAjax(this.parameters());
 			}
 		}
@@ -3739,6 +3905,7 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.cmdSearchAll = function() {
+		
 		this.pFilter.clearValues();
 		this.cmdSearch();
 		this.pFilter.draw();
@@ -3784,7 +3951,9 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.upArrow = function() {
+		
 		this.selected = true;
+		
 		if (this.pGrid.selectedLine == 0) {
 			this.pGrid.selectedLine = this.pGrid.lines + 1;
 		}
@@ -3792,11 +3961,13 @@ function prumoSearch(objName,ajaxFile) {
 		var nextLine = this.pGrid.selectedLine - 1;
 		
 		if (this.pGrid.selectedLine > 1) {
+			
 			this.pGrid.selectedLine = nextLine;
 			this.pGrid.onmouseover(this.pGrid.selectedLine);
 		}
 		
 		if (nextLine == 0) {
+			
 			if (this.pGridNavigation.page > 1) {
 				this.goSearch(this.pGridNavigation.page * 1 - 1);
 			}
@@ -3804,14 +3975,18 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.downArrow = function() {
+		
 		this.selected = true;
 		var nextLine = this.pGrid.selectedLine + 1;
+		
 		if (this.pGrid.selectedLine < this.pGrid.lines) {
+			
 			this.pGrid.selectedLine = nextLine;
 			this.pGrid.onmouseover(this.pGrid.selectedLine);
 		}
 		
 		if (nextLine == this.pGrid.lines + 1) {
+			
 			if (this.pGridNavigation.page < this.pGridNavigation.pages) {
 				this.goSearch(this.pGridNavigation.page * 1 + 1);
 			}
@@ -3819,6 +3994,7 @@ function prumoSearch(objName,ajaxFile) {
 	}
 	
 	this.enterKey = function() {
+		
 		if (this.selected) {
 			this.lineClick(this.pGrid.selectedLine-1);
 		}

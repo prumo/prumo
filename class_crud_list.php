@@ -156,7 +156,7 @@ class prumoCrudList extends prumoBasic {
 		$fieldType = $field['type'];
 		
 		$fieldReturn  = $this->indentation.'<script type="text/javascript">'."\n";
-		$fieldReturn .= $this->indentation. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\''.");\n";
+		$fieldReturn .= $this->indentation. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\''.", false);\n";
 		$fieldReturn .= $this->indentation.'</script>'."\n";
 		
 		if ($verbose) {
