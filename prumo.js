@@ -3344,11 +3344,13 @@ function prumoSearch(objName, ajaxFile) {
 	}
 	
 	this.show = function() {
-		if (this.pWindow) {
+		if (this.pWindow != false) {
 			this.pWindow.show(this.modal);
 		}
 		else {
-			document.getElementById(this.objName).style.display = 'block';
+			if (document.getElementById(this.objName) != undefined) {
+				document.getElementById(this.objName).style.display = 'block';
+			}
 		}
 		this.afterShow();
 	}
@@ -3377,7 +3379,9 @@ function prumoSearch(objName, ajaxFile) {
 			this.pWindow.hide();
 		}
 		else {
-			document.getElementById(this.objName).style.display = 'none';
+			if (document.getElementById(this.objName) != undefined) {
+				document.getElementById(this.objName).style.display = 'none';
+			}
 		}
 		this.afterHide();
 	}
