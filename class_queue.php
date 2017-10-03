@@ -26,7 +26,7 @@
 
 
 class prumoQueue extends prumoSearch {
-	private $orderby;
+	protected $orderby;
 	
 	public $htmlTop = '';
 	public $htmlBottom = '';

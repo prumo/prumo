@@ -25,18 +25,18 @@
  * ******************************************************************* */
 
 class prumoSearch extends prumoBasic {
-	private $pGrid;
-	private $fieldReturn;
-	protected $indentation;
-	public $pConnection;
-	public $pFilter;
+	
 	private $fixedSqlSearch;
 	private $constructedGrid;
-	
-	public $page;
-	
 	private $orderby;
 	
+	protected $pConnection;
+	protected $pGrid;
+	protected $fieldReturn;
+	protected $indentation;
+	
+	public $page;
+	public $pFilter;
 	public $autoFilter; // quando true (default), prepara um filtro autometicamente quando o usuário altera qualquer campo que participe do fieldReturn
 	
 	function __construct($params) {
@@ -58,16 +58,16 @@ class prumoSearch extends prumoBasic {
 			}
 		}
 		
-		$autoFilter = (!isset($this->param['autofilter']) or $this->param['autofilter'] != 'false');
-		
 		$this->page = 1;
 		$this->fieldReturn = array();
 		
-		$this->autoFilter = $autoFilter;
+		$this->autoFilter = (!isset($this->param['autofilter']) or $this->param['autofilter'] != 'false');
 	}
 	
 	/**
 	 * Permite ao desenvolvedor da aplicação explicitar qual prumoConnection usar
+	 *
+	 * @param $connecion object: conexão com o banco de dados
 	 */
 	public function setConnection($connecion) {
 		$this->pConnection = $connecion;
@@ -83,33 +83,14 @@ class prumoSearch extends prumoBasic {
 	}
 	
 	/**
-	 * Gera o código JS que faz o link entre o search e o crud para bloquear/desbloquear o botão de acordo com o estado do crud
+	 * Desenha o GRID
 	 *
-	 * @param $crudName string: nome do prumoCRUD
-	 * @verbose boolean: quando true imprime o código gerado
-	 *
-	 * @return string: código gerado
+	 * @param $pageLines integer: numero de linhas do grid (quando não informado pega do arquivo de configuração)
 	 */
-	public function crudState($crudName, $verbose=true) {
-		
-		$state  = '<script type="text/javascript">'."\n";
-		$state .= '	'.$crudName.'.addSonSearch('.$this->name.');'."\n";
-		$state .= '</script>'."\n";
-		
-		if ($verbose) {
-			echo $state;
-		}
-		
-		return $state;
-	}
-	
-	/**
-	 * Constrói o objeto GRID
-	 */
-	private function constructGrid() {
+	protected function constructGrid($pageLines=false) {
 		
 		$this->getObjName();
-		$lines = $this->pageLines();
+		$lines = $pageLines ? $pageLines : $this->pageLines();
 		$this->pGrid = new prumoGrid($this->name, $lines);
 		$this->pGrid->indentation = $this->indentation . '		';
 		$this->pGrid->lineEventOnData = $this->name.'.lineClick(%)';
@@ -117,9 +98,9 @@ class prumoSearch extends prumoBasic {
 	}
 	
 	/**
-	 * Verifica quantas linhas tem por página
+	 * Decide a quantidade de linhas do grid de acordo com os parametros e arquivo de configuração do framework
 	 *
-	 * @return integer: quantidade de linhas
+	 * @return integer: número de linhas do grid
 	 */
 	protected function pageLines() {
 		return isset($this->param['pagelines']) ? $this->param['pagelines'] : $GLOBALS['pConfig']['searchLines'];
@@ -128,32 +109,33 @@ class prumoSearch extends prumoBasic {
 	/**
 	 * Adiciona um campo
 	 *
-	 * @param $params array: array com os parâmetros do campo
+	 * @param $params string: string de configuração do campo no formato do framework
 	 */
 	public function addField($params) {
 		
 		if ($this->constructedGrid == false) {
 			
 			$this->constructedGrid = true;
-
+			
 			if (!isset($this->param['tablename'])) {
 				$this->param['tablename'] = $this->name;
 			}
-
+			
 			$this->constructGrid();
 		}
 		
 		parent::addField($params);
+		
+		$this->pGrid->addColumn($params);
+		$this->pFilter = new prumoFilter($this->name, $this->field, '');
+		$this->pFilter->setIndentation($this->indentation.'		');
+		
 		$param = pParameters($params);
 		
 		$lastField = count($this->field)-1;
 		
 		$this->field[$lastField]['sqlname'] = isset($param['sqlname']) ? $param['sqlname'] : $param['name'];
 		$this->field[$lastField]['pk'] = isset($param['pk']) ? true : false;
-		
-		$this->pGrid->addColumn($params);
-		$this->pFilter = new prumoFilter($this->name,$this->field,'');
-		$this->pFilter->setIndentation($this->indentation.'		');
 	}
 	
 	/**
@@ -174,12 +156,12 @@ class prumoSearch extends prumoBasic {
 		
 		// valida duplicidade
 		for ($i=0; $i < count($this->fieldReturn); $i++) {
-		    if ($this->fieldReturn[$i][0] == $fieldName) {
-		    	$msg = _('Campo ":fieldName:" duplicado em :objName:->addFieldReturn.');
-		    	$msg = str_replace(':fieldName:', $fieldName, $msg);
-		    	$msg = str_replace(':objName:', $this->name, $msg);
-		    	throw new Exception($msg);
-		    }
+			if ($this->fieldReturn[$i][0] == $fieldName) {
+				$msg = _('Campo ":fieldName:" duplicado em :objName:->addFieldReturn.');
+				$msg = str_replace(':fieldName:', $fieldName, $msg);
+				$msg = str_replace(':objName:', $this->name, $msg);
+				throw new Exception($msg);
+			}
 		}
 		
 		$this->fieldReturn[] = array($fieldName, $idReturn);
@@ -224,15 +206,10 @@ class prumoSearch extends prumoBasic {
 	 *
 	 * @return string: código gerado
 	 */
-	protected function initClientObject() {
+	private function initClientObject() {
 		
 		// trata o caminho do xmlFile (relativo e absoluto)
-		if (substr($this->param['xmlfile'],0,1) == '/') {
-			$ajaxFile = $this->param['xmlfile'];
-		}
-		else {
-			$ajaxFile = $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
-		}
+		$ajaxFile = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
 		
 		// instancia o objeto prumoSearch no cliente
 		$clientObject = $this->indentation. '<script type="text/javascript">'."\n";
@@ -276,6 +253,7 @@ class prumoSearch extends prumoBasic {
 	protected function makeFilters() {
 		
 		$this->pFilter->shortcut = $this->makeShortcut();
+		file_put_contents('/tmp/pogdebug', $this->pFilter->shortcut, FILE_APPEND);
 		
 		$htmlFilters = $this->pFilter->draw(false);
 		
@@ -331,7 +309,7 @@ class prumoSearch extends prumoBasic {
 			$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.pointerCursorOnData = true;'."\n";
 		}
 		
-		// vinculo do prumoGrid com o prumoSearch
+		// vinculo com o prumoGrid
 		$htmlGrid .= $this->indentation. '			'.$this->name.'.pGrid = pGrid_'.$this->name.";\n";
 		
 		$htmlGrid .= $this->indentation.'		</script>'."\n";
@@ -351,7 +329,7 @@ class prumoSearch extends prumoBasic {
 		$htmlGridNavigation .= $this->indentation.'		<script type="text/javascript">'."\n";
 		$htmlGridNavigation .= $this->indentation.'			pGridNavigation_'.$this->name.' = new prumoGridNavigation(\''.$this->name.'\');'."\n";
 		
-		// vinculo do prumoGridNavigation com o prumoSearch
+		// vinculo com o prumoGridNavigation
 		$htmlGridNavigation .= $this->indentation.'			'.$this->name.'.pGridNavigation = pGridNavigation_'.$this->name.';'."\n";
 
 		$htmlGridNavigation .= $this->indentation.'		</script>'."\n";
@@ -360,67 +338,28 @@ class prumoSearch extends prumoBasic {
 	}
 	
 	/**
-	 * Adiciona um container ao código, sendo o id o nome do objeto
-	 *
-	 * @param $pSearch string: código de entrada
-	 *
-	 * @return string: código de saída
-	 */
-	private function addWindow($pSearch) {
-		
-		$title = isset($this->param['title']) ? $this->param['title'] : $this->name;
-		
-		$pWindow = new prumoWindow('pWindow_'.$this->name);
-		$pWindow->title = $title;
-		$pWindow->indentation = $this->indentation;
-		$pWindow->commandClose = $this->name.'.cancel()';
-		$pSearchReturn = $pWindow->draw(false,$pSearch);
-		
-		// vinculo do prumoWindow com o prumoSearch
-		$pSearchReturn .= $this->indentation.'<script type="text/javascript">'."\n";
-		$pSearchReturn .= $this->indentation.'	'.$this->name.'.pWindow = pWindow_'.$this->name.";\n";
-		
-		// repassa parametro modal do prumoSearch (que só faz sentido se tiver pWindow, por isso o codigo esta aqui)
-		if (isset($this->param['modal'])) {
-			$pSearchReturn .= $this->indentation. '			'.$this->name.'.modal = '.$this->param['modal'].";\n";
-		}
-		$pSearchReturn .= $this->indentation. '	'.$this->name.'.pAjax.pLoading = new prumoLoading(\'pWindow_'.$this->name.'_loading\');'."\n";
-		$pSearchReturn .= $this->indentation.'</script>'."\n";
-		
-		return $pSearchReturn;
-	}
-	
-	/**
 	 * Gera o link 'Inserir novo' para ser adicionado ao lado dos filtros
 	 *
 	 * @return string: código html do link
 	 */
-	private function makeShortcut() {
+	protected function makeShortcut() {
 		global $pConnectionPrumo;
 		
 		if (isset($this->param['menushortcut'])) {
 			
-			$schema = $pConnectionPrumo->getSchema();
-			
-			$sql  = 'SELECT'."\n";
-			$sql .= '	routine,'."\n";
-			$sql .= '	link'."\n";
-			$sql .= 'FROM '.$schema.'routines'."\n";
-			$sql .= 'WHERE routine='.pFormatSql($this->param['menushortcut'], 'string').';';
-			
-			$query = $pConnectionPrumo->fetchAssoc($sql);
-			
-			if (pPermitted($query['routine'], 'c')) {
-				$explode = explode(':', $query['link']);
-				$protocol = $explode[0];
-				if ($protocol == 'http') {
-					//$link = '<button onclick="popup(\''.$query['routine'].'\')">'._('Cadastrar Novo').'</button>';
-					$link = '<a href="'.$query['routine'].'" target="_blank">'._('Cadastrar Novo').'</a>';
-				}
-				else {
-					//$link = '<button onclick="popup(\'index.php?page='.$query['routine'].'\')">'._('Cadastrar Novo').'</button>';
-					$link = '<a href="index.php?page='.$query['routine'].'" target="_blank">'._('Cadastrar Novo').'</a>';
-				}
+			if (pPermitted($this->param['menushortcut'], 'c')) {
+				
+				$sql  = 'SELECT'."\n";
+				$sql .= '	routine,'."\n";
+				$sql .= '	link'."\n";
+				$sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines'."\n";
+				$sql .= 'WHERE routine='.pFormatSql($this->param['menushortcut'], 'string').';';
+				
+				$query = $pConnectionPrumo->fetchAssoc($sql);
+				
+				$isHttp = strtolower(substr($query['link'], 0, 4)) == 'http';
+				$href = $isHttp ? $query['link'] : 'index.php?page='.$query['routine'];
+				$link = '<a href="'.$href.'" target="_blank">'._('Cadastrar Novo').'</a>';
 				
 				return $link;
 			}
@@ -494,8 +433,8 @@ class prumoSearch extends prumoBasic {
 			if ($value[$i] != '' or $operator[$i] == 'is null' or $operator[$i] == 'not is null') {
 				$field = $this->fieldByName($fieldName[$i]);
 				$condition = $this->pConnection->getSqlOperator($operator[$i]);
-				$condition = str_replace(':field:',$field['sqlname'],$condition);
-				$condition = str_replace(':value:',pFormatSql($value[$i],$field['type'],false,false),$condition);
+				$condition = str_replace(':field:', $field['sqlname'], $condition);
+				$condition = str_replace(':value:', pFormatSql($value[$i], $field['type'], false, false), $condition);
 				$condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
 				$arrCondition[$iValue] = $condition;
 				$iValue++;
@@ -540,29 +479,15 @@ class prumoSearch extends prumoBasic {
 			}
 		}
 		
-		$orderbyOut = $this->orderby == '' ? ' ORDER BY ' .$orderbyOut : ' ORDER BY ' .$this->orderby;
+		$orderbyOut = empty($this->orderby) ? ' ORDER BY ' .$orderbyOut : ' ORDER BY ' .$this->orderby;
 		
 		return $orderbyOut;
 	}
 	
 	/**
-	 * Define uma consulta SQL fixa para o Search
+	 * Gera o código SQL da consulta
 	 *
-	 * @param $sql string: consulta SQL
-	 */
-	public function setSqlSearch($sql) {
-		
-		$this->fixedSqlSearch = $sql;
-		
-		for ($i=0; $i < $this->fieldCount(); $i++) {
-			$this->field[$i]['sqlname'] = 'fixed.'.$this->field[$i]['sqlname'];
-		}
-	}
-	
-	/**
-	 * Gera o código da consulta
-	 *
-	 * @return string: consulta SQL gerada
+	 * @return string: código SQL
 	 */
 	public function sqlSearch() {
 		
@@ -579,7 +504,7 @@ class prumoSearch extends prumoBasic {
 			
 			$fields .= $this->field[$i]['name'];
 		}
-
+		
 		$offset = ' OFFSET '.$offsetNum;
 		$limit = ' LIMIT '.$this->pageLines();
 		$orderby = $this->sqlOrderby();
@@ -596,7 +521,21 @@ class prumoSearch extends prumoBasic {
 	}
 	
 	/**
-	 * Monta um comando SQL para fazer a contagem de registro de acordo com o filtro
+	 * Define o SQL para a consulta em substituiçao ao SQL gerado automaticamente
+	 *
+	 * @param $sql string: consulta SQL
+	 */
+	public function setSqlSearch($sql) {
+		
+		$this->fixedSqlSearch = $sql;
+		
+		for ($i=0; $i < $this->fieldCount(); $i++) {
+			$this->field[$i]['sqlname'] = 'fixed.'.$this->field[$i]['sqlname'];
+		}
+	}
+	
+	/**
+	 * Gera o comando SQL que conta os registro
 	 *
 	 * @return string: comando SQL
 	 */
@@ -614,6 +553,154 @@ class prumoSearch extends prumoBasic {
 		}
 		
 		return $sqlCount;
+	}
+	
+	/**
+	 * Gera o XML completo
+	 *
+	 * @param $verbose boolean: quando true imprime o XML
+	 *
+	 * @return string: XML completo
+	 */
+	public function makeXml($verbose) {
+		global $prumoGlobal;
+		
+		if ($prumoGlobal['currentUser'] == '') {
+			$xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+		}
+		else {
+			$this->page = $_POST['page'];
+			
+			if (isset($_POST['orderBy'])) {
+				$this->setOrderby($_POST['orderBy']);
+			}
+			
+			$this->pFilter->loadQuery();
+			
+			$count = $this->pConnection->sqlQuery($this->sqlCount());
+			if ($count === false) {
+				pXmlError('SqlError', $this->pConnection->getErr(), true);
+				exit;
+			}
+			
+			$xml = $this->pConnection->sqlXml($this->sqlSearch(), $this->name);
+			if ($xml === false) {
+				pXmlError('SqlError', $this->pConnection->getErr(), true);
+				exit;
+			}
+			
+			$xmlStatus  = '<count>'.$count.'</count>'."\n";
+			$xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>'."\n";
+			$xmlStatus .= '<page>'.$this->page.'</page>';
+			$xmlStatus = pXmlAddParent($xmlStatus, 'pGridStatus');
+			
+			$xml .= $xmlStatus;
+			
+			$xml .= $this->pFilter->makeXmlFilter();
+			
+			$debugSql  = '<sql>'.$this->sqlSearch().'</sql>'."\n";
+			$debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
+			$debugSql = pXmlAddParent($debugSql, 'debugSql');
+			
+			if (isset($this->param['debug']) && $this->param['debug']) {
+				$xml .= $debugSql;
+			}
+			
+			$xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
+		}
+		
+		if ($verbose) {
+			Header('Content-type: application/xml; charset=UTF-8');
+			echo $xml;
+		}
+		
+		return $xml;
+	}
+	
+	/**
+	 * Desenha o botão "pesquisar"
+	 * 
+	 * @param $verbose boolean: quando true imprime o html gerado
+	 *
+	 * @returns string: html dos controles
+	 */
+	public function makeButton($verbose=true) {
+		
+		$iconSearch = pGetTheme('icons/prumoSearch.png',true);
+		$button = '<button class="pButton-outline" type="button" id="'.$this->name.'Bt" onClick="javascript:'.$this->name.'.goSearch();"><img src="'.$iconSearch.'" alt="prumoSearch" /></button>';
+		
+		if ($verbose) {
+			echo $button;
+		}
+		
+		return $button;
+	}
+	
+	/**
+	 * Decide qual ação tomar de acordo com os parametros passados via GET ou POST
+	 */
+	public function autoInit() {
+		if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'makeXml') {
+			$this->makeXml(true);
+		}
+		else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
+			$this->doRetrieve(true);
+		}
+		else {
+			$this->draw(true);
+		}
+	}
+	
+	/**
+	 * Gera o código JS que faz o link entre o search e o crud para bloquear/desbloquear o botão de acordo com o estado do crud
+	 *
+	 * @param $crudName string: nome do prumoCRUD
+	 * @verbose boolean: quando true imprime o código gerado
+	 *
+	 * @return string: código gerado
+	 */
+	public function crudState($crudName, $verbose=true) {
+		
+		$state  = '<script type="text/javascript">'."\n";
+		$state .= '	'.$crudName.'.addSonSearch('.$this->name.');'."\n";
+		$state .= '</script>'."\n";
+		
+		if ($verbose) {
+			echo $state;
+		}
+		
+		return $state;
+	}
+	
+	/**
+	 * Adiciona um container ao código, sendo o id o nome do objeto
+	 *
+	 * @param $pSearch string: código de entrada
+	 *
+	 * @return string: código de saída
+	 */
+	private function addWindow($pSearch) {
+		
+		$title = isset($this->param['title']) ? $this->param['title'] : $this->name;
+		
+		$pWindow = new prumoWindow('pWindow_'.$this->name);
+		$pWindow->title = $title;
+		$pWindow->indentation = $this->indentation;
+		$pWindow->commandClose = $this->name.'.cancel()';
+		$pSearchReturn = $pWindow->draw(false,$pSearch);
+		
+		// vinculo do prumoWindow com o prumoSearch
+		$pSearchReturn .= $this->indentation.'<script type="text/javascript">'."\n";
+		$pSearchReturn .= $this->indentation.'	'.$this->name.'.pWindow = pWindow_'.$this->name.";\n";
+		
+		// repassa parametro modal do prumoSearch (que só faz sentido se tiver pWindow, por isso o codigo esta aqui)
+		if (isset($this->param['modal'])) {
+			$pSearchReturn .= $this->indentation. '			'.$this->name.'.modal = '.$this->param['modal'].";\n";
+		}
+		$pSearchReturn .= $this->indentation. '	'.$this->name.'.pAjax.pLoading = new prumoLoading(\'pWindow_'.$this->name.'_loading\');'."\n";
+		$pSearchReturn .= $this->indentation.'</script>'."\n";
+		
+		return $pSearchReturn;
 	}
 	
 	/**
@@ -687,100 +774,5 @@ class prumoSearch extends prumoBasic {
 		}
 		
 		return $xml;
-	}
-	
-	/**
-	 * Gera o XML completo
-	 *
-	 * @param $verbose boolean: quando true imprime o XML
-	 *
-	 * @return string: XML completo
-	 */
-	public function makeXml($verbose) {
-		global $prumoGlobal;
-		
-		if ($prumoGlobal['currentUser'] == '') {
-			$xml = pXmlError('session expires',_('Sua sessão expirou, faça login novamente.'));
-		}
-		else {
-			$this->page = $_POST['page'];
-			
-			if (isset($_POST['orderBy'])) {
-			    $this->setOrderby($_POST['orderBy']);
-			}
-			
-			$this->pFilter->loadQuery();
-			
-			$count = $this->pConnection->sqlQuery($this->sqlCount());
-			if ($count === false) {
-				pXmlError('SqlError', $this->pConnection->getErr(), true);
-				exit;
-			}
-			
-			$xml = $this->pConnection->sqlXml($this->sqlSearch(),$this->name);
-			if ($xml === false) {
-				pXmlError('SqlError', $this->pConnection->getErr(), true);
-				exit;
-			}
-			
-			$xmlStatus  = '<count>'.$count.'</count>'."\n";
-			$xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>'."\n";
-			$xmlStatus .= '<page>'.$this->page.'</page>';
-			$xmlStatus = pXmlAddParent($xmlStatus,'pGridStatus');
-			
-			$xml .= $xmlStatus;
-			
-			$xml .= $this->pFilter->makeXmlFilter();
-			
-			$debugSql  = '<sql>'.$this->sqlSearch().'</sql>'."\n";
-			$debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
-			$debugSql = pXmlAddParent($debugSql,'debugSql');
-			if (isset($this->param['debug']) && $this->param['debug']) {
-				$xml .= $debugSql;
-			}
-			
-			$xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
-		}
-		
-		if ($verbose) {
-			Header('Content-type: application/xml; charset=UTF-8');
-			echo $xml;
-		}
-		
-		return $xml;
-	}
-	
-	/**
-	 * Desenha o botão "pesquisar"
-	 * 
-	 * @param $verbose boolean: quando true imprime o html gerado
-	 *
-	 * @returns string: html dos controles
-	 */
-	public function makeButton($verbose=true) {
-		
-		$iconSearch = pGetTheme('icons/prumoSearch.png',true);
-		$button = '<button class="pButton-outline" type="button" id="'.$this->name.'Bt" onClick="javascript:'.$this->name.'.goSearch();"><img src="'.$iconSearch.'" alt="prumoSearch" /></button>';
-		
-		if ($verbose) {
-			echo $button;
-		}
-		
-		return $button;
-	}
-	
-	/**
-	 * Decide qual ação tomar de acordo com os parametros passados via GET ou POST
-	 */
-	public function autoInit() {
-		if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'makeXml') {
-			$this->makeXml(true);
-		}
-		else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
-			$this->doRetrieve(true);
-		}
-		else {
-			$this->draw(true);
-		}
 	}
 }

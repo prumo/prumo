@@ -30,7 +30,8 @@ class prumoBasic {
 	public $field = array();
 	public $error = '';
 	public $param;
-	public $pConnection;
+	
+	protected $pConnection;
 	
 	protected $strParams;
 	

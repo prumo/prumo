@@ -29,10 +29,7 @@ class prumoFilter {
 	private $countVisible;
 	public $field;
 	public $pConfig;
-	public $btNew;
 	public $shortcut;
-	
-	public $permC;
 	
 	function __construct($name, $field, $params) {
 		global $pConfig;
@@ -42,10 +39,7 @@ class prumoFilter {
 		$this->name = $name;
 
 		$this->field = $field;
-		$this->btNew = '';
 		$this->shortcut = '';
-		
-		$permC = true;
 	}
 	
 	/**
@@ -94,8 +88,6 @@ class prumoFilter {
 	 */
 	public function makeHtml() {
 		
-		$permC = $this->permC ? '' : ' disabled="disabled" style="display:none;"';
-		
 		$htmlFilters  = $this->indentation.'<div class="prumoFilter" align="center" id="pFilter_'.$this->name.'">'."\n";
 		$htmlFilters .= $this->indentation.'	<table>'."\n";
 		$htmlFilters .= $this->indentation.'		<tr>'."\n";
@@ -105,9 +97,6 @@ class prumoFilter {
 		$htmlFilters .= $this->indentation.'				<div style="text-align:center;">'."\n";
 		$htmlFilters .= $this->indentation.'					<button class="pButton" id="'.$this->name.'_btSearch" onclick="'.$this->name.'.cmdSearch()">'._('Pesquisar').'</button>'."\n";
 		$htmlFilters .= $this->indentation.'					<button class="pButton" id="'.$this->name.'_btSearchAll" onclick="'.$this->name.'.cmdSearchAll()">'._('Todos').'</button>'."\n";
-		if (!empty($this->btNew)) {
-			$htmlFilters .= $this->indentation.'					<button class="pButton" id="'.$this->name.'_btNew" onclick="'.$this->btNew.'">'._('Inserir Novo').'</button>'."\n";
-		}
 		if (!empty($this->shortcut)) {
 			$htmlFilters .= $this->indentation.'					'.$this->shortcut."\n";
 		}

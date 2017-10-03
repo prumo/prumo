@@ -169,7 +169,6 @@ class prumoCrud extends prumoBasic {
 			
 			//pCrudList
 			$autoClick = isset($this->param['autoclick']) ? ',autoClick' : '';
-			$paramPerm = !$this->getPermission('c') ? ',permC=false' : '';
 			
 			$fastCreate = '';
 			if (isset($this->param['fastcreate']) and $this->param['fastcreate'] and $this->getPermission('c')) {
@@ -197,7 +196,7 @@ class prumoCrud extends prumoBasic {
 														'crudName='.$this->name.','.
 														'tableName='.$this->param['tablename'].','.
 														'schema='.$this->param['schema'].
-														$debug.$pageLines.$autoClick.$fastCreate.$fastUpdate.$fastDelete.$paramPerm.$routine
+														$debug.$pageLines.$autoClick.$fastCreate.$fastUpdate.$fastDelete.$routine
 												);
 			}
 			else {
@@ -216,8 +215,8 @@ class prumoCrud extends prumoBasic {
 	public function setConnection($connecion) {
 		$this->startClientObjects();
 		$this->pConnection = $connecion;
-		$this->pSearch->pConnection = $connecion;
-		$this->pCrudList->pConnection = $connecion;
+		$this->pSearch->setConnection($connecion);
+		$this->pCrudList->setConnection($connecion);
 	}
 	
 	/**
@@ -1798,22 +1797,6 @@ class prumoCrud extends prumoBasic {
 			
 		// repassa as permissões CRUD para o cliente
 		echo "\n";
-		
-		if ($this->getPermission('c') == false) {
-			$clientObject .= $this->ind.'	'.$this->name.'.permC = false;'."\n";
-		}
-		
-		if ($this->getPermission('r') == false) {
-			$clientObject .= $this->ind.'	'.$this->name.'.permR = false;'."\n";
-		}
-		
-		if ($this->getPermission('u') == false) {
-			$clientObject .= $this->ind.'	'.$this->name.'.permU = false;'."\n";
-		}
-		
-		if ($this->getPermission('d') == false) {
-			$clientObject .= $this->ind.'	'.$this->name.'.permD = false;'."\n";
-		}
 		
 		// ligação do crud com o search
 		$clientObject .= "\n";

@@ -680,12 +680,6 @@ function prumoCrud(objName, ajaxFile) {
 	this.pCrudList = false;
 	this.pSearch;
 	
-	// permissões
-	this.permC = true;
-	this.permR = true;
-	this.permU = true;
-	this.permD = true;
-	
 	// para relação 1x1
 	this.parent1x1 = false;
 	this.parent1x1Condition = new Array();
