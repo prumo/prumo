@@ -27,7 +27,7 @@
 
 ////////////////////////////////// configurações padrão ////////////////////////////////////
 
-$pConfig['version'] = '1.6.0';
+$pConfig['version'] = '1.6.1';
 
 // Configurações de path e identificação
 if (!isset($pConfig['appIdent']))              $pConfig['appIdent']              = 'Prumo';
