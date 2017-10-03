@@ -23,9 +23,22 @@
  *	along with this program; if not, see <http://www.gnu.org/licenses/>.
  *
  * ******************************************************************* */
+
+/**
+ * prumoCrud é a classe principal que faz as operações de CRUD
+ */
 class prumoCrud extends prumoBasic {
 	
-	private $ind; // indentation
+	private $parent1xN;
+	private $permission;
+	private $capsLock;
+	private $audit;
+	private $clientObjectsStarted = false;
+	
+	protected $serialFields = array();
+	protected $action = null;
+
+	public $name;
 	
 	public $pSearch = null;
 	public $pCrudList = null;
@@ -34,54 +47,45 @@ class prumoCrud extends prumoBasic {
 	public $parent1x1Condition = null;
 	public $son1x1 = array();
 	
-	private $parent1xN;
-	
 	public $customSqlCreate = '';
 	public $customSqlRetrieve = '';
 	public $customSqlCount = '';
 	public $customSqlUpdate = '';
 	public $customSqlDelete = '';
-
+	
 	public $xmlRetrieve;
 	
 	public $containerType = ''; //div, fieldset, window
 	public $containerVisible = true;
 	
-	protected $serialFields = array();
-	public $pConnection;
-	
-	private $permission;
-	
-	protected $action = null;
-	
-	public $name;
-	
-	private $capsLock;
-	private $audit;
-	private $clientObjectsStarted = false;
-	
-	public $fieldTemplate; // array associativo pelo tipo para fastCreate e fastUpdate
-
 	public $msgErrorBeforeCreate;
 	public $msgErrorBeforeUpdate;
 	public $msgErrorBeforeDelete;
 	
 	public $validator = array();
 	
+	public $fieldTemplate = array(
+		'serial'    => '<input type="text" size="5" />',
+		'integer'   => '<input type="number" size="5" />',
+		'string'    => '<input type="text" size="20" />',
+		'text'      => '<textarea></textarea>',
+		'numeric'   => '<input type="text" size="5" />',
+		'date'      => '<input type="date" size="9" />',
+		'time'      => '<input type="time" size="9" />',
+		'timestamp' => '<input type="datetime" size="15" />',
+		'boolean'   => '<input type="checkbox" />'
+	);
+	
+	/**
+	 * Constritor da classe prumoCrud
+	 */
 	function __construct($params) {
+		
+		parent::__construct($params);
 		
 		$this->msgErrorBeforeCreate = _('prumoCrud Error: beforeCreate retornou false para objeto ":o:"!');
 		$this->msgErrorBeforeUpdate = _('prumoCrud Error: beforeUpdate retornou false para objeto ":o:"!');
 		$this->msgErrorBeforeDelete = _('prumoCrud Error: beforeDelete retornou false para objeto ":o:"!');
-		
-		// prepara a propriedade xmlFile
-		$files = get_included_files();
-		$lastInclusion = $files[count($files)-1];
-		
-		parent::__construct($params);
-		
-		if (!isset($this->param['xmlfile']))
-			$this->param['xmlfile'] = $GLOBALS['pConfig']['appWebPath'] . str_replace($GLOBALS['pConfig']['appPath'], '', $lastInclusion);
 		
 		if (!isset($this->param['tablename'])) {
 			$this->param['tablename'] = '';
@@ -125,18 +129,6 @@ class prumoCrud extends prumoBasic {
 		}
 		
 		$this->parent1xN = isset($this->param['parent1xn']) ? $this->param['parent1xn'] : '';
-		
-		$this->fieldTemplate = array(
-			'serial'    => '<input type="text" size="5" />',
-			'integer'   => '<input type="number" size="5" />',
-			'string'    => '<input type="text" size="20" />',
-			'text'      => '<textarea></textarea>',
-			'numeric'   => '<input type="text" size="5" />',
-			'date'      => '<input type="date" size="9" />',
-			'time'      => '<input type="time" size="9" />',
-			'timestamp' => '<input type="datetime" size="15" />',
-			'boolean'   => '<input type="checkbox" />'
-		);
 	}
 	
 	/**
@@ -213,7 +205,6 @@ class prumoCrud extends prumoBasic {
 	 * @param $connection object: prumoConnection já instanciado e configurado
 	 */
 	public function setConnection($connecion) {
-		$this->startClientObjects();
 		$this->pConnection = $connecion;
 		$this->pSearch->setConnection($connecion);
 		$this->pCrudList->setConnection($connecion);
@@ -1425,7 +1416,7 @@ class prumoCrud extends prumoBasic {
 				}
 				
 				$defaultValue = isset($this->field[$i]['default']) ? $this->field[$i]['default'] : '';
-				$indentation = $this->parent1x1 == null ? '			' : '				';
+				$ind = $this->parent1x1 == null ? '			' : '				';
 				
 				$formChild = '';
 				$onChange = '';
@@ -1441,7 +1432,7 @@ class prumoCrud extends prumoBasic {
 					$formChild .= '		<table class="prumoFormTable">'."\n";
 				}
 				
-				$form .= $indentation.'<tr>'."\n";
+				$form .= $ind.'<tr>'."\n";
 				if ($this->field[$i]['type'] == 'boolean') {
 					
 					if (isset($this->field[$i]['default']) and ($this->field[$i]['default'] == 'true' or $this->field[$i]['default'] == 't')) {
@@ -1451,28 +1442,28 @@ class prumoCrud extends prumoBasic {
 						$checked = '';
 					}
 					
-					$form .= $indentation.'	<td class="prumoFormLabel"><br /></td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><input id="'.$id.'" type="checkbox"'.$disabled.$checked.$onChange.' />'.$label.' '.$search.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel"><br /></td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><input id="'.$id.'" type="checkbox"'.$disabled.$checked.$onChange.' />'.$label.' '.$search.'</td>'."\n";
 				}
 				else if ($this->field[$i]['type'] == 'date') {
 					
-					$form .= $indentation.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="9" maxlength="10"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="9" maxlength="10"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
 				}
 				else if ($this->field[$i]['type'] == 'integer' or $this->field[$i]['type'] == 'serial') {
 					
-					$form .= $indentation.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="9"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="9"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
 				}
 				else if ($this->field[$i]['type'] == 'timestamp') {
 					
-					$form .= $indentation.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="17" maxlength="19"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="17" maxlength="19"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
 				}
 				else if ($this->field[$i]['type'] == 'text') {
 					
-					$form .= $indentation.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><textarea id="'.$id.'" cols="26" rows="3" '.$disabled.$onChange.'>'.$defaultValue.'</textarea>'.$search.$notNull.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><textarea id="'.$id.'" cols="26" rows="3" '.$disabled.$onChange.'>'.$defaultValue.'</textarea>'.$search.$notNull.'</td>'."\n";
 				}
 				else {
 					
@@ -1487,11 +1478,11 @@ class prumoCrud extends prumoBasic {
 						$maxLength = '';
 					}
 					
-					$form .= $indentation.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
-					$form .= $indentation.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="'.$size.'"'.$disabled.$onChange.$maxLength.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormLabel">'.$label.':</td>'."\n";
+					$form .= $ind.'	<td class="prumoFormFields"><input id="'.$id.'" type="text" size="'.$size.'"'.$disabled.$onChange.$maxLength.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
 				}
 				
-				$form .= $indentation.'</tr>'."\n";
+				$form .= $ind.'</tr>'."\n";
 				
 				$form .= $formChild;
 			}
@@ -1673,21 +1664,11 @@ class prumoCrud extends prumoBasic {
 	 */
 	private function initClientObject() {
 		
-		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php');
-		
-		echo $this->drawSearch();
-		
-		// trata o caminho do xmlFile (relativo e absoluto)
-		if (substr($this->param['xmlfile'], 0, 1) == '/') {
-			$ajaxFile = $this->param['xmlfile'];
-		}
-		else {
-			$ajaxFile = $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
-		}
+		$clientObject = $this->drawSearch();
 		
 		// instancia o objeto prumoSearch no cliente
-		$clientObject = $this->ind. '<script type="text/javascript">'."\n";
-		$clientObject .= $this->ind. '	'.$this->name.' = new prumoCrud(\''.$this->name.'\',\''.$ajaxFile.'\');'."\n";
+		$clientObject .= $this->ind. '<script type="text/javascript">'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.' = new prumoCrud(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
 		
 		// repassa condicionalmente o debug para o objeto ajax
 		if (isset($this->param['debug']) && $this->param['debug']) {

@@ -24,6 +24,9 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoLogin controla o login do sistema
+ */
 class prumoLogin {
 	
 	private $password;
@@ -35,6 +38,13 @@ class prumoLogin {
 	private $err;
 	private $session;
 	
+	/**
+	 * Construtor da classe prumoLogin
+	 *
+	 * @param $ident string: identificação do sistema (para o session)
+	 * @param $username string: nome do usuário
+	 * @param $password string: senha codificada
+	 */
 	function __construct($ident, $username, $password) {
 		global $pConnectionPrumo;
 		
@@ -54,7 +64,6 @@ class prumoLogin {
 			}
 		}
 		else {
-			
 			$this->username = $username;
 			$this->password = $password;
 		}

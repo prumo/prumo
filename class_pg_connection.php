@@ -24,14 +24,23 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoPgConnection faz a conexão com banco de dados PostgreSQL
+ */
 class prumoPgConnection {
+	
 	private $connection;
 	private $err;
-
+	
 	public $connected;
 	public $param;
 	public $sqlOperator;
-
+	
+	/**
+	 * Construtor da classe prumoPgConnection
+	 *
+	 * @param $params string: string de parametros (verificar o ctrl_connection.php para exemplo)
+	 */
 	function __construct($params) {
 		
 		$this->param = pParameters($params);
@@ -76,6 +85,7 @@ class prumoPgConnection {
 			$msg = _('É necessário ativar a extensão %extension% no PHP');
 			$this->err = str_replace('%extension%','pgsql',$msg);
 			$this->connected = false;
+			
 			return false;
 		}
 		
@@ -87,6 +97,7 @@ class prumoPgConnection {
 		$this->connection = @pg_connect($pgString) ;
 		
 		if ($this->connection) {
+			
 			$this->connected = true;
 			$this->err = '';
 			

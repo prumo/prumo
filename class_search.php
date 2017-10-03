@@ -24,6 +24,9 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoSearch é o elemento de pesquisa onde o usuário consulta campos com chave estrangeira
+ */
 class prumoSearch extends prumoBasic {
 	
 	private $fixedSqlSearch;
@@ -33,34 +36,22 @@ class prumoSearch extends prumoBasic {
 	protected $pConnection;
 	protected $pGrid;
 	protected $fieldReturn;
-	protected $indentation;
 	
 	public $page;
 	public $pFilter;
 	public $autoFilter; // quando true (default), prepara um filtro autometicamente quando o usuário altera qualquer campo que participe do fieldReturn
 	
+	/**
+	 * Construtor da classe prumoSearch
+	 */
 	function __construct($params) {
 		
-		$this->orderby = '';
-		
-		$files = get_included_files();
-		$lastInclusion = $files[count($files)-1];
-		
 		parent::__construct($params);
-		$this->constructedGrid = false;
 		
-		if (!isset($this->param['xmlfile'])) {
-			if (dirname($_SERVER["SCRIPT_FILENAME"]) == dirname($lastInclusion)) {
-				$this->param['xmlfile'] = basename($lastInclusion);
-			}
-			else {
-				$this->param['xmlfile'] = $GLOBALS['pConfig']['appWebPath'] . str_replace($GLOBALS['pConfig']['appPath'], '', $lastInclusion);
-			}
-		}
-		
+		$this->orderby = '';
+		$this->constructedGrid = false;		
 		$this->page = 1;
 		$this->fieldReturn = array();
-		
 		$this->autoFilter = (!isset($this->param['autofilter']) or $this->param['autofilter'] != 'false');
 	}
 	
@@ -74,15 +65,6 @@ class prumoSearch extends prumoBasic {
 	}
 	
 	/**
-	 * Seta a indentação para organizar o código gerado no lado do cliente
-	 *
-	 * @param $indentation string: tabs para indentação no lado do cliente
-	 */
-	public function setIndentation($indentation) {
-		$this->indentation = $indentation;
-	}
-	
-	/**
 	 * Desenha o GRID
 	 *
 	 * @param $pageLines integer: numero de linhas do grid (quando não informado pega do arquivo de configuração)
@@ -92,7 +74,7 @@ class prumoSearch extends prumoBasic {
 		$this->getObjName();
 		$lines = $pageLines ? $pageLines : $this->pageLines();
 		$this->pGrid = new prumoGrid($this->name, $lines);
-		$this->pGrid->indentation = $this->indentation . '		';
+		$this->pGrid->ind = $this->ind . '		';
 		$this->pGrid->lineEventOnData = $this->name.'.lineClick(%)';
 		$this->pGrid->pointerCursorOnData = true;
 	}
@@ -127,8 +109,8 @@ class prumoSearch extends prumoBasic {
 		parent::addField($params);
 		
 		$this->pGrid->addColumn($params);
-		$this->pFilter = new prumoFilter($this->name, $this->field, '');
-		$this->pFilter->setIndentation($this->indentation.'		');
+		$this->pFilter = new prumoFilter($this->name, $this->field);
+		$this->pFilter->setIndentarion($this->ind.'		');
 		
 		$param = pParameters($params);
 		
@@ -170,29 +152,29 @@ class prumoSearch extends prumoBasic {
 		$fieldType = $field['type'];
 		$noRetrieve = $noRetrieve ? 'true' : 'false';
 		
-		$fieldReturn  = $this->indentation.'<script type="text/javascript">'."\n";
-		$fieldReturn .= $this->indentation. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\', '.$noRetrieve.");\n";
+		$fieldReturn  = $this->ind.'<script type="text/javascript">'."\n";
+		$fieldReturn .= $this->ind. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\', '.$noRetrieve.");\n";
 		if ($linkInput and $this->autoFilter) {
-			$fieldReturn .= $this->indentation. '	inputField = document.getElementById(\''.$idReturn.'\');'."\n";
-			$fieldReturn .= $this->indentation. '	inputField.pSearch = '.$this->name.';'."\n";
-			$fieldReturn .= $this->indentation. '	'."\n";
+			$fieldReturn .= $this->ind. '	inputField = document.getElementById(\''.$idReturn.'\');'."\n";
+			$fieldReturn .= $this->ind. '	inputField.pSearch = '.$this->name.';'."\n";
+			$fieldReturn .= $this->ind. '	'."\n";
 			
-			$fieldReturn .= $this->indentation. '	if (inputField.getAttribute(\'onFocus\') == null) {'."\n";
-			$fieldReturn .= $this->indentation. '		inputField.setAttribute(\'onFocus\',\'this.pSearch.fieldFocus(this)\');'."\n";
-			$fieldReturn .= $this->indentation. '	}'."\n";
-			$fieldReturn .= $this->indentation. '	'."\n";
+			$fieldReturn .= $this->ind. '	if (inputField.getAttribute(\'onFocus\') == null) {'."\n";
+			$fieldReturn .= $this->ind. '		inputField.setAttribute(\'onFocus\',\'this.pSearch.fieldFocus(this)\');'."\n";
+			$fieldReturn .= $this->ind. '	}'."\n";
+			$fieldReturn .= $this->ind. '	'."\n";
 			
-			$fieldReturn .= $this->indentation. '	if (inputField.getAttribute(\'onBlur\') == null) {'."\n";
-			$fieldReturn .= $this->indentation. '		inputField.setAttribute(\'onBlur\',\'this.pSearch.fieldBlur(this)\');'."\n";
-			$fieldReturn .= $this->indentation. '	}'."\n";
+			$fieldReturn .= $this->ind. '	if (inputField.getAttribute(\'onBlur\') == null) {'."\n";
+			$fieldReturn .= $this->ind. '		inputField.setAttribute(\'onBlur\',\'this.pSearch.fieldBlur(this)\');'."\n";
+			$fieldReturn .= $this->ind. '	}'."\n";
 			
-			$fieldReturn .= $this->indentation. '	'."\n";
-			$fieldReturn .= $this->indentation. '	if (inputField.getAttribute(\'onKeyDown\') == null) {'."\n";
-			$fieldReturn .= $this->indentation. '		inputField.setAttribute(\'onKeyDown\',\'this.pSearch.fieldKeyDown(event)\');'."\n";
-			$fieldReturn .= $this->indentation. '	}'."\n";
+			$fieldReturn .= $this->ind. '	'."\n";
+			$fieldReturn .= $this->ind. '	if (inputField.getAttribute(\'onKeyDown\') == null) {'."\n";
+			$fieldReturn .= $this->ind. '		inputField.setAttribute(\'onKeyDown\',\'this.pSearch.fieldKeyDown(event)\');'."\n";
+			$fieldReturn .= $this->ind. '	}'."\n";
 		}
 		
-		$fieldReturn .= $this->indentation.'</script>'."\n";
+		$fieldReturn .= $this->ind.'</script>'."\n";
 		
 		if ($verbose) {
 			echo $fieldReturn;
@@ -208,15 +190,12 @@ class prumoSearch extends prumoBasic {
 	 */
 	private function initClientObject() {
 		
-		// trata o caminho do xmlFile (relativo e absoluto)
-		$ajaxFile = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
-		
 		// instancia o objeto prumoSearch no cliente
-		$clientObject = $this->indentation. '<script type="text/javascript">'."\n";
-		$clientObject .= $this->indentation. '	'.$this->name.' = new prumoSearch(\''.$this->name.'\',\''.$ajaxFile.'\');'."\n";
+		$clientObject = $this->ind. '<script type="text/javascript">'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.' = new prumoSearch(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
 		// repassa condicionalmente o debug para o objeto ajax
 		if (isset($this->param['debug']) && $this->param['debug']) {
-			$clientObject .= $this->indentation. '	'.$this->name.'.pAjax.debug = true;'."\n";
+			$clientObject .= $this->ind. '	'.$this->name.'.pAjax.debug = true;'."\n";
 		}
 
 		// repassa fields para o objeto cliente
@@ -237,10 +216,10 @@ class prumoSearch extends prumoBasic {
 			$fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
 		}
 		
-		$clientObject .= $this->indentation.'	'.$this->name.'.fieldName = Array('.$fieldName.');'."\n";
-		$clientObject .= $this->indentation.'	'.$this->name.'.fieldPk = Array('.$fieldPk.');'."\n";
+		$clientObject .= $this->ind.'	'.$this->name.'.fieldName = Array('.$fieldName.');'."\n";
+		$clientObject .= $this->ind.'	'.$this->name.'.fieldPk = Array('.$fieldPk.');'."\n";
 		
-		$clientObject .= $this->indentation. '</script>'."\n";
+		$clientObject .= $this->ind. '</script>'."\n";
 		
 		return $clientObject;
 	}
@@ -258,9 +237,9 @@ class prumoSearch extends prumoBasic {
 		$htmlFilters = $this->pFilter->draw(false);
 		
 		// vinculo com o prumoFilter
-		$htmlFilters .= $this->indentation. '		<script type="text/javascript">'."\n";
-		$htmlFilters .= $this->indentation. '			'.$this->name.'.pFilter = pFilter_'.$this->name.";\n";
-		$htmlFilters .= $this->indentation. '		</script>'."\n";
+		$htmlFilters .= $this->ind. '		<script type="text/javascript">'."\n";
+		$htmlFilters .= $this->ind. '			'.$this->name.'.pFilter = pFilter_'.$this->name.";\n";
+		$htmlFilters .= $this->ind. '		</script>'."\n";
 		
 		return $htmlFilters;
 	}
@@ -275,9 +254,9 @@ class prumoSearch extends prumoBasic {
 		$htmlGrid = $this->pGrid->draw(false);
 		
 		// passa informação dos fields do servidor para o grid
-		$htmlGrid .= $this->indentation.'		<script type="text/javascript">'."\n";
+		$htmlGrid .= $this->ind.'		<script type="text/javascript">'."\n";
 		
-		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.field = new Array(';
+		$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.field = new Array(';
 		for ($i=0; $i < $this->fieldCount(); $i++) {
 			$htmlGrid .= '"'.$this->field[$i]['name'].'"';
 			if ($i < $this->fieldCount() -1) {
@@ -285,7 +264,7 @@ class prumoSearch extends prumoBasic {
 			}
 		}
 		$htmlGrid .= ');'."\n";
-		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.fieldType = new Array(';
+		$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.fieldType = new Array(';
 		for ($i=0; $i < $this->fieldCount(); $i++) {
 			$htmlGrid .= '"'.$this->field[$i]['type'].'"';
 			if ($i < $this->fieldCount() -1) {
@@ -293,7 +272,7 @@ class prumoSearch extends prumoBasic {
 			}
 		}
 		$htmlGrid .= ');'."\n";
-		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.fieldVisible = new Array(';
+		$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.fieldVisible = new Array(';
 		for ($i=0; $i < $this->fieldCount(); $i++) {
 			$fieldVisible = $this->field[$i]['visible'] == true ? 'true' : 'false';
 			$htmlGrid .= $fieldVisible;
@@ -303,16 +282,16 @@ class prumoSearch extends prumoBasic {
 		}
 		$htmlGrid .= ');'."\n";
 		
-		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.xmlIdentification = \''.$this->name.'\';'."\n";
-		$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.lineEventOnData = \''.$this->pGrid->lineEventOnData.'\';'."\n";
+		$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.xmlIdentification = \''.$this->name.'\';'."\n";
+		$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.lineEventOnData = \''.$this->pGrid->lineEventOnData.'\';'."\n";
 		if ($this->pGrid->pointerCursorOnData) {
-			$htmlGrid .= $this->indentation. '			pGrid_'.$this->name.'.pointerCursorOnData = true;'."\n";
+			$htmlGrid .= $this->ind. '			pGrid_'.$this->name.'.pointerCursorOnData = true;'."\n";
 		}
 		
 		// vinculo com o prumoGrid
-		$htmlGrid .= $this->indentation. '			'.$this->name.'.pGrid = pGrid_'.$this->name.";\n";
+		$htmlGrid .= $this->ind. '			'.$this->name.'.pGrid = pGrid_'.$this->name.";\n";
 		
-		$htmlGrid .= $this->indentation.'		</script>'."\n";
+		$htmlGrid .= $this->ind.'		</script>'."\n";
 		
 		return $htmlGrid;
 	}
@@ -324,15 +303,15 @@ class prumoSearch extends prumoBasic {
 	 */
 	protected function makeGridNavigation() {
 		
-		$htmlGridNavigation = $this->indentation.'		<div id="pGridNavigation_'.$this->name.'" class="prumoGridNavigation"></div>'."\n";
-		$htmlGridNavigation .= $this->indentation.'		<br />'."\n";
-		$htmlGridNavigation .= $this->indentation.'		<script type="text/javascript">'."\n";
-		$htmlGridNavigation .= $this->indentation.'			pGridNavigation_'.$this->name.' = new prumoGridNavigation(\''.$this->name.'\');'."\n";
+		$htmlGridNavigation = $this->ind.'		<div id="pGridNavigation_'.$this->name.'" class="prumoGridNavigation"></div>'."\n";
+		$htmlGridNavigation .= $this->ind.'		<br />'."\n";
+		$htmlGridNavigation .= $this->ind.'		<script type="text/javascript">'."\n";
+		$htmlGridNavigation .= $this->ind.'			pGridNavigation_'.$this->name.' = new prumoGridNavigation(\''.$this->name.'\');'."\n";
 		
 		// vinculo com o prumoGridNavigation
-		$htmlGridNavigation .= $this->indentation.'			'.$this->name.'.pGridNavigation = pGridNavigation_'.$this->name.';'."\n";
+		$htmlGridNavigation .= $this->ind.'			'.$this->name.'.pGridNavigation = pGridNavigation_'.$this->name.';'."\n";
 
-		$htmlGridNavigation .= $this->indentation.'		</script>'."\n";
+		$htmlGridNavigation .= $this->ind.'		</script>'."\n";
 		
 		return $htmlGridNavigation;
 	}
@@ -380,15 +359,15 @@ class prumoSearch extends prumoBasic {
 	public function draw($verbose) {
 		
 		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php');
-
+		
 		// junta os objetos
 		$pSearchInit = $this->initClientObject();
-		$pSearchChids = $this->makeFilters();
-		$pSearchChids .= $this->makeGrid();
-		$pSearchChids .= $this->makeGridNavigation();		
-		$pSearchChids = $this->addWindow($pSearchChids);
-
-		$pSearch = $pSearchInit . $pSearchChids;
+		$pSearchChilds = $this->makeFilters();
+		$pSearchChilds .= $this->makeGrid();
+		$pSearchChilds .= $this->makeGridNavigation();		
+		$pSearchChilds = $this->addWindow($pSearchChilds);
+		
+		$pSearch = $pSearchInit . $pSearchChilds;
 		
 		if ($verbose) {
 			echo $pSearch;
@@ -685,20 +664,20 @@ class prumoSearch extends prumoBasic {
 		
 		$pWindow = new prumoWindow('pWindow_'.$this->name);
 		$pWindow->title = $title;
-		$pWindow->indentation = $this->indentation;
+		$pWindow->ind = $this->ind;
 		$pWindow->commandClose = $this->name.'.cancel()';
 		$pSearchReturn = $pWindow->draw(false,$pSearch);
 		
 		// vinculo do prumoWindow com o prumoSearch
-		$pSearchReturn .= $this->indentation.'<script type="text/javascript">'."\n";
-		$pSearchReturn .= $this->indentation.'	'.$this->name.'.pWindow = pWindow_'.$this->name.";\n";
+		$pSearchReturn .= $this->ind.'<script type="text/javascript">'."\n";
+		$pSearchReturn .= $this->ind.'	'.$this->name.'.pWindow = pWindow_'.$this->name.";\n";
 		
 		// repassa parametro modal do prumoSearch (que só faz sentido se tiver pWindow, por isso o codigo esta aqui)
 		if (isset($this->param['modal'])) {
-			$pSearchReturn .= $this->indentation. '			'.$this->name.'.modal = '.$this->param['modal'].";\n";
+			$pSearchReturn .= $this->ind. '			'.$this->name.'.modal = '.$this->param['modal'].";\n";
 		}
-		$pSearchReturn .= $this->indentation. '	'.$this->name.'.pAjax.pLoading = new prumoLoading(\'pWindow_'.$this->name.'_loading\');'."\n";
-		$pSearchReturn .= $this->indentation.'</script>'."\n";
+		$pSearchReturn .= $this->ind. '	'.$this->name.'.pAjax.pLoading = new prumoLoading(\'pWindow_'.$this->name.'_loading\');'."\n";
+		$pSearchReturn .= $this->ind.'</script>'."\n";
 		
 		return $pSearchReturn;
 	}

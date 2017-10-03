@@ -24,12 +24,18 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoMenu é o menu principal do sistema
+ */
 class prumoMenu {
 	public $objName;
-	public $indentation;
+	public $ind;
 	
+	/**
+	 * Construtor da classe prumoMenu
+	 */
 	function __construct() {
-		$this->indentation = '';
+		$this->ind = '';
 	}
 	
 	/**
@@ -91,9 +97,9 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menu  = $this->indentation.'<div class="prumoMenu" onclick="'.$this->getObjName().'.onClick(\''.$arrParam['id'].
+		$menu  = $this->ind.'<div class="prumoMenu" onclick="'.$this->getObjName().'.onClick(\''.$arrParam['id'].
 		                                          '\',\''.$link.'\',event)">'.$icon.$arrParam['label'].'</div>'."\n";
-		$menu .= $this->indentation.'<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
+		$menu .= $this->ind.'<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
 		
 		return $menu;
 	}
@@ -111,9 +117,9 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menuL1  = $this->indentation.'	<div class="prumoMenuL1" onclick="'.$this->getObjName().'.onClick(\''.
+		$menuL1  = $this->ind.'	<div class="prumoMenuL1" onclick="'.$this->getObjName().'.onClick(\''.
 		              $arrParam['id'].'\',\''.$link.'\',event)">'.$icon.$arrParam['label'].'</div>'."\n";
-		$menuL1 .= $this->indentation.'	<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
+		$menuL1 .= $this->ind.'	<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
 		
 		return $menuL1;
 	}
@@ -131,9 +137,9 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menuL2  = $this->indentation.'		<div class="prumoMenuL2" onclick="'.$this->getObjName().'.onClick(\''.
+		$menuL2  = $this->ind.'		<div class="prumoMenuL2" onclick="'.$this->getObjName().'.onClick(\''.
 		                                   $arrParam['id'].'\',\''.$link.'\',event)">'.$icon.$arrParam['label'].'</div>'."\n";
-		$menuL2 .= $this->indentation.'		<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
+		$menuL2 .= $this->ind.'		<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
 		
 		return $menuL2;
 	}
@@ -151,10 +157,10 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menuL3  = $this->indentation.'			<div class="prumoMenuL3" onclick="'.$this->getObjName().'.onClick(\''.
+		$menuL3  = $this->ind.'			<div class="prumoMenuL3" onclick="'.$this->getObjName().'.onClick(\''.
 		            $arrParam['id'].'\',\''.$link.'\',event)">'.$icon.$arrParam['label'].
 		                                                                                            '</div>'."\n";
-		$menuL3 .= $this->indentation.'			<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
+		$menuL3 .= $this->ind.'			<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
 		
 		return $menuL3;
 	}
@@ -172,10 +178,10 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menuL4  = $this->indentation.'				<div class="prumoMenuL4" onclick="'.$this->getObjName().'.onClick(\''.
+		$menuL4  = $this->ind.'				<div class="prumoMenuL4" onclick="'.$this->getObjName().'.onClick(\''.
 		                       $arrParam['id'].'\',\''.$link.'\',event)">'.
 		                                                                             $icon.$arrParam['label'].'</div>'."\n";
-		$menuL4 .= $this->indentation.'				<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
+		$menuL4 .= $this->ind.'				<div id="'.$this->getObjName().'_'.$arrParam['id'].'">'."\n";
 		
 		return $menuL4;
 	}
@@ -193,7 +199,7 @@ class prumoMenu {
 		$icon = $this->extractIcon($node);
 		$link = $this->extractLink($node);
 		
-		$menuL5  = $this->indentation.'					<div class="prumoMenuL5" onclick="'.$this->getObjName().
+		$menuL5  = $this->ind.'					<div class="prumoMenuL5" onclick="'.$this->getObjName().
 		                                            '.onClick(\''.$arrParam['id'].'\',\''.$link.
 		                                           '\',event)">'.
 		                                                                   $icon.$arrParam['label'].'</div>'."\n";
@@ -218,9 +224,9 @@ class prumoMenu {
 		$htmlMenu  = "\n";
 		
 		// inicializa javascript
-		$htmlMenu .= $this->indentation.'<script type="text/javascript">'."\n";
-		$htmlMenu .= $this->indentation.'	'.$this->getObjName().' = new prumoMenu(\''.$this->getObjName().'\');'."\n";
-		$htmlMenu .= $this->indentation.'</script>'."\n";
+		$htmlMenu .= $this->ind.'<script type="text/javascript">'."\n";
+		$htmlMenu .= $this->ind.'	'.$this->getObjName().' = new prumoMenu(\''.$this->getObjName().'\');'."\n";
+		$htmlMenu .= $this->ind.'</script>'."\n";
 		
 		// input menu
 		$sql  = 'SELECT'."\n";
@@ -265,7 +271,7 @@ class prumoMenu {
 		$iMenu = 0;
 		//menu
 		foreach($xml as $value0){
-			$htmlMenu .= $this->indentation.'<div class="prumoMenuBox">'."\n";
+			$htmlMenu .= $this->ind.'<div class="prumoMenuBox">'."\n";
 			
 			$menu = array();
 			foreach($value0->attributes() as $menuAtt => $menuAttValue) {
@@ -342,24 +348,24 @@ class prumoMenu {
 								$iLevel5++;
 							}
 							if (count($level4Value->attributes()) > 0) {
-								$htmlMenu .= $this->indentation.'				</div>'."\n"; //menuL4
+								$htmlMenu .= $this->ind.'				</div>'."\n"; //menuL4
 							}
 						}
 						if (count($level3Value->attributes()) > 0) {
-							$htmlMenu .= $this->indentation.'			</div>'."\n"; //menuL3
+							$htmlMenu .= $this->ind.'			</div>'."\n"; //menuL3
 						}
 					}
 					if (count($level2Value->attributes()) > 0) {
-						$htmlMenu .= $this->indentation.'		</div>'."\n";  //menuL2
+						$htmlMenu .= $this->ind.'		</div>'."\n";  //menuL2
 					}
 				}
 				if (count($level1Value->attributes()) > 0) {
-					$htmlMenu .= $this->indentation.'	</div>'."\n"; //menuL1
+					$htmlMenu .= $this->ind.'	</div>'."\n"; //menuL1
 				}
 			}
-			$htmlMenu .= $this->indentation.'</div>'."\n"; //menu
-			$htmlMenu .= $this->indentation.'</div>'."\n";
-			$htmlMenu .= $this->indentation.'<br />'."\n";
+			$htmlMenu .= $this->ind.'</div>'."\n"; //menu
+			$htmlMenu .= $this->ind.'</div>'."\n";
+			$htmlMenu .= $this->ind.'<br />'."\n";
 		}
 		
 		if ($verbose) {
@@ -369,29 +375,34 @@ class prumoMenu {
 		return $htmlMenu;
 	}
 	
-	function openNodeXml($indentation,$start,$node) {
+	function openNodeXml($ind, $start, $node) {
 		
 		$id = str_replace(' ','_',$node['menu_label']);
 		$id = strtolower($id);
-		$xmlReturn = $indentation.$start.' id="'.$id.'" label="'._($node['menu_label']).'">'."\n";
+		$xmlReturn = $ind.$start.' id="'.$id.'" label="'._($node['menu_label']).'">'."\n";
 		if ($node['routine'] != '' and $node['childs'] == 0) {
 			if (isset($node['link'])) {
 				$explode = explode(':',$node['link']);
 				$protocol = $explode[0];
 				if ($protocol == 'http') {
-					$xmlReturn .= $indentation.'	<link>'.$node['link'].'</link>'."\n";
+					$xmlReturn .= $ind.'	<link>'.$node['link'].'</link>'."\n";
 				}
 				else {
-					$xmlReturn .= $indentation.'	<link>index.php?page='.$node['routine'].'</link>'."\n";
+					$xmlReturn .= $ind.'	<link>index.php?page='.$node['routine'].'</link>'."\n";
 				}
 			}
 			else {
-				$xmlReturn .= $indentation.'	<link>index.php?page='.$node['routine'].'</link>'."\n";
+				$xmlReturn .= $ind.'	<link>index.php?page='.$node['routine'].'</link>'."\n";
 			}
 		}
 		return $xmlReturn;
 	}
 	
+	/**
+	 * Gera um XML com os dados do menu pegando do banco de dados
+	 *
+	 * @return string: xml com os dados do menu
+	 */
 	public function dbXml() {
 		global $pConnectionPrumo;
 		global $prumoGlobal;

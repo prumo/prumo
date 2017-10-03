@@ -24,6 +24,9 @@
  *
  * ******************************************************************* */
 
+/**
+ * Classe básica que contém a estrutura mais simples dos CRUD com os parâmetros básicos do objeto e os fields
+ */
 class prumoBasic {
 	
 	public $name;
@@ -32,9 +35,14 @@ class prumoBasic {
 	public $param;
 	
 	protected $pConnection;
+	protected $ajaxFile;
+	protected $ind = '';
 	
-	protected $strParams;
-	
+	/**
+	 * Construtor da classe prumoBasic
+	 *
+	 * @param $params string: parâmetros principais
+	 */
 	function __construct($params) {
 		global $pConnection;
 		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php');
@@ -43,9 +51,31 @@ class prumoBasic {
 		
 		$this->param = pParameters($params);
 		$this->param['schema'] = isset($this->param['schema']) ? $this->param['schema'] : $GLOBALS['pConfig']['appSchema'];
+		$this->ajaxFile = $this->getAjaxFileName();
 		$this->name = isset($this->param['objname']) ? $this->param['objname'] : '';
+	}
+	
+	/**
+	 * Pega o nome do arquivo XML (controller da aplicação)
+	 */
+	private function getAjaxFileName() {
 		
-		$this->strParams = $params;
+		$files = get_included_files();
+		$lastInclusion = $files[count($files)-1];
+		
+		if (!isset($this->param['xmlfile'])) {
+			if (dirname($_SERVER["SCRIPT_FILENAME"]) == dirname($lastInclusion)) {
+				$this->param['xmlfile'] = basename($lastInclusion);
+			}
+			else {
+				$this->param['xmlfile'] = $GLOBALS['pConfig']['appWebPath'] . str_replace($GLOBALS['pConfig']['appPath'], '', $lastInclusion);
+			}
+		}
+		
+		// transforma o caminho do arquivo ajax de relatovo para absoluto
+		$ajaxFileName = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
+		
+		return $ajaxFileName;
 	}
 	
 	/**
@@ -108,8 +138,7 @@ class prumoBasic {
 		            'default' => $default,
 		            'type' => $type,
 		            'notnull' => $notNull,
-		            'visible' => $visible,
-		            'strParams' => $params
+		            'visible' => $visible
 		         );
 		
 		if (isset($param['search'])) {
@@ -163,6 +192,15 @@ class prumoBasic {
 		echo '<script type="text/javascript">'."\n";
 		echo "	".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
 		echo '</script>'."\n";
+	}
+	
+	/**
+	 * Seta a indentação para organizar o código gerado no lado do cliente
+	 *
+	 * @param $ind string: tabs para indentação no lado do cliente
+	 */
+	public function setIndentation($ind) {
+		$this->ind = $ind;
 	}
 }
 

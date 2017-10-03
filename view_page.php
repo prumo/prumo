@@ -41,7 +41,7 @@ $pHtmlPreLayout = str_replace(':fullName:', $prumoGlobal['currentFullName'], $pH
 // menu
 require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
 $pMenu = new prumoMenu();
-$pMenu->indentation = '			';
+$pMenu->ind = '			';
 $pHtmlMenu  = $pMenu->draw(false);
 $pHtmlPreLayout = str_replace(':menu:',$pHtmlMenu,$pHtmlPreLayout);
 

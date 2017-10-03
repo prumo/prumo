@@ -24,16 +24,23 @@
  *
  * ******************************************************************* */
 
+/**
+ * Um tabset genérico
+ */
 class prumoTab {
+	
 	private $name;
 	private $tab;
 	private $tabLabel;
 	private $tabInclude;
 	private $tabHtml;
 	
-	public $indentation;
+	public $ind;
 	public $visible;
 	
+	/**
+	 * Constritor da classe prumoTab
+	 */
 	function __construct() {
 		$this->visible = true;
 	}
@@ -120,23 +127,23 @@ class prumoTab {
 		$visible = $this->visible ? ' style="display:block"' : ' style="display:none"';
 		
 		$top = ''."\n";
-		$top .= $this->indentation.'<script type="text/javascript">'."\n";
-		$top .= $this->indentation.'	var '.$this->name.' = new prumoTab(\''.$this->name.'\');'."\n";
+		$top .= $this->ind.'<script type="text/javascript">'."\n";
+		$top .= $this->ind.'	var '.$this->name.' = new prumoTab(\''.$this->name.'\');'."\n";
 		
 		for ($i=0; $i < count($this->tab); $i++) {
-			$top .= $this->indentation.'	'.$this->name.'.addTab(\''.$this->tab[$i].'\');'."\n";
+			$top .= $this->ind.'	'.$this->name.'.addTab(\''.$this->tab[$i].'\');'."\n";
 		}
 
-		$top .= $this->indentation.'</script>'."\n";
+		$top .= $this->ind.'</script>'."\n";
 
-		$top .= $this->indentation.'<fieldset id="'.$this->name.'"'.$visible.'>'."\n";
-		$top .= $this->indentation.'	<legend>'."\n";
+		$top .= $this->ind.'<fieldset id="'.$this->name.'"'.$visible.'>'."\n";
+		$top .= $this->ind.'	<legend>'."\n";
 		
 		for ($i=0; $i < count($this->tab); $i++) {
-			$top .= $this->indentation.'		<button class="pButton-outline" id="'.$this->name.'_bt_'.$this->tab[$i].'" onClick="'.$this->name.'.showTab(\''.$this->tab[$i].'\')">'.$this->tabLabel[$i].'</button>'."\n";
+			$top .= $this->ind.'		<button class="pButton-outline" id="'.$this->name.'_bt_'.$this->tab[$i].'" onClick="'.$this->name.'.showTab(\''.$this->tab[$i].'\')">'.$this->tabLabel[$i].'</button>'."\n";
 		}
 		
-		$top .= $this->indentation.'	</legend>'."\n";
+		$top .= $this->ind.'	</legend>'."\n";
 		
 		if ($verbose) {
 			echo $top;
@@ -154,7 +161,7 @@ class prumoTab {
 	 */
 	public function htmlClose($verbose) {
 		
-		$html = $this->indentation.'</fieldset>';
+		$html = $this->ind.'</fieldset>';
 		
 		if ($verbose) {
 			echo $html;
@@ -174,7 +181,7 @@ class prumoTab {
 		
 		for ($i=0; $i < count($this->tab); $i++) {
 			if ($this->tabLabel[$i] == $tabLabel) {
-				$html = $this->indentation.'		<div id="'.$this->name.'_tab_'.$this->tab[$i].'" style="display:none">'."\n";
+				$html = $this->ind.'		<div id="'.$this->name.'_tab_'.$this->tab[$i].'" style="display:none">'."\n";
 			}
 		}
 		
@@ -194,7 +201,7 @@ class prumoTab {
 	 */
 	public function htmlCloseTab($verbose) {	
 		
-		$html = $this->indentation.'		</div>'."\n";
+		$html = $this->ind.'		</div>'."\n";
 		
 		if ($verbose) {
 			echo $html;
@@ -213,9 +220,9 @@ class prumoTab {
 	public function showTab($verbose, $tabName) {
 		
 		$js = ''."\n";
-		$js .= $this->indentation.'<script type="text/javascript">'."\n";
-		$js .= $this->indentation.'	'.$this->name.'.showTab(\''.$tabName.'\');'."\n";
-		$js .= $this->indentation.'</script>'."\n";
+		$js .= $this->ind.'<script type="text/javascript">'."\n";
+		$js .= $this->ind.'	'.$this->name.'.showTab(\''.$tabName.'\');'."\n";
+		$js .= $this->ind.'</script>'."\n";
 		
 		if ($verbose) {
 			echo $js;

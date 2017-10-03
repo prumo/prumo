@@ -24,7 +24,11 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoPgConnection faz a conexão com banco de dados SQLite3
+ */
 class prumoSqlite3Connection {
+	
 	private $connection;
 	private $err;
 	
@@ -32,6 +36,11 @@ class prumoSqlite3Connection {
 	public $param;
 	public $sqlOperator;
 	
+	/**
+	 * Construtor da classe prumoSqlite3Connection
+	 *
+	 * @param $params string: string de parametros (verificar o ctrl_connection.php para exemplo)
+	 */
 	function __construct($params) {
 		$this->param = pParameters($params);
 		$this->connected = false;

@@ -24,20 +24,31 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoFilter é um sistema de filtros genérico que serve para prumoSearch, prumoCrudList e prumoQueue
+ */
 class prumoFilter {
-	private $indentation;
+	
+	private $parentName;
+	private $ind;
 	private $countVisible;
+	
 	public $field;
 	public $pConfig;
 	public $shortcut;
 	
-	function __construct($name, $field, $params) {
+	/**
+	 * Construtor da classe prumoFilter
+	 *
+	 * @param $parentName string: nome do objeto pai, usado para manipular os objetos em js
+	 * @param $field array: parametros do field
+	 */
+	function __construct($parentName, $field) {
 		global $pConfig;
 		$this->pConfig = $pConfig;
-
-		$this->param = pParameters($params);
-		$this->name = $name;
-
+		
+		$this->parentName = $parentName;
+		
 		$this->field = $field;
 		$this->shortcut = '';
 	}
@@ -45,10 +56,10 @@ class prumoFilter {
 	/**
 	 * Seta a indentação para organizar o código gerado no lado do cliente
 	 *
-	 * @param $indentation string: tabs para indentação no lado do cliente
+	 * @param $ind string: tabs para indentação no lado do cliente
 	 */
-	public function setIndentation($indentation) {
-		$this->indentation = $indentation;
+	public function setIndentarion($ind) {
+		$this->ind = $ind;
 	}
 	
 	/**
@@ -88,26 +99,23 @@ class prumoFilter {
 	 */
 	public function makeHtml() {
 		
-		$htmlFilters  = $this->indentation.'<div class="prumoFilter" align="center" id="pFilter_'.$this->name.'">'."\n";
-		$htmlFilters .= $this->indentation.'	<table>'."\n";
-		$htmlFilters .= $this->indentation.'		<tr>'."\n";
-		$htmlFilters .= $this->indentation.'			<td id="pFilter_'.$this->name.'_filters" style="text-align:left">'."\n";
-		$htmlFilters .= $this->indentation.'			</td>'."\n";
-		$htmlFilters .= $this->indentation.'			<td id="pFilter_'.$this->name.'_controls">'."\n";
-		$htmlFilters .= $this->indentation.'				<div style="text-align:center;">'."\n";
-		$htmlFilters .= $this->indentation.'					<button class="pButton" id="'.$this->name.'_btSearch" onclick="'.$this->name.'.cmdSearch()">'._('Pesquisar').'</button>'."\n";
-		$htmlFilters .= $this->indentation.'					<button class="pButton" id="'.$this->name.'_btSearchAll" onclick="'.$this->name.'.cmdSearchAll()">'._('Todos').'</button>'."\n";
+		$htmlFilters  = $this->ind.'<div class="prumoFilter" align="center" id="pFilter_'.$this->parentName.'">'."\n";
+		$htmlFilters .= $this->ind.'	<table>'."\n";
+		$htmlFilters .= $this->ind.'		<tr>'."\n";
+		$htmlFilters .= $this->ind.'			<td id="pFilter_'.$this->parentName.'_filters" style="text-align:left">'."\n";
+		$htmlFilters .= $this->ind.'			</td>'."\n";
+		$htmlFilters .= $this->ind.'			<td id="pFilter_'.$this->parentName.'_controls">'."\n";
+		$htmlFilters .= $this->ind.'				<div style="text-align:center;">'."\n";
+		$htmlFilters .= $this->ind.'					<button class="pButton" id="'.$this->parentName.'_btSearch" onclick="'.$this->parentName.'.cmdSearch()">'._('Pesquisar').'</button>'."\n";
+		$htmlFilters .= $this->ind.'					<button class="pButton" id="'.$this->parentName.'_btSearchAll" onclick="'.$this->parentName.'.cmdSearchAll()">'._('Todos').'</button>'."\n";
 		if (!empty($this->shortcut)) {
-			$htmlFilters .= $this->indentation.'					'.$this->shortcut."\n";
+			$htmlFilters .= $this->ind.'					'.$this->shortcut."\n";
 		}
-		if (isset($this->param['subscribe']) && $this->param['subscribe'] != '') {
-			$htmlFilters .= $this->indentation.'					<button id="'.$this->name.'_btAdd" onclick="">'._('Cadastrar').'</button>'."\n";
-		}
-		$htmlFilters .= $this->indentation.'				</div>'."\n";
-		$htmlFilters .= $this->indentation.'			</td>'."\n";
-		$htmlFilters .= $this->indentation.'		</tr>'."\n";
-		$htmlFilters .= $this->indentation.'	</table>'."\n";
-		$htmlFilters .= $this->indentation.'</div>'."\n";
+		$htmlFilters .= $this->ind.'				</div>'."\n";
+		$htmlFilters .= $this->ind.'			</td>'."\n";
+		$htmlFilters .= $this->ind.'		</tr>'."\n";
+		$htmlFilters .= $this->ind.'	</table>'."\n";
+		$htmlFilters .= $this->ind.'</div>'."\n";
 		
 		return $htmlFilters;
 	}
@@ -121,10 +129,10 @@ class prumoFilter {
 	 */
 	private function makeJs() {
 		
-		$jsFilters  = $this->indentation.'<script type="text/javascript">'."\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.' = new prumoFilter(\'pFilter_'.$this->name.'\');'."\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.prumoWebPath = \''.$GLOBALS['pConfig']['prumoWebPath'].'\';'."\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.parent = '.$this->name.';'."\n";
+		$jsFilters  = $this->ind.'<script type="text/javascript">'."\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.' = new prumoFilter(\'pFilter_'.$this->parentName.'\');'."\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.prumoWebPath = \''.$GLOBALS['pConfig']['prumoWebPath'].'\';'."\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.parent = '.$this->parentName.';'."\n";
 
 		// passa informação dos fields do servidor para o filter
 		$filterName = '';
@@ -149,11 +157,11 @@ class prumoFilter {
 			}
 		}
 		
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.fieldName  = new Array('.$filterName.");\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.fieldLabel = new Array('.$filterLabel.");\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.fieldType  = new Array('.$filterType.");\n";
-		$jsFilters .= $this->indentation.'	pFilter_'.$this->name.'.draw();'."\n";
-		$jsFilters .= $this->indentation.'</script>'."\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.fieldName  = new Array('.$filterName.");\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.fieldLabel = new Array('.$filterLabel.");\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.fieldType  = new Array('.$filterType.");\n";
+		$jsFilters .= $this->ind.'	pFilter_'.$this->parentName.'.draw();'."\n";
+		$jsFilters .= $this->ind.'</script>'."\n";
 		
 		return $jsFilters;
 	}

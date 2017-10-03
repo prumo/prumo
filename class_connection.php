@@ -24,6 +24,9 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoConnection faz a conexão com o banco de dados de acordo com o sgdb escolhido nas configurações
+ */
 class prumoConnection {
 	private $connection;
 	public $param;
@@ -32,7 +35,13 @@ class prumoConnection {
 	private $name;
 	
 	public $logType;
-
+	
+	/**
+	 * Construtor da classe prumoConnection
+	 *
+	 * @params string: parametros de conxão (é configurado em ctrl_connection.php)
+	 * @param $logType string: tipo de log (é configurado em ctrl_connection.php)
+	 */
 	function __construct($params, $logType=array()) {
 		
 		$this->param = pParameters($params);
@@ -50,6 +59,9 @@ class prumoConnection {
 		}
 	}
 	
+	/**
+	 * Zera alguns parametros ao clonar
+	 */
 	function __clone() {
 		
 		$this->name = '';

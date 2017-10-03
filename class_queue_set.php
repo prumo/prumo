@@ -24,26 +24,30 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoQueueSet é tabset com 1 ou mais listagems prumoQueue
+ */
 class prumoQueueSet {
-	private $name;
 	
+	private $name;
+	private $ind;
 	private $pQueueName;
 	private $pQueueLabel;
 	private $pQueueFilename;
 	private $pQueueType;
 	
-	public $indent;
 	public $classBt;
 	public $classBtFocus;
 	
-	function __construct($objName='') {
-		
-		$this->name = $objName;
+	/**
+	 * Construtor da classe prumoQueueSet
+	 */
+	function __construct() {
 		$this->pQueueName = array();
 		$this->pQueueLabel = array();
 		$this->pQueueFilename = array();
 		$this->pQueueType = array();
-		$this->indent = '';
+		$this->ind = '';
 		$this->classBt = 'pQueueSetBt';
 		$this->classBtFocus = 'pQueueSetBtFocus';
 	}
@@ -81,9 +85,7 @@ class prumoQueueSet {
 	 * @param $routine string: quando informado, mostra a tab apenas quando o usuário logado tem permissão para a rotina
 	 */
 	public function addQueue($pQueueName, $pQueueLabel, $pQueueFilename='', $routine='') {
-		
 		if (pPermitted($routine)) {
-			
 			$this->pQueueName[] = $pQueueName;
 			$this->pQueueLabel[] = $pQueueLabel;
 			$this->pQueueFilename[] = $pQueueFilename;
@@ -96,13 +98,11 @@ class prumoQueueSet {
 	 *
 	 * @param $pQueueName string: nome da fila (não pode conter espaços)
 	 * @param $pQueueLabel string: Rótulo do tabset (pode conter espaços e acentos)
-	 * @param $include string: nome do arquivo a ser incluído na tab (opcional)
-	 * @param $html string: código html a ser incluído na tab (opcional)
+	 * @param $fileName string: nome do arquivo a ser incluído na tab (opcional)
+	 * @param $routine string: nome da routine para verificar as permissões
 	 */
 	public function addTab($pQueueName, $pQueueLabel, $fileName='', $routine='') {
-		
 		if (pPermitted($routine)) {
-			
 			$this->pQueueName[] = $pQueueName;
 			$this->pQueueLabel[] = $pQueueLabel;
 			$this->pQueueFilename[] = $fileName;
@@ -115,11 +115,10 @@ class prumoQueueSet {
 	 */
 	public function makeHtml() {
 		
-		$indent = $this->indent;
-		echo $indent.'<fieldset class="pQueueSet">'."\n";
+		echo $this->ind.'<fieldset class="pQueueSet">'."\n";
 		
 		// adiciona os botões
-		echo $indent.'<legend>';
+		echo $this->ind.'<legend>';
 		for ($i=0; $i < count($this->pQueueLabel); $i++) {
 			
 			echo "\n";
@@ -149,9 +148,9 @@ class prumoQueueSet {
 				require($this->pQueueFilename[$i]);
 				
 				if ($i > 0) {
-					echo $indent.'<script type="text/javascript">'."\n";		
-					echo $indent.'	document.getElementById(\'div_'.$this->pQueueName[$i].'\').style.display = \'none\';'."\n";
-					echo $indent.'</script>'."\n";
+					echo $this->ind.'<script type="text/javascript">'."\n";		
+					echo $this->ind.'	document.getElementById(\'div_'.$this->pQueueName[$i].'\').style.display = \'none\';'."\n";
+					echo $this->ind.'</script>'."\n";
 				}
 			}
 			
@@ -167,50 +166,50 @@ class prumoQueueSet {
 			}
 		}
 		
-		echo $indent.'</fieldset>'."\n";
+		echo $this->ind.'</fieldset>'."\n";
 		
 		// adiciona javascript que coloca a quantidade de itens da fila no label
-		echo $indent.'<script type="text/javascript">'."\n";
+		echo $this->ind.'<script type="text/javascript">'."\n";
 		
 		for ($i=0; $i < count($this->pQueueName); $i++) {
 			
 			if ($this->pQueueType[$i] == 'prumoQueue') {
 				
-				echo $indent.'	'.$this->pQueueName[$i].'.afterList = function() {'."\n";
-				echo $indent.'		if (this.pGridNavigation.count == 0) {'."\n";
-				echo $indent.'			document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].'\';'."\n";
-				echo $indent.'		}'."\n";
-				echo $indent.'		else {'."\n";
-				echo $indent.'			document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].' (\'+this.pGridNavigation.count+\')\';'."\n";
-				echo $indent.'		}'."\n";
-				echo $indent.'	}'."\n";
-				echo $indent."\n";
+				echo $this->ind.'	'.$this->pQueueName[$i].'.afterList = function() {'."\n";
+				echo $this->ind.'		if (this.pGridNavigation.count == 0) {'."\n";
+				echo $this->ind.'			document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].'\';'."\n";
+				echo $this->ind.'		}'."\n";
+				echo $this->ind.'		else {'."\n";
+				echo $this->ind.'			document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].' (\'+this.pGridNavigation.count+\')\';'."\n";
+				echo $this->ind.'		}'."\n";
+				echo $this->ind.'	}'."\n";
+				echo $this->ind."\n";
 			}
 			
-			echo $indent.'	function '.$this->getObjName().'BtMouseover'.$i.'() {'."\n";
+			echo $this->ind.'	function '.$this->getObjName().'BtMouseover'.$i.'() {'."\n";
 			for ($j=0; $j < count($this->pQueueName); $j++) {
 				
 				if ($j == $i) {
-					echo $indent.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').style.fontWeight = \'bold\';'."\n";
-					echo $indent.'		document.getElementById(\'div_'.$this->pQueueName[$j].'\').style.display = \'block\';'."\n";
-					echo $indent.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').className = \'pButton-outline active\';'."\n";
+					echo $this->ind.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').style.fontWeight = \'bold\';'."\n";
+					echo $this->ind.'		document.getElementById(\'div_'.$this->pQueueName[$j].'\').style.display = \'block\';'."\n";
+					echo $this->ind.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').className = \'pButton-outline active\';'."\n";
 				}
 				else {
-					echo $indent.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').style.fontWeight = \'normal\';'."\n";
-					echo $indent.'		document.getElementById(\'div_'.$this->pQueueName[$j].'\').style.display = \'none\';'."\n";
-					echo $indent.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').className = \'pButton-outline\';'."\n";
+					echo $this->ind.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').style.fontWeight = \'normal\';'."\n";
+					echo $this->ind.'		document.getElementById(\'div_'.$this->pQueueName[$j].'\').style.display = \'none\';'."\n";
+					echo $this->ind.'		document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').className = \'pButton-outline\';'."\n";
 				}
 			}
 			
 			if ($this->pQueueType[$i] == 'prumoQueue') {
-				echo $indent.'		'.$this->pQueueName[$i].'.pFilter.focus();'."\n";
+				echo $this->ind.'		'.$this->pQueueName[$i].'.pFilter.focus();'."\n";
 			}
 			
-			echo $indent.'	}'."\n";
-			echo $indent."\n";
+			echo $this->ind.'	}'."\n";
+			echo $this->ind."\n";
 		}
 		
-		echo $indent.'</script>'."\n";
+		echo $this->ind.'</script>'."\n";
 	}
 	
 	/**
@@ -218,15 +217,14 @@ class prumoQueueSet {
 	 */
 	public function goSearchAll() {
 		
-		$indent = $this->indent;
-		echo $indent.'<script type="text/javascript">'."\n";
+		echo $this->ind.'<script type="text/javascript">'."\n";
 		
 		for ($i=0; $i < count($this->pQueueName); $i++) {
 			if ($this->pQueueType[$i] == 'prumoQueue') {
-				echo $indent.$this->pQueueName[$i].'.goSearch();	'."\n";
+				echo $this->ind.$this->pQueueName[$i].'.goSearch();	'."\n";
 			}
 		}
 		
-		echo $indent.'</script>'."\n";
+		echo $this->ind.'</script>'."\n";
 	}
 }

@@ -24,19 +24,28 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoGrid é o grid usado no prumoSearch, prumoCrudList e prumoQueue
+ */
 class prumoGrid {
 	
-	private $name;
+	private $parentName;
 	private $lines;
 	private $column;
 	public $width;
-	public $indentation;
+	public $ind;
 	public $lineEventOnData;
 	public $pointerCursorOnData;
 	
-	function __construct($name,$lines) {
+	/**
+	 * Construtos da calsse prumoGrid
+	 *
+	 * @param $parentName string: nome do objeto pai
+	 * @param $lines integer: quantidade de linhas do grid
+	 */
+	function __construct($parentName, $lines) {
 		
-		$this->name = $name;
+		$this->parentName = $parentName;
 		$this->lines = $lines;
 		$column = array();
 		$this->width = 0;
@@ -81,7 +90,7 @@ class prumoGrid {
 	 * @return string: código HTML
 	 */
 	private function tableGridHeader() {
-		return "\n".$this->indentation.'<table id="pGrid_'.$this->name.'" class="prumoGridTable">'."\n";
+		return "\n".$this->ind.'<table id="pGrid_'.$this->parentName.'" class="prumoGridTable">'."\n";
 	}
 	
 	/**
@@ -90,7 +99,7 @@ class prumoGrid {
 	 * @return string: código HTML
 	 */
 	private function tableClose() {
-		return $this->indentation.'</table>'."\n";
+		return $this->ind.'</table>'."\n";
 	}
 	
 	/**
@@ -100,18 +109,18 @@ class prumoGrid {
 	 */
 	private function dataHeader() {
 		
-		$header  = $this->indentation.'	<tr class="prumoGridTh">'."\n";
+		$header  = $this->ind.'	<tr class="prumoGridTh">'."\n";
 		
 		for ($i=0; $i < count($this->column); $i++) {
 			
 			if ($this->column[$i]['visible'] != false) {
-				$header .= $this->indentation.'		<th class="prumoGridTh" id="prumoGridTh_'.$this->name .'_'.$this->column[$i]['name'].'" style="text-align:'.$this->column[$i]['labelalign']
-				                                              .'" onclick="' . $this->name . '.sort(\'' . $this->column[$i]['name'] . '\')'
+				$header .= $this->ind.'		<th class="prumoGridTh" id="prumoGridTh_'.$this->parentName .'_'.$this->column[$i]['name'].'" style="text-align:'.$this->column[$i]['labelalign']
+				                                              .'" onclick="' . $this->parentName . '.sort(\'' . $this->column[$i]['name'] . '\')'
 	                                                          .'">'.$this->column[$i]['label'].'</th>'."\n";
 			}
 		}
 		
-		$header .= $this->indentation.'	</tr>'."\n";
+		$header .= $this->ind.'	</tr>'."\n";
 		
 		return $header;
 	}
@@ -125,17 +134,17 @@ class prumoGrid {
 	 */
 	private function line($index) {
 		
-		$line = is_int($index/2) ? $this->indentation.'	<tr class="prumoGridTrEven">'."\n" : $this->indentation.'	<tr class="prumoGridTrOdd">'."\n";
+		$line = is_int($index/2) ? $this->ind.'	<tr class="prumoGridTrEven">'."\n" : $this->ind.'	<tr class="prumoGridTrOdd">'."\n";
 		
 		for ($i=0; $i < count($this->column); $i++) {
 			
 			if ($this->column[$i]['visible'] != false) {
-				$line .= $this->indentation.'		<td class="prumoGridTd" style="text-align:'.$this->column[$i]['align']
+				$line .= $this->ind.'		<td class="prumoGridTd" style="text-align:'.$this->column[$i]['align']
     	                                                                                          .'"><br /></td>'."\n";
 			}
 		}
 		
-		$line .= $this->indentation.'	</tr>'."\n";
+		$line .= $this->ind.'	</tr>'."\n";
 		
 		return $line;
 	}
@@ -162,10 +171,10 @@ class prumoGrid {
 	 */
 	private function clientObject() {
 		
-		$client  = $this->indentation.'<script type="text/javascript">'."\n";
-		$client .= $this->indentation.'	pGrid_'.$this->name.' = new prumoGrid(\'pGrid_'.$this->name.'\');'."\n";
-		$client .= $this->indentation.'	pGrid_'.$this->name.'.lines = '.$this->lines.';'."\n";
-		$client .= $this->indentation.'</script>'."\n";
+		$client  = $this->ind.'<script type="text/javascript">'."\n";
+		$client .= $this->ind.'	pGrid_'.$this->parentName.' = new prumoGrid(\'pGrid_'.$this->parentName.'\');'."\n";
+		$client .= $this->ind.'	pGrid_'.$this->parentName.'.lines = '.$this->lines.';'."\n";
+		$client .= $this->ind.'</script>'."\n";
 		
 		return $client;
 	}

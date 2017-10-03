@@ -24,8 +24,14 @@
  *
  * ******************************************************************* */
 
-
+/**
+ * prumoQueue é um tipo de lista parecida com o prumoCrudList, porém não precisa estar associado a um objeto crud,
+ * pode ser usado combinado com prumoTabSet.
+ *
+ * Serve para fazer telas com filas de trabalho na aplicação
+ */
 class prumoQueue extends prumoSearch {
+	
 	protected $orderby;
 	
 	public $htmlTop = '';
@@ -59,14 +65,14 @@ class prumoQueue extends prumoSearch {
 		
 		// junta os objetos
 		$pSearchInit = $this->initClientObject();
-		$pSearchChids = '<div id="' . $this->name . '_header">' . $this->htmlTop . '</div>';
-		$pSearchChids .= '<div id="' . $this->name . '_body">';
-		$pSearchChids .= parent::makeFilters();
-		$pSearchChids .= parent::makeGrid();
-		$pSearchChids .= parent::makeGridNavigation();
-		$pSearchChids .= '</div>';
-		$pSearchChids .= '<div id="' . $this->name . '_footer">' . $this->htmlBottom . '</div>';
-		$pSearchChids = $this->addWindow($pSearchChids);
+		$pSearchChilds = '<div id="' . $this->name . '_header">' . $this->htmlTop . '</div>';
+		$pSearchChilds .= '<div id="' . $this->name . '_body">';
+		$pSearchChilds .= parent::makeFilters();
+		$pSearchChilds .= parent::makeGrid();
+		$pSearchChilds .= parent::makeGridNavigation();
+		$pSearchChilds .= '</div>';
+		$pSearchChilds .= '<div id="' . $this->name . '_footer">' . $this->htmlBottom . '</div>';
+		$pSearchChilds = $this->addWindow($pSearchChilds);
 		
 		// muda o evento click
 		$pQueue = "\n";
@@ -74,7 +80,7 @@ class prumoQueue extends prumoSearch {
 		$pQueue .= '	pGrid_'.$this->name.'.lineEventOnData = \''.$this->name.'.lineClick(%)\';'."\n";
 		$pQueue .= '</script>'."\n";
 		
-		$pSearch = $pSearchInit . $pSearchChids . $pQueue;
+		$pSearch = $pSearchInit . $pSearchChilds . $pQueue;
 		
 		if ($verbose) {
 			echo $pSearch;
@@ -115,19 +121,16 @@ class prumoQueue extends prumoSearch {
 	 */
 	protected function initClientObject() {
 		
-		// trata o caminho do xmlFile (relativo e absoluto)
-		$ajaxFile = substr($this->param['xmlfile'],0,1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
-		
 		// instancia o objeto prumoSearch no cliente
-		$clientObject = $this->indentation. '<script type="text/javascript">'."\n";
-		$clientObject .= $this->indentation. '	'.$this->name.' = new prumoQueue(\''.$this->name.'\',\''.$ajaxFile.'\');'."\n";
+		$clientObject = $this->ind. '<script type="text/javascript">'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.' = new prumoQueue(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
 		
 		// repassa condicionalmente o pog debug para o objeto ajax
 		if (isset($this->param['debug']) && $this->param['debug']) {
-			$clientObject .= $this->indentation. '	'.$this->name.'.pAjax.debug = true;'."\n";
+			$clientObject .= $this->ind. '	'.$this->name.'.pAjax.debug = true;'."\n";
 		}
 		
-		$clientObject .= $this->indentation. '</script>'."\n";
+		$clientObject .= $this->ind. '</script>'."\n";
 		
 		return $clientObject;
 	}

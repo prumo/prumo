@@ -24,9 +24,12 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoWindow é uma janela popuo usando divs 
+ */
 class prumoWindow {
 	private $objName;
-	public $indentation;
+	public $ind;
 	
 	// client property
 	public $width;
@@ -37,6 +40,11 @@ class prumoWindow {
 	public $showBtClose;
 	public $commandClose;
 	
+	/**
+	 * Construtor da classe prumoWindow
+	 *
+	 * @param $objName string: nome do objeto
+	 */
 	function __construct($objName='') {
 		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php');		
 		
@@ -45,7 +53,7 @@ class prumoWindow {
 		$this->title       = 'prumoWindow';
 		$this->align       = 'center';
 		$this->vAlign      = 'top';
-		$this->indentation = '';
+		$this->ind = '';
 		$this->showBtClose   = true;
 	}
 	
@@ -88,20 +96,20 @@ class prumoWindow {
 		
 		$this->getObjName();
 		
-		$pWindow  = $this->indentation . '<div class="prumoVeil" id="'.$this->objName.'_veil"></div>'."\n";
-		$pWindow .= $this->indentation . '<div class="prumoWindow" id="'.$this->objName.'">'."\n";
-		$pWindow .= $this->indentation . '	<div class="prumoWindowTitle" id="'.$this->objName.'_titleBar">'."\n";
+		$pWindow  = $this->ind . '<div class="prumoVeil" id="'.$this->objName.'_veil"></div>'."\n";
+		$pWindow .= $this->ind . '<div class="prumoWindow" id="'.$this->objName.'">'."\n";
+		$pWindow .= $this->ind . '	<div class="prumoWindowTitle" id="'.$this->objName.'_titleBar">'."\n";
 		
-		$pWindow .= $this->indentation . '		<div class="prumoWindowClose" id="'.$this->objName.'_close"' . ($this->showBtClose == false ? 'style="display:none"' : '') . '>'."\n";
-		$pWindow .= $this->indentation . '			<a href="javascript:'.$this->commandClose.'">'."\n";
-		$pWindow .= $this->indentation . '				<img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/close.png" alt="[X]" />'."\n";
-		$pWindow .= $this->indentation . '			</a>'."\n";
-		$pWindow .= $this->indentation . '		</div>'."\n";
+		$pWindow .= $this->ind . '		<div class="prumoWindowClose" id="'.$this->objName.'_close"' . ($this->showBtClose == false ? 'style="display:none"' : '') . '>'."\n";
+		$pWindow .= $this->ind . '			<a href="javascript:'.$this->commandClose.'">'."\n";
+		$pWindow .= $this->ind . '				<img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/close.png" alt="[X]" />'."\n";
+		$pWindow .= $this->ind . '			</a>'."\n";
+		$pWindow .= $this->ind . '		</div>'."\n";
     		
-		$pWindow .= $this->indentation . '		<div id="'.$this->objName.'_title" class="prumoWindowTitle" onmousedown="'.$this->objName.'.move()" onmouseup="'.$this->objName.'.dropMove()">titulo</div>'."\n";
-		$pWindow .= $this->indentation . '		<div id="'.$this->objName.'_loading" class="prumoWindowLoading"><img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/loading.gif" alt="" /></div>'."\n";
-		$pWindow .= $this->indentation . '	</div>'."\n";
-		$pWindow .= $this->indentation . '	<div class="prumoWindowBody">'."\n";
+		$pWindow .= $this->ind . '		<div id="'.$this->objName.'_title" class="prumoWindowTitle" onmousedown="'.$this->objName.'.move()" onmouseup="'.$this->objName.'.dropMove()">titulo</div>'."\n";
+		$pWindow .= $this->ind . '		<div id="'.$this->objName.'_loading" class="prumoWindowLoading"><img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/loading.gif" alt="" /></div>'."\n";
+		$pWindow .= $this->ind . '	</div>'."\n";
+		$pWindow .= $this->ind . '	<div class="prumoWindowBody">'."\n";
 		
 		if ($verbose) {
 			echo $pWindow;
@@ -121,16 +129,16 @@ class prumoWindow {
 		
 		$this->getObjName();
 		
-		$pWindow  = $this->indentation . '	</div>'."\n";
-		$pWindow .= $this->indentation . '</div>'."\n";
+		$pWindow  = $this->ind . '	</div>'."\n";
+		$pWindow .= $this->ind . '</div>'."\n";
 		
-		$pWindow .= $this->indentation . '<script type="text/javascript">'."\n";
-		$pWindow .= $this->indentation . '	'.$this->objName.' = new prumoWindow(\''.$this->objName.'\');'."\n";
-		$pWindow .= $this->indentation . '	'.$this->objName.'.width = '.$this->width.';'."\n";
-		$pWindow .= $this->indentation . '	'.$this->objName.'.title = \''.$this->title.'\';'."\n";
-		$pWindow .= $this->indentation . '	'.$this->objName.'.align = \''.$this->align.'\';'."\n";
-		$pWindow .= $this->indentation . '	'.$this->objName.'.vAlign = \''.$this->vAlign.'\';'."\n";		
-		$pWindow .= $this->indentation . '</script>'."\n";
+		$pWindow .= $this->ind . '<script type="text/javascript">'."\n";
+		$pWindow .= $this->ind . '	'.$this->objName.' = new prumoWindow(\''.$this->objName.'\');'."\n";
+		$pWindow .= $this->ind . '	'.$this->objName.'.width = '.$this->width.';'."\n";
+		$pWindow .= $this->ind . '	'.$this->objName.'.title = \''.$this->title.'\';'."\n";
+		$pWindow .= $this->ind . '	'.$this->objName.'.align = \''.$this->align.'\';'."\n";
+		$pWindow .= $this->ind . '	'.$this->objName.'.vAlign = \''.$this->vAlign.'\';'."\n";		
+		$pWindow .= $this->ind . '</script>'."\n";
 		
 		if ($verbose) {
 			echo $pWindow;

@@ -24,6 +24,9 @@
  *
  * ******************************************************************* */
 
+/**
+ * prumoCrudList é a listagem de um objeto crud
+ */
 class prumoCrudList extends prumoSearch {
 	
 	/**
@@ -71,9 +74,9 @@ class prumoCrudList extends prumoSearch {
 		$field = $this->fieldByName($fieldName);
 		$fieldType = $field['type'];
 		
-		$fieldReturn  = $this->indentation.'<script type="text/javascript">'."\n";
-		$fieldReturn .= $this->indentation. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\''.", false);\n";
-		$fieldReturn .= $this->indentation.'</script>'."\n";
+		$fieldReturn  = $this->ind.'<script type="text/javascript">'."\n";
+		$fieldReturn .= $this->ind. '	'.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\''.", false);\n";
+		$fieldReturn .= $this->ind.'</script>'."\n";
 		
 		if ($verbose) {
 			echo $fieldReturn;
@@ -89,40 +92,37 @@ class prumoCrudList extends prumoSearch {
 	 */
 	private function initClientObject() {
 		
-		// trata o caminho do xmlFile (relativo e absoluto)
-		$ajaxFile = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
-		
 		// instancia o objeto prumoCrudList no cliente
-		$clientObject  = $this->indentation. '<script type="text/javascript">'."\n";
-		$clientObject .= $this->indentation. '	'.$this->name.' = new prumoCrudList(\''.$this->name.'\',\''.$ajaxFile.'\');'."\n";
-		$clientObject .= $this->indentation. '	'.$this->name.'.objName = \''.$this->name.'\';'."\n";
-		$clientObject .= $this->indentation. '	'.$this->name.'.parent = '.$this->param['crudname'].';'."\n";
+		$clientObject  = $this->ind. '<script type="text/javascript">'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.' = new prumoCrudList(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.'.objName = \''.$this->name.'\';'."\n";
+		$clientObject .= $this->ind. '	'.$this->name.'.parent = '.$this->param['crudname'].';'."\n";
 		
 		// repassa condicionalmente o pog debug para o objeto ajax
 		if (isset($this->param['debug']) and $this->param['debug']) {
-			$clientObject .= $this->indentation. '	'.$this->name.'.pAjax.debug = true;'."\n";
+			$clientObject .= $this->ind. '	'.$this->name.'.pAjax.debug = true;'."\n";
 		}
 		
 		// repassa parametro auto click
-		$clientObject .= $this->indentation . '	'. $this->name.'.autoClick = ';
+		$clientObject .= $this->ind . '	'. $this->name.'.autoClick = ';
 		$clientObject .= (isset($this->param['autoclick']) and $this->param['autoclick']) ? 'true;'."\n" : 'false;'."\n";
 		
 		//fastCreate
 		if (isset($this->param['fastcreate']) and $this->param['fastcreate']) {
-			$clientObject .= $this->indentation . '	'. $this->name.'.fastCreate = true;'."\n";
+			$clientObject .= $this->ind . '	'. $this->name.'.fastCreate = true;'."\n";
 		}
 		
 		//fastUpdate
 		if (isset($this->param['fastupdate']) and $this->param['fastupdate']) {
-			$clientObject .= $this->indentation . '	'. $this->name.'.fastUpdate = true;'."\n";
+			$clientObject .= $this->ind . '	'. $this->name.'.fastUpdate = true;'."\n";
 		}
 		
 		//fastDelete
 		if (isset($this->param['fastdelete']) and $this->param['fastdelete']) {
-			$clientObject .= $this->indentation . '	'. $this->name.'.fastDelete = true;'."\n";
+			$clientObject .= $this->ind . '	'. $this->name.'.fastDelete = true;'."\n";
 		}
 		
-		$clientObject .= $this->indentation. '</script>'."\n";
+		$clientObject .= $this->ind. '</script>'."\n";
 		
 		return $clientObject;
 	}
@@ -135,7 +135,7 @@ class prumoCrudList extends prumoSearch {
 	protected function makeShortcut() {
 		if (!isset($this->param['routine']) || empty($this->param['routine']) || pPermitted($this->param['routine'], 'c')) {
 			$onClick = $this->pFilter->btNew = $this->param['crudname'].'.bt_new()';
-			return $this->indentation.'					<button class="pButton" id="'.$this->pFilter->name.'_btNew" onclick="'.$onClick.'">'._('Inserir Novo').'</button>'."\n";
+			return $this->ind.'					<button class="pButton" id="'.$this->name.'_btNew" onclick="'.$onClick.'">'._('Inserir Novo').'</button>'."\n";
 		}
 		else {
 			return 'aa';
@@ -186,9 +186,9 @@ class prumoCrudList extends prumoSearch {
 	 */
 	private function makeCrudLink() {
 		
-		$htmlCrudLink  = $this->indentation.'		<script type="text/javascript">'."\n";
-		$htmlCrudLink .= $this->indentation.'			'.$this->param['crudname'].'.pCrudList = '.$this->name.';'."\n";
-		$htmlCrudLink .= $this->indentation.'		</script>'."\n";
+		$htmlCrudLink  = $this->ind.'		<script type="text/javascript">'."\n";
+		$htmlCrudLink .= $this->ind.'			'.$this->param['crudname'].'.pCrudList = '.$this->name.';'."\n";
+		$htmlCrudLink .= $this->ind.'		</script>'."\n";
 		
 		return $htmlCrudLink;
 	}
