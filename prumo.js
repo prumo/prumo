@@ -3081,7 +3081,7 @@ function prumoSearch(objName, ajaxFile) {
 	this.pAjax.ajaxFormat = 'xml';
 	this.pAjax.parent = this;
 	this.pAjax.identification = this.identification;
-	this.pAjax.pLoading = pLoading; // @todo testar
+	this.pAjax.pLoading = pLoading;
 	
 	this.fieldValueOnFocus;
 	this.fieldFocusId = '';
