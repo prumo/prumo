@@ -232,7 +232,6 @@ class prumoSearch extends prumoBasic {
 	protected function makeFilters() {
 		
 		$this->pFilter->shortcut = $this->makeShortcut();
-		file_put_contents('/tmp/pogdebug', $this->pFilter->shortcut, FILE_APPEND);
 		
 		$htmlFilters = $this->pFilter->draw(false);
 		
