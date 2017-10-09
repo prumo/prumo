@@ -22,4 +22,4 @@ Acesse via web e siga as instruções apresentadas na tela.
 3. Link do projeto
 ------------------
 
-https://github.com/prumo/framework
+https://github.com/prumo/prumo
