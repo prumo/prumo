@@ -204,10 +204,10 @@ class prumoCrud extends prumoBasic {
 	 *
 	 * @param $connection object: prumoConnection já instanciado e configurado
 	 */
-	public function setConnection($connecion) {
-		$this->pConnection = $connecion;
-		$this->pSearch->setConnection($connecion);
-		$this->pCrudList->setConnection($connecion);
+	public function setConnection($connection) {
+		$this->pConnection = $connection;
+		$this->pSearch->setConnection($connection);
+		$this->pCrudList->setConnection($connection);
 	}
 	
 	/**
