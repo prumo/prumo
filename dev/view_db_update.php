@@ -63,7 +63,7 @@ pProtect('prumo_devtools');
 		else {
 			var upToDate = 'f';
 		}
-		pAjaxDdl.goAjax('ddl='+document.getElementById('ddl_code').value+'&uptodate='+upToDate);
+		pAjaxDdl.goAjax('ddl='+ encodeURIComponent(document.getElementById('ddl_code').value)+'&uptodate='+upToDate);
 	}
 </script>
 
