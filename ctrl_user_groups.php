@@ -70,5 +70,5 @@ if (isset($_POST['action']) and $_POST['action'] == 'write') {
     }
 }
 
-include($GLOBALS['pConfig']['prumoPath'].'/view_user_groups.php');
+include $GLOBALS['pConfig']['prumoPath'].'/view_user_groups.php';
 

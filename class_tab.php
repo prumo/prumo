@@ -105,7 +105,7 @@ class PrumoTab
             }
             
             if ($this->tabInclude[$i] != '') {
-                include($this->tabInclude[$i]);
+                include $this->tabInclude[$i];
             }
             
             $this->htmlCloseTab(true);

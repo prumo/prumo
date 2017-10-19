@@ -162,7 +162,7 @@ class PrumoQueueSet
                 echo '<div id="div_'.$this->pQueueName[$i].'">'."\n";
                 
                 if (! empty($this->pQueueFilename[$i])) {
-                    include($this->pQueueFilename[$i]);
+                    include $this->pQueueFilename[$i];
                 }
                 
                 echo '</div>'."\n";

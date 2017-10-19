@@ -64,7 +64,7 @@ if ($_POST['update'] == 'app') {
                 
                 $inclusionFile = $scriptUpdateDir.$scriptUpdateNew[$i];
                 $sql = '';
-                include($inclusionFile);
+                include $inclusionFile;
                 
                 $pConnection->sqlQuery($sql);
                 
@@ -109,7 +109,7 @@ if ($_POST['update'] == 'framework') {
             
             $inclusionFile = $scriptUpdateDir.$scriptUpdateNew[$i];
             $sql = '';
-            include($inclusionFile);
+            include $inclusionFile;
             
             $pConnectionPrumo->sqlQuery($sql);
             

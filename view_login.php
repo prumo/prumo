@@ -78,4 +78,4 @@ echo $html;
 </script>
 
 <?php
-include($GLOBALS['pConfig']['prumoPath'].'/view_footer.php');
+include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';

@@ -1549,13 +1549,13 @@ class PrumoCrud extends PrumoBasic
         if ($verbose) {
             
             if (isset($this->param['includehead'])) {
-                include($this->param['includehead']);
+                include $this->param['includehead'];
             }
             
             echo $form;
             
             if (isset($this->param['includefooter'])) {
-                include($this->param['includefooter']);
+                include $this->param['includefooter'];
             }
         }
         

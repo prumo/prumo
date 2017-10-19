@@ -34,10 +34,10 @@ if (! isset($pConfig['appIdent']))              $pConfig['appIdent']            
 if (! isset($pConfig['appName']))               $pConfig['appName']               = 'Framework para PHP';
 if (! isset($pConfig['appPath']))               $pConfig['appPath']               = isset($_SERVER['REMOTE_ADDR']) ? dirname($_SERVER['SCRIPT_FILENAME']) : getcwd();
 if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
-if ($pConfig['appWebPath'] == '/')             $pConfig['appWebPath']            = '';
+if ($pConfig['appWebPath'] == '/')              $pConfig['appWebPath']            = '';
 if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = $pConfig['appPath'].'/prumo';
 if (! isset($pConfig['prumoWebPath']))          $pConfig['prumoWebPath']          = $pConfig['appWebPath'].'/prumo';
-if ($pConfig['prumoWebPath'] == '/')           $pConfig['prumoWebPath']          = '';
+if ($pConfig['prumoWebPath'] == '/')            $pConfig['prumoWebPath']          = '';
 
 // Conectividade com Banco de dados Prumo
 if (! isset($pConfig['dbSingle']))              $pConfig['dbSingle']              = false;
@@ -77,7 +77,23 @@ if (! isset($pConfig['preferHttps']))           $pConfig['preferHttps']         
 ////////////////////////////////// fim da configurações padrão //////////////////////////////
 
 //carrega todas as classes
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_all_models.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/functions_private.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/functions_public.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_basic.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_pg_connection.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_sqlite3_connection.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_connection.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_grid.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_login.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_search.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue_set.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_window.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_filter.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_menu.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_crud.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_crud_list.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_tab.php';
 
 session_start();
 

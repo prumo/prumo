@@ -141,11 +141,11 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
                 <div>
                     <?php
                     if (isset($_GET['page']) and $_GET['page'] == 'prumo_code_generator') {
-                        include($GLOBALS['pConfig']['prumoPath'].'/dev/view_code_generator.php');
+                        include $GLOBALS['pConfig']['prumoPath'].'/dev/view_code_generator.php';
                     } elseif (isset($_GET['page']) and $_GET['page'] == 'prumo_db_update') {
-                        include($GLOBALS['pConfig']['prumoPath'].'/dev/view_db_update.php');
+                        include $GLOBALS['pConfig']['prumoPath'].'/dev/view_db_update.php';
                     } elseif (isset($_GET['page'])) {
-                        include($GLOBALS['pConfig']['appPath'].'/'.$prumoPage[$_GET['page']]);
+                        include $GLOBALS['pConfig']['appPath'].'/'.$prumoPage[$_GET['page']];
                     } else {
                     ?>
                         <fieldset>
@@ -194,11 +194,11 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
         </div>
 
         <?php
-        include($GLOBALS['pConfig']['prumoPath'].'/view_footer.php');
+        include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
         
     } else {
         require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
-        include($GLOBALS['pConfig']['prumoPath'].'/view_login.php');
+        include $GLOBALS['pConfig']['prumoPath'].'/view_login.php';
         require_once $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
     }
 }

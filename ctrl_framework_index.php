@@ -42,9 +42,9 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
         
         if ($GLOBALS['pConfig']['afterLogin'] == 'index.php') {
             
-            include($GLOBALS['pConfig']['prumoPath'].'/view_loading.php');
-            include($GLOBALS['pConfig']['prumoPath'].'/view_page.php');
-            include($GLOBALS['pConfig']['prumoPath'].'/view_footer.php');
+            include $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
+            include $GLOBALS['pConfig']['prumoPath'].'/view_page.php';
+            include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
         } else {
             
             if ($GLOBALS['pConfig']['appWebPath'] == '' or $GLOBALS['pConfig']['appWebPath'] == '/') {
@@ -54,7 +54,7 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
             }
         }
     } else {
-        include($GLOBALS['pConfig']['prumoPath'].'/view_login.php');
+        include $GLOBALS['pConfig']['prumoPath'].'/view_login.php';
     }
 }
 
