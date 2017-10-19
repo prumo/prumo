@@ -1,28 +1,20 @@
 <?php
 /**
- * Este arquivo contém apenas as configurações de conectividade com o banco de dados do framework, outras configurações 
- * estão disponíveis no Painel de Controle do Prumo no menu Sistema.
+ * Copyright (c) 2010 Emerson Casas Salvador <salvaemerson@gmail.com> e Odair Rubleski <orubleski@gmail.com>
  *
- * O Prumo Framework pode operar em modo "dbSingle" (um único banco para o framework e para a aplicação), ou com dois
- * bancos de dados distintos, um para o framework e outro para a aplicação.
- *
- * A conexão do framework suporta SQLite3 ou PostgreSQL, enquanto que para a conexão da aplicação está disponível apenas 
- * PostgreSQL.
- *
- * Por padrão o Prumo Framework vem com um banco de dados SQLite3 pronto para operar com o modo dbSingle desativado.
- * É uma boa opção para quem está iniciando, ou simplesmente testando o framework, uma vez que dispensa configuração 
- * inicial de banco de dados. Se esta for a sua escolha, não é necessário alterar este arquivo.
- *
- * Para aplicações em produção, a recomendação é usar PostrgreSQL com modo dbSingle ativado por questões de desempenho e 
- * segurança.
- *
- * A seguir, um exemplo de configuração para o banco do framework em PostgreSQL com modo dbSingle ativado. A estrutura 
- * das tabelas (dump) do banco está disponível na pasta "db" do framework.
- *
- * As configurações de conexão com o banco de dados da aplicação estão disponíveis no painel de controle do framework
- * acessível via navegador.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the “Software”), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+ * Software.
+ * 
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+ * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 
 /* Exemplo de banco de dados do framework em PostgreSQL */
 $pConfig['dbSingle']         = true;

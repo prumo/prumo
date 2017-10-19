@@ -6,7 +6,7 @@ Bem vindo ao Prumo Framework para PHP!
 Prumo Framework para PHP é um framework vertical para desenvolvimento rápido de
 sistemas de informação web com bancos de dados PostgreSQL.
 
-O Prumo é licenceado nos termos da GNU GENERAL PUBLIC LICENSE Version 3
+O Prumo é licenceado nos termos da Licença MIT
 
 
 2. Instalação
