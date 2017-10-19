@@ -122,21 +122,17 @@ class PrumoTab
      * @return string;
      */
     public function htmlOpen($verbose)
-    {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
+    {   
         $visible = $this->visible ? ' style="display:block"' : ' style="display:none"';
         
-        $top = ''."\n";
-        $top .= $this->ind.'<script type="text/javascript">'."\n";
+        $top  = $this->ind.'<script type="text/javascript">'."\n";
         $top .= $this->ind.'    var '.$this->name.' = new PrumoTab(\''.$this->name.'\');'."\n";
         
         for ($i = 0; $i < count($this->tab); $i++) {
             $top .= $this->ind.'    '.$this->name.'.addTab(\''.$this->tab[$i].'\');'."\n";
         }
-
+        
         $top .= $this->ind.'</script>'."\n";
-
         $top .= $this->ind.'<fieldset id="'.$this->name.'"'.$visible.'>'."\n";
         $top .= $this->ind.'    <legend>'."\n";
         

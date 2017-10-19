@@ -63,8 +63,6 @@ class PrumoQueue extends PrumoSearch
      */
     public function draw($verbose)
     {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
         // junta os objetos
         $pSearchInit = $this->initClientObject();
         $pSearchChilds = '<div id="' . $this->name . '_header">' . $this->htmlTop . '</div>';

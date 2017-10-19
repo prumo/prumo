@@ -58,7 +58,7 @@ $datalistIcons .= '                </datalist>'."\n";
             </tr>
             <tr>
                 <td class="prumoFormLabel"><?=_('Identificação da rotina');?>:</td>
-                <td class="prumoFormFields"><input id="routine" type="text" size="45" maxlength="40" autofocus="autofocus" onblur="checkRoutine()" />* (<?=_('Não usar espaços') ?>)</td>
+                <td class="prumoFormFields"><input id="routine" type="text" size="45" maxlength="40" autofocus="autofocus" />* (<?=_('Não usar espaços') ?>)</td>
             </tr>
             <tr>
                 <td class="prumoFormLabel"><?=_('Tipo');?>:</td>
@@ -192,33 +192,11 @@ $datalistIcons .= '                </datalist>'."\n";
     $searchMenus->addFieldReturn('routine','view_menu_parent');
     $searchMenus->addFieldReturn('tree','view_parent_name');
     $searchMenus->crudState('crudRoutinesView');
+    $searchMenus->setInvisibleFilter('type', 'equal', 'root_menu');
     
     $searchMenus2->addFieldReturn('routine','root_menu_parent');
     $searchMenus2->addFieldReturn('tree','root_parent_name');
     $searchMenus2->crudState('crudRoutinesRootMenu');
+    $searchMenus2->setInvisibleFilter('type', 'equal', 'root_menu');
     ?>
 </fieldset>
-
-<script type="text/javascript">
-    searchMenus.pFilter.setInvisibleFilter('type', 'equal', 'root_menu');
-    searchMenus2.pFilter.setInvisibleFilter('type', 'equal', 'root_menu');
-    
-    pAjaxCheckRoutine = new prumoAjax('<?=$GLOBALS['pConfig']['prumoWebPath'];?>/ctrl_check_routine.php', function() {
-        if (this.responseText != 'OK') {
-            alert(this.responseText);
-            document.getElementById('routine').value = '';
-            document.getElementById('routine').focus();
-        }
-    });
-    
-    function checkRoutine() {
-        var routine = document.getElementById('routine').value;
-        if (crudRoutines.state == 'new' && routine != '') {
-            pAjaxCheckRoutine.goAjax('routine='+routine);
-        }
-        
-        if (crudRoutines.state == 'new' && document.getElementById('view_link').value == '') {
-            document.getElementById('view_link').value = 'view_'+document.getElementById('routine').value+'.php';
-        }
-    }
-</script>

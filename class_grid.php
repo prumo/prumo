@@ -191,8 +191,6 @@ class PrumoGrid
      */
     public function draw($verbose)
     {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
         $htmlGrid  = $this->tableGridHeader();
         $htmlGrid .= $this->dataHeader();
         $htmlGrid .= $this->lines();

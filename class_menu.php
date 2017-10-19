@@ -225,8 +225,6 @@ class PrumoMenu
         
         $schema = $pConnectionPrumo->getSchema();
         
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
         $htmlMenu  = "\n";
         
         // inicializa javascript

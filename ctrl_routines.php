@@ -32,7 +32,7 @@ $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_routines.php';
 
 $crudRoutines = new PrumoCrud('objName=crudRoutines,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,routine=prumo_routines');
 $crudRoutines->setConnection($pConnectionPrumo);
-$crudRoutines->addField('name=routine,label='._('Identificação').',pk,notNull');
+$crudRoutines->addField('name=routine,label='._('Identificação').',pk,notNull,unique');
 $crudRoutines->addField('name=enabled,label='._('Ativo').',type=boolean,notNull,default=t');
 $crudRoutines->addField('name=audit,label='._('Auditoria').',type=boolean,notNull,default=f');
 $crudRoutines->addField('name=type,label='._('Tipo').',notNull,default=t');

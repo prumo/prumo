@@ -25,7 +25,7 @@
  * ******************************************************************* */
 
 require_once 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
+
 pProtect('prumo_controlPanel');
 
 function listThemes() {

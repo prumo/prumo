@@ -3494,7 +3494,7 @@ function PrumoSearch(objName, ajaxFile) {
     
     this.sort = function(field, order) {
         if (order == undefined) {
-            var element = document.getElementById('prumoGridTh_' + this.objName + '_' + field);
+            var element = document.getElementById('PrumoGridTh_' + this.objName + '_' + field);
             var className = element.className;
             var arr = className.match(/sort(.*)/g) || [''];
             switch (arr[0]) {
@@ -3516,7 +3516,7 @@ function PrumoSearch(objName, ajaxFile) {
             }
             var elements = this.pGrid.field;
             for (var i in elements) {
-                element = document.getElementById('prumoGridTh_' + this.objName + '_' + elements[i]);
+                element = document.getElementById('PrumoGridTh_' + this.objName + '_' + elements[i]);
                 if (elements[i] != field && this.pGrid.fieldVisible[i] == true) {
                     element.setAttribute('class', 'prumoGridTh');    
                 }

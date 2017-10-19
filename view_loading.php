@@ -24,8 +24,6 @@
  *
  * ******************************************************************* */
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-
 echo '<div id="pLoading" class="loading">';
 echo '<img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/loading_bar.gif" alt="" /><br />'._('Carregando').'...';
 echo '</div>'."\n\n";

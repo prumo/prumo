@@ -45,7 +45,7 @@ if ($prumoGlobal['currentUser'] == '') {
     
     $sqlUdate  = 'UPDATE '.$schema.'syslogin SET "password"='.pFormatSql($newPassword, 'string').' ';
     $sqlUdate .= 'WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').';';
-        
+    
     // retorna a mensagem em xml
     if ($_POST['new_password'] == '') {
         $xml  = '<err>err</err>'."\n";

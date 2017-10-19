@@ -24,7 +24,6 @@
  *
  * ******************************************************************* */
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
 
 $urlHttps = 'https://'.$_SERVER["HTTP_HOST"].$GLOBALS['pConfig']['appWebPath'];

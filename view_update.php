@@ -26,7 +26,6 @@
 
 pProtect('prumo_update');
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
 ?>
 
 <fieldset>

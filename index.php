@@ -112,7 +112,6 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
         }
 
         require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
         require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
 
         ?>

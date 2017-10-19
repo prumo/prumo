@@ -151,8 +151,6 @@ class PrumoCrudList extends PrumoSearch
      */
     public function draw($verbose)
     {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
         // adiciona uma columa a mais para os controles do fastCreate, fastupdate ou fastdelete
         if (
             (isset($this->param['fastcreate']) and $this->param['fastcreate']) or

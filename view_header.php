@@ -45,6 +45,6 @@ if (file_exists($GLOBALS['pConfig']['appPath'].'/style.css')) {
 }
 
 echo '</head>'."\n";
+echo '<script type="text/javascript" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/prumo.js"></script>'."\n";
 echo '<body>'."\n";
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
 

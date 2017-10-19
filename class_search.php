@@ -359,8 +359,6 @@ class PrumoSearch extends PrumoBasic
      */
     public function draw($verbose)
     {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
-        
         // junta os objetos
         $pSearchInit = $this->initClientObject();
         $pSearchChilds = $this->makeFilters();
