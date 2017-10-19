@@ -24,42 +24,39 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
+require_once 'prumo.php';
 pProtect('prumo_changePassword');
 
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 Header('Content-type: application/xml; charset=UTF-8');
 
 // Verifica se existe usuário logado
 if ($prumoGlobal['currentUser'] == '') {
-	$xml  = '<err>err</err>'."\n";
-	$xml .= '<msg>'._('Sua sessão expirou, faça login novamente').'</msg>';
-}
-else {
-	// monta o sql
-	$password = md5($_POST['password']);
-	$newPassword = md5($_POST['new_password']);
-	$schema = $pConnectionPrumo->getSchema();
-	
-	$sqlConsulta = 'SELECT username FROM '.$schema.'syslogin WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').' AND "password"='.pFormatSql($password, 'string').';';
-	
-	$sqlUdate  = 'UPDATE '.$schema.'syslogin SET "password"='.pFormatSql($newPassword, 'string').' ';
-	$sqlUdate .= 'WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').';';
-		
-	// retorna a mensagem em xml
-	if ($_POST['new_password'] == '') {
-		$xml  = '<err>err</err>'."\n";
-		$xml .= '<msg>'._('A nova senha não pode ficar em branco.').'</msg>';
-	}
-	elseif ($pConnectionPrumo->sqlquery($sqlConsulta) != $prumoGlobal['currentUser']) {
-		$xml  = '<err>err</err>'."\n";
-		$xml .= '<msg>'._('A senha atual não confere.').'</msg>';
-	}
-	else {
-		$pConnectionPrumo->sqlquery($sqlUdate);
-		$xml = '<msg>'._('Senha alterada com sucesso!').'</msg>';
-	}
+    $xml  = '<err>err</err>'."\n";
+    $xml .= '<msg>'._('Sua sessão expirou, faça login novamente').'</msg>';
+} else {
+    // monta o sql
+    $password = md5($_POST['password']);
+    $newPassword = md5($_POST['new_password']);
+    $schema = $pConnectionPrumo->getSchema();
+    
+    $sqlConsulta = 'SELECT username FROM '.$schema.'syslogin WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').' AND "password"='.pFormatSql($password, 'string').';';
+    
+    $sqlUdate  = 'UPDATE '.$schema.'syslogin SET "password"='.pFormatSql($newPassword, 'string').' ';
+    $sqlUdate .= 'WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').';';
+        
+    // retorna a mensagem em xml
+    if ($_POST['new_password'] == '') {
+        $xml  = '<err>err</err>'."\n";
+        $xml .= '<msg>'._('A nova senha não pode ficar em branco.').'</msg>';
+    } elseif ($pConnectionPrumo->sqlquery($sqlConsulta) != $prumoGlobal['currentUser']) {
+        $xml  = '<err>err</err>'."\n";
+        $xml .= '<msg>'._('A senha atual não confere.').'</msg>';
+    } else {
+        $pConnectionPrumo->sqlquery($sqlUdate);
+        $xml = '<msg>'._('Senha alterada com sucesso!').'</msg>';
+    }
 }
 
 $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);

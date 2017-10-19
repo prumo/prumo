@@ -24,22 +24,22 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
 
 pProtect('prumo_devtools');
 ?>
 
 <fieldset> 
-<legend><?php echo _('Atualização de banco de dados'); ?></legend>
+<legend><?=_('Atualização de banco de dados');?></legend>
 
 <div style="padding:5px">
-	<?php echo _('Cole na caixa de texto o código DDL de atualização do banco de dados:'); ?>
+	<?=_('Cole na caixa de texto o código DDL de atualização do banco de dados:');?>
 	<div style="text-align:center">
 		<textarea id="ddl_code" autofocus wrap="off" style="font: 12px Courier New; height: 350px; width: 99%;" onchange="txPrumoCode_change()"></textarea>
 	</div>
-	<input type="checkbox" id="uptodate" checked="checked" /> <?php echo _('Considerar que este script já foi executado na base de dados atual'); ?><br /><br />
-	<button onclick="btWriteScript_click()"><?php echo _('Gravar script'); ?></button><br />
+	<input type="checkbox" id="uptodate" checked="checked" /> <?=_('Considerar que este script já foi executado na base de dados atual');?><br /><br />
+	<button onclick="btWriteScript_click()"><?=_('Gravar script');?></button><br />
 </div>
 
 </fieldset>
@@ -50,8 +50,7 @@ pProtect('prumo_devtools');
 		if (this.responseText == 'OK') {
 			alert(gettext('Atualização de banco de dados gravada com sucesso!'));
 			document.getElementById('ddl_code').value = '';
-		}
-		else {
+		} else {
 			alert(this.responseText);
 		}
 	}
@@ -59,8 +58,7 @@ pProtect('prumo_devtools');
 	function btWriteScript_click() {
 		if (document.getElementById('uptodate').checked) {
 			var upToDate = 't';
-		}
-		else {
+		} else {
 			var upToDate = 'f';
 		}
 		pAjaxDdl.goAjax('ddl='+ encodeURIComponent(document.getElementById('ddl_code').value)+'&uptodate='+upToDate);

@@ -24,34 +24,34 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
+require_once 'prumo.php';
 pProtect('prumo_groups');
 
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_groups.php');
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_groups.php';
 ?>
 
 <fieldset>
-<legend><?php echo _('Grupos de Usuários'); ?></legend>
+<legend><?=_('Grupos de Usuários');?></legend>
 
 <div id="crudGroups_form">
-	<br />
-	<table class="prumoFormTable">
-		<tr>
-			<td class="prumoFormLabel"><?php echo _('Nome do grupo'); ?>:</td>
-			<td class="prumoFormFields"><input id="groupname" type="text" size=45 maxlength="30" autofocus="autofocus" />*</td>
-		</tr>
-		<tr>
-			<td class="prumoFormLabel"></td>
-			<td class="prumoFormFields"><input id="enabled" type="checkbox" checked="checked" /> <?php echo _('Ativo'); ?></td>
-		</tr>
-		<tr>
-			<td class="prumoFormLabel"></td>
-			<td class="prumoFormFields"><?php $crudGroups->drawControls(); ?></td>
-		</tr>
-	</table>
-	
-	<br />
-	* <?php echo _('campos de preenchimento obrigatório'); ?>
+    <br />
+    <table class="prumoFormTable">
+        <tr>
+            <td class="prumoFormLabel"><?=_('Nome do grupo');?>:</td>
+            <td class="prumoFormFields"><input id="groupname" type="text" size=45 maxlength="30" autofocus="autofocus" />*</td>
+        </tr>
+        <tr>
+            <td class="prumoFormLabel"></td>
+            <td class="prumoFormFields"><input id="enabled" type="checkbox" checked="checked" /> <?=_('Ativo');?></td>
+        </tr>
+        <tr>
+            <td class="prumoFormLabel"></td>
+            <td class="prumoFormFields"><?php $crudGroups->drawControls();?></td>
+        </tr>
+    </table>
+    
+    <br />
+    * <?=_('campos de preenchimento obrigatório');?>
 </div>
 
 <?php 

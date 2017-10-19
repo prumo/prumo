@@ -24,14 +24,14 @@
  *
  * ******************************************************************* */
 
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/view_loading.php');
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_inc_js.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
 
 $urlHttps = 'https://'.$_SERVER["HTTP_HOST"].$GLOBALS['pConfig']['appWebPath'];
 $urlHttpsTest = 'https://'.$_SERVER["HTTP_HOST"].$GLOBALS['pConfig']['prumoWebPath'].'/ctrl_login.php';
 if ($pConfig['preferHttps'] && $_SERVER["REQUEST_SCHEME"] == 'http' && file_get_contents($urlHttpsTest) !== false) {
-	pRedirect($urlHttps);
-	exit;
+    pRedirect($urlHttps);
+    exit;
 }
 
 // caixas de texto e botão
@@ -56,27 +56,26 @@ echo $html;
 ?>
 
 <script type="text/javascript">
-	ajaxLogin = new prumoAjax('<?php echo $GLOBALS['pConfig']['prumoWebPath']; ?>/ctrl_login.php', function() {
-		if (this.responseText == 'ok') {
-			history.go(0);
-		}
-		else {
-			alert(this.responseText);
-			document.getElementById('txtPassword').focus();
-		}
-	});
-	
-	function goLogin() {
-		params = '&txtUsername='+document.getElementById('txtUsername').value;
-		params += '&txtPassword='+md5(document.getElementById('txtPassword').value);
-		ajaxLogin.goAjax(params);
-	}
-	
-	function loginKeyDown(event) {
-		if (event.keyCode == 13) {
-			goLogin();
-		}
-	}
+    ajaxLogin = new prumoAjax('<?=$GLOBALS['pConfig']['prumoWebPath'];?>/ctrl_login.php', function() {
+        if (this.responseText == 'ok') {
+            history.go(0);
+        } else {
+            alert(this.responseText);
+            document.getElementById('txtPassword').focus();
+        }
+    });
+    
+    function goLogin() {
+        params = '&txtUsername='+document.getElementById('txtUsername').value;
+        params += '&txtPassword='+md5(document.getElementById('txtPassword').value);
+        ajaxLogin.goAjax(params);
+    }
+    
+    function loginKeyDown(event) {
+        if (event.keyCode == 13) {
+            goLogin();
+        }
+    }
 </script>
 
 <?php

@@ -2,105 +2,107 @@
 
 /* *********************************************************************
  *
- *	Prumo Framework para PHP é um framework vertical para
- *	desenvolvimento rápido de sistemas de informação web.
- *	Copyright (C) 2010 Emerson Casas Salvador <salvaemerson@gmail.com>
- *	e Odair Rubleski <orubleski@gmail.com>
+ *  Prumo Framework para PHP é um framework vertical para
+ *  desenvolvimento rápido de sistemas de informação web.
+ *  Copyright (C) 2010 Emerson Casas Salvador <salvaemerson@gmail.com>
+ *  e Odair Rubleski <orubleski@gmail.com>
  *
- *	This file is part of Prumo.
+ *  This file is part of Prumo.
  *
- *	Prumo is free software; you can redistribute it and/or modify
- *	it under the terms of the GNU General Public License as published by
- *	the Free Software Foundation; either version 3, or (at your option)
- *	any later version.
+ *  Prumo is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 3, or (at your option)
+ *  any later version.
  *
- *	This program is distributed in the hope that it will be useful,
- *	but WITHOUT ANY WARRANTY; without even the implied warranty of
- *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *	GNU General Public License for more details.
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
  *
- *	You should have received a copy of the GNU General Public License
- *	along with this program; if not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, see <http://www.gnu.org/licenses/>.
  *
  * ******************************************************************* */
 
 /**
  * Recupera as configurações do framework no banco de dados
  */
-function pGetConfigDb() {
-	global $pConfig;
-	global $pConnectionPrumo;
-	
-	$dbSingle = (isset($pConfig['dbSingle']) and $pConfig['dbSingle']);
-	
-	require_once($pConfig['prumoPath'].'/ctrl_connection_admin.php');
-	
-	if ($pConnectionPrumo->connected(true) == false) {
-		
-		echo $pConnectionPrumo->getErr();
-		
-		if ($pConnectionPrumo->sgdb() != 'sqlite3') {
-			echo ' ('.$pConnectionPrumo->param['dbname'].' - '.$pConnectionPrumo->sgdb().')';
-		}
-		
-		exit;
-	}
-	
-	$sql = 'SELECT * FROM '.$pConnectionPrumo->getSchema().'config;';
-	$sqlArray = $pConnectionPrumo->sql2Array($sql);
-	
-	$pConfigDb = array();
-	for ($i = 0; $i < count($sqlArray); $i++) {
-		$pConfigDb[$sqlArray[$i]['config_name']] = $sqlArray[$i]['config_value'];
-	}
-	
-	if (count($pConfigDb) > 0) {
-		$pConfigNew = array_replace($pConfig, $pConfigDb);
-		$pConfig = $pConfigNew;
-	}
-	
-	if ($dbSingle) {
-		$pConfig['sgdb']       = $pConfig['sgdb_prumo'];
-		$pConfig['dbHost']     = $pConfig['dbHost_prumo'];
-		$pConfig['dbPort']     = $pConfig['dbPort_prumo'];
-		$pConfig['dbName']     = $pConfig['dbName_prumo'];
-		$pConfig['dbUserName'] = $pConfig['dbUserName_prumo'];
-		$pConfig['dbPassword'] = $pConfig['dbPassword_prumo'];
-	}
+function pGetConfigDb()
+{
+    global $pConfig;
+    global $pConnectionPrumo;
+    
+    $dbSingle = (isset($pConfig['dbSingle']) and $pConfig['dbSingle']);
+    
+    require_once $pConfig['prumoPath'].'/ctrl_connection_admin.php';
+    
+    if ($pConnectionPrumo->connected(true) == false) {
+        
+        echo $pConnectionPrumo->getErr();
+        
+        if ($pConnectionPrumo->sgdb() != 'sqlite3') {
+            echo ' ('.$pConnectionPrumo->param['dbname'].' - '.$pConnectionPrumo->sgdb().')';
+        }
+        
+        exit;
+    }
+    
+    $sql = 'SELECT * FROM '.$pConnectionPrumo->getSchema().'config;';
+    $sqlArray = $pConnectionPrumo->sql2Array($sql);
+    
+    $pConfigDb = array();
+    for ($i = 0; $i < count($sqlArray); $i++) {
+        $pConfigDb[$sqlArray[$i]['config_name']] = $sqlArray[$i]['config_value'];
+    }
+    
+    if (count($pConfigDb) > 0) {
+        $pConfigNew = array_replace($pConfig, $pConfigDb);
+        $pConfig = $pConfigNew;
+    }
+    
+    if ($dbSingle) {
+        $pConfig['sgdb']       = $pConfig['sgdb_prumo'];
+        $pConfig['dbHost']     = $pConfig['dbHost_prumo'];
+        $pConfig['dbPort']     = $pConfig['dbPort_prumo'];
+        $pConfig['dbName']     = $pConfig['dbName_prumo'];
+        $pConfig['dbUserName'] = $pConfig['dbUserName_prumo'];
+        $pConfig['dbPassword'] = $pConfig['dbPassword_prumo'];
+    }
 }
 
 /**
  * Carrega um array com as permissões de todas as rotinas
  */
-function loadPermission() {
-	global $pConnectionPrumo;
-	global $prumoPermission;
-	global $prumoGlobal;
-	
-	if (!isset($pConnectionPrumo)) {
-		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
-	}
-	
-	$schema = $pConnectionPrumo->getSchema();
-	
-	$sql  = 'SELECT '."\n";
-	$sql .= '	r.routine,'."\n";
-	$sql .= '	sum(CASE WHEN c=\'t\' THEN 1 ELSE 0 END) as c,'."\n";
-	$sql .= '	sum(CASE WHEN r=\'t\' THEN 1 ELSE 0 END) as r,'."\n";
-	$sql .= '	sum(CASE WHEN u=\'t\' THEN 1 ELSE 0 END) as u,'."\n";
-	$sql .= '	sum(CASE WHEN d=\'t\' THEN 1 ELSE 0 END) as d'."\n";
-	$sql .= 'FROM '.$schema.'routines r'."\n";
-	$sql .= 'JOIN '.$schema.'routines_groups rg ON rg.routine=r.routine'."\n";
-	$sql .= 'JOIN '.$schema.'groups_syslogin gs ON gs.groupname=rg.groupname'."\n";
-	$sql .= 'JOIN '.$schema.'groups g ON g.groupname=rg.groupname'."\n";
-	$sql .= 'JOIN '.$schema.'syslogin s ON s.username=gs.username'."\n";
-	$sql .= 'WHERE r.enabled=\'t\''."\n";
-	$sql .= 'AND g.enabled=\'t\''."\n";
-	$sql .= 'AND s.enabled=\'t\''."\n";
-	$sql .= 'AND gs.username=\''.$prumoGlobal['currentUser'].'\''."\n";
-	$sql .= 'GROUP BY r.routine;'."\n";
-	
-	$prumoPermission = $pConnectionPrumo->sql2Array($sql);
+function loadPermission()
+{
+    global $pConnectionPrumo;
+    global $prumoPermission;
+    global $prumoGlobal;
+    
+    if (! isset($pConnectionPrumo)) {
+        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+    }
+    
+    $schema = $pConnectionPrumo->getSchema();
+    
+    $sql  = 'SELECT '."\n";
+    $sql .= '    r.routine,'."\n";
+    $sql .= '    sum(CASE WHEN c=\'t\' THEN 1 ELSE 0 END) as c,'."\n";
+    $sql .= '    sum(CASE WHEN r=\'t\' THEN 1 ELSE 0 END) as r,'."\n";
+    $sql .= '    sum(CASE WHEN u=\'t\' THEN 1 ELSE 0 END) as u,'."\n";
+    $sql .= '    sum(CASE WHEN d=\'t\' THEN 1 ELSE 0 END) as d'."\n";
+    $sql .= 'FROM '.$schema.'routines r'."\n";
+    $sql .= 'JOIN '.$schema.'routines_groups rg ON rg.routine=r.routine'."\n";
+    $sql .= 'JOIN '.$schema.'groups_syslogin gs ON gs.groupname=rg.groupname'."\n";
+    $sql .= 'JOIN '.$schema.'groups g ON g.groupname=rg.groupname'."\n";
+    $sql .= 'JOIN '.$schema.'syslogin s ON s.username=gs.username'."\n";
+    $sql .= 'WHERE r.enabled=\'t\''."\n";
+    $sql .= 'AND g.enabled=\'t\''."\n";
+    $sql .= 'AND s.enabled=\'t\''."\n";
+    $sql .= 'AND gs.username=\''.$prumoGlobal['currentUser'].'\''."\n";
+    $sql .= 'GROUP BY r.routine;'."\n";
+    
+    $prumoPermission = $pConnectionPrumo->sql2Array($sql);
 }
 
 /**
@@ -109,44 +111,45 @@ function loadPermission() {
  * @param $routine string: rotina
  * @param $permission string: permissão
  */
-function pLogAcessDenied($routine, $permission) {
-	global $pConnectionPrumo;
-	
-	$sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'acess_denied ('."\n";
-	$sql .= '	username,'."\n";
-	$sql .= '	routine,'."\n";
-	$sql .= '	permission'."\n";
-	$sql .= ')'."\n";
-	$sql .= 'VALUES ('."\n";
-	$sql .= '	'.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
-	$sql .= '	'.pFormatSql($routine, 'string').','."\n";
-	$sql .= '	'.pFormatSql($permission, 'string')."\n";
-	$sql .= ');';
-	
-	$pConnectionPrumo->sqlQuery($sql);
+function pLogAcessDenied($routine, $permission)
+{
+    global $pConnectionPrumo;
+    
+    $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'acess_denied ('."\n";
+    $sql .= '    username,'."\n";
+    $sql .= '    routine,'."\n";
+    $sql .= '    permission'."\n";
+    $sql .= ')'."\n";
+    $sql .= 'VALUES ('."\n";
+    $sql .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
+    $sql .= '    '.pFormatSql($routine, 'string').','."\n";
+    $sql .= '    '.pFormatSql($permission, 'string')."\n";
+    $sql .= ');';
+    
+    $pConnectionPrumo->sqlQuery($sql);
 }
 
 /**
  * Verifica se determinado arquivo de atualização sql já foi executado
  * @param $fileName string: nome do arquivo que contém os comandos SQL de atualizaçãp do banco no formato do Prumo
- * @param $connection prumoConnection: a conexão com o banco de dados a ser usada
+ * @param $connection PrumoConnection: a conexão com o banco de dados a ser usada
  * @param $db string: 'framework' para banco de dados do framework e 'app' para o banco de dados da aplicação
  * @returns boolean
  */
-function upToDate($fileName, $connection, $db='framework') {
-	global $pConnectionPrumo;
-	
-	if ($db == 'framework') {
-		$table = 'update_framework';
-	}
-	else {
-		$table = 'update_db_app';
-		writeAppUpdate('');
-	}	
-	
-	$sql = 'SELECT count(*) FROM '.$pConnectionPrumo->getSchema().$table.' WHERE file_name='.pFormatSql($fileName, 'string').';';
-	
-	return $connection->sqlQuery($sql);
+function upToDate($fileName, $connection, $db='framework')
+{
+    global $pConnectionPrumo;
+    
+    if ($db == 'framework') {
+        $table = 'update_framework';
+    } else {
+        $table = 'update_db_app';
+        writeAppUpdate('');
+    }    
+    
+    $sql = 'SELECT count(*) FROM '.$pConnectionPrumo->getSchema().$table.' WHERE file_name='.pFormatSql($fileName, 'string').';';
+    
+    return $connection->sqlQuery($sql);
 }
 
 /**
@@ -154,109 +157,109 @@ function upToDate($fileName, $connection, $db='framework') {
  * @param $fileName string: nome do script, se informado '', apenas irá verificar e criar a tabela de atualização no
  * banco da app
  */
-function writeAppUpdate($fileName) {
-	global $pConnection;
-	global $pConnectionPrumo;
-	global $prumoGlobal;
-	
-	//verifica se a tabela existe na base de dados, caso não existe, cria
-	$sql  = 'SELECT'."\n";
-	$sql .= '	count(*)'."\n";
-	$sql .= 'FROM information_schema.tables'."\n";
-	$sql .= 'WHERE table_schema='.pFormatSql($GLOBALS['pConfig']['loginSchema_prumo'],'string')."\n";
-	$sql .= 'AND table_name=\'update_db_app\';';
-	$table = $pConnection->sqlQuery($sql);
-	
-	if (!$table) {
-		
-		$sql  = 'CREATE TABLE '.$pConnectionPrumo->getSchema().'update_db_app'."\n";
-		$sql .= '('."\n";
-		$sql .= '  file_name character varying(100) NOT NULL,'."\n";
-		$sql .= '  usr_login character varying(40),'."\n";
-		$sql .= '  date_time timestamp without time zone NOT NULL DEFAULT now(),'."\n";
-		$sql .= '  CONSTRAINT update_db_app_pkey PRIMARY KEY (file_name)'."\n";
-		$sql .= ')'."\n";
-		$sql .= 'WITH ('."\n";
-		$sql .= '  OIDS=FALSE'."\n";
-		$sql .= ');';
-		
-		$pConnection->sqlQuery($sql);
-	}
-	
-	if ($fileName != '') {
-		
-		$sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'update_db_app ('."\n";
-		$sql .= '	file_name,'."\n";
-		$sql .= '	usr_login,'."\n";
-		$sql .= '	date_time'."\n";
-		$sql .= ')'."\n";
-		$sql .= 'VALUES ('."\n";
-		$sql .= '	'.pFormatSql($fileName,'string').','."\n";
-		$sql .= '	'.pFormatSql($prumoGlobal['currentUser'],'string').','."\n";
-		$sql .= '	now()'."\n";
-		$sql .= ');'."\n";
-		
-		$pConnection->sqlQuery($sql);
-	}
+function writeAppUpdate($fileName)
+{
+    global $pConnection;
+    global $pConnectionPrumo;
+    global $prumoGlobal;
+    
+    //verifica se a tabela existe na base de dados, caso não existe, cria
+    $sql  = 'SELECT'."\n";
+    $sql .= '    count(*)'."\n";
+    $sql .= 'FROM information_schema.tables'."\n";
+    $sql .= 'WHERE table_schema='.pFormatSql($GLOBALS['pConfig']['loginSchema_prumo'],'string')."\n";
+    $sql .= 'AND table_name=\'update_db_app\';';
+    $table = $pConnection->sqlQuery($sql);
+    
+    if (! $table) {
+        
+        $sql  = 'CREATE TABLE '.$pConnectionPrumo->getSchema().'update_db_app'."\n";
+        $sql .= '('."\n";
+        $sql .= '  file_name character varying(100) NOT NULL,'."\n";
+        $sql .= '  usr_login character varying(40),'."\n";
+        $sql .= '  date_time timestamp without time zone NOT NULL DEFAULT now(),'."\n";
+        $sql .= '  CONSTRAINT update_db_app_pkey PRIMARY KEY (file_name)'."\n";
+        $sql .= ')'."\n";
+        $sql .= 'WITH ('."\n";
+        $sql .= '  OIDS=FALSE'."\n";
+        $sql .= ');';
+        
+        $pConnection->sqlQuery($sql);
+    }
+    
+    if ($fileName != '') {
+        
+        $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'update_db_app ('."\n";
+        $sql .= '    file_name,'."\n";
+        $sql .= '    usr_login,'."\n";
+        $sql .= '    date_time'."\n";
+        $sql .= ')'."\n";
+        $sql .= 'VALUES ('."\n";
+        $sql .= '    '.pFormatSql($fileName,'string').','."\n";
+        $sql .= '    '.pFormatSql($prumoGlobal['currentUser'],'string').','."\n";
+        $sql .= '    now()'."\n";
+        $sql .= ');'."\n";
+        
+        $pConnection->sqlQuery($sql);
+    }
 }
 
 /**
  * Exibe o prumoInfo na página do desenvolvedor
  */
-function prumoInfo() {
-	
-	echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'."\n";
-	echo '<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br" xml:lang="pt_br">'."\n";
-	echo '<head>'."\n";
-	echo '	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'."\n";
-	echo '	<title>prumoInfo()</title><meta name="ROBOTS" content="NOINDEX,NOFOLLOW,NOARCHIVE" />'."\n";
-	echo '	<link type="text/css" rel="stylesheet" media="screen" href="'.$GLOBALS['pConfig']['prumoWebPath'].'/view_framework_info.css" />'."\n";
-	echo '</head>'."\n";
-	echo '<body>'."\n";
-	echo '<div class="center">'."\n";
-	echo '<table border="0" width="800">'."\n";
-	echo '	<tr class="h">'."\n";
-	echo '		<td>'."\n";
-	echo '			<a href="https://github.com/prumo/framework">'."\n";
-	echo '				<img border="0" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/logo_small.png" alt="Prumo Logo" />'."\n";
-	echo '			</a>'."\n";
-	echo '		<h1 class="p">Prumo Framework Version: '.$GLOBALS['pConfig']['version'].'</h1></td>'."\n";
-	echo '	</tr>'."\n";
-	echo '</table>'."\n";
-	echo '<br />'."\n";
+function prumoInfo()
+{
+    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'."\n";
+    echo '<html xmlns="http://www.w3.org/1999/xhtml" lang="pt_br" xml:lang="pt_br">'."\n";
+    echo '<head>'."\n";
+    echo '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'."\n";
+    echo '    <title>prumoInfo()</title><meta name="ROBOTS" content="NOINDEX,NOFOLLOW,NOARCHIVE" />'."\n";
+    echo '    <link type="text/css" rel="stylesheet" media="screen" href="'.$GLOBALS['pConfig']['prumoWebPath'].'/view_framework_info.css" />'."\n";
+    echo '</head>'."\n";
+    echo '<body>'."\n";
+    echo '<div class="center">'."\n";
+    echo '<table border="0" width="800">'."\n";
+    echo '    <tr class="h">'."\n";
+    echo '        <td>'."\n";
+    echo '            <a href="https://github.com/prumo/framework">'."\n";
+    echo '                <img border="0" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/logo_small.png" alt="Prumo Logo" />'."\n";
+    echo '            </a>'."\n";
+    echo '        <h1 class="p">Prumo Framework Version: '.$GLOBALS['pConfig']['version'].'</h1></td>'."\n";
+    echo '    </tr>'."\n";
+    echo '</table>'."\n";
+    echo '<br />'."\n";
 
-	// $GLOBALS['pConfig']
-	echo '<table border="0" cellpadding="3" width="800">'."\n";
-	foreach($GLOBALS['pConfig'] as $param => $value) {
-		if ($param == 'dbPassword' or $param == 'dbPassword_prumo') {
-			echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">******</td></tr>'."\n";
-		}
-		else {
-			echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
-		}
-	}
-	echo '</table>'."\n";
+    // $GLOBALS['pConfig']
+    echo '<table border="0" cellpadding="3" width="800">'."\n";
+    foreach($GLOBALS['pConfig'] as $param => $value) {
+        if ($param == 'dbPassword' or $param == 'dbPassword_prumo') {
+            echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">******</td></tr>'."\n";
+        } else {
+            echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
+        }
+    }
+    echo '</table>'."\n";
 
-	echo '<br />'."\n";
-	echo '<h2>prumoPage</h2>'."\n";
+    echo '<br />'."\n";
+    echo '<h2>prumoPage</h2>'."\n";
 
-	// $GLOBALS['prumoPage']
-	echo '<table border="0" cellpadding="3" width="800">'."\n";
-	echo '<tr class="h"><th>Page</th><th>File to include</th></tr>'."\n";
-	foreach($GLOBALS['prumoPage'] as $param => $value) {
-		echo '<tr><td class="e">$GLOBALS[\'prumoPage\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
-	}
-	echo '</table>'."\n";
-	
-	echo '<br />'."\n";
-	echo '<h2>prumoGlobal</h2>'."\n";
-	
-	// $GLOBALS['prumoGlobal']
-	echo '<table border="0" cellpadding="3" width="800">'."\n";
-	foreach($GLOBALS['prumoGlobal'] as $param => $value) {
-		echo '<tr><td class="e">$GLOBALS[\'prumoGlobal\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
-	}
-	echo '</table>'."\n";
+    // $GLOBALS['prumoPage']
+    echo '<table border="0" cellpadding="3" width="800">'."\n";
+    echo '<tr class="h"><th>Page</th><th>File to include</th></tr>'."\n";
+    foreach($GLOBALS['prumoPage'] as $param => $value) {
+        echo '<tr><td class="e">$GLOBALS[\'prumoPage\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
+    }
+    echo '</table>'."\n";
+    
+    echo '<br />'."\n";
+    echo '<h2>prumoGlobal</h2>'."\n";
+    
+    // $GLOBALS['prumoGlobal']
+    echo '<table border="0" cellpadding="3" width="800">'."\n";
+    foreach($GLOBALS['prumoGlobal'] as $param => $value) {
+        echo '<tr><td class="e">$GLOBALS[\'prumoGlobal\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
+    }
+    echo '</table>'."\n";
 }
 
 /**
@@ -266,38 +269,36 @@ function prumoInfo() {
  *
  * @return array: array formatado
  */
-function pParameters($params) {
-	
-	$escapeParams = str_replace('\\,', ':.:', $params);
-	
-	$arrParams = array();
-	$theArg = explode(',', $escapeParams);
-	
-	for ($i = 0; $i < count($theArg); ++$i) {
-		
-		$theRow = explode('=', $theArg[$i]);
-		
-		if (count($theRow) == 1) {
-			
-			// bolean true
-			$arrParams[strtolower($theRow[0])] = true;
-		}
-		else if (count($theRow) == 2) {
-			
-			// normal parameter
-			$arrParams[strtolower($theRow[0])] = str_replace(':.:', ',', $theRow[1]);
-		}
-		else {
-			
-			// send by GET method
-			$arrParams[strtolower($theRow[0])] = '';
-			for ($j=1; $j < count($theRow);$j++) {
-				$arrParams[strtolower($theRow[0])] .= $j == 1 ? str_replace(':.:', ',', $theRow[$j]) : '='.str_replace(':.:', ',', $theRow[$j]);
-			}
-		}
-	}
-	
-	return $arrParams;
+function pParameters($params)
+{
+    $escapeParams = str_replace('\\,', ':.:', $params);
+    
+    $arrParams = array();
+    $theArg = explode(',', $escapeParams);
+    
+    for ($i = 0; $i < count($theArg); ++$i) {
+        
+        $theRow = explode('=', $theArg[$i]);
+        
+        if (count($theRow) == 1) {
+            
+            // bolean true
+            $arrParams[strtolower($theRow[0])] = true;
+        } elseif (count($theRow) == 2) {
+            
+            // normal parameter
+            $arrParams[strtolower($theRow[0])] = str_replace(':.:', ',', $theRow[1]);
+        } else {
+            
+            // send by GET method
+            $arrParams[strtolower($theRow[0])] = '';
+            for ($j=1; $j < count($theRow);$j++) {
+                $arrParams[strtolower($theRow[0])] .= $j == 1 ? str_replace(':.:', ',', $theRow[$j]) : '='.str_replace(':.:', ',', $theRow[$j]);
+            }
+        }
+    }
+    
+    return $arrParams;
 }
 
 /**
@@ -308,82 +309,82 @@ function pParameters($params) {
  *
  * @return string
  */
-function pSqlNoInjection($value, $type, $formatSqlNull=false) {
-	
-	$valueNoInjection = $value;
-	
-	switch ($type) {
-		
-		case "string":
-			
-			$valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
-			$valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "text":
-			
-			$valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
-			$valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "longtext":
-			
-			$valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
-			$valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "integer":
-			
-			$valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "numeric":
-			
-			$valueNoInjection = preg_replace("/[^0-9.\,\-]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "serial":
-			
-			$valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "date":
-			
-			$valueNoInjection = preg_replace("/[^0-9\/]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "time":
-			
-			$valueNoInjection = preg_replace("/[^0-9:]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "timestamp":
-			
-			$valueNoInjection = preg_replace("/[^0-9\:\/\ ]/", "", $valueNoInjection);
-			
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-		
-		case "boolean":
-			return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-		break;
-	}
+function pSqlNoInjection($value, $type, $formatSqlNull=false)
+{
+    $valueNoInjection = $value;
+    
+    switch ($type) {
+        
+        case "string":
+            
+            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
+            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "text":
+            
+            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
+            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "longtext":
+            
+            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
+            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "integer":
+            
+            $valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "numeric":
+            
+            $valueNoInjection = preg_replace("/[^0-9.\,\-]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "serial":
+            
+            $valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "date":
+            
+            $valueNoInjection = preg_replace("/[^0-9\/]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "time":
+            
+            $valueNoInjection = preg_replace("/[^0-9:]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "timestamp":
+            
+            $valueNoInjection = preg_replace("/[^0-9\:\/\ ]/", "", $valueNoInjection);
+            
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+        
+        case "boolean":
+            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
+        break;
+    }
 }
 
 /**
@@ -394,8 +395,9 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false) {
  *
  * @return string: dado formatado
  */
-function pFormatSqlNull($value, $type) {
-	return ($type != 'boolean' and $value == '') ? 'NULL': $value;
+function pFormatSqlNull($value, $type)
+{
+    return ($type != 'boolean' and $value == '') ? 'NULL': $value;
 }
 
 /**
@@ -405,27 +407,28 @@ function pFormatSqlNull($value, $type) {
  *
  * @return string: permissões da rotina informada
  */
-function getPermission($routine) {
-	global $prumoPermission;
-	
-	if (!isset($prumoPermission)) {
-		loadPermission();
-	}
-	
-	$permission = array('routine'=>$routine,'c'=>false,'r'=>false,'u'=>false,'d'=>false);
-	
-	for ($i=0; $i < count($prumoPermission); $i++) {
-		if ($routine == $prumoPermission[$i]['routine']) {
-			$permission = $prumoPermission[$i];
-			
-			$permission['c'] = $permission['c'] > 0;
-			$permission['r'] = $permission['r'] > 0;
-			$permission['u'] = $permission['u'] > 0;
-			$permission['d'] = $permission['d'] > 0;
-		}
-	}
-	
-	return $permission;
+function getPermission($routine)
+{
+    global $prumoPermission;
+    
+    if (! isset($prumoPermission)) {
+        loadPermission();
+    }
+    
+    $permission = array('routine'=>$routine,'c'=>false,'r'=>false,'u'=>false,'d'=>false);
+    
+    for ($i = 0; $i < count($prumoPermission); $i++) {
+        if ($routine == $prumoPermission[$i]['routine']) {
+            $permission = $prumoPermission[$i];
+            
+            $permission['c'] = $permission['c'] > 0;
+            $permission['r'] = $permission['r'] > 0;
+            $permission['u'] = $permission['u'] > 0;
+            $permission['d'] = $permission['d'] > 0;
+        }
+    }
+    
+    return $permission;
 }
 
 /**
@@ -436,44 +439,45 @@ function getPermission($routine) {
  * @param $sqlCommand string: comando SQL
  * @param $crud string: ação do crud
  */
-function pAuditLog($routine, $objName, $sqlCommand, $crud) {
-	global $pConfig;
-	global $pConnectionPrumo;
-	
-	require_once($pConfig['prumoPath'].'/ctrl_connection_admin.php');
-	
-	if ($pConnectionPrumo->sgdb() == 'sqlite3') {
-		$now = 'datetime(\'now\')';
-	}
-	
-	if ($pConnectionPrumo->sgdb() == 'pgsql') {
-		$now = 'now()';
-	}
-	
-	$sqlAuditLog  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'log_sql ('."\n";
-	$sqlAuditLog .= '	routine,'."\n";
-	$sqlAuditLog .= '	log_timestamp,'."\n";
-	$sqlAuditLog .= '	log_obj_name,'."\n";
-	$sqlAuditLog .= '	usr_login,'."\n";
-	$sqlAuditLog .= '	log_prumo_method,'."\n";
-	$sqlAuditLog .= '	log_statement'."\n";
-	$sqlAuditLog .= ')'."\n";
-	$sqlAuditLog .= 'VALUES('."\n";
-	$sqlAuditLog .= '	'.pFormatSql($routine, 'string').','."\n";
-	$sqlAuditLog .= '	'.$now.','."\n";
-	$sqlAuditLog .= '	'.pFormatSql($objName, 'string').','."\n";
-	$sqlAuditLog .= '	'.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
-	$sqlAuditLog .= '	'.pFormatSql($crud, 'string').','."\n";
-	$sqlAuditLog .= '	'.pFormatSql($sqlCommand, 'string')."\n";
-	$sqlAuditLog .= ');'."\n";
-	$sqlAuditLog = str_replace("\'", "''", $sqlAuditLog);
-	
-	$sqlOk = $pConnectionPrumo->sqlQuery($sqlAuditLog, true);
-	
-	if ($sqlOk === false) {
-		pXmlError('SqlError', $pConnectionPrumo->getErr(), true);
-		exit;
-	}
+function pAuditLog($routine, $objName, $sqlCommand, $crud)
+{
+    global $pConfig;
+    global $pConnectionPrumo;
+    
+    require_once $pConfig['prumoPath'].'/ctrl_connection_admin.php';
+    
+    if ($pConnectionPrumo->sgdb() == 'sqlite3') {
+        $now = 'datetime(\'now\')';
+    }
+    
+    if ($pConnectionPrumo->sgdb() == 'pgsql') {
+        $now = 'now()';
+    }
+    
+    $sqlAuditLog  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'log_sql ('."\n";
+    $sqlAuditLog .= '    routine,'."\n";
+    $sqlAuditLog .= '    log_timestamp,'."\n";
+    $sqlAuditLog .= '    log_obj_name,'."\n";
+    $sqlAuditLog .= '    usr_login,'."\n";
+    $sqlAuditLog .= '    log_prumo_method,'."\n";
+    $sqlAuditLog .= '    log_statement'."\n";
+    $sqlAuditLog .= ')'."\n";
+    $sqlAuditLog .= 'VALUES('."\n";
+    $sqlAuditLog .= '    '.pFormatSql($routine, 'string').','."\n";
+    $sqlAuditLog .= '    '.$now.','."\n";
+    $sqlAuditLog .= '    '.pFormatSql($objName, 'string').','."\n";
+    $sqlAuditLog .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
+    $sqlAuditLog .= '    '.pFormatSql($crud, 'string').','."\n";
+    $sqlAuditLog .= '    '.pFormatSql($sqlCommand, 'string')."\n";
+    $sqlAuditLog .= ');'."\n";
+    $sqlAuditLog = str_replace("\'", "''", $sqlAuditLog);
+    
+    $sqlOk = $pConnectionPrumo->sqlQuery($sqlAuditLog, true);
+    
+    if ($sqlOk === false) {
+        pXmlError('SqlError', $pConnectionPrumo->getErr(), true);
+        exit;
+    }
 }
 
 /**
@@ -483,15 +487,16 @@ function pAuditLog($routine, $objName, $sqlCommand, $crud) {
  *
  * @return boolean
  */
-function pGetAudit($routine) {
-	global $pConnectionPrumo;
-	
-	if (!isset($pConnectionPrumo)) {
-		require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
-	}
-	
-	$sql = 'SELECT audit FROM '.$pConnectionPrumo->getSchema().'routines WHERE routine='.pFormatSql($routine, 'string').';';
-	
-	return $pConnectionPrumo->sqlQuery($sql) == 't';
+function pGetAudit($routine)
+{
+    global $pConnectionPrumo;
+    
+    if (! isset($pConnectionPrumo)) {
+        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+    }
+    
+    $sql = 'SELECT audit FROM '.$pConnectionPrumo->getSchema().'routines WHERE routine='.pFormatSql($routine, 'string').';';
+    
+    return $pConnectionPrumo->sqlQuery($sql) == 't';
 }
 

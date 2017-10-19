@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_groups_syslogin.php';
 
-$crudGroupsSyslogin = new prumoCrud('objName=crudGroupsSyslogin,xmlFile='.$xmlFile.',parent1xN=crudGroups,schema='.$schema.',tableName=groups_syslogin');
+$crudGroupsSyslogin = new PrumoCrud('objName=crudGroupsSyslogin,xmlFile='.$xmlFile.',parent1xN=crudGroups,schema='.$schema.',tableName=groups_syslogin');
 $crudGroupsSyslogin->setConnection($pConnectionPrumo);
 $crudGroupsSyslogin->addField('name=groupname,label='._('Nome do grupo').',pk,readonly,visible=false');
 $crudGroupsSyslogin->addField('name=username,label='._('Usuário').',pk');

@@ -27,6 +27,6 @@
 $pConfig['appPath'] = isset($_SERVER['REMOTE_ADDR']) ? substr(dirname($_SERVER['SCRIPT_FILENAME']), 0, strlen('/prumo/dev')*-1) : substr(getcwd(), 0, strlen('/prumo/dev')*-1);
 $pConfig['appWebPath'] = isset($_SERVER['REMOTE_ADDR']) ? substr(dirname($_SERVER['SCRIPT_NAME']), 0, strlen('/prumo/dev')*-1) : '';
 
-require_once($GLOBALS['pConfig']['appPath'].'/prumo.php');
-require_once($GLOBALS['pConfig']['appPath'].'/prumo/ctrl_ambient.php');
+require_once $GLOBALS['pConfig']['appPath'].'/prumo.php';
+require_once $GLOBALS['pConfig']['appPath'].'/prumo/ctrl_ambient.php';
 

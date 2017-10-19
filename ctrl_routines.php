@@ -24,20 +24,20 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_routines.php';
 
-$crudRoutines = new prumoCrud('objName=crudRoutines,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,routine=prumo_routines');
+$crudRoutines = new PrumoCrud('objName=crudRoutines,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,routine=prumo_routines');
 $crudRoutines->setConnection($pConnectionPrumo);
 $crudRoutines->addField('name=routine,label='._('Identificação').',pk,notNull');
 $crudRoutines->addField('name=enabled,label='._('Ativo').',type=boolean,notNull,default=t');
 $crudRoutines->addField('name=audit,label='._('Auditoria').',type=boolean,notNull,default=f');
 $crudRoutines->addField('name=type,label='._('Tipo').',notNull,default=t');
 
-$crudRoutinesView = new prumoCrud('objName=crudRoutinesView,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
+$crudRoutinesView = new PrumoCrud('objName=crudRoutinesView,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
 $crudRoutinesView->setConnection($pConnectionPrumo);
 $crudRoutinesView->addField('name=routine,label='._('Rotina').',pk,readonly,visible=false');
 $crudRoutinesView->addField('name=link,fieldId=view_link,label='._('Link').',notNull');
@@ -48,7 +48,7 @@ $crudRoutinesView->addField('name=menu_label,fieldId=view_menu_label,label='._('
 $crudRoutinesView->addField('name=menu_icon,fieldId=view_menu_icon,label='._('Ícone'));
 $crudRoutinesView->addParent1x1($crudRoutines, 'type', 'view');
 
-$crudRoutinesRootMenu = new prumoCrud('objName=crudRoutinesRootMenu,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
+$crudRoutinesRootMenu = new PrumoCrud('objName=crudRoutinesRootMenu,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
 $crudRoutinesRootMenu->setConnection($pConnectionPrumo);
 $crudRoutinesRootMenu->addField('name=routine,label='._('Rotina').',pk,readonly,visible=false');
 $crudRoutinesRootMenu->addField('name=menu_parent,fieldId=root_menu_parent,label='._('Menu Pai').',visible=false');
@@ -57,13 +57,13 @@ $crudRoutinesRootMenu->addField('name=menu_label,fieldId=root_menu_label,label='
 $crudRoutinesRootMenu->addField('name=menu_icon,fieldId=root_menu_icon,label='._('Ícone'));
 $crudRoutinesRootMenu->addParent1x1($crudRoutines, 'type', 'root_menu');
 
-$crudRoutinesMenuLess = new prumoCrud('objName=crudRoutinesMenuLess,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
+$crudRoutinesMenuLess = new PrumoCrud('objName=crudRoutinesMenuLess,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,menu=prumo_routines,onduplicate=update');
 $crudRoutinesMenuLess->setConnection($pConnectionPrumo);
 $crudRoutinesMenuLess->addField('name=routine,label='._('Rotina').',pk,readonly,visible=false');
 $crudRoutinesMenuLess->addField('name=description,fieldId=view_descriptionml,label='._('Descrição').',type=text');
 $crudRoutinesMenuLess->addParent1x1($crudRoutines, 'type', 'menu_less');
 
-$crudRoutines->pCrudList = new prumoCrudList('objName=pCrudList_crudRoutines,xmlFile='.$xmlFile.',crudName=crudRoutines,schema='.$schema.',tableName=routines,routine=prumo_routines');
+$crudRoutines->pCrudList = new PrumoCrudList('objName=pCrudList_crudRoutines,xmlFile='.$xmlFile.',crudName=crudRoutines,schema='.$schema.',tableName=routines,routine=prumo_routines');
 $crudRoutines->pCrudList->setConnection($pConnectionPrumo);
 $crudRoutines->pCrudList->addField('name=tree,label='._('Menu'));
 $crudRoutines->pCrudList->addField('name=routine,label='._('Identificação').',pk');
@@ -71,10 +71,10 @@ $crudRoutines->pCrudList->addField('name=type,label='._('Tipo').'');
 $crudRoutines->pCrudList->addField('name=enabled,label='._('Ativo').',type=boolean,default=t');
 
 $sql  = 'SELECT'."\n";
-$sql .= '	v.tree,'."\n";
-$sql .= '	r.routine,'."\n";
-$sql .= '	r.type,'."\n";
-$sql .= '	r.enabled'."\n";
+$sql .= '    v.tree,'."\n";
+$sql .= '    r.routine,'."\n";
+$sql .= '    r.type,'."\n";
+$sql .= '    r.enabled'."\n";
 $sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines r'."\n";
 $sql .= 'LEFT OUTER JOIN '.$pConnectionPrumo->getSchema().'v_menu v ON v.routine=r.routine'."\n";
 

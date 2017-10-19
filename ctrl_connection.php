@@ -29,32 +29,31 @@
  */
 
 if ($GLOBALS['pConfig']['dbSingle']) {
-	$pConnection = clone $pConnectionPrumo;
-}
-else {
-	$pConnection = new prumoConnection('sgdb='.$GLOBALS['pConfig']['sgdb'].',dbHost='.$GLOBALS['pConfig']['dbHost']
-		                                    .',dbPort='.$GLOBALS['pConfig']['dbPort'].',dbName='.$GLOBALS['pConfig']['dbName']
-		                                    .',dbUserName='.$GLOBALS['pConfig']['dbUserName'].',dbPassword='
-		                                    .$GLOBALS['pConfig']['dbPassword']
-		                                   );
+    $pConnection = clone $pConnectionPrumo;
+} else {
+    $pConnection = new PrumoConnection('sgdb='.$GLOBALS['pConfig']['sgdb'].',dbHost='.$GLOBALS['pConfig']['dbHost']
+                                            .',dbPort='.$GLOBALS['pConfig']['dbPort'].',dbName='.$GLOBALS['pConfig']['dbName']
+                                            .',dbUserName='.$GLOBALS['pConfig']['dbUserName'].',dbPassword='
+                                            .$GLOBALS['pConfig']['dbPassword']
+                                           );
 }
 
 $pConnection->setDefaultSchema($GLOBALS['pConfig']['appSchema']);
 
 // seta as configuraçãoes de log da conexão com o banco da aplicação $pConnection
 if ($GLOBALS['pConfig']['logInsert'] == 't') {
-	$pConnection->setLogType('insert');
+    $pConnection->setLogType('insert');
 }
 
 if ($GLOBALS['pConfig']['logSelect'] == 't') {
-	$pConnection->setLogType('select');
+    $pConnection->setLogType('select');
 }
 
 if ($GLOBALS['pConfig']['logUpdate'] == 't') {
-	$pConnection->setLogType('update');
+    $pConnection->setLogType('update');
 }
 
 if ($GLOBALS['pConfig']['logDelete'] == 't') {
-	$pConnection->setLogType('delete');
+    $pConnection->setLogType('delete');
 }
 

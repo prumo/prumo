@@ -39,14 +39,14 @@ $pHtmlPreLayout = str_replace(':fullName:', $prumoGlobal['currentFullName'], $pH
 
 
 // menu
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
-$pMenu = new prumoMenu();
-$pMenu->ind = '			';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+$pMenu = new PrumoMenu();
+$pMenu->ind = '            ';
 $pHtmlMenu  = $pMenu->draw(false);
 $pHtmlPreLayout = str_replace(':menu:',$pHtmlMenu,$pHtmlPreLayout);
 
 //rodape
-$pHtmlFooter  = '	<a href="index.php">'._('Início').'</a>';
+$pHtmlFooter  = '    <a href="index.php">'._('Início').'</a>';
 $pHtmlFooter .= ' : : <a href="index.php?page=prumo_changePassword">'._('Alterar Senha').'</a>'."\n";
 $pHtmlFooter .= ' : : <a href="index.php?action=logoff">'._('Sair').'</a>'."\n";
 $pHtmlPreLayout = str_replace(':footer:',$pHtmlFooter,$pHtmlPreLayout);
@@ -57,10 +57,9 @@ echo $pArrHtmlLayout[0];
 
 //inclusao do desktop
 if (isset($_GET['page']) && $prumoPage[$_GET['page']]) {
-	$pPage = $prumoPage[$_GET['page']];
-}
-else {
-	$pPage = file_exists($GLOBALS['pConfig']['appPath'].'/desktop.php') ? $GLOBALS['pConfig']['appPath'].'/desktop.php' : $GLOBALS['pConfig']['prumoPath'].'/view_submission.php';
+    $pPage = $prumoPage[$_GET['page']];
+} else {
+    $pPage = file_exists($GLOBALS['pConfig']['appPath'].'/desktop.php') ? $GLOBALS['pConfig']['appPath'].'/desktop.php' : $GLOBALS['pConfig']['prumoPath'].'/view_submission.php';
 }
 include($pPage);
 

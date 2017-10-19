@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_search_menus2.php';
 
-$searchMenus2 = new prumoSearch('objName=searchMenus2,xmlFile='.$xmlFile.',schema='.$schema.',tableName=v_menu,title='._('Menu Pai'));
+$searchMenus2 = new PrumoSearch('objName=searchMenus2,xmlFile='.$xmlFile.',schema='.$schema.',tableName=v_menu,title='._('Menu Pai'));
 $searchMenus2->setConnection($pConnectionPrumo);
 $searchMenus2->addField('name=tree,label='._('Menu'));
 $searchMenus2->addField('name=routine,label='._('Rotina').',pk');

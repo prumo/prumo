@@ -24,8 +24,8 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $pConnectionPrumo->getSchema();
 
@@ -36,39 +36,38 @@ $readonly = pPermitted('prumo_users', 'u') ? '' : ' readonly="readonly" disabled
 
 ///////////////////// grava alterações ///////////////////
 if (isset($_POST['action']) and $_POST['action'] == 'write') {
-	
-	if (pPermitted('prumo_users', 'u')) {
-		
-		$groupName = isset($_POST['groupname']) ? $_POST['groupname'] : array();
-	
-		// remove os grupos que não estão na nova lista
-		$sql  = 'DELETE FROM '.$schema.'groups_syslogin'."\n";
-		$sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
-		for ($i=0; $i < count($groupName); $i++) {
-			$sql .= 'AND NOT groupname='.pFormatSql($groupName[$i], 'string')."\n";
-		}
-		$sql .= ';';
-		$pConnectionPrumo->sqlQuery($sql);
-	
-		// adiciona os novos
-		for ($i=0; $i < count($groupName); $i++) {
-			$sql  = 'SELECT'."\n";
-			$sql .= '	count(*)'."\n";
-			$sql .= 'FROM '.$schema.'groups_syslogin'."\n";
-			$sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
-			$sql .= 'AND groupname='.pFormatSql($groupName[$i], 'string')."\n";
-			if ($pConnectionPrumo->sqlQuery($sql) == 0) {
-				$sql  = 'INSERT INTO '.$schema.'groups_syslogin (username, groupname) VALUES ('."\n";
-				$sql .= '	'.pFormatSql($_POST['username'], 'string').','."\n";
-				$sql .= '	'.pFormatSql($groupName[$i], 'string')."\n";
-				$sql .= ');';
-				$pConnectionPrumo->sqlQuery($sql);
-			}
-		}
-	}
-	else {
-		echo _('Acesso Negado!');
-	}
+    
+    if (pPermitted('prumo_users', 'u')) {
+        
+        $groupName = isset($_POST['groupname']) ? $_POST['groupname'] : array();
+    
+        // remove os grupos que não estão na nova lista
+        $sql  = 'DELETE FROM '.$schema.'groups_syslogin'."\n";
+        $sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
+        for ($i = 0; $i < count($groupName); $i++) {
+            $sql .= 'AND NOT groupname='.pFormatSql($groupName[$i], 'string')."\n";
+        }
+        $sql .= ';';
+        $pConnectionPrumo->sqlQuery($sql);
+    
+        // adiciona os novos
+        for ($i = 0; $i < count($groupName); $i++) {
+            $sql  = 'SELECT'."\n";
+            $sql .= '    count(*)'."\n";
+            $sql .= 'FROM '.$schema.'groups_syslogin'."\n";
+            $sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
+            $sql .= 'AND groupname='.pFormatSql($groupName[$i], 'string')."\n";
+            if ($pConnectionPrumo->sqlQuery($sql) == 0) {
+                $sql  = 'INSERT INTO '.$schema.'groups_syslogin (username, groupname) VALUES ('."\n";
+                $sql .= '    '.pFormatSql($_POST['username'], 'string').','."\n";
+                $sql .= '    '.pFormatSql($groupName[$i], 'string')."\n";
+                $sql .= ');';
+                $pConnectionPrumo->sqlQuery($sql);
+            }
+        }
+    } else {
+        echo _('Acesso Negado!');
+    }
 }
 
 include($GLOBALS['pConfig']['prumoPath'].'/view_user_groups.php');

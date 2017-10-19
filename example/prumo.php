@@ -35,5 +35,5 @@ $pConfig['dbPassword_prumo'] = '123456';
 
 // configuração do ambiente do framework (não remover ou comentar este bloco)
 if (file_exists('prumo/ctrl_ambient.php')) {
-	require_once('prumo/ctrl_ambient.php');
+	require_once 'prumo/ctrl_ambient.php';
 }

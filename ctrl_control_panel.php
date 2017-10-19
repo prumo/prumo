@@ -24,21 +24,21 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 pProtect('prumo_controlPanel');
 
 $configToWrite[] = 'appIdent';
 $configToWrite[] = 'appName';
 
-if (!isset($GLOBALS['pConfig']['dbSingle']) or !$GLOBALS['pConfig']['dbSingle']) {
-	$configToWrite[] = 'sgdb';
-	$configToWrite[] = 'dbHost';
-	$configToWrite[] = 'dbPort';
-	$configToWrite[] = 'dbName';
-	$configToWrite[] = 'dbUserName';
-	$configToWrite[] = 'dbPassword';
+if (! isset($GLOBALS['pConfig']['dbSingle']) or !$GLOBALS['pConfig']['dbSingle']) {
+    $configToWrite[] = 'sgdb';
+    $configToWrite[] = 'dbHost';
+    $configToWrite[] = 'dbPort';
+    $configToWrite[] = 'dbName';
+    $configToWrite[] = 'dbUserName';
+    $configToWrite[] = 'dbPassword';
 }
 
 $configToWrite[] = 'appSchema';
@@ -57,27 +57,27 @@ $configToWrite[] = 'logDelete_prumo';
 $configToWrite[] = 'scriptUpdateFramework';
 $configToWrite[] = 'scriptUpdateApp';
 
-function writeConfig($configName, $configValue) {
-	global $pConnectionPrumo;
-	
-	$sqlRetrieve = 'SELECT count(*) FROM '.$pConnectionPrumo->getSchema().'config WHERE config_name=\''.$configName.'\';';
-	if ($pConnectionPrumo->sqlQuery($sqlRetrieve) == '0') {
-		$sqlWrite = 'INSERT INTO '.$pConnectionPrumo->getSchema().'config (config_name,config_value) VALUES (\''.$configName.'\',\''.$configValue.'\');';
-	}
-	else {
-		$sqlWrite = 'UPDATE '.$pConnectionPrumo->getSchema().'config SET config_value=\''.$configValue.'\' WHERE config_name=\''.$configName.'\';';
-	}
-	
-	$pConnectionPrumo->sqlQuery($sqlWrite);
+function writeConfig($configName, $configValue)
+{
+    global $pConnectionPrumo;
+    
+    $sqlRetrieve = 'SELECT count(*) FROM '.$pConnectionPrumo->getSchema().'config WHERE config_name=\''.$configName.'\';';
+    if ($pConnectionPrumo->sqlQuery($sqlRetrieve) == '0') {
+        $sqlWrite = 'INSERT INTO '.$pConnectionPrumo->getSchema().'config (config_name,config_value) VALUES (\''.$configName.'\',\''.$configValue.'\');';
+    } else {
+        $sqlWrite = 'UPDATE '.$pConnectionPrumo->getSchema().'config SET config_value=\''.$configValue.'\' WHERE config_name=\''.$configName.'\';';
+    }
+    
+    $pConnectionPrumo->sqlQuery($sqlWrite);
 }
 
 // Grava as configurações no banco de dados do framework
-for ($i = 0; $i < count($configToWrite); $i++) {
-	
-	$config = $configToWrite[$i];
-	$value = isset($_POST[$configToWrite[$i]]) ? $_POST[$configToWrite[$i]] : '0';
-	
-	writeConfig($config, $value);
+for ($i = 0; $i < count($configToWrite); $i++)
+{
+    $config = $configToWrite[$i];
+    $value = isset($_POST[$configToWrite[$i]]) ? $_POST[$configToWrite[$i]] : '0';
+    
+    writeConfig($config, $value);
 }
 echo 'OK';
 

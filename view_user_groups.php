@@ -24,8 +24,8 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $pConnectionPrumo->getSchema();
 
@@ -33,54 +33,54 @@ pProtect('prumo_users');
 
 
 $sql  = 'SELECT'."\n";
-$sql .= '	groupname'."\n";
+$sql .= '    groupname'."\n";
 $sql .= 'FROM '.$schema.'groups'."\n";
 $sql .= 'WHERE NOT groupname IN ('."\n";
-$sql .= '	SELECT'."\n";
-$sql .= '		groupname'."\n";
-$sql .= '	FROM '.$schema.'groups_syslogin'."\n";
-$sql .= '	WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
+$sql .= '    SELECT'."\n";
+$sql .= '        groupname'."\n";
+$sql .= '    FROM '.$schema.'groups_syslogin'."\n";
+$sql .= '    WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
 $sql .= ')'."\n";
 $sql .= 'ORDER BY groupname;';
 $availableGroup = $pConnectionPrumo->sql2Array($sql);
 
 $sql  = 'SELECT'."\n";
-$sql .= '	groupname'."\n";
+$sql .= '    groupname'."\n";
 $sql .= 'FROM '.$schema.'groups_syslogin'."\n";
 $sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
 $sql .= 'ORDER BY groupname;';
 $activeGroup = $pConnectionPrumo->sql2Array($sql);
 
 echo '<table align="center" width="600">'."\n";
-echo '	<tr>'."\n";
-echo '		<td align="right">'._('Grupos disponíveis').'</td>'."\n";
-echo '		<td align="center"><br /></td>'."\n";
-echo '		<td align="left">'._('Grupos deste usuário').'</td>'."\n";
-echo '	</tr>'."\n";
-echo '	<tr>'."\n";
-echo '		<td align="right">'."\n";
-echo '			<select id="available_group" style="width:200px; height:323px" multiple'.$readonly.'>'."\n";
-for ($i=0; $i < count($availableGroup); $i++) {
-	echo '				<option value="'.$availableGroup[$i]['groupname'].'">'.$availableGroup[$i]['groupname'].'</option>'."\n";
+echo '    <tr>'."\n";
+echo '        <td align="right">'._('Grupos disponíveis').'</td>'."\n";
+echo '        <td align="center"><br /></td>'."\n";
+echo '        <td align="left">'._('Grupos deste usuário').'</td>'."\n";
+echo '    </tr>'."\n";
+echo '    <tr>'."\n";
+echo '        <td align="right">'."\n";
+echo '            <select id="available_group" style="width:200px; height:323px" multiple'.$readonly.'>'."\n";
+for ($i = 0; $i < count($availableGroup); $i++) {
+    echo '                <option value="'.$availableGroup[$i]['groupname'].'">'.$availableGroup[$i]['groupname'].'</option>'."\n";
 }
-echo '			</select>'."\n";
-echo '		</td>'."\n";
-echo '		<td align="center">'."\n";
-echo '			<button id="bt_add" onclick="btAdd_Click()" style="width:50px; height:31px"'.$readonly.'> > </button>'."\n";
-echo '			<br />'."\n";
-echo '			<button id="bt_remove" onclick="btRemove_Click()" style="width:50px; height:31px"'.$readonly.'> < </button>'."\n";
-echo '			<br />'."\n";
-echo '			<br />'."\n";
-echo '			<button id="bt_add_all" onclick="btAddAll_Click()" style="width:50px; height:31px"'.$readonly.'> >> </button>'."\n";
-echo '			<br />'."\n";
-echo '			<button id="bt_remove_all" onclick="btRemoveAll_Click()" style="width:50px; height:31px"'.$readonly.'> << </button>'."\n";
-echo '		</td>'."\n";
-echo '		<td align="left">'."\n";
-echo '			<select id="active_group" style="width:200px; height:323px" multiple'.$readonly.'>'."\n";
-for ($i=0; $i < count($activeGroup); $i++) {
-	echo '				<option value="'.$activeGroup[$i]['groupname'].'">'.$activeGroup[$i]['groupname'].'</option>'."\n";
+echo '            </select>'."\n";
+echo '        </td>'."\n";
+echo '        <td align="center">'."\n";
+echo '            <button id="bt_add" onclick="btAdd_Click()" style="width:50px; height:31px"'.$readonly.'> > </button>'."\n";
+echo '            <br />'."\n";
+echo '            <button id="bt_remove" onclick="btRemove_Click()" style="width:50px; height:31px"'.$readonly.'> < </button>'."\n";
+echo '            <br />'."\n";
+echo '            <br />'."\n";
+echo '            <button id="bt_add_all" onclick="btAddAll_Click()" style="width:50px; height:31px"'.$readonly.'> >> </button>'."\n";
+echo '            <br />'."\n";
+echo '            <button id="bt_remove_all" onclick="btRemoveAll_Click()" style="width:50px; height:31px"'.$readonly.'> << </button>'."\n";
+echo '        </td>'."\n";
+echo '        <td align="left">'."\n";
+echo '            <select id="active_group" style="width:200px; height:323px" multiple'.$readonly.'>'."\n";
+for ($i = 0; $i < count($activeGroup); $i++) {
+    echo '                <option value="'.$activeGroup[$i]['groupname'].'">'.$activeGroup[$i]['groupname'].'</option>'."\n";
 }
-echo '			</select>'."\n";
-echo '		</td>'."\n";
-echo '	</tr>'."\n";
+echo '            </select>'."\n";
+echo '        </td>'."\n";
+echo '    </tr>'."\n";
 echo '</table>'."\n";

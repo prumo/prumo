@@ -1,14 +1,14 @@
 <?php
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php';
 
 pProtect('prumo_devtools');
 
 // verifica se existe a pasta de scripts de atualização do banco da aplicação
 $scriptDir = $GLOBALS['pConfig']['appPath'].'/updatedb';
 
-if (!is_writable($GLOBALS['pConfig']['appPath']) and !file_exists($scriptDir)) {
+if (! is_writable($GLOBALS['pConfig']['appPath']) and !file_exists($scriptDir)) {
 	
 	$msg = _('Diretório "%dir%" não possui permissão de escrita, nada feito!');
 	echo str_replace('%dir%', $GLOBALS['pConfig']['appPath'], $msg);
@@ -16,9 +16,9 @@ if (!is_writable($GLOBALS['pConfig']['appPath']) and !file_exists($scriptDir)) {
 	exit;
 }
 
-if (!file_exists($scriptDir)) {
+if (! file_exists($scriptDir)) {
 	
-	if (!mkdir($scriptDir)) {
+	if (! mkdir($scriptDir)) {
 		
 		$msg = _('Erro ao criar o diretório "%dir%", nada feito!');
 		echo str_replace('%dir%', $GLOBALS['pConfig']['appPath'], $msg);
@@ -51,7 +51,7 @@ if (file_put_contents($completeFileName, $fileContent) === false) {
 
 //verifica se o schema existe na base de dados, caso não existe, cria
 $schema = $pConnectionPrumo->sqlQuery('SELECT count(*) FROM information_schema.schemata WHERE schema_name='.pFormatSql($GLOBALS['pConfig']['loginSchema_prumo'], 'string').';');
-if (!$schema) {
+if (! $schema) {
 	$pConnectionPrumo->sqlQuery('CREATE SCHEMA '.$GLOBALS['pConfig']['loginSchema_prumo'].';');
 }
 

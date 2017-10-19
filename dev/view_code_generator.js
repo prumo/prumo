@@ -52,22 +52,22 @@ function classCode() {
 		this.textarea.ondblclick = function() {
 			if (this.parent.state == 'coding') {
 				switch (this.parent.session) {
-					case 'prumoCrud':
+					case 'PrumoCrud':
 						this.parent.editPrumo();
 						break;
-					case 'prumoCrudField':
+					case 'PrumoCrudField':
 						this.parent.editPrumoField();
 						break;
-					case 'prumoSearch':
+					case 'PrumoSearch':
 						this.parent.editPrumoSearch();
 						break;
-					case 'prumoSearchField':
+					case 'PrumoSearchField':
 						this.parent.editPrumoSearchField();
 						break;
-					case 'prumoList':
+					case 'PrumoList':
 						this.parent.editPrumoSearch();
 						break;
-					case 'prumoListField':
+					case 'PrumoListField':
 						this.parent.editPrumoSearchField();
 						break;
 				}				
@@ -84,11 +84,11 @@ function classCode() {
 				if (this.parent.lastKeyCode == 13) {
 					var lastSession = 	this.parent.getSessionLine(this.parent.getLineIndexCursor()-1);
 					
-					if (lastSession == 'prumoCrud' || lastSession == 'prumoCrudField') {
+					if (lastSession == 'PrumoCrud' || lastSession == 'PrumoCrudField') {
 						this.parent.clearPrumoField();
 						this.parent.showPrumoFieldEdit();
 					}
-					if (lastSession == 'prumoSearch' || lastSession == 'prumoSearchField' || lastSession == 'prumoList' || lastSession == 'prumoListField') {
+					if (lastSession == 'PrumoSearch' || lastSession == 'PrumoSearchField' || lastSession == 'PrumoList' || lastSession == 'PrumoListField') {
 						this.parent.clearPrumoSearchField();
 						this.parent.showPrumoSearchFieldEdit();
 					}
@@ -216,10 +216,10 @@ function classCode() {
 	}
 	
 	/**
-	 * Lê uma linha de declaração de um objeto prumoCrud e preenche os campos do formulário
+	 * Lê uma linha de declaração de um objeto PrumoCrud e preenche os campos do formulário
 	 */
 	this.readPrumoLine = function(textLine) {
-		var text = textLine.substr(textLine.indexOf("prumoCrud('")+11, textLine.length - textLine.indexOf("prumoCrud('")+11);
+		var text = textLine.substr(textLine.indexOf("PrumoCrud('")+11, textLine.length - textLine.indexOf("PrumoCrud('")+11);
 		var text = text.replace("');","");
 		var param = explode(',',text);
 		
@@ -360,7 +360,7 @@ function classCode() {
 	}
 	
 	/**
-	 * Lê uma linha de adicão de campo de um objeto prumoCrud e preenche os campos do formulário
+	 * Lê uma linha de adicão de campo de um objeto PrumoCrud e preenche os campos do formulário
 	 */
 	this.readPrumoFieldLine = function(textLine) {
 		var text = textLine.substr(textLine.indexOf("->addField('")+12, textLine.length - textLine.indexOf("->addField('")+12);
@@ -483,10 +483,10 @@ function classCode() {
 	}
 	
 	/**
-	 * Lê uma linha de declaração de um objeto prumoSearch e preenche os campos do formulário
+	 * Lê uma linha de declaração de um objeto PrumoSearch e preenche os campos do formulário
 	 */
 	this.readPrumoSearchLine = function(textLine) {
-		var text = textLine.substr(textLine.indexOf("prumoSearch('")+13, textLine.length - textLine.indexOf("prumoSearch('")+13);
+		var text = textLine.substr(textLine.indexOf("PrumoSearch('")+13, textLine.length - textLine.indexOf("PrumoSearch('")+13);
 		var text = text.replace("');","");
 		var param = explode(',',text);
 		
@@ -551,7 +551,7 @@ function classCode() {
 	}
 	
 	/**
-	 * Lê uma linha de adicão de campo de um objeto prumoSearch e preenche os campos do formulário
+	 * Lê uma linha de adicão de campo de um objeto PrumoSearch e preenche os campos do formulário
 	 */
 	this.readPrumoSearchFieldLine = function(textLine) {
 		var text = textLine.substr(textLine.indexOf("->addField('")+12, textLine.length - textLine.indexOf("->addField('")+12);
@@ -636,7 +636,7 @@ function classCode() {
 				this.objName = objName;
 			}
 			
-			var codeLine = '$'+objName+' = new prumoCrud(\'';
+			var codeLine = '$'+objName+' = new PrumoCrud(\'';
 			codeLine += 'tableName='+tableName;
 			if (schema != '') codeLine += ',schema='+schema;
 			if (title != '') codeLine += ',title='+title;
@@ -827,11 +827,11 @@ function classCode() {
 			}
 			
 			if (this.state == 'newPrumoSearch' || this.state == 'editPrumoSearch') {
-				var codeLine = '$'+objName+' = new prumoSearch(\'';
+				var codeLine = '$'+objName+' = new PrumoSearch(\'';
 			}
 			
 			if (this.state == 'newPrumoList' || this.state == 'editPrumoList') {
-				var codeLine = '$'+objName+' = new prumoList(\'';
+				var codeLine = '$'+objName+' = new PrumoList(\'';
 			}
 			
 			codeLine += 'tableName='+tableName;
@@ -1083,7 +1083,7 @@ function classCode() {
 	
 	this.unFreezeBtClass = function() {
 		var text = this.textarea.value;
-		if (text.indexOf('prumoSearch') == -1 && text.indexOf('prumoList') == -1) {
+		if (text.indexOf('PrumoSearch') == -1 && text.indexOf('PrumoList') == -1) {
 			btPrumo.removeAttribute('disabled');
 		}
 		
@@ -1119,14 +1119,14 @@ function classCode() {
 			var recursive = true;
 		}
 		
-		if (line.indexOf("new prumoCrud(") > -1) {
-			return 'prumoCrud';
+		if (line.indexOf("new PrumoCrud(") > -1) {
+			return 'PrumoCrud';
 		}
-		else if (line.indexOf("new prumoSearch(") > -1) {
-			return 'prumoSearch';
+		else if (line.indexOf("new PrumoSearch(") > -1) {
+			return 'PrumoSearch';
 		}
-		else if (line.indexOf("new prumoList(") > -1) {
-			return 'prumoList';
+		else if (line.indexOf("new PrumoList(") > -1) {
+			return 'PrumoList';
 		}
 		else if (line.indexOf("->addField(") > -1 && recursive) {
 			if (lineIndex == 0) {
@@ -1134,7 +1134,7 @@ function classCode() {
 			}
 			var index = lineIndex - 1;
 			var session = this.getSessionLine(index,false);
-			while (session != 'prumoCrud' && session != 'prumoSearch' && session != 'prumoList') {
+			while (session != 'PrumoCrud' && session != 'PrumoSearch' && session != 'PrumoList') {
 				index--;
 				session = this.getSessionLine(index,false);
 			}
@@ -1250,7 +1250,7 @@ function makeDdl() {
 }
 
 function showOtherCode() {
-	if (document.getElementById('prumo_code').value.indexOf("new prumoCrud") > -1) {
+	if (document.getElementById('prumo_code').value.indexOf("new PrumoCrud") > -1) {
 		document.getElementById('tabOtherCode_tab_view').innerHTML = '';
 		document.getElementById('tabOtherCode_tab_ddl').innerHTML = '';
 		tabOtherCode.show();

@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_groups.php';
 
-$crudGroups = new prumoCrud('objName=crudGroups,xmlFile='.$xmlFile.',schema='.$schema.',tableName=groups,routine=prumo_groups,fastCreate,fastUpdate,fastDelete');
+$crudGroups = new PrumoCrud('objName=crudGroups,xmlFile='.$xmlFile.',schema='.$schema.',tableName=groups,routine=prumo_groups,fastCreate,fastUpdate,fastDelete');
 $crudGroups->setConnection($pConnectionPrumo);
 $crudGroups->addField('name=groupname,label='._('Nome do grupo').',pk');
 $crudGroups->addField('name=enabled,label='._('Ativo').',type=boolean,notNull,default=t');

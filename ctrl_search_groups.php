@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_search_groups.php';
 
-$searchGroups = new prumoSearch('objName=searchGroups,xmlFile='.$xmlFile.',schema='.$schema.',tableName=groups');
+$searchGroups = new PrumoSearch('objName=searchGroups,xmlFile='.$xmlFile.',schema='.$schema.',tableName=groups');
 $searchGroups->setConnection($pConnectionPrumo);
 $searchGroups->addField('name=groupname,label='._('Grupo'));
 $searchGroups->addField('name=enabled,type=boolean,label='._('ativo'));

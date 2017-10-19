@@ -180,7 +180,6 @@ table .prumoGridTh {
 	box-shadow: 0px 0px 6px #888888;
 	background: #dce8d0; /* Old browsers */
 	background: -webkit-linear-gradient(top,  #dce8d0 0%, #8da0a0 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(top,  #dce8d0 0%, #8da0a0 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #dce8d0 0%, #8da0a0 100%); /* W3C */
 	padding-bottom: 5px;
 }
@@ -261,7 +260,6 @@ table .prumoGridTh {
 	position:fixed;
 	background: #ffffff; /* Old browsers */
 	background: -webkit-linear-gradient(top,  #ffffff 0%,#e6f0f2 93%,#a7afaf 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(top,  #ffffff 0%,#e6f0f2 93%,#a7afaf 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #ffffff 0%,#e6f0f2 93%,#a7afaf 100%); /* W3C */
 }
 
@@ -283,7 +281,6 @@ table .prumoGridTh {
 	text-indent:5px;
 	background: #b9c170; /* Old browsers */
 	background: -webkit-linear-gradient(left,  #b9c170 0%, #77b85116320481 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(left,  #b9c170 0%, #77b85116320481 100%); /* IE10+ */
 	background: linear-gradient(to right,  #b9c170 0%, #77b85116320481 100%); /* W3C */
 }
 
@@ -296,7 +293,6 @@ table .prumoGridTh {
 	text-indent:10px;
 	background: #dce8d0; /* Old browsers */
 	background: -webkit-linear-gradient(left,  #dce8d0 0%, #dce8d0 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(left,  #dce8d0 0%, #dce8d0 100%); /* IE10+ */
 	background: linear-gradient(to right,  #dce8d0 0%, #dce8d0 100%); /* W3C */
 }
 
@@ -309,7 +305,6 @@ table .prumoGridTh {
 	text-indent:15px;
 	background: #f7fcf2; /* Old browsers */
 	background: -webkit-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* IE10+ */
 	background: linear-gradient(to right,  #f7fcf2 0%,#ffffff 100%); /* W3C */
 }
 .prumoMenuL3:hover {
@@ -322,7 +317,6 @@ table .prumoGridTh {
 	
 	background: #f7fcf2; /* Old browsers */
 	background: -webkit-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* IE10+ */
 	background: linear-gradient(to right,  #f7fcf2 0%,#ffffff 100%); /* W3C */
 }
 
@@ -335,7 +329,6 @@ table .prumoGridTh {
 	text-indent:25px;	
 	background: #f7fcf2; /* Old browsers */
 	background: -webkit-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(left,  #f7fcf2 0%,#ffffff 100%); /* IE10+ */
 	background: linear-gradient(to right,  #f7fcf2 0%,#ffffff 100%); /* W3C */
 }
 
@@ -380,7 +373,6 @@ table .prumoGridTh {
 	text-shadow: 0px 1px 0px white;
 	background: #c1cdcd; /* Old browsers */
 	background: -webkit-linear-gradient(top,  #c1cdcd 0%,#8da0a0 100%); /* Chrome10+,Safari5.1+ */
-	background: -ms-linear-gradient(top,  #c1cdcd 0%,#8da0a0 100%); /* IE10+ */
 	background: linear-gradient(to bottom,  #c1cdcd 0%,#8da0a0 100%); /* W3C */
 	border-bottom:1px solid #BBBBBB;
 }

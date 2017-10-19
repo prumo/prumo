@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_search_users.php';
 
-$searchUsers = new prumoSearch('objName=searchUsers,xmlFile='.$xmlFile.',schema='.$schema.',tableName=syslogin');
+$searchUsers = new PrumoSearch('objName=searchUsers,xmlFile='.$xmlFile.',schema='.$schema.',tableName=syslogin');
 $searchUsers->setConnection($pConnectionPrumo);
 $searchUsers->addField('name=username,label='._('Usuário'));
 $searchUsers->addField('name=fullname,label='._('Nome completo'));

@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_search_routines.php';
 
-$searchRoutines = new prumoSearch('objName=searchRoutines,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,title='._('Buscar Rotina').',menuShortcut=6');
+$searchRoutines = new PrumoSearch('objName=searchRoutines,xmlFile='.$xmlFile.',schema='.$schema.',tableName=routines,title='._('Buscar Rotina').',menuShortcut=6');
 $searchRoutines->setConnection($pConnectionPrumo);
 $searchRoutines->addField('name=routine,label='._('Rotina'));
 $searchRoutines->addField('name=enabled,type=boolean,label='._('ativo'));

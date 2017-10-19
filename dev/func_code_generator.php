@@ -24,11 +24,11 @@
  *
  * ******************************************************************* */
 
-function getObjSearchList() {
-	
+function getObjSearchList()
+{
 	$list = array();
 	$fileList = scandir($GLOBALS['pConfig']['appPath']);
-	for ($i=0; $i < count($fileList); $i++) {
+	for ($i = 0; $i < count($fileList); $i++) {
 		
 		$info = pathinfo($fileList[$i]);
 		
@@ -37,12 +37,12 @@ function getObjSearchList() {
 			$fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
 			
 			// verifica se o arquivo inicializa o objeto informado
-			if (substr_count($fileContent, '= new prumoSearch(') > 0) {
+			if (substr_count($fileContent, '= new PrumoSearch(') > 0) {
 				$line = explode("\n", str_replace("\r", "", $fileContent));
 				
 				for ($j=0; $j < count($line); $j++) {
-					if (substr_count($line[$j], '= new prumoSearch(') > 0) {
-						$part = explode('= new prumoSearch(', $line[$j]);
+					if (substr_count($line[$j], '= new PrumoSearch(') > 0) {
+						$part = explode('= new PrumoSearch(', $line[$j]);
 						$objName = trim($part[0]);
 						$objName = str_replace('$', '', $objName);
 						$list[] = $objName;

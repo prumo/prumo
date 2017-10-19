@@ -24,5 +24,5 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-include($GLOBALS['pConfig']['prumoPath'].'/ctrl_framework_index.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_framework_index.php';

@@ -24,26 +24,28 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
+require_once 'prumo.php';
 
 pProtect('prumo_users');
 
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
-class prumoUsers extends prumoCrud {
-	function sqlCreate() {
-		$tableName = $this->param['tablename'];
-		$schema = $this->pConnection->getSchema($this->param['schema']);
-		$password = md5($_POST['new_username']);
-		$sql = 'INSERT INTO '.$schema.$tableName.' (username,fullname,password,enabled) VALUES (:new_username:,:new_fullname:,\''.$password.'\',:new_enabled:);';
-		return $sql;
-	}
+class PrumoUsers extends PrumoCrud
+{
+    function sqlCreate()
+    {
+        $tableName = $this->param['tablename'];
+        $schema = $this->pConnection->getSchema($this->param['schema']);
+        $password = md5($_POST['new_username']);
+        $sql = 'INSERT INTO '.$schema.$tableName.' (username,fullname,password,enabled) VALUES (:new_username:,:new_fullname:,\''.$password.'\',:new_enabled:);';
+        return $sql;
+    }
 }
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_users.php?prumo_appIdent='.$GLOBALS['pConfig']['appIdent'];
 
-$crudUsers = new prumoUsers('objName=crudUsers,xmlFile='.$xmlFile.',schema='.$schema.',tableName=syslogin,routine=prumo_users');
+$crudUsers = new PrumoUsers('objName=crudUsers,xmlFile='.$xmlFile.',schema='.$schema.',tableName=syslogin,routine=prumo_users');
 $crudUsers->setConnection($pConnectionPrumo);
 $crudUsers->addField('name=username,label='._('Usuário').',pk');
 $crudUsers->addField('name=fullname,label='._('Nome completo'));

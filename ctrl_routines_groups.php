@@ -24,13 +24,13 @@
  *
  * ******************************************************************* */
 
-require_once('prumo.php');
-require_once($GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php');
+require_once 'prumo.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_routines_groups.php';
 
-$crudRoutinesGroups = new prumoCrud('objName=crudRoutinesGroups,xmlFile='.$xmlFile.',parent1xN=crudRoutines,schema='.$schema.',tableName=routines_groups,routine=prumo_routines');
+$crudRoutinesGroups = new PrumoCrud('objName=crudRoutinesGroups,xmlFile='.$xmlFile.',parent1xN=crudRoutines,schema='.$schema.',tableName=routines_groups,routine=prumo_routines');
 $crudRoutinesGroups->setConnection($pConnectionPrumo);
 $crudRoutinesGroups->addField('name=routine,label='._('Rotina').',pk,readonly,visible=false');
 $crudRoutinesGroups->addField('name=groupname,pk,label='._('Nome do grupo'));
