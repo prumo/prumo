@@ -21,7 +21,6 @@
  */
 class PrumoPgConnection
 {
-    
     private $connection;
     private $err;
     
@@ -41,12 +40,24 @@ class PrumoPgConnection
         $this->err = '';
         
         $this->sqlOperator = array();
-        $this->sqlOperator['like']                  = ':field: ilike \'%:value:%\'';
-        $this->sqlOperator['not like']              = 'NOT :field: ilike \'%:value:%\'';
-        $this->sqlOperator['begins with']           = ':field: ilike \':value:%\'';
-        $this->sqlOperator['ends with']             = ':field: ilike \'%:value:\'';
-        $this->sqlOperator['not begins with']       = 'NOT :field: ilike \':value:%\'';
-        $this->sqlOperator['not ends with']         = 'NOT :field: ilike \'%:value:\'';
+        
+        global $pConfig;
+        if ($pConfig['useUnaccent'] == 't') {
+            $this->sqlOperator['like']                  = 'unaccent(:field:) ilike unaccent(\'%:value:%\')';
+            $this->sqlOperator['not like']              = 'NOT unaccent(:field:) ilike unaccent(\'%:value:%\')';
+            $this->sqlOperator['begins with']           = 'unaccent(:field:) ilike unaccent(\':value:%\')';
+            $this->sqlOperator['ends with']             = 'unaccent(:field:) ilike unaccent(\'%:value:\')';
+            $this->sqlOperator['not begins with']       = 'NOT unaccent(:field:) ilike unaccent(\':value:%\')';
+            $this->sqlOperator['not ends with']         = 'NOT unaccent(:field:) ilike unaccent(\'%:value:\')';
+        } else {
+            $this->sqlOperator['like']                  = ':field: ilike \'%:value:%\'';
+            $this->sqlOperator['not like']              = 'NOT :field: ilike \'%:value:%\'';
+            $this->sqlOperator['begins with']           = ':field: ilike \':value:%\'';
+            $this->sqlOperator['ends with']             = ':field: ilike \'%:value:\'';
+            $this->sqlOperator['not begins with']       = 'NOT :field: ilike \':value:%\'';
+            $this->sqlOperator['not ends with']         = 'NOT :field: ilike \'%:value:\'';
+        }
+        
         $this->sqlOperator['equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['not equal']             = 'NOT :field: = \':value:\'';
         $this->sqlOperator['numeric equal']         = ':field: = :value:';

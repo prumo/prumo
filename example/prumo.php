@@ -24,6 +24,7 @@ $pConfig['dbPort_prumo']     = '5432';
 $pConfig['dbName_prumo']     = 'db_prumo';
 $pConfig['dbUserName_prumo'] = 'prumo';
 $pConfig['dbPassword_prumo'] = '123456';
+$pConfig['useUnaccent']      = 'f';
 
 // configuração do ambiente do framework (não remover ou comentar este bloco)
 if (file_exists('prumo/ctrl_ambient.php')) {

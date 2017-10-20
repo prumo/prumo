@@ -49,6 +49,7 @@ if (! isset($pConfig['dbName']))                $pConfig['dbName']              
 if (! isset($pConfig['dbUserName']))            $pConfig['dbUserName']            = 'prumo';
 if (! isset($pConfig['dbPassword']))            $pConfig['dbPassword']            = 'prumo';
 if (! isset($pConfig['appSchema']))             $pConfig['appSchema']             = 'public';
+if (! isset($pConfig['useUnaccent']))           $pConfig['useUnaccent']           = 'f';
 if (! isset($pConfig['theme']))                 $pConfig['theme']                 = 'default';
 if (! isset($pConfig['searchLines']))           $pConfig['searchLines']           = 14;
 if (! isset($pConfig['afterLogin']))            $pConfig['afterLogin']            = 'index.php';

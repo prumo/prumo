@@ -36,6 +36,7 @@ if (! isset($GLOBALS['pConfig']['dbSingle']) or !$GLOBALS['pConfig']['dbSingle']
 $configToWrite[] = 'appSchema';
 $configToWrite[] = 'language';
 $configToWrite[] = 'locale';
+$configToWrite[] = 'useUnaccent';
 $configToWrite[] = 'theme';
 $configToWrite[] = 'searchLines';
 $configToWrite[] = 'logInsert';

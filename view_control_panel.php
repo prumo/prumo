@@ -117,6 +117,19 @@ $inputTheme .= '                    </select>'."\n";
                         <td class="prumoFormLabel">appSchema:</td>
                         <td class="prumoFormFields"><input id="appSchema" type="text" value="<?=$GLOBALS['pConfig']['appSchema'] ?>" size="30" /></td>
                     </tr>
+                    <tr>
+                        <td class="prumoFormLabel"><br /></td>
+                        <td class="prumoFormFields">
+                            <?php
+                            if ($GLOBALS['pConfig']['useUnaccent'] == 't') {
+                                echo '        <input id="useUnaccent" type="checkbox" checked="checked" disabled="disabled" /> useUnaccent'."\n";
+                            } else {
+                                echo '        <input id="useUnaccent" type="checkbox" disabled="disabled" /> useUnaccent'."\n";
+                            }
+                            echo '('._('Usar extensão unaccent do PostgreSQL').')';
+                            ?>
+                        </td>
+                    </tr>
                 </table>
                 
             </div>
@@ -287,6 +300,7 @@ $inputTheme .= '                    </select>'."\n";
         param += '&dbUserName='+document.getElementById('dbUserName').value;
         param += '&dbPassword='+document.getElementById('dbPassword').value;
         param += '&appSchema='+document.getElementById('appSchema').value;
+        param += document.getElementById('useUnaccent').checked == true ? '&useUnaccent=t' : '&useUnaccent=f';
         param += '&theme='+document.getElementById('theme').value;
         param += '&searchLines='+document.getElementById('searchLines').value;
         param += document.getElementById('logInsert').checked == true ? '&logInsert=t' : '&logInsert=f';
