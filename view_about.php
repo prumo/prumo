@@ -21,5 +21,5 @@ echo '        <h1>'._('Sobre o Prumo Framework para PHP').'</h1>'."\n";
 echo '        <p>'._('Versão').': '.$GLOBALS['pConfig']['version'].'</p>'."\n";
 echo '        <p>'.'Prumo Framework para PHP '._('é um framework vertical para desenvolvimento rápido de sistemas de informação web com banco de dados PostgreSQL.').'</p>'."\n";
 echo '        <p>'._('Licenceado nos termos da Licença MIT').'</p>'."\n";
-echo '        <p>'._('Site do projeto').': <a href="https://github.com/prumo/framework">https://github.com/prumo/framework</a></p>'."\n";
+echo '        <p>'._('Site do projeto').': <a href="https://github.com/prumo/prumo">https://github.com/prumo/framework</a></p>'."\n";
 echo '    </div>'."\n";
