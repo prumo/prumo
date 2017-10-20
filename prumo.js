@@ -16,8 +16,10 @@
  */
 
 var jPrumo = new prumo();
-function prumo() {
-    this.button = function(type, elementId) {
+function prumo()
+{
+    this.button = function(type, elementId)
+    {
         switch (type) {
         case 'upload':
             this.uploadButton(elementId);
@@ -28,7 +30,8 @@ function prumo() {
         }
     }
     
-    this.uploadButton = function(elementId) {
+    this.uploadButton = function(elementId)
+    {
         var inputs = [];
         if (typeof(elementId) != "undefined") {
             var input = document.getElementById(elementId);
@@ -36,26 +39,28 @@ function prumo() {
         } else {
             inputs = document.querySelectorAll('input[type=file]');
         }
-        Array.prototype.forEach.call( inputs, function( input ) {
+        Array.prototype.forEach.call(inputs, function(input) {
             var html = '<label for="' + input.id + '">'
                      + '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>'
                      + '<span>Escolher arquivo&hellip;</span></label>';
             input.insertAdjacentHTML('afterend', html);
             input.classList.add('inputFile');
-            var label     = input.nextElementSibling,
-            labelVal = label.innerHTML;
+            var label = input.nextElementSibling;
+            var labelVal = label.innerHTML;
             
-            input.addEventListener( 'change', function( e ) {
+            input.addEventListener('change', function(e) {
                 var fileName = '';
-                if( this.files && this.files.length > 1 )
-                    fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
-                else
-                    fileName = e.target.value.split( '\\' ).pop();
+                if (this.files && this.files.length > 1) {
+                    fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);
+                } else {
+                    fileName = e.target.value.split('\\').pop();
+                }
         
-                if( fileName )
-                    label.querySelector( 'span' ).innerHTML = fileName;
-                else
+                if (fileName) {
+                    label.querySelector('span').innerHTML = fileName;
+                } else {
                     label.innerHTML = labelVal;
+                }
             });
         });
     }
@@ -68,16 +73,16 @@ function prumo() {
  * @param result string: id do objeto que receberá o resultado da chamada
  * @param result string: 'eval' se deseja que seja executado diretamente o javascript
  */
-function pSimpleAjax(file, param, result) {
-    
+function pSimpleAjax(file, param, result)
+{    
     var pAjax = new prumoAjax(file);
     
     if (result == 'eval') {
-        pAjax.process = function() {
+        pAjax.process = function()
+        {
             eval(this.responseText);
         }
-    }
-    else {
+    } else {
         document.getElementById(result).innerHTML = '';
         
         var img = document.createElement("IMG");
@@ -85,19 +90,23 @@ function pSimpleAjax(file, param, result) {
         img.setAttribute('alt', 'carregando...');
         document.getElementById(result).appendChild(img);
         
-        pAjax.process = function() {
+        pAjax.process = function()
+        {
             document.getElementById(result).innerHTML = this.responseText;
         }
     }
-    
     pAjax.goAjax(param);
-    
 }
 
 /**
  * Valida a data
+ *
+ * @param value string: valor a ser validado
+ *
+ * @return boolean
  */
-function isDate(value) {
+function isDate(value)
+{
     var date = value;
     var arrDate = new Array();
     var ExpReg = new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");
@@ -105,11 +114,9 @@ function isDate(value) {
     
     if (date.search(ExpReg) == -1) {
         return false;
-    }
-    else if (((arrDate[1] == 4) || (arrDate[1] == 6) || (arrDate[1] == 9) || (arrDate[1] == 11)) && (arrDate[0] > 30)) {
+    } else if (((arrDate[1] == 4) || (arrDate[1] == 6) || (arrDate[1] == 9) || (arrDate[1] == 11)) && (arrDate[0] > 30)) {
         return false;
-    }
-    else if (arrDate[1] == 2) {
+    } else if (arrDate[1] == 2) {
         if ((arrDate[0] > 28) && ((arrDate[2]%4) != 0)) {
             return false;
         }
@@ -122,39 +129,36 @@ function isDate(value) {
 
 /**
  * Valida a hora
+ *
+ * @param value string: valor a ser validado
+ *
+ * @return boolean
  */
-function isTime(value) {
-    
+function isTime(value)
+{
     var partValue = value.split(":");
-    
     var s = '00';
     
     if (partValue.length == 2) {
         var h = partValue[0];
         var m = partValue[1];
-    }
-    else if (partValue.length == 3) {
+    } else if (partValue.length == 3) {
         var h = partValue[0];
         var m = partValue[1];
         var s = partValue[2];
-    }
-    else {
-        alert(3);
+    } else {
         return false;
     }
     
-    if (!isFinite(h)) {
-        alert(4);
+    if (! isFinite(h)) {
         return false;
     }
     
-    if (!isFinite(m)) {
-        alert(5);
+    if (! isFinite(m)) {
         return false;
     }
     
-    if (!isFinite(s)) {
-        alert(6);
+    if (! isFinite(s)) {
         return false;
     }
     
@@ -166,27 +170,6 @@ function isTime(value) {
 }
 
 /**
- * Valida data e hora
- */
-function isTimestamp(value) {
-    
-    partValue = value.split(" ");
-    
-    if (partValue.length != 2) {
-        return false;
-    }
-    else if (!isDate(partValue[0])) {
-        return false;
-    }
-    else if (!isTime(partValue[1])) {
-        return false;
-    }
-    else {
-        return true;
-    }
-}
-
-/**
  * Valida o formato de um valor
  *
  * @param value mixed: valor a ser validado
@@ -194,8 +177,8 @@ function isTimestamp(value) {
  *
  * @return boolean
  */
-function prumoIsType(value, type) {
-    
+function prumoIsType(value, type)
+{
     var regexInteger = /^-?[0-9]+$/;
     var regexFloat = /^-?\d*\.?\,?\d*$/;
     
@@ -204,36 +187,43 @@ function prumoIsType(value, type) {
     switch(type) {
         
         case 'serial':
-            if (!regexInteger.test(value)) {
+            if (! regexInteger.test(value)) {
                 isValid = false;
             }
             break;
         case 'integer':
-            if (!regexInteger.test(value)) {
+            if (! regexInteger.test(value)) {
                 isValid = false;
             }
             break;
         
         case 'numeric':
-            if (!regexFloat.test(value)) {
+            if (! regexFloat.test(value)) {
                 isValid = false;
             }
             break;
         
         case 'date':
-            if (!isDate(value)) {
+            if (! isDate(value)) {
                 isValid = false;
             }
             break;
     
         case 'time':
-            if (!isTime(value)) {
+            if (! isTime(value)) {
                 isValid = false;
             }
             break;
     
         case 'timestamp':
-            if (!isTimestamp(value)) {
+            
+            partValue = value.split(" ");
+            
+            if (partValue.length != 2) {
+                isValid = false;
+            } else if (! isDate(partValue[0])) {
+                isValid = false;
+            } else if (! isTime(partValue[1])) {
                 isValid = false;
             }
             break;
@@ -248,11 +238,13 @@ function prumoIsType(value, type) {
     return isValid;
 }
 
-function gettext(str) {
+function gettext(str)
+{
     return str;
 }
 
-function md5(str) {
+function md5(str)
+{
     // Calculate the md5 hash of a string  
     // 
     // version: 1008.1718
@@ -265,10 +257,12 @@ function md5(str) {
     // *     example 1: md5('Kevin van Zonneveld');
     // *     returns 1: '6e658d4bfcb59cc13f96c14450ac40b9'
     var xl; 
-    var rotateLeft = function (lValue, iShiftBits) {
+    var rotateLeft = function(lValue, iShiftBits)
+    {
         return (lValue<<iShiftBits) | (lValue>>>(32-iShiftBits));
     }
-    var addUnsigned = function (lX,lY) {
+    var addUnsigned = function(lX,lY)
+    {
         var lX4,lY4,lX8,lY8,lResult;
         lX8 = (lX & 0x80000000);
         lY8 = (lY & 0x80000000);
@@ -280,36 +274,38 @@ function md5(str) {
         if (lX4 | lY4) {
             if (lResult & 0x40000000) {
                 return (lResult ^ 0xC0000000 ^ lX8 ^ lY8);
-            }
-            else {
+            } else {
                 return (lResult ^ 0x40000000 ^ lX8 ^ lY8);
             }
-        }
-        else {
+        } else {
             return (lResult ^ lX8 ^ lY8);
         }
     } 
-    var _F = function (x,y,z) { return (x & y) | ((~x) & z); }
-    var _G = function (x,y,z) { return (x & z) | (y & (~z)); }
-    var _H = function (x,y,z) { return (x ^ y ^ z); }
-    var _I = function (x,y,z) { return (y ^ (x | (~z))); }
-    var _FF = function (a,b,c,d,x,s,ac) {
+    var _F = function(x,y,z) { return (x & y) | ((~x) & z); }
+    var _G = function(x,y,z) { return (x & z) | (y & (~z)); }
+    var _H = function(x,y,z) { return (x ^ y ^ z); }
+    var _I = function(x,y,z) { return (y ^ (x | (~z))); }
+    var _FF = function(a,b,c,d,x,s,ac) {
         a = addUnsigned(a, addUnsigned(addUnsigned(_F(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     }
-    var _GG = function (a,b,c,d,x,s,ac) {
+    var _GG = function(a,b,c,d,x,s,ac)
+    {
         a = addUnsigned(a, addUnsigned(addUnsigned(_G(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     }
-    var _HH = function (a,b,c,d,x,s,ac) {
+    var _HH = function(a,b,c,d,x,s,ac)
+    {
         a = addUnsigned(a, addUnsigned(addUnsigned(_H(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     }
-    var _II = function (a,b,c,d,x,s,ac) {
+    var _II = function(a,b,c,d,x,s,ac)
+    {
         a = addUnsigned(a, addUnsigned(addUnsigned(_I(b, c, d), x), ac));
         return addUnsigned(rotateLeft(a, s), b);
     }
-    var convertToWordArray = function (str) {
+    var convertToWordArray = function(str)
+    {
         var lWordCount;
         var lMessageLength = str.length;
         var lNumberOfWords_temp1=lMessageLength + 8;
@@ -318,7 +314,7 @@ function md5(str) {
         var lWordArray=new Array(lNumberOfWords-1);
         var lBytePosition = 0;
         var lByteCount = 0;
-        while ( lByteCount < lMessageLength ) {
+        while (lByteCount < lMessageLength) {
             lWordCount = (lByteCount-(lByteCount % 4))/4;
             lBytePosition = (lByteCount % 4)*8;
             lWordArray[lWordCount] = (lWordArray[lWordCount] | (str.charCodeAt(lByteCount)<<lBytePosition));
@@ -332,7 +328,7 @@ function md5(str) {
         return lWordArray;
     }
  
-    var wordToHex = function (lValue) {
+    var wordToHex = function(lValue) {
         var wordToHexValue="",wordToHexValue_temp="",lByte,lCount;
         for (lCount = 0;lCount<=3;lCount++) {
             lByte = (lValue>>>(lCount*8)) & 255;
@@ -434,10 +430,9 @@ function md5(str) {
  * @param value string: valor
  * @param textStyle string: html ou text
  */
-function format(type, value, textStyle) {
-    
+function format(type, value, textStyle)
+{
     if (type == 'timestamp' && value != '') {
-        
         var year = value.substring(0, 4);
         var month = value.substring(5, 7);
         var day = value.substring(8, 10);
@@ -446,41 +441,30 @@ function format(type, value, textStyle) {
         var second = value.substring(17, 19);
         var timestamp = value.substring(17, 19);
         var formatedValue = day + '/' + month + '/' + year + ' ' + hour + ':' + minute + ':' + second;
-    }
-    else if (type == 'time' && value != '') {
-        
+    } else if (type == 'time' && value != '') {
         var hour = value.substring(0, 2);
         var minute = value.substring(3, 5);
         var second = value.substring(6, 8)
         var formatedValue = hour + ':' + minute + ':' + second;
-    }
-    else if (type == 'date' && value != '') {
-        
+    } else if (type == 'date' && value != '') {
         var year = value.substring(0, 4);
         var month = value.substring(5, 7);
         var day = value.substring(8, 10);
         var formatedValue = day + '/' + month + '/' + year;
-    }
-    else if (type == 'numeric' && value != '') {
-        
+    } else if (type == 'numeric' && value != '') {
         var formatedValue = value.replace(',', '');
         formatedValue = formatedValue.replace('.', ',');
-    }
-    else if (type == 'boolean' && value != '' && textStyle == 'html') {
-        
+    } else if (type == 'boolean' && value != '' && textStyle == 'html') {
         if (value == 't') {
             var formatedValue = '<input type="checkbox" readonly="readonly" checked="checked" />';
         }
         else {
             var formatedValue = '<input type="checkbox" readonly="readonly" />';
         }
-    }
-    else {
-        
+    } else {
         if (textStyle == 'html') {
             formatedValue = value.replace(/\\n/g, '<br />');
-        }
-        else {
+        } else {
             formatedValue = value;
         }
     }
@@ -494,7 +478,8 @@ function format(type, value, textStyle) {
 
 //////////////////////// classes ////////////////////
 
-function classAjax() {
+function classAjax()
+{
     try {
         ajax = new XMLHttpRequest();
     }
@@ -511,7 +496,8 @@ function classAjax() {
  * @param ajaxFile string: caminho do script
  * @param process function: função de call back quando a chamada for bem sucedida
  */
-function prumoAjax(ajaxFile, process) {
+function prumoAjax(ajaxFile, process)
+{
     this.ajaxFile        = ajaxFile;
     this.ajaxFormat      = 'text';
     this.ajax            = new classAjax();
@@ -525,7 +511,8 @@ function prumoAjax(ajaxFile, process) {
     this.working         = false;
     this.formName        = '';
     
-    this.goAjax = function(params) {
+    this.goAjax = function(params)
+    {
         if (this.working == false) {
             this.pLoading.show(this);
         }
@@ -534,11 +521,12 @@ function prumoAjax(ajaxFile, process) {
         this.ajax.open("POST", this.ajaxFile, true);
         this.ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         this.ajax.parent = this;
-        this.ajax.onreadystatechange = function() {
+        this.ajax.onreadystatechange = function()
+        {
             if (this.readyState == 1) {
                 //state 1
             }
-            if (this.readyState == 4 ) {                
+            if (this.readyState == 4) {                
                 if (this.parent.debug) {
                     alert(this.responseText);
                 }
@@ -548,16 +536,13 @@ function prumoAjax(ajaxFile, process) {
                     if (this.parent.responseXML) {
                         this.parent.beforeProcess();
                         this.parent.pLoading.hide(this);
-                    }
-                    else {
+                    } else {
                         alert(gettext('Formato XML inválido para "')+this.parent.ajaxFile+'"');
                     }
-                }
-                else if (this.parent.ajaxFormat == 'text') {
+                } else if (this.parent.ajaxFormat == 'text') {
                     this.parent.beforeProcess();
                     this.parent.pLoading.hide(this);
-                }
-                else {
+                } else {
                     alert(gettext('Formato desconhecido "')+this.parent.ajaxFormat+'"');
                 }
                 this.parent.working = false;
@@ -598,7 +583,8 @@ function prumoAjax(ajaxFile, process) {
         this.ajax.send(params);
     }
     
-    this.setFormName = function(formName) {
+    this.setFormName = function(formName)
+    {
         if (document.getElementById(formName) !== null) {
             this.formName = formName;
         } else {
@@ -606,36 +592,38 @@ function prumoAjax(ajaxFile, process) {
         }
     }
     
-    this.beforeProcess = function() {
+    this.beforeProcess = function()
+    {
         if (this.ajaxFormat == 'xml') {
             this.xmlData = this.responseXML.getElementsByTagName(this.identification);
             this.process();            
-        }
-        else {
+        } else {
             this.process();
         }
     }
     
-    this.ajaxXmlOk = function() {
+    this.ajaxXmlOk = function()
+    {
         //para ajaxFormat xml, sobrescrever este método após o constructor
         alert('Implementar o método ajaxXmlOk');
     }
     
-    this.ajaxXmlError = function(err,msg) {
+    this.ajaxXmlError = function(err, msg)
+    {
         //para ajaxFormat xml, sobrescrever este método após o constructor
         alert(msg);
     }
     
     // para ajaxFormat texto, sobrescrever este método após o constructor
     if (process == undefined) {
-        this.process = function() {
+        this.process = function()
+        {
             if (this.ajaxFormat == 'xml') {
                 try {
                     xmlTagErr = this.responseXML.getElementsByTagName('err')[0];
                     if (xmlTagErr == undefined) {
                         this.ajaxXmlOk();
-                    }
-                    else {
+                    } else {
                         err = this.responseXML.getElementsByTagName('err')[0].firstChild.nodeValue;
                         msg = this.responseXML.getElementsByTagName('msg')[0].firstChild.nodeValue;
                         this.ajaxXmlError(err, msg);
@@ -646,17 +634,17 @@ function prumoAjax(ajaxFile, process) {
                 }            
             }
         }
-    }
-    else {
+    } else {
         this.process = process;
     }
 }
 
-function PrumoCrud(objName, ajaxFile) {
+function PrumoCrud(objName, ajaxFile)
+{
     this.objName = objName;
     this.modal;
     this.identification = objName;
-    this.state = 'new'; //suport new,edit,view,list
+    this.state = 'new'; //suport new, edit, view, list
     
     this.fieldName;
     this.fieldPk;
@@ -690,7 +678,8 @@ function PrumoCrud(objName, ajaxFile) {
     this.pAjax.ajaxFormat = 'xml';
     this.pAjax.parent = this;
     this.pAjax.identification = this.identification;
-    this.pAjax.ajaxXmlOk = function() {
+    this.pAjax.ajaxXmlOk = function()
+    {
         // copia o cmd para os filhos 1x1
         for (var i in this.parent.son1x1) {
             this.parent.son1x1[i].pAjax.cmd = this.cmd;
@@ -704,8 +693,7 @@ function PrumoCrud(objName, ajaxFile) {
                 this.parent.unFreezeFields();
                 this.parent.toggleFreezeControls(false);
             }
-        }
-        else {
+        } else {
             
             if (this.cmd == 'create') {
                 this.parent.assignResponseXML(this.responseXML);
@@ -722,44 +710,36 @@ function PrumoCrud(objName, ajaxFile) {
                 }
                 
                 this.parent.afterCreate();
-            }
-            else if (this.cmd == 'fast_create') {
+            } else if (this.cmd == 'fast_create') {
                 this.parent.afterCreate();
                 this.parent.stateChange('list');
-            }
-            else if (this.cmd == 'retrieve') {
+            } else if (this.cmd == 'retrieve') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
                 this.parent.visibleSon1x1();
                 this.parent.retrieveVirtual();
                 this.parent.afterRetrieve();
-            }
-            else if (this.cmd == 'update') {
+            } else if (this.cmd == 'update') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
                 this.parent.retrieveVirtual();
                 this.parent.afterUpdate();
-            }
-            else if (this.cmd == 'fast_update') {
+            } else if (this.cmd == 'fast_update') {
                 this.parent.afterUpdate();
                 this.parent.stateChange('list');
-            }
-            else if (this.cmd == 'delete') {
+            } else if (this.cmd == 'delete') {
                 this.parent.afterDelete();
-            }
-            else if (this.cmd == 'fast_delete') {
+            } else if (this.cmd == 'fast_delete') {
                 this.parent.afterDelete();
                 this.parent.stateChange('list');
-            }
-            else if (this.cmd == 'copyFrom') {
+            } else if (this.cmd == 'copyFrom') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.clearSerials();
                 this.parent.writeNewValues();
                 this.parent.retrieveVirtual();
                 this.parent.stateChange('copy');
                 this.parent.visibleSon1x1();
-            }
-            else {
+            } else {
                 status = this.responseXML.getElementsByTagName('status')[0].firstChild.nodeValue;
                 msg = this.responseXML.getElementsByTagName('msg')[0].firstChild.nodeValue;
                 alert(msg);
@@ -775,7 +755,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Trata erro XML em objeto CRUD
      */
-    this.pAjax.ajaxXmlError = function(err, msg) {
+    this.pAjax.ajaxXmlError = function(err, msg)
+    {
         alert(msg);
         if (this.parent.state != 'view') {
             this.parent.unFreezeFields();
@@ -786,7 +767,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Verifica se existe algum search ligado a algum campo "virtual"
      */
-    this.retrieveVirtual = function() {
+    this.retrieveVirtual = function()
+    {
         for (var i in this.sonSearch) {
         
             var canVirtual = false;
@@ -811,7 +793,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.addParent1x1 = function(parent,parentFieldCondition,conditionValue) {
+    this.addParent1x1 = function(parent,parentFieldCondition,conditionValue)
+    {
         this.parent1x1 = parent;
         parent.son1x1.push(this);
         var arrCondition = Array();
@@ -820,16 +803,19 @@ function PrumoCrud(objName, ajaxFile) {
         this.parent1x1Condition = arrCondition;
     }
     
-    this.addParent1xN = function(parent) {
+    this.addParent1xN = function(parent)
+    {
         this.parent1xN = parent;
         parent.son1xN.push(this);
     }
     
-    this.addSonSearch = function(son) {
+    this.addSonSearch = function(son)
+    {
         this.sonSearch[this.sonSearch.length] = son;
     }
     
-    this.assignResponseXML = function(responseXML) {
+    this.assignResponseXML = function(responseXML)
+    {
         this.xmlData = responseXML.getElementsByTagName(this.objName);
         
         //limpa o formulário
@@ -847,18 +833,15 @@ function PrumoCrud(objName, ajaxFile) {
             if (this.isVisible) {
                 alert(this.objName + ': ' + gettext('Falta preencher alguns campos'));
             }
-        }
-        else {
+        } else {
             for (var i=0; i < this.fieldName.length; i++) {
                 // quando é copia não deve preencher os campos noCreate
                 if (this.pAjax.cmd == 'copyFrom' && this.fieldNoCreate[i]) {
                     var value = '';
-                }
-                else {
+                } else {
                     if (this.fieldVirtual[i]) {
                         var value = '';
-                    }
-                    else {
+                    } else {
                         var value = this.xmlData[0].getElementsByTagName(this.fieldName[i])[0].childNodes[0].nodeValue;
                     }
                 }
@@ -886,7 +869,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.clearSerials = function() {
+    this.clearSerials = function()
+    {
         for (iSerials in this.fieldType) {
             if (this.fieldType[iSerials] == 'serial') {
                 this.fieldOldValue[this.fieldName[iSerials]] = '';
@@ -895,13 +879,13 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.visibleSon1x1 = function() {
+    this.visibleSon1x1 = function()
+    {
         this.readNewValues();
         for (var i in this.son1x1) {
             if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
                 this.son1x1[i].visibleForm(true);
-            }
-            else {
+            } else {
                 this.son1x1[i].visibleForm(false);
             }
             
@@ -909,12 +893,12 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.visibleForm = function(state) {
+    this.visibleForm = function(state)
+    {
         if (state) {
             this.isVisible = true;
             document.getElementById(this.objName+'_form').style.display = 'block';
-        }
-        else {
+        } else {
             this.isVisible = false;
             document.getElementById(this.objName+'_form').style.display = 'none';
         }
@@ -923,7 +907,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Valida se não possui campos com id duplicado entre os objetos com relacionamento 1x1 (exceto chave primária)
      */
-    this.validateDuplicatedIds = function() {
+    this.validateDuplicatedIds = function()
+    {
         var msg = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" duplicado entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%"');
         var msgPk = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" difirente entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%", para campo chave primária do relacionamento 1x1');
         
@@ -942,8 +927,7 @@ function PrumoCrud(objName, ajaxFile) {
                             alert(msgValidate);
                             return false;
                         }
-                    }
-                    else {
+                    } else {
                         if (this.son1x1[i].parent1x1 == true && this.son1x1[i].fieldPk[k] == true) {
                             var fieldId = this.son1x1[i].fieldId[k];
                             var crudParent = this.objName;
@@ -961,7 +945,8 @@ function PrumoCrud(objName, ajaxFile) {
         return true;
     }
     
-    this.readNewValues = function() {
+    this.readNewValues = function()
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             // verifica se tem pai ou campo não é chave primaria
             inputField = document.getElementById(this.fieldId[i]);
@@ -971,12 +956,10 @@ function PrumoCrud(objName, ajaxFile) {
             if (inputField.getAttribute('type') == 'checkbox') {
                 if (inputField.checked) {
                     this.fieldNewValue[this.fieldName[i]] = 't';
-                }
-                else {
+                } else {
                     this.fieldNewValue[this.fieldName[i]] = 'f';
                 }
-            }
-            else {
+            } else {
                 this.fieldNewValue[this.fieldName[i]] = inputField.value;
             }
         }
@@ -986,7 +969,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.writeNewValues = function() {
+    this.writeNewValues = function()
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             var value = this.fieldNewValue[this.fieldName[i]];
             // verifica se tem pai ou campo não é chave primaria
@@ -995,12 +979,10 @@ function PrumoCrud(objName, ajaxFile) {
                 if (inputField.getAttribute('type') == 'checkbox') {
                     if (value == 't') {
                         inputField.checked = true;
-                    }
-                    else {
+                    } else {
                         inputField.checked = false;
                     }
-                }
-                else {
+                } else {
                     inputField.value = value;
                 }
             }
@@ -1010,7 +992,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Limpa os campos do formulário
      */
-    this.clear = function() {    
+    this.clear = function()
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             if (this.fieldReadonly[i] == false || this.fieldNoCreate[i] == true) {
                 if (this.parent1x1 == false || !this.fieldPk[i] || this.fieldNoCreate[i] == true) {
@@ -1021,8 +1004,7 @@ function PrumoCrud(objName, ajaxFile) {
                     if (this.fieldType[i] == 'boolean') {
                         inputField.removeAttribute('checked');
                         inputField.checked = false;
-                    }
-                    else {
+                    } else {
                         inputField.value = '';
                         inputField.checked = true;
                     }
@@ -1038,7 +1020,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Seta o valor padrão
      */
-    this.setDefault = function() {
+    this.setDefault = function()
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             inputField = document.getElementById(this.fieldId[i]);
             if (inputField != undefined && this.fieldDefault[i] != '') {
@@ -1046,20 +1029,19 @@ function PrumoCrud(objName, ajaxFile) {
                     if (this.fieldDefault[i] == 't' || this.fieldDefault[i] == 'true') {
                         inputField.setAttribute('checked','checked');
                         inputField.checked = true;
-                    }
-                    else {
+                    } else {
                         inputField.removeAttribute('checked');
                         inputField.checked = false;
                     }
-                }
-                else {
+                } else {
                     inputField.value = this.fieldDefault[i].toLowerCase() == 'null' ? '' : this.fieldDefault[i];
                 }
             }
         }
     }
     
-    this.paramPk = function() {
+    this.paramPk = function()
+    {
         param = '';
         for (var i=0; i < this.fieldPk.length; i++) {
             if (this.fieldPk[i]) {
@@ -1070,7 +1052,8 @@ function PrumoCrud(objName, ajaxFile) {
         return param;
     }
     
-    this.syncPkSon = function() {
+    this.syncPkSon = function()
+    {
         var arrRel = Array();
         
         //prepara um array com as chaves do objeto atual
@@ -1091,8 +1074,7 @@ function PrumoCrud(objName, ajaxFile) {
             }
             if (parentPk.length != sonPk.length) {
                 return false;
-            }
-            else {
+            } else {
                 for (var j in parentPk) {
                     arrRel.push(Array(parentPk[j],sonPk[j]));
                 }
@@ -1112,7 +1094,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.paramCreate = function() {
+    this.paramCreate = function()
+    {
         var params = '';
         for (var i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
@@ -1123,8 +1106,7 @@ function PrumoCrud(objName, ajaxFile) {
         
         if (this.parent1x1 == false) {
             params = 'objName='+this.objName + '&' + this.objName+'_action=c'+params;        
-        }
-        else {
+        } else {
             params = this.objName+'_action=c'+params;
         }
         
@@ -1143,7 +1125,8 @@ function PrumoCrud(objName, ajaxFile) {
         return params
     }
     
-    this.doCreate = function() {
+    this.doCreate = function()
+    {
         if (this.beforeCreate()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
@@ -1155,7 +1138,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.doFastCreate = function() {
+    this.doFastCreate = function()
+    {
         if (this.beforeCreate()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
@@ -1167,11 +1151,11 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.paramRetrieve = function() {
+    this.paramRetrieve = function()
+    {
         if (this.parent1x1 == false) {
             var    params = 'objName='+this.objName+'&';
-        }
-        else {
+        } else {
             var    params = '';
         }
         
@@ -1182,7 +1166,8 @@ function PrumoCrud(objName, ajaxFile) {
         return params;
     }
     
-    this.doRetrieve = function() {
+    this.doRetrieve = function()
+    {
         if (this.beforeRetrieve()) {
             if (this.validateDuplicatedIds()) {
                 this.toggleFreezeControls(true);
@@ -1194,7 +1179,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.doCopyFrom = function() {
+    this.doCopyFrom = function()
+    {
         if (this.validateDuplicatedIds()) {
             this.readNewValues();
             this.syncPkSon();
@@ -1203,7 +1189,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.paramUpdate = function() {
+    this.paramUpdate = function()
+    {
         var params = '';
         for (var i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
@@ -1216,8 +1203,7 @@ function PrumoCrud(objName, ajaxFile) {
         
         if (this.parent1x1 == false) {
             params = 'objName='+this.objName + '&' + this.objName+'_action=u'+params;
-        }
-        else {
+        } else {
             params = this.objName+'_action=u'+params;
         }
         
@@ -1229,7 +1215,8 @@ function PrumoCrud(objName, ajaxFile) {
         return params;
     }
     
-    this.doUpdate = function() {
+    this.doUpdate = function()
+    {
         if (this.beforeUpdate()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
@@ -1242,7 +1229,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.doFastUpdate = function() {
+    this.doFastUpdate = function()
+    {
         if (this.beforeUpdate()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
@@ -1255,7 +1243,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.doDelete = function() {
+    this.doDelete = function()
+    {
         if (this.beforeDelete()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
@@ -1273,7 +1262,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.doFastDelete = function() {
+    this.doFastDelete = function()
+    {
         if (this.beforeDelete()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
@@ -1291,21 +1281,22 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.toggleFreezeControls = function(freeze) {
+    this.toggleFreezeControls = function(freeze)
+    {
         var btName = Array('write_new', 'copy_from', 'clear', 'search', 'write_edit', 'cancel_edit', 'search_view', 'edit', 'delete', 'new', 'fast_create', 'fast_update');
         for (var i=0; i < btName.length; i++) {
             if (document.getElementById(this.objName+'_bt_'+btName[i]) != undefined) {
                 if (freeze == true) {
                     document.getElementById(this.objName+'_bt_'+btName[i]).setAttribute('disabled', 'disabled');
-                }
-                else {
+                } else {
                     document.getElementById(this.objName+'_bt_'+btName[i]).removeAttribute('disabled');
                 }
             }
         }
     }
     
-    this.freezeFields = function() {
+    this.freezeFields = function()
+    {
         var fieldCount = this.fieldId.length;
         for (var i=0; i < fieldCount; i++) {
             var inputField = document.getElementById(this.fieldId[i]);
@@ -1331,7 +1322,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.unFreezeFields = function() {
+    this.unFreezeFields = function()
+    {
         
         for (var i=0; i < this.sonSearch.length; i++) {
             document.getElementById(this.sonSearch[i].objName+'Bt').removeAttribute('disabled');
@@ -1359,8 +1351,7 @@ function PrumoCrud(objName, ajaxFile) {
                     if (inputFastUpdate != undefined) {
                         inputFastUpdate.removeAttribute('disabled');
                     }
-                }
-                else {
+                } else {
                     
                     if (inputField.pSearch != undefined) {
                         document.getElementById(inputField.pSearch.objName+'Bt').setAttribute('disabled','disabled');
@@ -1382,7 +1373,8 @@ function PrumoCrud(objName, ajaxFile) {
         this.formFocus();
     }
     
-    this.backToForms = function() {
+    this.backToForms = function()
+    {
         divForms = document.getElementById(this.objName+'_form');
         if (divForms != 'undefined') {
             divForms.style.display = 'block';
@@ -1395,11 +1387,13 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
      */
-    this.onStateChange = function() {
+    this.onStateChange = function()
+    {
         return true;
     }
     
-    this.beforeStateChange = function() {
+    this.beforeStateChange = function()
+    {
         return true;
     }
     /**
@@ -1408,7 +1402,8 @@ function PrumoCrud(objName, ajaxFile) {
      *
      * @returns boolean
      */
-    this.beforeCreate = function() {
+    this.beforeCreate = function()
+    {
         return true;
     }
         
@@ -1418,7 +1413,8 @@ function PrumoCrud(objName, ajaxFile) {
      *
      * @returns boolean
      */
-    this.beforeRetrieve = function() {
+    this.beforeRetrieve = function()
+    {
         return true;
     }
     
@@ -1428,7 +1424,8 @@ function PrumoCrud(objName, ajaxFile) {
      *
      * @returns boolean
      */
-    this.beforeUpdate = function() {
+    this.beforeUpdate = function()
+    {
         return true;
     }
     
@@ -1438,39 +1435,45 @@ function PrumoCrud(objName, ajaxFile) {
      *
      * @returns boolean
      */
-    this.beforeDelete = function() {
+    this.beforeDelete = function()
+    {
         return true;
     }
     
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
-    this.afterCreate = function() {
+    this.afterCreate = function()
+    {
         //
     }
     
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
      */
-    this.afterUpdate = function() {
+    this.afterUpdate = function()
+    {
         //
     }
     
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
-    this.afterRetrieve = function() {
+    this.afterRetrieve = function()
+    {
         return true;
     }
     
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o delete do PrumoCrud
      */
-    this.afterDelete = function() {
+    this.afterDelete = function()
+    {
         //
     }
     
-    this.hideSon1xN = function() {
+    this.hideSon1xN = function()
+    {
         for (iSon in this.son1xN) {
             this.son1xN[iSon].hide();
         }
@@ -1479,7 +1482,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Sincroniza os filtros dos objetos filhos com as chaves primárias do objeto pai
      */
-    this.syncPkToSon1xN = function() {
+    this.syncPkToSon1xN = function()
+    {
         for (iSon in this.son1xN) {
             if (this.son1xN[iSon].pCrudList) {
                 this.son1xN[iSon].pCrudList.pFilter.clearVisibleFilters();
@@ -1525,10 +1529,11 @@ function PrumoCrud(objName, ajaxFile) {
      * 
      * @param newState string: suporta new, view, edit, copy e list
      */
-    this.stateChange = function(newState) {
+    this.stateChange = function(newState)
+    {
         this.state = newState;
         
-        if (!this.beforeStateChange()) {
+        if (! this.beforeStateChange()) {
             return;
         }
         if (newState == 'new' || newState == 'copy') {
@@ -1548,8 +1553,7 @@ function PrumoCrud(objName, ajaxFile) {
             if (this.parent1xN) {
                 this.parent1xN.hideControls();
             }
-        }        
-        else if (newState == 'view') {
+        } else if (newState == 'view') {
             this.freezeFields();
             if (this.parent1x1 == false) {
                 document.getElementById(this.objName+'_control_new').style.display  = 'none';
@@ -1560,8 +1564,7 @@ function PrumoCrud(objName, ajaxFile) {
             if (this.parent1xN) {
                 this.parent1xN.showControls();
             }
-        }
-        else if (newState == 'edit') {
+        } else if (newState == 'edit') {
             this.unFreezeFields();
             if (this.parent1x1 == false) {
                 document.getElementById(this.objName+'_control_new').style.display  = 'none';
@@ -1572,8 +1575,7 @@ function PrumoCrud(objName, ajaxFile) {
             if (this.parent1xN) {
                 this.parent1xN.hideControls();
             }
-        }
-        else if (newState == 'list') {
+        } else if (newState == 'list') {
             divForms = document.getElementById(this.objName+'_form');
             
             if (divForms != undefined && divForms != null) {
@@ -1583,12 +1585,10 @@ function PrumoCrud(objName, ajaxFile) {
                     if (this.parent1x1 == false) {
                         alert(this.objName+': '+'Listagem não disponível');
                     }
-                }
-                else {
+                } else {
                     this.pCrudList.goSearch();
                 }
-            }
-            else {
+            } else {
                 alert(this.objName+': ('+this.objName+'_form'+') '+'Formulário não encontrado');
             }
             
@@ -1596,8 +1596,7 @@ function PrumoCrud(objName, ajaxFile) {
             if (this.parent1xN) {
                 this.parent1xN.showControls();
             }
-        }
-        else {
+        } else {
             var msg = gettext('Estado desconhecido para objeto PrumoCrud: stateChange(\'"%newState%"\')');
             msg = msg.replace('%newState%',newState);
             alert(msg);
@@ -1612,8 +1611,7 @@ function PrumoCrud(objName, ajaxFile) {
             if (divContainer != undefined && divContainer != null) {
                 if (newState == 'view') {
                     divContainer.style.display = 'block';
-                }
-                else {
+                } else {
                     divContainer.style.display = 'none';
                 }
             }
@@ -1625,15 +1623,16 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após a validação de notNull
      */
-    this.preValidate = function() {
+    this.preValidate = function()
+    {
         return true;
     }
     
     /**
      * Valida formato dos campos
      */
-    this.errValidateType = function() {
-        
+    this.errValidateType = function()
+    {
         var msg = '';
         var err = '';
         var fieldValue = '';
@@ -1701,7 +1700,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Valida campos notNull
      */
-    this.errValidateNotNull = function() {
+    this.errValidateNotNull = function()
+    {
         this.readNewValues();
         var err = '';
         for (var i in this.fieldName) {
@@ -1720,21 +1720,22 @@ function PrumoCrud(objName, ajaxFile) {
         return err;
     }
     
-    this.validateNotNull = function() {
-        err = this.errValidateNotNull();
+    this.validateNotNull = function()
+    {
+        var err = this.errValidateNotNull();
         err += this.errValidateType();
         
         if (err == '') {
             return this.preValidate();
-        }
-        else {
+        } else {
             alert(err);
             this.focusNotNull();
             return false;
         }
     }
     
-    this.focusNotNull = function() {
+    this.focusNotNull = function()
+    {
         
         var fucusOk = false;
         for (var i in this.fieldName) {
@@ -1743,11 +1744,9 @@ function PrumoCrud(objName, ajaxFile) {
                     
                     if (document.getElementById(this.objName+'_'+this.fieldName[i]+'_add') != undefined) {
                         document.getElementById(this.objName+'_'+this.fieldName[i]+'_add').focus();
-                    }
-                    else if (document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit') != undefined) {
+                    } else if (document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit') != undefined) {
                         document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit').focus();
-                    }
-                    else {
+                    } else {
                         if (this.pCrudList) {
                             this.pCrudList.hide();
                             this.backToForms();
@@ -1767,7 +1766,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.formFocus = function() {
+    this.formFocus = function()
+    {
         if (this.parent1x1 == false) {
             for (var i in this.fieldName) {
                 inputField = document.getElementById(this.fieldId[i]);
@@ -1779,44 +1779,50 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.bt_write_new = function() {
+    this.bt_write_new = function()
+    {
         if (this.validateNotNull()) {
             this.doCreate();
         }
         this.visibleSon1x1();
     }
     
-    this.bt_search = function() {
+    this.bt_search = function()
+    {
         if (this.pCrudList == false) {
             this.pSearch.goSearch();
-        }
-        else {
+        } else {
             this.stateChange('list');
         }
     }
     
-    this.bt_write_edit = function() {
+    this.bt_write_edit = function()
+    {
         if (this.validateNotNull()) {
             this.doUpdate();
         }
     }
     
-    this.bt_cancel_edit = function() {
+    this.bt_cancel_edit = function()
+    {
         this.doRetrieve();
     }
     
-    this.bt_edit = function() {
+    this.bt_edit = function()
+    {
         this.stateChange('edit');
     }
     
-    this.bt_delete = function() {
-        if(confirm(gettext('Confirma a exclusão do registro?'))) {
+    this.bt_delete = function()
+    {
+        if (confirm(gettext('Confirma a exclusão do registro?'))) {
             this.doDelete();
             this.stateChange('new');
         }
     }
     
-    this.bt_new = function() {
+    this.bt_new = function()
+    {
         if (this.pCrudList) {
             this.pCrudList.hide();
         }
@@ -1825,15 +1831,18 @@ function PrumoCrud(objName, ajaxFile) {
         this.visibleSon1x1();
     }
     
-    this.bt_list = function() {
+    this.bt_list = function()
+    {
         this.stateChange('list');
     }
     
-    this.bt_copyFrom = function() {
+    this.bt_copyFrom = function()
+    {
         this.pSearch.goSearch();
     }
     
-    this.hide = function() {
+    this.hide = function()
+    {
         document.getElementById(this.objName+'_form').style.display = 'none';
         if (this.pCrudList) {
             document.getElementById('pCrudList_'+this.objName).style.display = 'none';
@@ -1843,15 +1852,14 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Torna visível os controles do crud
      */
-    this.showControls = function() {
+    this.showControls = function()
+    {
         if (this.parent1x1) {
             this.parent1x1.showControls();
-        }
-        else {
+        } else {
             if (document.getElementById(this.objName+'_controls') == undefined) {
                 alert('Botões de controle não encontrado para objeto "'+this.objName+'".');
-            }
-            else {
+            } else {
                 document.getElementById(this.objName+'_controls').style.display = 'block';
             }
         }
@@ -1860,15 +1868,14 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Torna invisível os controles do crud
      */
-    this.hideControls = function() {
+    this.hideControls = function()
+    {
         if (this.parent1x1) {
             this.parent1x1.hideControls();
-        }
-        else {
+        } else {
             if (document.getElementById(this.objName+'_controls') == undefined) {
                 alert('Botões de controle não encontrado para objeto "'+this.objName+'".');
-            }
-            else {
+            } else {
                 document.getElementById(this.objName+'_controls').style.display = 'none';
             }
         }
@@ -1877,7 +1884,8 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
      */
-    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.pSearch.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         if (this.pCrudList != false) {
             this.pCrudList.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
@@ -1887,14 +1895,16 @@ function PrumoCrud(objName, ajaxFile) {
     /**
      * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
      */
-    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.pSearch.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         if (this.pCrudList != false) {
             this.pCrudList.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         }
     }
     
-    this.inputSetValue = function(id, value) {
+    this.inputSetValue = function(id, value)
+    {
         var inputField = document.getElementById(id);
         
         if (inputField != undefined) {
@@ -1902,33 +1912,31 @@ function PrumoCrud(objName, ajaxFile) {
             if (inputField.getAttribute('type') == 'checkbox') {
                 if (value == 't') {
                     inputField.checked = true;
-                }
-                else {
+                } else {
                     inputField.checked = false;
                 }
-            }
-            else {
+            } else {
                 inputField.value = value;
             }
         }
     }
     
-    this.inputGetValue = function(id) {
+    this.inputGetValue = function(id)
+    {
         var inputField = document.getElementById(id);
         if (inputField.getAttribute('type') == 'checkbox') {
             if (inputField.checked || inputField.getAttribute('checked') == 'checked') {
                 return 't';
-            }
-            else {
+            } else {
                 return 'f';
             }
-        }
-        else {
+        } else {
             return inputField.value;
         }
     }
     
-    this.bt_fastCreate = function() {
+    this.bt_fastCreate = function()
+    {
         
         this.stateChange('new');
         
@@ -1949,14 +1957,16 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.bt_fastCreate_onKeyDown = function(event) {
+    this.bt_fastCreate_onKeyDown = function(event)
+    {
         //Enter
         if (event.keyCode == 13) {
             this.bt_fastCreate();
         }
     }
     
-    this.bt_fastUpdate = function(lineIndex) {
+    this.bt_fastUpdate = function(lineIndex)
+    {
         
         this.stateChange('edit');
         this.clear();
@@ -1970,8 +1980,7 @@ function PrumoCrud(objName, ajaxFile) {
             var oldValue = this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex);            
             if (inputFastUpdate == undefined) {
                 var newValue = format(this.fieldType[i], oldValue, 'text');
-            }
-            else {
+            } else {
                 var newValue = this.inputGetValue(id);
             }
             
@@ -1989,7 +1998,8 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.bt_fastUpdate_onKeyDown = function(event, lineIndex) {
+    this.bt_fastUpdate_onKeyDown = function(event, lineIndex)
+    {
         //Enter
         if (event.keyCode == 13) {
             this.bt_fastUpdate(lineIndex);
@@ -2000,8 +2010,9 @@ function PrumoCrud(objName, ajaxFile) {
         }
     }
     
-    this.bt_fastDelete = function(lineIndex) {
-        if(confirm(gettext('Confirma a exclusão do registro?'))) {
+    this.bt_fastDelete = function(lineIndex)
+    {
+        if (confirm(gettext('Confirma a exclusão do registro?'))) {
             var fieldCount = this.fieldId.length;
             for (var i=0; i < fieldCount; i++) {
                 var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
@@ -2013,7 +2024,8 @@ function PrumoCrud(objName, ajaxFile) {
     }
 }
 
-function PrumoFilter(objName) {
+function PrumoFilter(objName)
+{
     this.objName = objName;
     this.pAjax = new prumoAjax();
     this.pAjax.ajaxFormat = 'xml';
@@ -2099,8 +2111,10 @@ function PrumoFilter(objName) {
      * @param aValue string: valor inicial
      * @param aValue2 string: segundo campo usado em condição BETWEEN
      */
-    this.addFilter = function(filterIndex, fieldName, operator, value, value2, visible) {
-        function aFilter(aFieldName, aOperator, aValue, aValue2, aVisible) {
+    this.addFilter = function(filterIndex, fieldName, operator, value, value2, visible)
+    {
+        function aFilter(aFieldName, aOperator, aValue, aValue2, aVisible)
+        {
             this.fieldName = aFieldName;
             this.operator  = aOperator;
             this.value     = aValue;
@@ -2110,8 +2124,7 @@ function PrumoFilter(objName) {
         var newFilter = new aFilter(fieldName, operator, value, value2, visible);
         if (filterIndex == null) {
             this.filter.push(newFilter);
-        }
-        else {
+        } else {
             this.filter.splice(filterIndex, 0, newFilter);
         }
         this.count++;
@@ -2120,7 +2133,8 @@ function PrumoFilter(objName) {
     /**
      * Coloca o foco no primeiro filtro
      */
-    this.focus = function() {
+    this.focus = function()
+    {
         for (var i in this.filter) {
             if (this.filter[i].visible) {
                 document.getElementById(this.objName+'_'+i+'_value').focus();
@@ -2132,8 +2146,9 @@ function PrumoFilter(objName) {
     /**
      * Evento do botão (-) do filtro
      */
-    this.cmdAddFilter = function(filterIndex) {
-        this.addFilter(filterIndex,'','','','',true);
+    this.cmdAddFilter = function(filterIndex)
+    {
+        this.addFilter(filterIndex, '', '', '', '', true);
         this.draw();
     }
     
@@ -2142,8 +2157,9 @@ function PrumoFilter(objName) {
      *
      * @param filterIndex integer: número do filtro
      */
-    this.removeFilter = function(filterIndex) {
-        removed = this.filter.splice(filterIndex,1);
+    this.removeFilter = function(filterIndex)
+    {
+        removed = this.filter.splice(filterIndex, 1);
         this.count--;
         return removed;
     }
@@ -2153,7 +2169,8 @@ function PrumoFilter(objName) {
      *
      * @param filterIndex integer: número do filtro
      */
-    this.cmdRemoveFilter = function(filterIndex) {
+    this.cmdRemoveFilter = function(filterIndex)
+    {
         this.removeFilter(filterIndex);
         this.draw();
     }
@@ -2168,7 +2185,8 @@ function PrumoFilter(objName) {
     /**
      * Remove apenas os filtros visíveis
      */
-    this.clearVisibleFilters = function() {
+    this.clearVisibleFilters = function()
+    {
         var backupFilter = this.filter;
         this.clearFilters();
         
@@ -2185,7 +2203,8 @@ function PrumoFilter(objName) {
      * @param fieldName string: nome do campo
      * @returns string: fieldType daquele campo
      */
-    this.fieldTypeByName = function(fieldName) {
+    this.fieldTypeByName = function(fieldName)
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             if (fieldName == this.fieldName[i]) {
                 return this.fieldType[i];
@@ -2200,7 +2219,8 @@ function PrumoFilter(objName) {
      * @param fieldName string: nome do campo
      * @returns string: fieldType daquele campo
      */
-    this.fieldLabelByName = function(fieldName) {
+    this.fieldLabelByName = function(fieldName)
+    {
         for (var i=0; i < this.fieldName.length; i++) {
             if (fieldName == this.fieldName[i]) {
                 return this.fieldLabel[i];
@@ -2215,7 +2235,8 @@ function PrumoFilter(objName) {
      * @param fieldName string: nome do campo
      * @returns string: tipo de operador daquele campo (text, numeric ou boolean)
      */
-    this.operatorTypeByName = function(fieldName) {
+    this.operatorTypeByName = function(fieldName)
+    {
         var fieldType = this.fieldTypeByName(fieldName);
         
         switch (fieldType) {
@@ -2254,7 +2275,8 @@ function PrumoFilter(objName) {
      * @param selectFieldName string: nome do campo
      * @param index integer: número do filtro
      */
-    this.selectFieldChange = function(selectFieldName, index) {
+    this.selectFieldChange = function(selectFieldName, index)
+    {
         var operatorType = this.operatorTypeByName(selectFieldName.value);
         var selectOperator = document.getElementById(this.objName+'_'+index+'_operator');
         
@@ -2300,8 +2322,7 @@ function PrumoFilter(objName) {
             htmlInput += '<option value="f">'+labelFalse+'</option>';
             htmlInput += '<option value=""></option>';
             htmlInput += '</select>';
-        }
-        else {
+        } else {
             htmlInput = '<input type="text" id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
         }
         
@@ -2315,8 +2336,8 @@ function PrumoFilter(objName) {
      *
      * @return boolean
      */
-    this.validateFilters = function() {
-        
+    this.validateFilters = function()
+    {
         var err = '';
         var msg = '';
         
@@ -2405,8 +2426,7 @@ function PrumoFilter(objName) {
         if (err != '') {
             alert(err);
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
@@ -2417,21 +2437,20 @@ function PrumoFilter(objName) {
      * @param selectFieldName string: nome do campo
      * @param index integer: número do filtro
      */
-    this.selectOperatorChange = function(selectOperator, index) {
+    this.selectOperatorChange = function(selectOperator, index)
+    {
         // passa o valor escolhido para o objeto filter
         this.filter[index].operator = selectOperator.value;
         
         if (selectOperator.value == 'is null' || selectOperator.value == 'not is null') {
             document.getElementById(this.objName+'_'+index+'_input').style.display = 'none';
-        }
-        else {
+        } else {
             document.getElementById(this.objName+'_'+index+'_input').style.display = 'block';
         }
         
         if (selectOperator.value == 'between') {
             document.getElementById(this.objName+'_'+index+'_input2').style.display = 'block';
-        }
-        else {
+        } else {
             document.getElementById(this.objName+'_'+index+'_input2').style.display = 'none';
         }
         
@@ -2445,7 +2464,8 @@ function PrumoFilter(objName) {
      * @param inputObject objeto dom
      * @param index integer: número do filtro
      */
-    this.inputValueChange = function(inputObject,index) {
+    this.inputValueChange = function(inputObject,index)
+    {
         this.filter[index].value = inputObject.value;
     }
     
@@ -2455,7 +2475,8 @@ function PrumoFilter(objName) {
      * @param inputObject objeto dom
      * @param index integer: número do filtro
      */
-    this.input2ValueChange = function(inputObject,index) {
+    this.input2ValueChange = function(inputObject,index)
+    {
         this.filter[index].value2 = inputObject.value;
     }
     
@@ -2464,7 +2485,8 @@ function PrumoFilter(objName) {
      * @param event: evento
      * @param index integer: número do filtro
      */
-    this.inputValueKeyUp = function(event,index) {
+    this.inputValueKeyUp = function(event,index)
+    {
         switch (event.keyCode) {
             case 13: //ENTER
                 this.parent.enterKey();
@@ -2488,7 +2510,8 @@ function PrumoFilter(objName) {
      * @param event: evento
      * @param index integer: número do filtro
      */
-    this.inputValueKeyDown = function(event,index) {
+    this.inputValueKeyDown = function(event, index)
+    {
         //Enter
         if (event.keyCode != 13) {
             this.parent.keyDown();
@@ -2498,7 +2521,8 @@ function PrumoFilter(objName) {
     /**
      * Desenha/Redesenha os botões (+) e (-) dos filtros
      */
-    this.drawFilterControls = function() {
+    this.drawFilterControls = function()
+    {
         //Conta os filtros visíveis
         visibleFilters = 0;
         for (var i=0; i < this.filter.length; i++) {
@@ -2533,7 +2557,8 @@ function PrumoFilter(objName) {
     /**
      * Limpa os valores de todos os filtros visíveis
      */
-    this.clearValues = function() {
+    this.clearValues = function()
+    {
         for (var i=0; i < this.filter.length; i++) {
             if (this.filter[i].visible) {
                 this.filter[i].value  = '';
@@ -2545,7 +2570,8 @@ function PrumoFilter(objName) {
     /**
      * Configura os filtros, passando as propriedades do objeto para a interface
      */
-    this.configureFilter = function(fieldName, filterIndex) {
+    this.configureFilter = function(fieldName, filterIndex)
+    {
         if (this.filter[filterIndex].visible) {
             var selectFieldName = document.getElementById(this.objName+'_'+filterIndex+'_field');
             var selectOperator  = document.getElementById(this.objName+'_'+filterIndex+'_operator');
@@ -2556,8 +2582,7 @@ function PrumoFilter(objName) {
             // configura selectFilter e o inputValue com o valor anteriormente passado via XML
             if (this.filter[filterIndex].fieldName == '') {
                 selectFieldName.value = this.filter[0].fieldName;
-            }
-            else {
+            } else {
                 selectFieldName.value = this.filter[filterIndex].fieldName;
             }
             inputValue.value = this.filter[filterIndex].value;
@@ -2592,7 +2617,8 @@ function PrumoFilter(objName) {
     /**
      * Desenha/Redesenha a interface (apenas a parte do PrumoFilter)
      */
-    this.draw = function() {
+    this.draw = function()
+    {
         htmlFilters = '<table cellpadding="0" cellspacing="0">\n';
         for (var i=0; i < this.filter.length; i++) {
             if (this.filter[i].visible) {
@@ -2644,7 +2670,8 @@ function PrumoFilter(objName) {
      * @param index integer: número da linha
      * @returns string: valor do campo
      */
-    this.getValue = function(fieldName,index) {
+    this.getValue = function(fieldName,index)
+    {
         var value = this.xmlData[index].getElementsByTagName(fieldName)[0].childNodes[0].nodeValue;
         if (value == 'NULL') {
             value = '';
@@ -2655,7 +2682,8 @@ function PrumoFilter(objName) {
     /**
      * Evento disparado após o assignResponseXML para ser implementado conforme necessidade do desenvolvedor da aplicação
      */
-    this.afterAssignResponseXML = function() {
+    this.afterAssignResponseXML = function()
+    {
         // implementar conforme necessidade
     }
     
@@ -2664,7 +2692,8 @@ function PrumoFilter(objName) {
      *
      * @param responseXML: resultado xml
      */
-    this.assignResponseXML = function(responseXML) {
+    this.assignResponseXML = function(responseXML)
+    {
         this.xmlData = responseXML.getElementsByTagName(this.xmlIdentification);
         
         // limpa os filtros
@@ -2679,8 +2708,7 @@ function PrumoFilter(objName) {
             visible      = this.getValue('visible', i);
             if (visible == 'false') {
                 visible = false;
-            }
-            else {
+            } else {
                 visible = true;
             }
             
@@ -2695,7 +2723,8 @@ function PrumoFilter(objName) {
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
-    this.privateSetFilter = function(fieldName, filterOperator, fieldValue, fieldValue2, visible) {
+    this.privateSetFilter = function(fieldName, filterOperator, fieldValue, fieldValue2, visible)
+    {
         
         // Procura um campo no filtro visivel com o mesmo fieldName
         var nothing = true;
@@ -2717,22 +2746,26 @@ function PrumoFilter(objName) {
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
-    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, true);
     }
     
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
-    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, false);
     }
 }
 
-function prumoValidator(validator) {
+function prumoValidator(validator)
+{
     this.validator = validator;
     
-    this.validate = function(value) {
+    this.validate = function(value)
+    {
         switch (validator.type) {
         case 'max':
             if (parseFloat(value) > parseFloat(validator.value)) {
@@ -2751,8 +2784,8 @@ function prumoValidator(validator) {
     }
 }
 
-function PrumoGrid(objName) {
-    
+function PrumoGrid(objName)
+{
     this.xmlIdentification;
     this.xmlData;
     this.objName = objName;
@@ -2771,7 +2804,8 @@ function PrumoGrid(objName) {
         this.table.rows[i].setAttribute('onmouseover', objName+'.onmouseover('+i+')');
     }
     
-    this.onmouseover = function(i) {
+    this.onmouseover = function(i)
+    {
         this.selectedLine = i;
         if (i != 0) {
             this.table.rows[i].setAttribute('class', 'prumoGridTrSelected');
@@ -2781,16 +2815,15 @@ function PrumoGrid(objName) {
             if (j != i) {
                 if (j % 2 != 0) {
                     this.table.rows[j].setAttribute('class', 'prumoGridTrEven');
-                }
-                else {
+                } else {
                     this.table.rows[j].setAttribute('class', 'prumoGridTrOdd');
                 }                
             }
         }
     }
     
-    this.clear = function() {
-        
+    this.clear = function()
+    {
         pGrid = document.getElementById(this.objName);
         
         for (var i=1; i < pGrid.rows.length; i++) {
@@ -2804,8 +2837,8 @@ function PrumoGrid(objName) {
         }
     }
     
-    this.assignResponseXML = function(responseXML) {
-        
+    this.assignResponseXML = function(responseXML)
+    {
         this.onmouseover(0);
         this.xmlData = responseXML.getElementsByTagName(this.xmlIdentification);
         
@@ -2843,8 +2876,8 @@ function PrumoGrid(objName) {
         }
     }
     
-    this.getValue = function(fieldName, index) {
-        
+    this.getValue = function(fieldName, index)
+    {
         var value = this.xmlData[index].getElementsByTagName(fieldName)[0].childNodes[0].nodeValue;
         
         if (value == 'NULL') {
@@ -2855,7 +2888,8 @@ function PrumoGrid(objName) {
     }
 }
 
-function PrumoGridNavigation(objName) {
+function PrumoGridNavigation(objName)
+{
     this.objName = objName;
     this.xmlIdentification = 'pGridStatus';
     this.count;
@@ -2870,11 +2904,13 @@ function PrumoGridNavigation(objName) {
     
     this.gridNavigation = document.getElementById('pGridNavigation_'+objName);
     
-    this.clear = function() {
+    this.clear = function()
+    {
         this.gridNavigation.innerHTML = gettext('Carregando')+'...';
     }
     
-    this.recalc = function() {
+    this.recalc = function()
+    {
         this.registersFrom = (this.page - 1) * this.pageLines + 1;
         this.registersTo = this.registersFrom*1 + this.pageLines*1-1;
         if (this.registersTo > this.count) {
@@ -2883,7 +2919,8 @@ function PrumoGridNavigation(objName) {
         this.pages = Math.ceil(this.count / this.pageLines);
     }
     
-    this.redraw = function() {
+    this.redraw = function()
+    {
         this.recalc();
         htmlOut = '';        
         
@@ -2920,8 +2957,7 @@ function PrumoGridNavigation(objName) {
             var iPage = pageFrom + i;
             if (iPage == this.page) {
                 htmlOut += '<button class="pButton-outline prumoPagination" disabled="disabled" onclick="'+this.objName+'.goSearch('+iPage+')">'+iPage+'</button>';
-            }
-            else {
+            } else {
                 htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.objName+'.goSearch('+iPage+')">'+iPage+'</button>';
             }
         }
@@ -2950,11 +2986,13 @@ function PrumoGridNavigation(objName) {
     /**
      * Evento disparado após o assignResponseXML para ser implementado conforme necessidade do desenvolvedor da aplicação
      */
-    this.afterAssignResponseXML = function() {
+    this.afterAssignResponseXML = function()
+    {
         // implementar conforme necessidade
     }
     
-    this.assignResponseXML = function(responseXML) {
+    this.assignResponseXML = function(responseXML)
+    {
         var x=responseXML.getElementsByTagName(this.xmlIdentification);
         this.clear();
         this.count     = x[0].getElementsByTagName('count')[0].childNodes[0].nodeValue;
@@ -2967,27 +3005,30 @@ function PrumoGridNavigation(objName) {
     }
 }
 
-function prumoLoading(divName) {
+function prumoLoading(divName)
+{
     this.divName = divName;
     this.count = 0;
     
-    this.show = function(loadId) {
+    this.show = function(loadId)
+    {
         this.count++;        
         this.visible();
     }
     
-    this.hide = function(loadId) {
+    this.hide = function(loadId)
+    {
         if (this.count > 0) {
             this.count--;
         }
         this.visible();
     }
     
-    this.visible = function() {
+    this.visible = function()
+    {
         if (this.count == 0) {
             document.getElementById(this.divName).style.display = 'none';
-        }
-        else {
+        } else {
             document.getElementById(this.divName).style.display = 'block';
         }
     }
@@ -2995,40 +3036,42 @@ function prumoLoading(divName) {
     this.visible();
 }
 
-function PrumoMenu(objName) {
+function PrumoMenu(objName)
+{
     this.objName = objName;
     
-    this.open = function(id) {
+    this.open = function(id)
+    {
         subMenu = document.getElementById(this.objName+'_'+id);
         subMenu.style.display = 'block';
     }
     
-    this.close = function(id) {
+    this.close = function(id)
+    {
         subMenu = document.getElementById(this.objName+'_'+id);
         subMenu.style.display = 'none';
     }
     
-    this.onClick = function(id,link,element) {
+    this.onClick = function(id, link, element)
+    {
         if (link == '') {
             subMenu = document.getElementById(this.objName+'_'+id);
             if (subMenu.style.display == 'none' || subMenu.style.display == undefined) {
                 this.open(id);
-            }
-            else {
+            } else {
                 this.close(id);
             }
-        }
-        else {
+        } else {
             if (element.ctrlKey) {
                 window.open(link);
-            }
-            else {
+            } else {
                 location.href = link;
             }
         }
     }
     
-    this.onInput = function() {
+    this.onInput = function()
+    {
         var inputMenuValue = document.getElementById('prumo_input_menu').value;
         var dl = document.getElementById('prumo_list_menu');
         for (var i=0; i < dl.options.length; i++) {
@@ -3038,19 +3081,22 @@ function PrumoMenu(objName) {
         }
     }
     
-    this.showInputMenu = function() {
+    this.showInputMenu = function()
+    {
         pWindowsImputMenu.show(1);
         document.getElementById('prumo_input_menu').focus();
     }
     
-    this.imputMenuKeyDown = function(event) {
+    this.imputMenuKeyDown = function(event)
+    {
         if (event.keyCode == 27) { //ESC
             pWindowsImputMenu.hide();
         }
     }
 }
 
-function PrumoSearch(objName, ajaxFile) {
+function PrumoSearch(objName, ajaxFile)
+{
     this.objName = objName;
     this.identification = objName;
     this.page;
@@ -3087,13 +3133,13 @@ function PrumoSearch(objName, ajaxFile) {
     
     this.fieldName;
     this.fieldPk;
-    this.pAjax.ajaxXmlOk = function() {
+    this.pAjax.ajaxXmlOk = function()
+    {
         if (this.cmd == 'r') {
             this.parent.pGrid.assignResponseXML(this.responseXML);
             this.parent.lineClick(0);
             this.parent.afterRetrieve();
-        }
-        else {
+        } else {
             this.parent.assignResponseXML(this.responseXML);
             if (this.parent.autoClick == true && this.parent.pGridNavigation.count == 1 && this.parent.pFilter.count > 0) {
                 this.parent.lineClick(0);
@@ -3106,12 +3152,13 @@ function PrumoSearch(objName, ajaxFile) {
         this.parent.afterList();
     }
     
-    this.afterRetrieve = function() {
+    this.afterRetrieve = function()
+    {
         //implementar conforme necessidade
     }
     
-    this.assignResponseXML = function(responseXML) {
-        
+    this.assignResponseXML = function(responseXML)
+    {
         this.responseXML = responseXML;
         this.pGrid.assignResponseXML(responseXML);
         this.pGridNavigation.assignResponseXML(responseXML);
@@ -3119,20 +3166,23 @@ function PrumoSearch(objName, ajaxFile) {
         this.fastCRUD();
     }
     
-    this.fastCRUD = function() {
+    this.fastCRUD = function()
+    {
         // evento do PrumoCrudList
     }
     
-    this.afterSearch = function() {
+    this.afterSearch = function()
+    {
         //implementar conforme necessidade
     }
     
-    this.afterList = function() {
+    this.afterList = function()
+    {
         //implementar conforme necessidade
     }
     
-    this.parametersFilters = function() {
-        
+    this.parametersFilters = function()
+    {
         param = '';
         for (var i=0; i < this.pFilter.filter.length; i++) {
             param += '&fField[]='+encodeURIComponent(this.pFilter.filter[i].fieldName);
@@ -3145,16 +3195,15 @@ function PrumoSearch(objName, ajaxFile) {
         return param;
     }
     
-    this.parameters = function() {
-        
+    this.parameters = function()
+    {
         if (this.page == undefined) {
             this.page = 1;
         }
         
         if (this.crudName != undefined) {
             var param = 'objName='+this.crudName;
-        }
-        else {
+        } else {
             var param = 'objName='+this.objName;
         }
         
@@ -3169,7 +3218,8 @@ function PrumoSearch(objName, ajaxFile) {
         return param;
     }
     
-    this.lineClick = function(lineIndex) {
+    this.lineClick = function(lineIndex)
+    {
         this.lineIndex = lineIndex;
         for (var i=0; i < this.fieldReturn.length; i++) {
             var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
@@ -3184,25 +3234,21 @@ function PrumoSearch(objName, ajaxFile) {
                         if (this.pAjax.cmd == 'r') {
                             fieldReturn.setAttribute('title', format(type, value, 'text'));
                         }
-                    }
-                    else {
+                    } else {
                         if (fieldReturn.getAttribute('type') == 'checkbox') {
                             if (value == 't') {
                                 fieldReturn.checked = true;
-                            }
-                            else {
+                            } else {
                                 fieldReturn.checked = false;
                             }
-                        }
-                        else {
+                        } else {
                             fieldReturn.value = format(type, value, 'text');
                             if (this.pAjax.cmd == 'r') {
                                 fieldReturn.setAttribute('title',format(type, value, 'text'));
                             }
                         }
                     }
-                }
-                else {
+                } else {
                 
                     var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
                     msg = msg.replace('%fieldName%',this.fieldReturn[i][1]);
@@ -3219,17 +3265,17 @@ function PrumoSearch(objName, ajaxFile) {
         this.afterSearch();
     }
     
-    this.beforeSearch = function() {
+    this.beforeSearch = function()
+    {
         //implementar conforme necessidade
         return true;
     }
     
-    this.goSearch = function(page) {
-        
+    this.goSearch = function(page)
+    {
         if (this.pAjax.working) {
             alert(this.objName + ': ' + gettext('já está trabalhando'));
-        }
-        else {
+        } else {
             
             if (page != undefined) {
                 this.page = page;
@@ -3254,7 +3300,8 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.paramRetrieve = function() {
+    this.paramRetrieve = function()
+    {
         var param = 'objName='+this.objName+'&'+this.objName+'_action=r';
         
         for (var i in this.fieldPk) {
@@ -3278,8 +3325,8 @@ function PrumoSearch(objName, ajaxFile) {
         return param;
     }
     
-    this.goRetrieve = function() {
-        
+    this.goRetrieve = function()
+    {
         var havePk = false;
         var pkNull = false;
         for (var i in this.fieldPk) {
@@ -3303,7 +3350,8 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.fieldKeyDown = function(event) {
+    this.fieldKeyDown = function(event)
+    {
         if (event.keyCode == 113) { //F2
             this.goSearch();
         }
@@ -3312,32 +3360,35 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.cmdSearch = function() {
+    this.cmdSearch = function()
+    {
         if (this.pFilter.validateFilters()) {
             this.goSearch(1);
         }
     }
     
-    this.cmdSearchAll = function() {
-        
+    this.cmdSearchAll = function()
+    {
         this.pFilter.clearValues();
         this.cmdSearch();
         this.pFilter.draw();
     }
     
-    this.addFieldReturn = function(fieldName, idReturn, fieldType, noRetrieve) {
+    this.addFieldReturn = function(fieldName, idReturn, fieldType, noRetrieve)
+    {
         this.fieldReturn[this.fieldReturn.length] = Array(fieldName, idReturn, fieldType, noRetrieve);
     }
     
-    this.afterShow = function() {
+    this.afterShow = function()
+    {
         //
     }
     
-    this.show = function() {
+    this.show = function()
+    {
         if (this.pWindow != false) {
             this.pWindow.show(this.modal);
-        }
-        else {
+        } else {
             if (document.getElementById(this.objName) != undefined) {
                 document.getElementById(this.objName).style.display = 'block';
             }
@@ -3345,7 +3396,8 @@ function PrumoSearch(objName, ajaxFile) {
         this.afterShow();
     }
     
-    this.cancel = function() {
+    this.cancel = function()
+    {
         if (this.fieldFocusId != '') {
             inputField = document.getElementById(this.fieldFocusId);
             // Caso o usuário tenha digitado algum valor no campo
@@ -3360,15 +3412,16 @@ function PrumoSearch(objName, ajaxFile) {
         this.hide();
     }
     
-    this.afterHide = function() {
+    this.afterHide = function()
+    {
         //
     }
     
-    this.hide = function() {
+    this.hide = function()
+    {
         if (this.pWindow) {
             this.pWindow.hide();
-        }
-        else {
+        } else {
             if (document.getElementById(this.objName) != undefined) {
                 document.getElementById(this.objName).style.display = 'none';
             }
@@ -3376,8 +3429,8 @@ function PrumoSearch(objName, ajaxFile) {
         this.afterHide();
     }
     
-    this.upArrow = function() {
-        
+    this.upArrow = function()
+    {
         this.selected = true;
         
         if (this.pGrid.selectedLine == 0) {
@@ -3400,8 +3453,8 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.downArrow = function() {
-        
+    this.downArrow = function()
+    {
         this.selected = true;
         var nextLine = this.pGrid.selectedLine + 1;
         
@@ -3419,24 +3472,25 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.enterKey = function() {
-        
+    this.enterKey = function()
+    {
         if (this.selected) {
             this.lineClick(this.pGrid.selectedLine-1);
-        }
-        else {
+        } else {
             this.cmdSearch();
         }
     }
     
-    this.keyDown = function() {
+    this.keyDown = function()
+    {
         this.selected = false;
     }
     
     /**
      * Grava o valor em this.fieldValueOnFocus ao receber o foco para posteriormente ser comparado no evento blur
      */
-    this.fieldFocus = function(objField) {
+    this.fieldFocus = function(objField)
+    {
         this.fieldValueOnFocus = objField.value;
         this.fieldFocusId = objField.getAttribute('id');
     }
@@ -3444,8 +3498,8 @@ function PrumoSearch(objName, ajaxFile) {
     /**
      * Verifica se o usuário digitou ou alterou alguma informação no field
      */
-    this.fieldBlur = function(objField) {
-        
+    this.fieldBlur = function(objField)
+    {
         if (this.pAjax.working == false) {
             var objId = objField.getAttribute('id');
             
@@ -3459,8 +3513,7 @@ function PrumoSearch(objName, ajaxFile) {
                             for (iReturn in this.fieldReturn) {
                                 document.getElementById(this.fieldReturn[iReturn][1]).value = '';
                             }
-                        }
-                        else {
+                        } else {
                             
                             for (iFieldSearch in this.pFilter.fieldName) {
                                 if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
@@ -3470,8 +3523,7 @@ function PrumoSearch(objName, ajaxFile) {
                             
                             if (fieldType == 'string') {
                                 var operator = 'like';
-                            }
-                            else {
+                            } else {
                                 var operator = 'equal';
                             }
                             
@@ -3485,7 +3537,8 @@ function PrumoSearch(objName, ajaxFile) {
         }
     }
     
-    this.sort = function(field, order) {
+    this.sort = function(field, order)
+    {
         if (order == undefined) {
             var element = document.getElementById('PrumoGridTh_' + this.objName + '_' + field);
             var className = element.className;
@@ -3522,19 +3575,22 @@ function PrumoSearch(objName, ajaxFile) {
     /**
      * Redirecionamento para o mesmo método em this.pFilter
      */
-    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
     }
     
     /**
      * Redirecionamento para o mesmo método em this.pFilter
      */
-    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2) {
+    this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
         this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
     }
 }
 
-function PrumoCrudList(objName, ajaxFile) {
+function PrumoCrudList(objName, ajaxFile)
+{
     PrumoSearch.apply(this, arguments);
     
     this.autoClick = false;
@@ -3543,7 +3599,8 @@ function PrumoCrudList(objName, ajaxFile) {
     this.fastUpdate = false;
     this.fastDelete = false;
     
-    this.fastCRUD = function() {
+    this.fastCRUD = function()
+    {
         if (this.fastCreate || this.fastUpdate || this.fastDelete) {
             
             var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
@@ -3605,7 +3662,8 @@ function PrumoCrudList(objName, ajaxFile) {
         }
     }
     
-    this.lineClick = function(lineIndex) {
+    this.lineClick = function(lineIndex)
+    {
         this.lineIndex = lineIndex;
         this.assignResponseXML(this.responseXML);
         
@@ -3666,8 +3724,7 @@ function PrumoCrudList(objName, ajaxFile) {
             }
             
             this.parent.unFreezeFields();
-        }
-        else {
+        } else {
             
             for (var i=0; i < this.fieldReturn.length; i++) {
             
@@ -3681,16 +3738,13 @@ function PrumoCrudList(objName, ajaxFile) {
                         
                         if (value == 't') {
                             fieldReturn.checked = true;
-                        }
-                        else {
+                        } else {
                             fieldReturn.checked = false;
                         }
-                    }
-                    else {
+                    } else {
                         fieldReturn.value = format(type, value, 'text');
                     }
-                }
-                else {
+                } else {
                 
                     var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
                     msg = msg.replace('%fieldName%', this.fieldReturn[i][1]);
@@ -3707,10 +3761,12 @@ function PrumoCrudList(objName, ajaxFile) {
     }
 }
 
-function PrumoQueue(objName,ajaxFile) {
+function PrumoQueue(objName,ajaxFile)
+{
     PrumoSearch.apply(this, arguments);
     
-    this.pAjax.ajaxXmlOk = function() {
+    this.pAjax.ajaxXmlOk = function()
+    {
         this.parent.pGrid.assignResponseXML(this.responseXML);
         this.parent.pGridNavigation.assignResponseXML(this.responseXML);
         this.parent.pFilter.assignResponseXML(this.responseXML);
@@ -3719,41 +3775,47 @@ function PrumoQueue(objName,ajaxFile) {
         this.parent.afterList();
     }
     
-    this.lineClick = function(lineIndex) {
+    this.lineClick = function(lineIndex)
+    {
         var msg = gettext('Falta implementar o método lineClick do objeto ')+this.objName;
         alert(msg);
     }
     
-    this.afterList = function() {
+    this.afterList = function()
+    {
         //disponivel para implementação
     }
     
 }
 
-function PrumoTab(objName) {
-    this.objName = objName;        
+function PrumoTab(objName)
+{
+    this.objName = objName;
     this.tabName = new Array();
     
-    this.addTab = function(tabName) {
+    this.addTab = function(tabName)
+    {
         this.tabName.push(tabName);
     }
     
-    this.show = function() {
+    this.show = function()
+    {
         document.getElementById(this.objName).style.display = 'block';
     }
     
-    this.hide = function() {
+    this.hide = function()
+    {
         document.getElementById(this.objName).style.display = 'none';
     }
     
-    this.showTab = function(tabName) {
+    this.showTab = function(tabName)
+    {
         this.show();
         for (var i in this.tabName) {
             if (this.tabName[i] == tabName) {
                 document.getElementById(this.objName+'_tab_'+this.tabName[i]).style.display = 'block';
                 document.getElementById(this.objName+'_bt_'+this.tabName[i]).className= "pButton-outline active";
-            }
-            else {
+            } else {
                 document.getElementById(this.objName+'_tab_'+this.tabName[i]).style.display = 'none';
                 document.getElementById(this.objName+'_bt_'+this.tabName[i]).className= "pButton-outline";
             }
@@ -3761,7 +3823,8 @@ function PrumoTab(objName) {
     }
 }
 
-function PrumoWindow(objName) {
+function PrumoWindow(objName)
+{
     this.objName = objName;
     this.width   = 730;
     this.title   = 'PrumoWindow';
@@ -3770,7 +3833,8 @@ function PrumoWindow(objName) {
     
     this.div = document.getElementById(objName);
     
-    this.show = function(modal) {
+    this.show = function(modal)
+    {
         document.getElementById(this.objName+'_title').innerHTML = this.title;
         
         if (modal) {
@@ -3780,19 +3844,22 @@ function PrumoWindow(objName) {
         this.position();
     }
     
-    this.hide = function() {
+    this.hide = function()
+    {
         document.getElementById(this.objName+'_veil').style.display = 'none';
         this.div.style.display = 'none';
     }
     
-    this.move = function() {
+    this.move = function()
+    {
         thisDiv = document.getElementById(this.objName)
         diffX = 0;
         diffY = 0;
         
         document.getElementById(this.objName+'_title').style.cursor = 'move';
         
-        document.onmousemove = function Mouse(event) {
+        document.onmousemove = function Mouse(event)
+        {
             if (diffX == 0) {
                 diffX = event.clientX - thisDiv.offsetLeft;
             }
@@ -3807,12 +3874,14 @@ function PrumoWindow(objName) {
         document.onclick = null;
     }
     
-    this.dropMove = function() {
+    this.dropMove = function()
+    {
         document.getElementById(this.objName+'_title').style.cursor = '';
         document.onmousemove = false;
     }
     
-    this.position = function() {
+    this.position = function()
+    {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         var topPosition = 0;
         var leftPosition = 0;
