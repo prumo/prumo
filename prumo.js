@@ -3348,6 +3348,12 @@ function PrumoSearch(objName, ajaxFile)
             this.pAjax.cmd = 'r';
             this.pAjax.goAjax(this.paramRetrieve());
         }
+        
+        if (havePk && pkNull) {
+            for (var i=0; i < this.fieldReturn.length; i++) {
+                document.getElementById(this.fieldReturn[i][1]).value = '';
+            }
+        }
     }
     
     this.fieldKeyDown = function(event)
