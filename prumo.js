@@ -2015,8 +2015,10 @@ function PrumoCrud(objName, ajaxFile)
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
             var fieldCount = this.fieldId.length;
             for (var i=0; i < fieldCount; i++) {
-                var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
-                this.inputSetValue(this.fieldId[i], value);
+                if (this.fieldPk[i]) {
+                    var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
+                    this.inputSetValue(this.fieldId[i], value);
+                }
             }
             this.freezeFields();
             this.doFastDelete();
