@@ -729,6 +729,7 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.stateChange('list');
             } else if (this.cmd == 'delete') {
                 this.parent.afterDelete();
+                this.parent.stateChange('new');
             } else if (this.cmd == 'fast_delete') {
                 this.parent.afterDelete();
                 this.parent.stateChange('list');
@@ -760,6 +761,9 @@ function PrumoCrud(objName, ajaxFile)
         alert(msg);
         if (this.parent.state != 'view') {
             this.parent.unFreezeFields();
+            this.parent.toggleFreezeControls(false);
+        }
+        if (this.cmd == 'delete') {
             this.parent.toggleFreezeControls(false);
         }
     }
@@ -1248,7 +1252,7 @@ function PrumoCrud(objName, ajaxFile)
         if (this.beforeDelete()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
-                var    param = this.paramPk();
+                var param = this.paramPk();
             
                 if (this.parent1x1 == false) {
                     param += '&objName='+this.objName;
@@ -1817,7 +1821,6 @@ function PrumoCrud(objName, ajaxFile)
     {
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
             this.doDelete();
-            this.stateChange('new');
         }
     }
     
