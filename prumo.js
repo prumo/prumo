@@ -2007,10 +2007,6 @@ function PrumoCrud(objName, ajaxFile)
         if (event.keyCode == 13) {
             this.bt_fastUpdate(lineIndex);
         }
-        //esc
-        if (event.keyCode == 27) {
-            this.pCrudList.assignResponseXML(this.pCrudList.responseXML);
-        }
     }
     
     this.bt_fastDelete = function(lineIndex)
