@@ -20,8 +20,8 @@ require_once 'prumo.php';
 
 pProtect('prumo_controlPanel');
 
-function listThemes() {
-    
+function listThemes()
+{
     $prumoThemes = scandir($GLOBALS['pConfig']['prumoPath'].'/themes');
     
     $themes = array();
