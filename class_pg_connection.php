@@ -57,7 +57,9 @@ class PrumoPgConnection
             $this->sqlOperator['not begins with']       = 'NOT :field: ilike \':value:%\'';
             $this->sqlOperator['not ends with']         = 'NOT :field: ilike \'%:value:\'';
         }
-        
+        if ($pConfig['useSimilaritySearch'] == 't') {
+            $this->sqlOperator['similarity'] = 'similarity(:field:, \'%:value:\') > ' . $pConfig['similarityThreshold'];
+        }
         $this->sqlOperator['equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['not equal']             = 'NOT :field: = \':value:\'';
         $this->sqlOperator['numeric equal']         = ':field: = :value:';

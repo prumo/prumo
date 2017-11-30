@@ -17,14 +17,16 @@
  */
 
 /* Exemplo de banco de dados do framework em PostgreSQL */
-$pConfig['dbSingle']         = true;
-$pConfig['sgdb_prumo']       = 'pgsql';
-$pConfig['dbHost_prumo']     = 'localhost';
-$pConfig['dbPort_prumo']     = '5432';
-$pConfig['dbName_prumo']     = 'db_prumo';
-$pConfig['dbUserName_prumo'] = 'prumo';
-$pConfig['dbPassword_prumo'] = '123456';
-$pConfig['useUnaccent']      = 'f';
+$pConfig['dbSingle']            = true;
+$pConfig['sgdb_prumo']          = 'pgsql';
+$pConfig['dbHost_prumo']        = 'localhost';
+$pConfig['dbPort_prumo']        = '5432';
+$pConfig['dbName_prumo']        = 'db_prumo';
+$pConfig['dbUserName_prumo']    = 'prumo';
+$pConfig['dbPassword_prumo']    = '123456';
+$pConfig['useUnaccent']         = 'f';
+$pConfig['useSimilaritySearch'] = 'f';
+$pConfig['similarityThreshold'] = '0';
 
 // configuração do ambiente do framework (não remover ou comentar este bloco)
 if (file_exists('prumo/ctrl_ambient.php')) {

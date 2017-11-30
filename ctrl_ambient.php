@@ -50,6 +50,8 @@ if (! isset($pConfig['dbUserName']))            $pConfig['dbUserName']          
 if (! isset($pConfig['dbPassword']))            $pConfig['dbPassword']            = 'prumo';
 if (! isset($pConfig['appSchema']))             $pConfig['appSchema']             = 'public';
 if (! isset($pConfig['useUnaccent']))           $pConfig['useUnaccent']           = 'f';
+if (! isset($pConfig['useSimilaritySearch']))   $pConfig['useSimilaritySearch']   = 'f';
+if (! isset($pConfig['similarityThreshold']))   $pConfig['similarityThreshold']   = '0';
 if (! isset($pConfig['theme']))                 $pConfig['theme']                 = 'default';
 if (! isset($pConfig['searchLines']))           $pConfig['searchLines']           = 14;
 if (! isset($pConfig['afterLogin']))            $pConfig['afterLogin']            = 'index.php';

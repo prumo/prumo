@@ -74,7 +74,7 @@ function prumo()
  * @param result string: 'eval' se deseja que seja executado diretamente o javascript
  */
 function pSimpleAjax(file, param, result)
-{    
+{
     var pAjax = new prumoAjax(file);
     
     if (result == 'eval') {
@@ -2025,7 +2025,7 @@ function PrumoCrud(objName, ajaxFile)
     }
 }
 
-function PrumoFilter(objName)
+function PrumoFilter(objName, useSimilaritySearch)
 {
     this.objName = objName;
     this.pAjax = new prumoAjax();
@@ -2033,6 +2033,7 @@ function PrumoFilter(objName)
     this.page;
     this.prumoWebPath;
     this.xmlIdentification = 'pFilter';
+    this.useSimilaritySearch = useSimilaritySearch;
     
     this.fieldName  = new Array();
     this.fieldLabel = new Array();
@@ -2042,66 +2043,78 @@ function PrumoFilter(objName)
     this.count = 0;
     
     //operadores lógicos para campos em formato texto
-    this.textOperators        = Array(
-                                        'like',
-                                        'not like',
-                                        'begins with',
-                                        'ends with',
-                                        'not begins with',
-                                        'not ends with',
-                                        'equal',
-                                        'not equal',
-                                        'is null',
-                                        'not is null'
-                                     );
-    this.textOperatorsName    = Array(
-                                        gettext('contém'),
-                                        gettext('não contém'),
-                                        gettext('começa com'),
-                                        gettext('termina com'),
-                                        gettext('não começa com'),
-                                        gettext('não termina com'),
-                                        gettext('igual a'),
-                                        gettext('diferente de'),
-                                        gettext('é nulo'),
-                                        gettext('não é nulo')
-                                     );
+    this.textOperators = Array(
+        'similarity',
+        'like',
+        'not like',
+        'begins with',
+        'ends with',
+        'not begins with',
+        'not ends with',
+        'equal',
+        'not equal',
+        'is null',
+        'not is null'
+    );
+    
+    this.textOperatorsName = Array(
+         gettext('similar à'),
+         gettext('contém'),
+         gettext('não contém'),
+         gettext('começa com'),
+         gettext('termina com'),
+         gettext('não começa com'),
+         gettext('não termina com'),
+         gettext('igual a'),
+         gettext('diferente de'),
+         gettext('é nulo'),
+         gettext('não é nulo')
+    );
+    
+    if (this.useSimilaritySearch == 'f') {
+        this.textOperators.shift();
+        this.textOperatorsName.shift();
+    }
+    
     //operadores lógicos para campos em formato numerico
-    this.numericOperators     = Array(
-                                        'numeric equal',
-                                        'numeric not equal',
-                                        'less than',
-                                        'greater than',
-                                        'less than or equal',
-                                        'greater than or equal',
-                                        'between',
-                                        'is null',
-                                        'not is null'
-                                     );
+    this.numericOperators = Array(
+         'numeric equal',
+         'numeric not equal',
+         'less than',
+         'greater than',
+         'less than or equal',
+         'greater than or equal',
+         'between',
+         'is null',
+         'not is null'
+    );
+    
     this.numericOperatorsName = Array(
-                                        gettext('igual a'),
-                                        gettext('diferente de'),
-                                        gettext('menor que'),
-                                        gettext('maior que'),
-                                        gettext('menor ou igual a'),
-                                        gettext('maior ou igual a'),
-                                        gettext('entre'),
-                                        gettext('é nulo'),
-                                        gettext('não é nulo')
-                                     );
+         gettext('igual a'),
+         gettext('diferente de'),
+         gettext('menor que'),
+         gettext('maior que'),
+         gettext('menor ou igual a'),
+         gettext('maior ou igual a'),
+         gettext('entre'),
+         gettext('é nulo'),
+         gettext('não é nulo')
+    );
+    
     //operadores lógicos para campos boleanos
-    this.booleanOperators        = Array(
-                                        'equal',
-                                        'not equal',
-                                        'is null',
-                                        'not is null'
-                                     );
-    this.booleanOperatorsName    = Array(
-                                        gettext('igual a'),
-                                        gettext('diferente de'),
-                                        gettext('é nulo'),
-                                        gettext('não é nulo')
-                                     );
+    this.booleanOperators = Array(
+         'equal',
+         'not equal',
+         'is null',
+         'not is null'
+    );
+    
+    this.booleanOperatorsName = Array(
+         gettext('igual a'),
+         gettext('diferente de'),
+         gettext('é nulo'),
+         gettext('não é nulo')
+    );
     
     /**
      * Adiciona um filtro

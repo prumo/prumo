@@ -126,7 +126,7 @@ class PrumoFilter
     private function makeJs()
     {
         $jsFilters  = $this->ind.'<script type="text/javascript">'."\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.' = new PrumoFilter(\'pFilter_'.$this->parentName.'\');'."\n";
+        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.' = new PrumoFilter(\'pFilter_'.$this->parentName.'\', \''.$GLOBALS['pConfig']['useSimilaritySearch'].'\');'."\n";
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.prumoWebPath = \''.$GLOBALS['pConfig']['prumoWebPath'].'\';'."\n";
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.parent = '.$this->parentName.';'."\n";
 

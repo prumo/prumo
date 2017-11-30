@@ -120,16 +120,25 @@ $inputTheme .= '                    </select>'."\n";
                     <tr>
                         <td class="prumoFormLabel"><br /></td>
                         <td class="prumoFormFields">
-                            <?php
-                            if ($GLOBALS['pConfig']['useUnaccent'] == 't') {
-                                echo '        <input id="useUnaccent" type="checkbox" checked="checked" disabled="disabled" /> useUnaccent'."\n";
-                            } else {
-                                echo '        <input id="useUnaccent" type="checkbox" disabled="disabled" /> useUnaccent'."\n";
-                            }
-                            echo '('._('Usar extensão unaccent do PostgreSQL').')';
-                            ?>
+                            <input id="useUnaccent" type="checkbox" <?php echo $GLOBALS['pConfig']['useUnaccent'] == 't' ? 'checked="checked"' : ''; ?> disabled="disabled" /> useUnaccent
+                            <?php echo '('._('Usar extensão unaccent do PostgreSQL').')'; ?>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="prumoFormLabel"><br /></td>
+                        <td class="prumoFormFields">
+                            <input id="useSimilaritySearch" type="checkbox" <?php echo $GLOBALS['pConfig']['useSimilaritySearch'] == 't' ? 'checked="checked"' : ''; ?> disabled="disabled" /> useSimilaritySearch
+                            <?php echo '('._('Usar extensão pg_trgm do PostgreSQL para buscas por similaridade').')'; ?>
+                        </td>
+                    </tr>
+                    <?php if ($GLOBALS['pConfig']['useSimilaritySearch'] == 't') { ?>
+                    <tr>
+                        <td class="prumoFormLabel">similarityThreshold: </td>
+                        <td class="prumoFormFields">
+                            <input id="similarityThreshold" type="text" disabled="disabled" value="<?php echo $GLOBALS['pConfig']['similarityThreshold']; ?>"/>
+                        </td>
+                    </tr>
+                    <?php } ?>
                 </table>
                 
             </div>
@@ -301,6 +310,8 @@ $inputTheme .= '                    </select>'."\n";
         param += '&dbPassword='+document.getElementById('dbPassword').value;
         param += '&appSchema='+document.getElementById('appSchema').value;
         param += document.getElementById('useUnaccent').checked == true ? '&useUnaccent=t' : '&useUnaccent=f';
+        param += document.getElementById('useSimilaritySearch').checked == true ? '&useSimilaritySearch=t' : '&useSimilaritySearch=f';
+        param += '&similarityThreshold='+ (document.getElementById('useSimilaritySearch').checked == true ? document.getElementById('similarityThreshold').value : '0');
         param += '&theme='+document.getElementById('theme').value;
         param += '&searchLines='+document.getElementById('searchLines').value;
         param += document.getElementById('logInsert').checked == true ? '&logInsert=t' : '&logInsert=f';
@@ -321,4 +332,3 @@ $inputTheme .= '                    </select>'."\n";
     }
     
 </script>
-
