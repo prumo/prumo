@@ -49,4 +49,3 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
         include $GLOBALS['pConfig']['prumoPath'].'/view_login.php';
     }
 }
-

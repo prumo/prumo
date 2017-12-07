@@ -49,6 +49,7 @@ echo $pArrHtmlLayout[0];
 
 //inclusao do desktop
 if (isset($_GET['page']) && $prumoPage[$_GET['page']]) {
+    pProtect($_GET['page']);
     $pPage = $prumoPage[$_GET['page']];
 } else {
     $pPage = file_exists($GLOBALS['pConfig']['appPath'].'/desktop.php') ? $GLOBALS['pConfig']['appPath'].'/desktop.php' : $GLOBALS['pConfig']['prumoPath'].'/view_submission.php';
@@ -57,4 +58,3 @@ include $pPage;
 
 //conteúdo após a inclusao
 echo $pArrHtmlLayout[1];
-
