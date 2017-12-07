@@ -121,6 +121,7 @@ class PrumoSearch extends PrumoBasic
      * @param $idReturn string: id do input html. Quando não informado, copia do $fieldName
      * @param $verbose boolean: quando true imprime o código gerado na tela
      * @param $linkInput boolean: quando true vincula o campo HTML com o search
+     * @param $noRetrieve boolean: quando true não participa do retrieve (busca implicita disparada pelo crud pai)
      *
      * @return string: código javascript gerado
      */
