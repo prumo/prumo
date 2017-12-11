@@ -23,10 +23,12 @@ class PrumoCrudList extends PrumoSearch
 {
     /**
      * Desenha o GRID
+     *
+     * @param $pageLines integer: numero de linhas do grid (quando não informado pega do arquivo de configuração)
      */
-    protected function constructGrid()
+    protected function constructGrid($pageLines=false)
     {
-        $lines = $this->pageLines();
+		$lines = $pageLines ? $pageLines : $this->pageLines();
         
         if (isset($this->param['fastcreate']) and $this->param['fastcreate']) {
             $lines++;
@@ -41,11 +43,12 @@ class PrumoCrudList extends PrumoSearch
      * @param $fieldName string: nome do campo
      * @param $idReturn string: id do input html. Quando não informado, copia do $fieldName
      * @param $verbose boolean: quando true imprime o código gerado na tela
-     * @param $noRetrieve boolean: quando true não participa do retrieve (busca implicita disparada pelo crud pai)
+     * @param $linkInput boolean: sem efeito, apenas para manter a compatibilidade com o prumoSearch
+     * @param $noRetrieve boolean: sem efeito, apenas para manter a compatibilidade com o prumoSearch
      *
      * @return string: código javascript gerado
      */
-    public function addFieldReturn($fieldName, $idReturn='', $verbose=true)
+    public function addFieldReturn($fieldName, $idReturn='', $verbose=true, $linkInput=true, $noRetrieve=false)
     {
         if (empty($idReturn)) {
             $idReturn = $fieldName;

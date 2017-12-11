@@ -99,6 +99,12 @@ if (! extension_loaded('gettext')) {
     }
 }
 
+if (! extension_loaded('xml')) {
+    $msg = _('É necessário ativar a extensão %extension% no PHP');
+    echo '    <p>'.str_replace('%extension%', 'xml', $msg).'.</p>'."\n";
+	exit;
+}
+
 //verifica se as configurações estão salvas no banco e busca as informações
 if ($GLOBALS['pConfig']['sgdb_prumo'] == 'pgsql' or $GLOBALS['pConfig']['sgdb_prumo'] == 'sqlite3') {
     pGetConfigDb();
