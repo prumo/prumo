@@ -148,7 +148,7 @@ CREATE TABLE prumo.reminder
 	repeat_every integer,
 	repeat_interval character varying(10),
 	username character varying(30),
-    last_seen date NOT NULL DEFAULT now(),
+    last_seen date NOT NULL DEFAULT now()::date - '1 day'::interval,
 	PRIMARY KEY (id),
 	FOREIGN KEY (username) REFERENCES prumo.syslogin (username) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 );
