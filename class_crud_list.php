@@ -23,10 +23,12 @@ class PrumoCrudList extends PrumoSearch
 {
     /**
      * Desenha o GRID
+     *
+     * @param $pageLines integer: numero de linhas do grid (quando não informado pega do arquivo de configuração)
      */
-    protected function constructGrid()
+    protected function constructGrid($pageLines=false)
     {
-        $lines = $this->pageLines();
+		$lines = $pageLines ? $pageLines : $this->pageLines();
         
         if (isset($this->param['fastcreate']) and $this->param['fastcreate']) {
             $lines++;
