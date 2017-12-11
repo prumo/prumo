@@ -47,6 +47,11 @@ $pHtmlPreLayout = str_replace(':footer:',$pHtmlFooter,$pHtmlPreLayout);
 $pArrHtmlLayout = explode(':desktop:',$pHtmlPreLayout);
 echo $pArrHtmlLayout[0];
 
+require_once $GLOBALS['pConfig']['prumoPath'] . '/class_reminder.php';
+$reminder = new Reminder($pConnectionPrumo);
+$reminder->verify();
+$reminder->show();
+
 //inclusao do desktop
 if (isset($_GET['page']) && $prumoPage[$_GET['page']]) {
     pProtect($_GET['page']);
