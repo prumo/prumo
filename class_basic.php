@@ -21,7 +21,8 @@
  */
 class PrumoBasic
 {
-    public $name;
+    use PGetName;
+    
     public $field = array();
     public $error = '';
     public $param;
@@ -54,7 +55,7 @@ class PrumoBasic
     private function getAjaxFileName()
     {
         $files = get_included_files();
-        $lastInclusion = $files[count($files)-1];
+        $lastInclusion = array_pop($files);
         
         if (! isset($this->param['xmlfile'])) {
             if (dirname($_SERVER["SCRIPT_FILENAME"]) == dirname($lastInclusion)) {
@@ -68,30 +69,6 @@ class PrumoBasic
         $ajaxFileName = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
         
         return $ajaxFileName;
-    }
-    
-    /**
-     * Retorna o nome da instância
-     *
-     * @return string
-     */
-    public function getObjName()
-    {
-        if (! isset($this->name) or $this->name == '') {
-            
-            $className = get_class($this);
-            $instance = array();
-            
-            foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
-                    $instance[] = $key;
-                }
-            }
-            
-            $this->name = array_pop($instance);
-        }
-        
-        return $this->name;
     }
     
     /**

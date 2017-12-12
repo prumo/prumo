@@ -21,7 +21,8 @@
  */
 class PrumoQueueSet
 {
-    private $name;
+    use PGetName;
+    
     private $ind;
     private $pQueueName;
     private $pQueueLabel;
@@ -43,30 +44,6 @@ class PrumoQueueSet
         $this->ind = '';
         $this->classBt = 'pQueueSetBt';
         $this->classBtFocus = 'pQueueSetBtFocus';
-    }
-    
-    /**
-     * Retorna o nome da instância
-     *
-     * @return string
-     */
-    private function getObjName()
-    {
-        if (! isset($this->name) or $this->name == '') {
-            
-            $className = get_class($this);
-            $instance = array();
-            
-            foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
-                    $instance[] = $key;
-                }
-            }
-            
-            $this->name = array_pop($instance);
-        }
-        
-        return $this->name;
     }
     
     /**

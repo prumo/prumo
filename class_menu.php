@@ -21,7 +21,8 @@
  */
 class PrumoMenu
 {
-    public $objName;
+    use PGetName;
+    
     public $ind;
     
     /**
@@ -30,31 +31,6 @@ class PrumoMenu
     function __construct()
     {
         $this->ind = '';
-    }
-    
-    /**
-     * Retorna o nome da instância
-     *
-     * @return string
-     */
-    public function getObjName()
-    {
-        
-        if (! isset($this->objName) or $this->objName == '') {
-            
-            $className = get_class($this);
-            $instance = array();
-            
-            foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
-                    $instance[] = $key;
-                }
-            }
-            
-            $this->objName = array_pop($instance);
-        }
-        
-        return $this->objName;
     }
     
     /**

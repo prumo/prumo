@@ -492,3 +492,42 @@ function pGetAudit($routine)
     return $pConnectionPrumo->sqlQuery($sql) == 't';
 }
 
+/**
+ * Código reaproveitável, pega o nome do objeto instanciado
+ */
+trait PGetName
+{
+    public $name = '';
+    
+    /**
+     * Retorna o nome da instância
+     *
+     * @return string
+     */
+    public function getObjName()
+    {
+        if (empty($this->name)) {
+            
+            $className = get_class($this);
+            $instance = array();
+            
+            foreach ($GLOBALS as $key => $value) {
+                if (is_object($value) and get_class($value) == $className) {
+                    $instance[] = $key;
+                }
+            }
+            
+            for ($i=0; $i < count($instance); $i++) {
+                $objName = $instance[$i];
+                global $$objName;
+                if (empty(${$objName}->name)) {
+                    ${$objName}->name = $objName;
+                    break;
+                }
+            }
+        }
+        
+        return $this->name;
+    }
+}
+

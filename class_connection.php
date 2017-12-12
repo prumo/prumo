@@ -21,10 +21,11 @@
  */
 class PrumoConnection
 {
+    use PGetName;
+    
     private $connection;
     private $param;
     private $defaultSchema = '';
-    private $name;
     private $logType;
     
     /**
@@ -79,30 +80,6 @@ class PrumoConnection
         if (! in_array(strtolower($type), $this->logType)) {
             $this->logType[] = strtolower($type);
         }
-    }
-    
-    /**
-     * Retorna o nome da instância
-     *
-     * @return string
-     */
-    public function getObjName()
-    {
-        if (! isset($this->name) or empty($this->name)) {
-            
-            $className = get_class($this);
-            $instance = array();
-            
-            foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
-                    $instance[] = $key;
-                }
-            }
-            
-            $this->name = array_pop($instance);
-        }
-        
-        return $this->name;
     }
     
     /**

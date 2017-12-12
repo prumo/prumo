@@ -21,7 +21,8 @@
  */
 class PrumoTab
 {
-    private $name;
+    use PGetName;
+    
     private $tab;
     private $tabLabel;
     private $tabInclude;
@@ -55,30 +56,6 @@ class PrumoTab
         $this->tabLabel[] = $tabLabel;
         $this->tabInclude[] = $include;
         $this->tabHtml[] = $html;
-    }
-    
-    /**
-     * Retorna o nome da instância
-     *
-     * @return string
-     */
-    public function getObjName()
-    {
-        if (! isset($this->name) or $this->name == '') {
-            
-            $className = get_class($this);
-            $instance = array();
-            
-            foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
-                    $instance[] = $key;
-                }
-            }
-            
-            $this->name = array_pop($instance);
-        }
-        
-        return $this->name;
     }
     
     /**
@@ -118,18 +95,18 @@ class PrumoTab
         $visible = $this->visible ? ' style="display:block"' : ' style="display:none"';
         
         $top  = $this->ind.'<script type="text/javascript">'."\n";
-        $top .= $this->ind.'    var '.$this->name.' = new PrumoTab(\''.$this->name.'\');'."\n";
+        $top .= $this->ind.'    var '.$this->getObjName().' = new PrumoTab(\''.$this->getObjName().'\');'."\n";
         
         for ($i = 0; $i < count($this->tab); $i++) {
-            $top .= $this->ind.'    '.$this->name.'.addTab(\''.$this->tab[$i].'\');'."\n";
+            $top .= $this->ind.'    '.$this->getObjName().'.addTab(\''.$this->tab[$i].'\');'."\n";
         }
         
         $top .= $this->ind.'</script>'."\n";
-        $top .= $this->ind.'<fieldset id="'.$this->name.'"'.$visible.'>'."\n";
+        $top .= $this->ind.'<fieldset id="'.$this->getObjName().'"'.$visible.'>'."\n";
         $top .= $this->ind.'    <legend>'."\n";
         
         for ($i = 0; $i < count($this->tab); $i++) {
-            $top .= $this->ind.'        <button class="pButton-outline" id="'.$this->name.'_bt_'.$this->tab[$i].'" onClick="'.$this->name.'.showTab(\''.$this->tab[$i].'\')">'.$this->tabLabel[$i].'</button>'."\n";
+            $top .= $this->ind.'        <button class="pButton-outline" id="'.$this->getObjName().'_bt_'.$this->tab[$i].'" onClick="'.$this->getObjName().'.showTab(\''.$this->tab[$i].'\')">'.$this->tabLabel[$i].'</button>'."\n";
         }
         
         $top .= $this->ind.'    </legend>'."\n";
@@ -170,7 +147,7 @@ class PrumoTab
     {
         for ($i = 0; $i < count($this->tab); $i++) {
             if ($this->tabLabel[$i] == $tabLabel) {
-                $html = $this->ind.'        <div id="'.$this->name.'_tab_'.$this->tab[$i].'" style="display:none">'."\n";
+                $html = $this->ind.'        <div id="'.$this->getObjName().'_tab_'.$this->tab[$i].'" style="display:none">'."\n";
             }
         }
         
@@ -210,7 +187,7 @@ class PrumoTab
     {
         $js = ''."\n";
         $js .= $this->ind.'<script type="text/javascript">'."\n";
-        $js .= $this->ind.'    '.$this->name.'.showTab(\''.$tabName.'\');'."\n";
+        $js .= $this->ind.'    '.$this->getObjName().'.showTab(\''.$tabName.'\');'."\n";
         $js .= $this->ind.'</script>'."\n";
         
         if ($verbose) {
