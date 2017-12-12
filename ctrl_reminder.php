@@ -51,7 +51,7 @@ $sql .= "        WHEN repeat_interval='months' THEN 'mêses' "."\n";
 $sql .= "        WHEN repeat_interval = 'years' THEN 'anos' "."\n";
 $sql .= "        ELSE 'desconhecido' "."\n";
 $sql .= '    END as repeat'."\n";
-$sql .= 'FROM ' . $pConnectionPrumo->getSchema() . 'reminder'."\n";
+$sql .= 'FROM ' . $pConnectionPrumo->getSchema($GLOBALS['pConfig']['loginSchema_prumo']) . 'reminder'."\n";
 $sql .= 'WHERE username=' . pFormatSql($username, 'string');
 $crudReminder->pCrudList->setSqlSearch($sql);
 

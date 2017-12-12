@@ -96,6 +96,31 @@ CREATE TABLE prumo_update_framework
    PRIMARY KEY (file_name)
 );
 
+CREATE TABLE prumo_reminder
+(
+	id integer PRIMARY KEY AUTOINCREMENT,
+	event VARCHAR(30) NOT NULL,
+	description VARCHAR NOT NULL,
+	reminder_date DATE NOT NULL,
+	repeat_every integer,
+	repeat_interval VARCHAR(10),
+	username VARCHAR(30),
+	last_seen DATE NOT NULL DEFAULT CURRENT_DATE,
+	FOREIGN KEY (username) REFERENCES prumo_syslogin (username) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE prumo_active_reminder
+(
+	id integer PRIMARY KEY NOT NULL,
+	reminder_date DATE NOT NULL,
+	show_at DATETIME NOT NULL,
+	FOREIGN KEY (id) REFERENCES prumo_reminder (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+INSERT INTO prumo_routines (routine,enabled,audit,type) VALUES ('prumo_reminders','t','f','view');
+UPDATE prumo_routines SET routine='prumo_reminders',link='prumo/view_reminder.php',description=NULL,menu_parent='prumo_system',menu_label='Lembretes',menu_icon='prumo/images/icons/reminder.png' WHERE routine='prumo_reminders';
+INSERT INTO prumo_routines_groups (routine,groupname,c,r,u,d) VALUES ('prumo_reminders','sysadmin','t','t','t','t');
+
 INSERT INTO prumo_routines (routine, enabled, type, menu_label, menu_icon, audit) VALUES ('prumo_system', 't', 'root_menu', 'SISTEMA', 'prumo/images/icons/example.png', 'f');
 INSERT INTO prumo_routines (routine, enabled, type, menu_parent, menu_label, menu_icon, audit) VALUES ('prumo_access_control', 't', 'root_menu', 'prumo_system', 'Controle de Acesso', 'prumo/images/icons/example.png', 'f');
 

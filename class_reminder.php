@@ -25,7 +25,7 @@ class Reminder
     public function __construct ($connection)
     {
         $this->setConnection($connection);
-        $this->schema = $GLOBALS['pConfig']['loginSchema_prumo'];
+        $this->schema = $this->pConnection->getSchema($GLOBALS['pConfig']['loginSchema_prumo']);
         $this->activeUser = $GLOBALS['prumoGlobal']['currentUser'];
     }
     
@@ -50,29 +50,29 @@ class Reminder
         
         $sql  = 'SELECT' . "\n";
         $sql .= '    r.id' . "\n";
-        $sql .= 'FROM ' . $this->schema . '.reminder r' . "\n";
+        $sql .= 'FROM ' . $this->schema . 'reminder r' . "\n";
         $sql .= "JOIN generate_series(r.reminder_date, now()::date, (r.repeat_every || ' ' || r.repeat_interval)::interval) as g(datas) ON datas::date=now()::date" . "\n";
         $sql .= 'WHERE repeat_every IS NOT NULL AND last_seen!=now()::date' . $whereId . ' AND username=' . pFormatSql($this->activeUser, 'string') . "\n";
         $sql .= 'UNION' . "\n";
         $sql .= 'SELECT ' . "\n";
         $sql .= '    r.id' . "\n";
-        $sql .= 'FROM ' . $this->schema . '.reminder r' . "\n";
+        $sql .= 'FROM ' . $this->schema . 'reminder r' . "\n";
         $sql .= 'WHERE repeat_every IS NULL AND last_seen!=now()::date AND r.reminder_date=now()::date ' . $whereId . ' AND username=' . pFormatSql($this->activeUser, 'string') . "\n";
         
         $reminders = $this->pConnection->sql2Array($sql);
         
         foreach ($reminders as $reminder) {
             
-            $sql = 'SELECT count(*) FROM ' . $this->schema . '.active_reminder WHERE id=' . pFormatSql($reminder['id'], 'integer');
+            $sql = 'SELECT count(*) FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($reminder['id'], 'integer');
             $reminderExists = (bool) (int) $this->pConnection->sqlQuery($sql);
             
             if ($reminderExists) {
-                $sql  = 'UPDATE ' . $this->schema . '.active_reminder SET ' . "\n";
+                $sql  = 'UPDATE ' . $this->schema . 'active_reminder SET ' . "\n";
                 $sql .= 'reminder_date=now()::date,' . "\n";
                 $sql .= 'show_at=now()' . "\n";
                 $sql .= 'WHERE id=' . pFormatSql($reminder['id'], 'integer');
             } else {
-                $sql  = 'INSERT INTO ' . $this->schema . '.active_reminder (id, reminder_date, show_at) VALUES (';
+                $sql  = 'INSERT INTO ' . $this->schema . 'active_reminder (id, reminder_date, show_at) VALUES (';
                 $sql .= '    ' . pFormatSql($reminder['id'], 'integer') . ',' . "\n";
                 $sql .= '    now()::date,' . "\n";
                 $sql .= '    now()' . "\n";
@@ -81,7 +81,7 @@ class Reminder
             
             $this->pConnection->sqlQuery($sql);
             
-            $sql = 'UPDATE ' . $this->schema . '.reminder SET last_seen=now() WHERE id=' . pFormatSql($reminder['id'], 'integer');
+            $sql = 'UPDATE ' . $this->schema . 'reminder SET last_seen=now() WHERE id=' . pFormatSql($reminder['id'], 'integer');
             $this->pConnection->sqlQuery($sql);
         }
     }
@@ -102,8 +102,8 @@ class Reminder
         $sql .= '    r.id,' . "\n";
         $sql .= '    r.event,' . "\n";
         $sql .= '    r.description' . "\n";
-        $sql .= 'FROM ' . $this->schema . '.active_reminder ar' . "\n";
-        $sql .= 'JOIN ' . $this->schema . '.reminder r ON ar.id=r.id' . "\n";
+        $sql .= 'FROM ' . $this->schema . 'active_reminder ar' . "\n";
+        $sql .= 'JOIN ' . $this->schema . 'reminder r ON ar.id=r.id' . "\n";
         $sql .= 'WHERE r.username=' . pFormatSql($this->activeUser, 'string') . $whereId . "\n";
         $sql .= 'AND ar.reminder_date=now()::date AND ar.show_at <= now()';
         
@@ -116,27 +116,35 @@ class Reminder
         $html .= '        if (isNaN(response)) {' . PHP_EOL;
         $html .= '            alert(response);' . PHP_EOL;
         $html .= '        } else {' . PHP_EOL;
-        $html .= "            document.getElementById('event' + response).style.display = 'none';". PHP_EOL;
+        $html .= "            this.pWindow.hide();". PHP_EOL;
         $html .= '        }' . PHP_EOL;
         $html .= '    }'. PHP_EOL;
         $html .= '</script>' . PHP_EOL;
         
         $i = 0;
         foreach ($reminders as $reminder) {
-            $pWindowReminder = new prumoWindow('event' . $reminder['id']);
+            $pWindowReminder = new prumoWindow('pWindow_event' . $reminder['id']);
             $pWindowReminder->title = $reminder['event'];
-            $pWindowReminder->width = 200;
             
-            $content =  $reminder['description'] . '<br>' . PHP_EOL;
-            $content .= '<button class="pButton" onclick="event.preventDefault(); pAjaxReminder.goAjax(\'action=delete&id=' . $reminder['id'] . '\');">'._('Não mostrar novamente').'</button>' . PHP_EOL;
-            $content .= '<button class="pButton" onclick="event.preventDefault(); pAjaxReminder.goAjax(\'action=postpone&id=' . $reminder['id'] . '\');">'._('Mostrar novamente daqui 1 hora').'</button>' . PHP_EOL;
+            $content  = '<div style="text-align:center; padding: 25px; font-size: 16pt">' . PHP_EOL;
+            $content .= '   '.$reminder['description'] . '<br><br>' . PHP_EOL;
+            $content .= '   <button class="pButton" onclick="event.preventDefault(); btDelete_'.$reminder['id'].'_click()">'._('Não mostrar novamente').'</button>' . PHP_EOL;
+            $content .= '   <button class="pButton" onclick="event.preventDefault(); btPutOff_'.$reminder['id'].'_click()">'._('Mostrar novamente daqui 1 hora').'</button>' . PHP_EOL;
+            $content .= '   <button class="pButton" onclick="event.preventDefault(); pWindow_event' . $reminder['id'].'.hide()">'._('Apenas fechar esta tela').'</button>' . PHP_EOL;
+            $content .= '   ' . PHP_EOL;
+            $content .= '</div>' . PHP_EOL;
             
             $html .= $pWindowReminder->draw(false, $content) . PHP_EOL;
             $html .= '<script type="text/javascript">' . PHP_EOL;
-            $html .= "    document.getElementById('event" . $reminder['id'] . "').style.display = \"block\";" . PHP_EOL;
-            $html .= "    document.getElementById('event" . $reminder['id'] . "').style.position = \"absolute\";" . PHP_EOL;
-            $html .= "    document.getElementById('event" . $reminder['id'] . "').style.top = \"" . (30 + $i*100) . "px\";" . PHP_EOL;
-            $html .= "    document.getElementById('event" . $reminder['id'] . "').style.left = \"10px\";" . PHP_EOL;
+            $html .= '    pWindow_event' . $reminder['id'].'.show(1);' . PHP_EOL;
+            $html .= '    function btDelete_'.$reminder['id'].'_click() {' . PHP_EOL;
+            $html .= '        pAjaxReminder.pWindow = pWindow_event' . $reminder['id'] . ';' . PHP_EOL;
+            $html .= '        pAjaxReminder.goAjax(\'action=delete&id=' . $reminder['id'] . '\');' . PHP_EOL;
+            $html .= '    }' . PHP_EOL;
+            $html .= '    function btPutOff_'.$reminder['id'].'_click() {' . PHP_EOL;
+            $html .= '        pAjaxReminder.pWindow = pWindow_event' . $reminder['id'] . ';' . PHP_EOL;
+            $html .= '        pAjaxReminder.goAjax(\'action=postpone&id=' . $reminder['id'] . '\');' . PHP_EOL;
+            $html .= '    }' . PHP_EOL;
             $html .= '</script>' . PHP_EOL;
             
             $i++;
@@ -157,7 +165,7 @@ class Reminder
      */
     public function postponeActive ($id, $hours = 1)
     {
-        $sql  = 'UPDATE ' . $this->schema . '.active_reminder SET show_at=now()+ \'' . pFormatSql($hours, 'integer') . ' hours\'' . "\n";
+        $sql  = 'UPDATE ' . $this->schema . 'active_reminder SET show_at=now()+ \'' . pFormatSql($hours, 'integer') . ' hours\'' . "\n";
         $sql .= 'WHERE id=' . pFormatSql($id, 'integer');
         
         $this->pConnection->sqlQuery($sql);
@@ -170,7 +178,7 @@ class Reminder
      */
     public function deleteActive ($id)
     {
-        $sql = 'DELETE FROM ' . $this->schema . '.active_reminder WHERE id=' . pFormatSql($id, 'integer');
+        $sql = 'DELETE FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($id, 'integer');
         
         $this->pConnection->sqlQuery($sql);
     }
