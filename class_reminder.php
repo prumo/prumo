@@ -127,7 +127,7 @@ class Reminder
             $pWindowReminder->title = $reminder['event'];
             
             $content  = '<div style="text-align:center; padding: 25px; font-size: 16pt">' . PHP_EOL;
-            $content .= '   '.$reminder['description'] . '<br><br>' . PHP_EOL;
+            $content .= '   '. str_replace(PHP_EOL, '<br>', $reminder['description']) . '<br><br>' . PHP_EOL;
             $content .= '   <button class="pButton" onclick="event.preventDefault(); btDelete_'.$reminder['id'].'_click()">'._('Não mostrar novamente').'</button>' . PHP_EOL;
             $content .= '   <button class="pButton" onclick="event.preventDefault(); btPutOff_'.$reminder['id'].'_click()">'._('Mostrar novamente daqui 1 hora').'</button>' . PHP_EOL;
             $content .= '   <button class="pButton" onclick="event.preventDefault(); pWindow_event' . $reminder['id'].'.hide()">'._('Apenas fechar esta tela').'</button>' . PHP_EOL;
