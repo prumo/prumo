@@ -305,10 +305,10 @@ function pXmlAddParent($xml, $parent)
 /**
  * Pega o caminho de arquivos de acordo com o tema
  *
- * @param $fileName string: nome do arquivo inicial
- * @param $webPath string: local na web onde o arquivo está
+ * @param $fileName string nome do arquivo inicial
+ * @param $webPath  string local na web onde o arquivo está
  *
- * @return camindo do arquivo de acordo com o tema
+ * @return string caminho do arquivo de acordo com o tema
  */
 function pGetTheme($fileName, $webPath)
 {
