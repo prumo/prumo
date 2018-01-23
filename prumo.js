@@ -724,8 +724,18 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.stateChange('view');
                 this.parent.retrieveVirtual();
                 this.parent.afterUpdate();
+                for (var i in this.parent.son1x1) {
+                    if (this.parent.verifySon(i)) {
+                        this.parent.son1x1[i].afterUpdate();
+                    }
+                }
             } else if (this.cmd == 'fast_update') {
                 this.parent.afterUpdate();
+                for (var i in this.son1x1) {
+                    if (this.parent.verifySon(i)) {
+                        this.parent.son1x1[i].afterUpdate();
+                    }
+                }
                 this.parent.stateChange('list');
             } else if (this.cmd == 'delete') {
                 this.parent.afterDelete();
@@ -749,6 +759,9 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.visibleSon1x1();
             }
             
+            if (this.cmd != 'copyFrom') {
+                this.parent.resetFieldOldValue();
+            }
             this.parent.toggleFreezeControls(false);
         }
     }
@@ -791,7 +804,7 @@ function PrumoCrud(objName, ajaxFile)
         
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
         for (var i in this.son1x1) {
-            if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+            if (this.verifySon(i)) {
                 this.son1x1[i].retrieveVirtual();
             }
         }
@@ -828,7 +841,6 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         //limpa o array de valores
-        this.fieldOldValue = Array();
         this.fieldNewValue = Array();
         
         // laço que percorre os campos
@@ -859,7 +871,6 @@ function PrumoCrud(objName, ajaxFile)
                     value = format(this.fieldType[i], value, 'text');
                 }
                 
-                this.fieldOldValue[this.fieldName[i]] = value;
                 this.fieldNewValue[this.fieldName[i]] = value;
             }
             this.writeNewValues();
@@ -867,10 +878,37 @@ function PrumoCrud(objName, ajaxFile)
         
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
         for (var i in this.son1x1) {
-            if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+            if (this.verifySon(i)) {
                 this.son1x1[i].assignResponseXML(responseXML);
             }
         }
+    }
+    
+    this.resetFieldOldValue = function()
+    {
+        this.fieldOldValue = Array();
+        
+        for (var i in this.fieldName) {
+            this.fieldOldValue[this.fieldName[i]] = this.fieldNewValue[this.fieldName[i]];
+        }
+        
+        // Aplica o mesmo método recursivamente aos relacionamentos 1x1
+        for (var i in this.son1x1) {
+            if (this.verifySon(i)) {
+                this.son1x1[i].resetFieldOldValue();
+            }
+        }
+    }
+    
+    /**
+     * Verifica se as condições do crud filho estão satisfeitas
+     *
+     * @param i integer: indice do crud filho
+     *
+     * @return boolean
+     */
+    this.verifySon = function(i) {
+        return this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '';
     }
     
     this.clearSerials = function()
@@ -887,7 +925,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         this.readNewValues();
         for (var i in this.son1x1) {
-            if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+            if (this.verifySon(i)) {
                 this.son1x1[i].visibleForm(true);
             } else {
                 this.son1x1[i].visibleForm(false);
@@ -1116,7 +1154,7 @@ function PrumoCrud(objName, ajaxFile)
         
         for (iSon in this.son1x1) {
             if (this.son1x1[iSon].isVisible) {            
-                if (this.fieldNewValue[this.son1x1[iSon].parent1x1Condition['fieldName']] == this.son1x1[iSon].parent1x1Condition['value'] || this.son1x1[iSon].parent1x1Condition['fieldName'] == '') {
+                if (this.verifySon(iSon)) {
                     params += '&'+this.son1x1[iSon].paramCreate();
                 }
             }
@@ -1693,7 +1731,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         for (var i in this.son1x1) {
-            if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+            if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateType();
             }
         }
@@ -1716,7 +1754,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         for (var i in this.son1x1) {
-            if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') {
+            if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateNotNull();
             }
         }
