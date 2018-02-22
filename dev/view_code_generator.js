@@ -111,7 +111,7 @@ function classCode() {
 			}
 			
 			var newCode = "";
-			for (i in arrLine) {
+			for (var i in arrLine) {
 				if (newCode != '') {
 					newCode += "\n";
 				}
@@ -164,7 +164,7 @@ function classCode() {
 			}
 			
 			var newCode = "";
-			for (i in arrLine) {
+			for (var i in arrLine) {
 				if (newCode != '') {
 					newCode += "\n";
 				}
@@ -225,7 +225,7 @@ function classCode() {
 		document.getElementById('prumo_autoclick').checked = false;
 		document.getElementById('prumo_debug').checked = false;
 		
-		for (i in param) {
+		for (var i in param) {
 			var paramPart = explode('=',param[i]);
 			var paramName = paramPart[0].trim();
 			if (paramPart[1] == undefined) {
@@ -371,7 +371,7 @@ function classCode() {
 		document.getElementById('prumo_field_unique').checked = false;
 		document.getElementById('prumo_field_nohtml').checked = false;
 		
-		for (i in param) {
+		for (var i in param) {
 			var paramPart = explode('=',param[i]);
 			var paramName = paramPart[0].trim();
 			var paramValue = '';
@@ -379,11 +379,11 @@ function classCode() {
 				paramValue = '';
 			}
 			else {
-				for (i=1; i < paramPart.length; i++) {
-					if (i > 1) {
+				for (var j=1; j < paramPart.length; j++) {
+					if (j > 1) {
 						paramValue += '=';
 					}
-					paramValue += paramPart[i].trim();
+					paramValue += paramPart[j].trim();
 				}
 			}
 						
@@ -487,7 +487,7 @@ function classCode() {
 		document.getElementById('prumo_search_obj_autofilter').checked = true;
 		document.getElementById('prumo_search_obj_debug').checked = false;
 		
-		for (i in param) {
+		for (var i in param) {
 			var paramPart = explode('=',param[i]);
 			var paramName = paramPart[0].trim();
 			if (paramPart[1] == undefined) {
@@ -554,7 +554,7 @@ function classCode() {
 		document.getElementById('prumo_search_field_pk').checked = false;
 		document.getElementById('prumo_search_field_visible').checked = true;
 		
-		for (i in param) {
+		for (var i in param) {
 			var paramPart = explode('=',param[i]);
 			var paramName = paramPart[0].trim();
 			if (paramPart[1] == undefined) {
@@ -680,7 +680,7 @@ function classCode() {
 		arrLine[lineIndex] = newTextLine;
 		
 		var newCode = "";
-		for (i in arrLine) {
+		for (var i in arrLine) {
 			if (newCode != '') {
 				newCode += "\n";
 			}
@@ -692,7 +692,7 @@ function classCode() {
 	
 	this.getLineIndex1x1 = function() {
 		var arrLine = explode("\n",this.textarea.value);
-		for (i in arrLine) {
+		for (var i in arrLine) {
 			if (arrLine[i].indexOf(this.objName+'->addParent1x1' ) > -1) {
 				return i;
 			}
@@ -704,7 +704,7 @@ function classCode() {
 		var lastLineObject = -1;
 		
 		var arrLine = explode("\n",this.textarea.value);
-		for (i in arrLine) {
+		for (var i in arrLine) {
 			var startLine = arrLine[i].trim().substr(1,this.objName.length);
 			if (startLine == this.objName && arrLine[i].indexOf('autoInit(') == -1) {
 				lastLineObject = i;
@@ -1042,7 +1042,7 @@ function classCode() {
 		
 		var objCount = 0;
 		var objCount = 0;
-		for (i in this.line) {
+		for (var i in this.line) {
 			if (this.line[i].indexOf(' = new ' ) > -1) {
 				objCount++;
 			}
@@ -1145,7 +1145,7 @@ function classCode() {
 		var cursorPosition = this.textarea.selectionStart;
 		var lineIndex = 0;
 		var position = 0;
-		for (i=0; i < text.length; i++) {
+		for (var i=0; i < text.length; i++) {
 			if (text.substr(i,1) == "\n") {
 				if (cursorPosition >= position && cursorPosition <= i) {
 					return lineIndex;
@@ -1160,7 +1160,7 @@ function classCode() {
 	
 	this.getLine = function(lineIndex) {
 		this.line = explode("\n",this.textarea.value);
-		return this.line[lineIndex];
+		return this.line[lineIndex] == undefined ? '' : this.line[lineIndex];
 	}
 	
 	this.getLineCursor = function() {

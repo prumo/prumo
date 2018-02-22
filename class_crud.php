@@ -1287,9 +1287,10 @@ class PrumoCrud extends PrumoBasic
         for ($i = 0; $i < count($fileList); $i++) {
             
             $info = pathinfo($fileList[$i]);
+            $extension = isset($info['extension']) ? $info['extension'] : '';
             
             //apenas arquivos .php
-            if (strtolower($info['extension']) == 'php' and $info['basename'] != 'index.php' and $info['basename'] != 'prumo.php') {
+            if (strtolower($extension) == 'php' and $info['basename'] != 'index.php' and $info['basename'] != 'prumo.php') {
                 $fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
                 
                 // verifica se o arquivo inicializa o objeto informado
@@ -1515,7 +1516,11 @@ class PrumoCrud extends PrumoBasic
                         
                         // addFieldReturn para o campo que possui o botão search
                         if (isset($this->field[$i]['search'])) {
-                            $form .= '$'.$pSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\',\''.$this->field[$i]['fieldid'].'\');'."\n";
+                            if ($this->field[$i]['name'] == $this->field[$i]['fieldid']) {
+                                $form .= '$'.$pSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\');'."\n";
+                            } else {
+                                $form .= '$'.$pSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\',\''.$this->field[$i]['fieldid'].'\');'."\n";
+                            }
                             $lastSearch = $this->field[$i]['search'];
                         }
                     } else {
@@ -1525,7 +1530,11 @@ class PrumoCrud extends PrumoBasic
                 
                 // addFieldReturn para campos virtuais
                 if ($withPhpCode and $this->field[$i]['virtual']) {
-                    $form .= '$'.$lastSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\',\''.$this->field[$i]['fieldid'].'\');'."\n";
+                    if ($this->field[$i]['name'] = $this->field[$i]['fieldid']) {
+                        $form .= '$'.$lastSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\');'."\n";
+                    } else {
+                        $form .= '$'.$lastSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\',\''.$this->field[$i]['fieldid'].'\');'."\n";
+                    }
                 }
             }
             

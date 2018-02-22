@@ -1368,7 +1368,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         
         for (var i=0; i < this.sonSearch.length; i++) {
-            document.getElementById(this.sonSearch[i].objName+'Bt').removeAttribute('disabled');
+            document.getElementById(this.sonSearch[i].objName+'Bt').setAttribute('disabled','disabled')
         }
         
         var fieldCount = this.fieldId.length;
@@ -1380,7 +1380,7 @@ function PrumoCrud(objName, ajaxFile)
             
             inputField.removeAttribute('title');
             
-            if (this.parent1x1 == false || !this.fieldPk[i]) {
+            if (this.parent1x1 == false || ! this.fieldPk[i]) {
                 
                 if (this.fieldType[i] != 'serial' && this.fieldReadonly[i] == false && (this.state != 'list' || this.fieldNoUpdate[i] == false)) {
                     
@@ -1393,11 +1393,11 @@ function PrumoCrud(objName, ajaxFile)
                     if (inputFastUpdate != undefined) {
                         inputFastUpdate.removeAttribute('disabled');
                     }
-                } else {
                     
                     if (inputField.pSearch != undefined) {
-                        document.getElementById(inputField.pSearch.objName+'Bt').setAttribute('disabled','disabled');
+                        document.getElementById(inputField.pSearch.objName+'Bt').removeAttribute('disabled');
                     }
+                } else {
                     
                     inputField.setAttribute('disabled','disabled');
                     
