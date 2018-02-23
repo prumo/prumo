@@ -1382,7 +1382,7 @@ function PrumoCrud(objName, ajaxFile)
             
             if (this.parent1x1 == false || ! this.fieldPk[i]) {
                 
-                if (this.fieldType[i] != 'serial' && this.fieldReadonly[i] == false && (this.state != 'list' || this.fieldNoUpdate[i] == false)) {
+                if (this.fieldType[i] != 'serial' && this.fieldReadonly[i] == false && (this.state != 'edit' || this.fieldNoUpdate[i] == false)) {
                     
                     inputField.removeAttribute('disabled');
                     
