@@ -1412,6 +1412,21 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
+        //desativa search que não tem ligação com nenhum campo
+        for (var i=0; i < this.sonSearch.length; i++) {
+            var linkInput = false;
+            for (var j=0; j < fieldCount; j++) {
+                var inputField = document.getElementById(this.fieldId[j]);
+                if (inputField.pSearch != undefined && inputField.pSearch.objName == this.sonSearch[i].objName) {
+                    linkInput = true;
+                }
+            }
+            
+            if (! linkInput) {
+                document.getElementById(this.sonSearch[i].objName+'Bt').removeAttribute('disabled');
+            }
+        }
+        
         this.formFocus();
     }
     
