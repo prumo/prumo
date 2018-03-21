@@ -133,7 +133,7 @@ class PrumoCrudList extends PrumoSearch
             $onClick = $this->pFilter->btNew = $this->param['crudname'].'.bt_new()';
             return $this->ind.'                    <button class="pButton" id="'.$this->name.'_btNew" onclick="'.$onClick.'">'._('Inserir Novo').'</button>'."\n";
         } else {
-            return 'aa';
+            return '';
         }
     }
     
