@@ -752,7 +752,9 @@ class PrumoCrud extends PrumoBasic
             $iParent = 0;
             foreach ($serialsParent as $keyParent => $valueParent) {
                 
-                $serials[$childParent[$iParent]] = $valueParent;
+                if (isset($childParent[$iParent])) {
+                    $serials[$childParent[$iParent]] = $valueParent;
+                }
                 $iParent++;
             }
         }
