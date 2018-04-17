@@ -16,8 +16,6 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
-
 $urlHttps = 'https://'.$_SERVER["HTTP_HOST"].$GLOBALS['pConfig']['appWebPath'];
 $urlHttpsTest = 'https://'.$_SERVER["HTTP_HOST"].$GLOBALS['pConfig']['prumoWebPath'].'/ctrl_login.php';
 if ($pConfig['preferHttps'] && $_SERVER["REQUEST_SCHEME"] == 'http' && file_get_contents($urlHttpsTest) !== false) {
@@ -44,6 +42,8 @@ $html = str_replace(':inputPassword:', $inputPassword, $html);
 $html = str_replace(':submit:', $inputSubmit, $html);
 
 echo $html;
+
+require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
 ?>
 
 <script type="text/javascript">
