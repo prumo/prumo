@@ -498,11 +498,13 @@ class PrumoSearch extends PrumoBasic
      */
     public function setSqlSearch($sql)
     {
-        $this->fixedSqlSearch = $sql;
-        
-        for ($i = 0; $i < $this->fieldCount(); $i++) {
-            $this->field[$i]['sqlname'] = 'fixed.'.$this->field[$i]['sqlname'];
+        if ($this->fixedSqlSearch == '') {
+            for ($i = 0; $i < $this->fieldCount(); $i++) {
+                $this->field[$i]['sqlname'] = 'fixed.'.$this->field[$i]['sqlname'];
+            }
         }
+        
+        $this->fixedSqlSearch = $sql;
     }
     
     /**
