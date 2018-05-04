@@ -1885,6 +1885,7 @@ function PrumoCrud(objName, ajaxFile)
         this.backToForms();
         this.stateChange('new');
         this.visibleSon1x1();
+        this.retrieveVirtual();
     }
     
     this.bt_list = function()

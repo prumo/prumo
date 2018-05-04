@@ -1643,7 +1643,7 @@ class PrumoCrud extends PrumoBasic
         
         if ($this->param['autoclear']) {
             $controls .= $ind.'<script type="text/javascript">'."\n";
-            $controls .= $ind.'    '.$this->name.'.bt_new();'."\n";
+            $controls .= $ind.'    window.onload = function() { '.$this->name.'.bt_new(); }'."\n";
             $controls .= $ind.'</script>'."\n";
         }
         
