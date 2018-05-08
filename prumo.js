@@ -644,7 +644,7 @@ function PrumoCrud(objName, ajaxFile)
     this.objName = objName;
     this.modal;
     this.identification = objName;
-    this.state = 'new'; //suport new, edit, view, list
+    this.state = 'new'; //suport new, edit, view, list, copy
     
     this.fieldName;
     this.fieldPk;
@@ -689,7 +689,7 @@ function PrumoCrud(objName, ajaxFile)
         if (status == 'err') {
             var msg = this.responseXML.getElementsByTagName('msg')[0].firstChild.nodeValue;
             alert(msg);
-            if (this.parent.state == 'list' || this.parent.state == 'edit' || this.parent.state == 'new') {
+            if (this.parent.state == 'list' || this.parent.state == 'edit' || this.parent.state == 'new' || this.parent.state == 'copy') {
                 this.parent.unFreezeFields();
                 this.parent.toggleFreezeControls(false);
             }
@@ -1596,9 +1596,6 @@ function PrumoCrud(objName, ajaxFile)
         if (newState == 'new' || newState == 'copy') {
             if (newState == 'new') {
                 this.clear();
-            }
-            if (newState == 'copy') {
-                this.state = 'new';
             }
             this.unFreezeFields();
             if (this.parent1x1 == false) {
