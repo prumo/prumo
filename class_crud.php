@@ -106,6 +106,13 @@ class PrumoCrud extends PrumoBasic
             $this->permission = 'crud';
         }
         
+        // parametro autoclear serve para limpar o formulário quando desenha os controles
+        if (isset($this->param['autoclear'])) {
+            $this->param['autoclear'] = $this->param['autoclear'] == 'true';
+        } else {
+            $this->param['autoclear'] = false;
+        }
+        
         // audit
         if (isset($this->param['audit'])) {
             $this->audit = $this->param['audit'] === 'false' ? false : true;
@@ -1610,27 +1617,35 @@ class PrumoCrud extends PrumoBasic
         $permU = $this->getPermission('u') ? '' : ' style="display:none;"';
         $permD = $this->getPermission('d') ? '' : ' style="display:none;"';
         
+        $ind = $this->ind.'                ';
+        
         $controls = "\n";
-        $controls .= $this->ind.'                <span id="'.$this->name.'_controls">'."\n";
-        $controls .= $this->ind.'                    <span id="'.$this->name.'_control_new" style="display:block;">'."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_write_new" '.$permC.' onclick="'.$this->name.'.bt_write_new()">'._('Gravar').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_copy_from" '.$permC.' onclick="'.$this->name.'.bt_copyFrom()">'._('Copiar de').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton warning" id="'.$this->name.'_bt_clear" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Limpar').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_search" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
-        $controls .= $this->ind.'                    </span>'."\n";
+        $controls .= $ind.'<span id="'.$this->name.'_controls">'."\n";
+        $controls .= $ind.'    <span id="'.$this->name.'_control_new" style="display:block;">'."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_write_new" '.$permC.' onclick="'.$this->name.'.bt_write_new()">'._('Gravar').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_copy_from" '.$permC.' onclick="'.$this->name.'.bt_copyFrom()">'._('Copiar de').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_clear" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Limpar').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_search" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
+        $controls .= $ind.'    </span>'."\n";
         
-        $controls .= $this->ind.'                    <span id="'.$this->name.'_control_edit" style="display:none;">'."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_write_edit" '.$permU.' onclick="'.$this->name.'.bt_write_edit()">'._('Gravar Alterações').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton warning" id="'.$this->name.'_bt_cancel_edit" '.$permU.' onclick="'.$this->name.'.bt_cancel_edit()">'._('Cancelar').'</button> '."\n";
-        $controls .= $this->ind.'                    </span>'."\n";
+        $controls .= $ind.'    <span id="'.$this->name.'_control_edit" style="display:none;">'."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_write_edit" '.$permU.' onclick="'.$this->name.'.bt_write_edit()">'._('Gravar Alterações').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_cancel_edit" '.$permU.' onclick="'.$this->name.'.bt_cancel_edit()">'._('Cancelar').'</button> '."\n";
+        $controls .= $ind.'    </span>'."\n";
         
-        $controls .= $this->ind.'                    <span id="'.$this->name.'_control_view" style="display:none;">'."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_search_view" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton warning" id="'.$this->name.'_bt_edit" '.$permU.' onclick="'.$this->name.'.bt_edit()">'._('Alterar').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton danger" id="'.$this->name.'_bt_delete" '.$permD.' onclick="'.$this->name.'.bt_delete()">'._('Excluir').'</button> '."\n";
-        $controls .= $this->ind.'                        <button class="pButton" id="'.$this->name.'_bt_new" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Inserir Novo').'</button> '."\n";
-        $controls .= $this->ind.'                    </span>'."\n";
-        $controls .= $this->ind.'                </span>'."\n";
+        $controls .= $ind.'    <span id="'.$this->name.'_control_view" style="display:none;">'."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_search_view" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_edit" '.$permU.' onclick="'.$this->name.'.bt_edit()">'._('Alterar').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton danger" id="'.$this->name.'_bt_delete" '.$permD.' onclick="'.$this->name.'.bt_delete()">'._('Excluir').'</button> '."\n";
+        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_new" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Inserir Novo').'</button> '."\n";
+        $controls .= $ind.'    </span>'."\n";
+        $controls .= $ind.'</span>'."\n";
+        
+        if ($this->param['autoclear']) {
+            $controls .= $ind.'<script type="text/javascript">'."\n";
+            $controls .= $ind.'    window.onload = function() { '.$this->name.'.bt_new(); }'."\n";
+            $controls .= $ind.'</script>'."\n";
+        }
         
         $controls .= "\n";
         

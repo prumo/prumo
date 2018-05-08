@@ -123,16 +123,39 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
             if ($valueNoInjection == '') {
                 return "NULL";
             } else {
-                $ano     = substr($valueNoInjection, 6, 4);
-                $mes     = substr($valueNoInjection, 3, 2);
-                $dia     = substr($valueNoInjection, 0, 2);
-                $hora    = substr($valueNoInjection, 11, 2);
-                $minuto  = substr($valueNoInjection, 14, 2);
-                $segundo = substr($valueNoInjection, 17, 2);
+                $ano     = trim(substr($valueNoInjection, 6, 4));
+                $mes     = trim(substr($valueNoInjection, 3, 2));
+                $dia     = trim(substr($valueNoInjection, 0, 2));
+                $hora    = trim(substr($valueNoInjection, 11, 2));
+                $minuto  = trim(substr($valueNoInjection, 14, 2));
+                $fuso    = '';
+                
+                if (substr($valueNoInjection, 16, 1) == ':') {
+                    $segundo = trim(substr($valueNoInjection, 17, 2));
+                    $fuso = trim(substr($valueNoInjection, 19));
+                }
+                else {
+                    $segundo = '';
+                    $fuso = trim(substr($valueNoInjection, 16));
+                }
+                
+                $fuso = in_array(substr($fuso, 0, 1), array('+', '-')) ? substr($fuso, 0, 1) . str_replace("'", '', pFormatSql(substr($fuso, 1), 'time')) : '';
+                
                 if (empty($hora)) $hora = '00';
                 if (empty($minuto)) $minuto = '00';
                 if (empty($segundo)) $segundo = '00';
-                return pAddQuote("$ano-$mes-$dia $hora:$minuto:$segundo", true);
+                
+                if (strlen($hora) == 1) {
+                    $hora = '0'.$hora;
+                }
+                if (strlen($minuto) == 1) {
+                    $minuto = '0'.$minuto;
+                }
+                if (strlen($segundo) == 1) {
+                    $segundo = '0'.$segundo;
+                }
+                
+                return pAddQuote("$ano-$mes-$dia $hora:$minuto:$segundo$fuso", true);
             }
         break;
 
