@@ -2211,7 +2211,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     }
     
     /**
-     * Evento do botão (-) do filtro
+     * Evento do botão (+) do filtro
      */
     this.cmdAddFilter = function(filterIndex)
     {
