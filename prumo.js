@@ -655,6 +655,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.fieldOldValue = Array();
     this.fieldNewValue = Array();
+    this.fieldAutoClearValue = Array();
     this.sonSearch = Array();
     
     this.pAjax;
@@ -1874,11 +1875,53 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
     
+    this.readAutoClearValues = function()
+    {
+        for (var i in this.fieldName) {
+            inputField = document.getElementById(this.fieldId[i]);
+            if (inputField.getAttribute('type') == 'checkbox') {
+                if (inputField.checked) {
+                    this.fieldAutoClearValue[this.fieldName[i]] = 't';
+                } else {
+                    this.fieldAutoClearValue[this.fieldName[i]] = 'f';
+                }
+            } else {
+                this.fieldAutoClearValue[this.fieldName[i]] = inputField.value;
+            }
+        }
+        
+        for (var i in this.son1x1) {
+            this.son1x1[i].readAutoClearValues();
+        }
+    }
+    
+    this.writeAutoClearValues = function()
+    {
+        for (var i in this.fieldName) {
+            inputField = document.getElementById(this.fieldId[i]);
+            if (inputField.getAttribute('type') != 'checkbox') {
+                if (this.fieldAutoClearValue[this.fieldName[i]] != '') {
+                    inputField.value = this.fieldAutoClearValue[this.fieldName[i]];
+                }
+            }
+        }
+        
+        for (var i in this.son1x1) {
+            this.son1x1[i].writeAutoClearValues();
+        }
+    }
+    
+    this.autoClear = function() {
+        this.backToForms();
+        this.readAutoClearValues();
+        this.stateChange('new');
+        this.writeAutoClearValues();
+        this.visibleSon1x1();
+        this.retrieveVirtual();
+    }
+    
     this.bt_new = function()
     {
-        if (this.pCrudList) {
-            this.pCrudList.hide();
-        }
         this.backToForms();
         this.stateChange('new');
         this.visibleSon1x1();
