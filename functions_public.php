@@ -50,18 +50,13 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
     switch ($type) {
         
         case "string":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
-        break;
-        
         case "text":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
-        break;
-        
         case "longtext":
             return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "integer":
+        case "serial":
             return $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
         break;
         
@@ -78,7 +73,10 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                     
                     $char = $valueNoInjection[$i];
                     
-                    if ($char == '.' or $char == ',') {
+                    if (in_array($char, array('+', '-'))) {
+                        $delimiterFound = false;
+                        $newNum = $char . $newNum;
+                    } elseif (in_array($char, array('.', ','))) {
                         
                         if (! $delimiterFound) {
                             $newNum = '.' . $newNum;
@@ -93,10 +91,6 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                 
                 return "$valueNoInjection";
             }
-        break;
-        
-        case "serial":
-            return $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
         break;
         
         case "date":

@@ -320,11 +320,11 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
         
         case "integer":
         case "serial":
-            $valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
+            $valueNoInjection = preg_replace("/[^0-9\-\+]/", "", $valueNoInjection);
         break;
         
         case "numeric":
-            $valueNoInjection = preg_replace("/[^0-9.\,\-]/", "", $valueNoInjection);
+            $valueNoInjection = preg_replace("/[^0-9\.\,\-\+]/", "", $valueNoInjection);
         break;
         
         case "date":

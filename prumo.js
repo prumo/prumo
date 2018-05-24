@@ -179,8 +179,8 @@ function isTime(value)
  */
 function prumoIsType(value, type)
 {
-    var regexInteger = /^-?[0-9]+$/;
-    var regexFloat = /^-?\d*\.?\,?\d*$/;
+    var regexInteger = /^-?[0-9]*[+-]*?[0-9]$/;
+    var regexFloat = /^-?[0-9]*[.,]*?[0-9]*[+-]?[0-9]*[.,]*?[0-9]$/;
     
     var isValid = true;
     
