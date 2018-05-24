@@ -185,7 +185,6 @@ class PrumoConnection
                 $sqlLog .= '    '.pFormatSql($method, 'string').','."\n";
                 $sqlLog .= '    '.pFormatSql($sql, 'string')."\n";
                 $sqlLog .= ');'."\n";
-                $sqlLog = str_replace("\'", "''", $sqlLog);
                 
                 $pConnectionPrumo->sqlQuery($sqlLog, true);
             }

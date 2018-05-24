@@ -297,7 +297,7 @@ function pParameters($params)
  * Parser para tratamento de Sql Injection
  *
  * @param $value string: o valor a ser tratado
- * @param $type string: o tipo de dado [string,text,longtext,integer,numeric,serial,date,time,timestamp,boolean]
+ * @param $type string: o tipo de dado [string,text,longtext,integer,serial,numeric,date,time,timestamp,boolean]
  *
  * @return string
  */
@@ -305,78 +305,42 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
 {
     $valueNoInjection = $value;
     
+    if (! in_array($type, array('string', 'text', 'longtext', 'integer', 'serial', 'numeric', 'date', 'time', 'timestamp', 'boolean'))) {
+        $msg = _('Prumo: Tipo "%type%" desconhecido em pSqlNoInjection!');
+        throw new Exception(str_replace('%type%', $type, $msg));
+    }
+    
     switch ($type) {
         
         case "string":
-            
-            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
-            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-        break;
-        
         case "text":
-            
-            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
-            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-        break;
-        
         case "longtext":
-            
-            $valueNoInjection = str_replace('\\', '\\\\', $valueNoInjection);
             $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
         
         case "integer":
-            
+        case "serial":
             $valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
         
         case "numeric":
-            
             $valueNoInjection = preg_replace("/[^0-9.\,\-]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-        break;
-        
-        case "serial":
-            
-            $valueNoInjection = preg_replace("/[^0-9\-]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
         
         case "date":
-            
             $valueNoInjection = preg_replace("/[^0-9\/]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
         
         case "time":
-            
             $valueNoInjection = preg_replace("/[^0-9:]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
         
         case "timestamp":
-            
             $valueNoInjection = preg_replace("/[^0-9\:\/\ -]/", "", $valueNoInjection);
-            
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
-        break;
-        
-        case "boolean":
-            return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
         break;
     }
+    
+    return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;
 }
 
 /**
@@ -462,7 +426,6 @@ function pAuditLog($routine, $objName, $sqlCommand, $crud)
     $sqlAuditLog .= '    '.pFormatSql($crud, 'string').','."\n";
     $sqlAuditLog .= '    '.pFormatSql($sqlCommand, 'string')."\n";
     $sqlAuditLog .= ');'."\n";
-    $sqlAuditLog = str_replace("\'", "''", $sqlAuditLog);
     
     $sqlOk = $pConnectionPrumo->sqlQuery($sqlAuditLog, true);
     
