@@ -24,7 +24,7 @@
  *
  * @return string: texto inicial acrecido de aspas quando $useQuote == true
  */
-function pAddQuote($value, $useQuote)
+function pAddQuote($value, $useQuote=true)
 {
     return $useQuote ? "'$value'" : $value;
 }
@@ -101,7 +101,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                 
                 if (pCheckDate($valueNoInjection, 'dd/mm/aaaa', 1000, 3000)) {
                     list ($dia, $mes, $ano) = preg_split ('/[\/\.-]+/', $valueNoInjection);
-                    return pAddQuote("$ano-$mes-$dia", true);
+                    return pAddQuote("$ano-$mes-$dia");
                 } else {
                     return "NULL";
                 }
@@ -109,7 +109,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
         break;
         
         case "time":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, true);
+            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection);
         break;
         
         case "timestamp":
@@ -149,7 +149,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                     $segundo = '0'.$segundo;
                 }
                 
-                return pAddQuote("$ano-$mes-$dia $hora:$minuto:$segundo$fuso", true);
+                return pAddQuote("$ano-$mes-$dia $hora:$minuto:$segundo$fuso");
             }
         break;
 

@@ -347,22 +347,28 @@ class PrumoMenu
         return $htmlMenu;
     }
     
-    function openNodeXml($ind, $start, $node)
+    /**
+     * Gera codigo de abertura de um node XML
+     *
+     * @param $start string: inicio do node
+     * @param $node string: conteudo
+     */
+    function openNodeXml($start, $node)
     {
         $id = str_replace(' ','_',$node['menu_label']);
         $id = strtolower($id);
-        $xmlReturn = $ind.$start.' id="'.$id.'" label="'._($node['menu_label']).'">'."\n";
+        $xmlReturn = $start.' id="'.$id.'" label="'._($node['menu_label']).'">';
         if ($node['routine'] != '' and $node['childs'] == 0) {
             if (isset($node['link'])) {
                 $explode = explode(':',$node['link']);
                 $protocol = $explode[0];
                 if ($protocol == 'http') {
-                    $xmlReturn .= $ind.'    <link>'.$node['link'].'</link>'."\n";
+                    $xmlReturn .= '<link>'.$node['link'].'</link>';
                 } else {
-                    $xmlReturn .= $ind.'    <link>index.php?page='.$node['routine'].'</link>'."\n";
+                    $xmlReturn .= '<link>index.php?page='.$node['routine'].'</link>';
                 }
             } else {
-                $xmlReturn .= $ind.'    <link>index.php?page='.$node['routine'].'</link>'."\n";
+                $xmlReturn .= '<link>index.php?page='.$node['routine'].'</link>';
             }
         }
         return $xmlReturn;
@@ -372,6 +378,8 @@ class PrumoMenu
      * Gera um XML com os dados do menu pegando do banco de dados
      *
      * @return string: xml com os dados do menu
+     *
+     * @return string: texto montado
      */
     public function dbXml()
     {
@@ -399,70 +407,70 @@ class PrumoMenu
         $sql .= 'AND s.username='.pFormatSql($prumoGlobal['currentUser'], 'string')."\n";
         $sql .= 'GROUP BY r.menu_parent,r.menu_label,r.routine,r.menu_icon,r.link'."\n";
         $sql .= 'ORDER BY r.menu_label'."\n";
-        $sql .= ';'."\n";
+        $sql .= ';';
         
         $sqlResult = $pConnectionPrumo->sql2Array($sql);
         
-        $xml = '<PrumoMenu>'."\n";
+        $xml = '<PrumoMenu>';
         
         for ($l1=0; $l1 < count($sqlResult); $l1++) {
             if ($sqlResult[$l1]['menu_parent'] == '') {
                 $l1Cod = $sqlResult[$l1]['routine'];
-                $xml .= $this->openNodeXml('    ','<menu',$sqlResult[$l1]);
+                $xml .= $this->openNodeXml('<menu',$sqlResult[$l1]);
                 
                 for ($l2=0; $l2 < count($sqlResult); $l2++) {
                     if ($sqlResult[$l2]['menu_parent'] != '' and $sqlResult[$l2]['menu_parent'] == $l1Cod) {
                         $l2Cod = $sqlResult[$l2]['routine'];
-                        $xml .= $this->openNodeXml('        ','<level1',$sqlResult[$l2]);
+                        $xml .= $this->openNodeXml('<level1',$sqlResult[$l2]);
                         
                         for ($l3=0; $l3 < count($sqlResult); $l3++) {
                             if ($sqlResult[$l3]['menu_parent'] != '' and $sqlResult[$l3]['menu_parent'] == $l2Cod) {
                                 $l3Cod = $sqlResult[$l3]['routine'];
-                                $xml .= $this->openNodeXml('            ','<level2',$sqlResult[$l3]);
+                                $xml .= $this->openNodeXml('<level2',$sqlResult[$l3]);
                                 
                                 for ($l4=0; $l4 < count($sqlResult); $l4++) {
                                     if ($sqlResult[$l4]['menu_parent'] != '' and $sqlResult[$l4]['menu_parent'] == $l3Cod) {
                                         $l4Cod = $sqlResult[$l4]['routine'];
-                                        $xml .= $this->openNodeXml('                ','<level3',$sqlResult[$l4]);
+                                        $xml .= $this->openNodeXml('<level3',$sqlResult[$l4]);
                                         
                                         for ($l5=0; $l5 < count($sqlResult); $l5++) {
                                             if ($sqlResult[$l5]['menu_parent'] != '' and $sqlResult[$l5]['menu_parent'] == $l4Cod) {
                                                 $l5Cod = $sqlResult[$l5]['routine'];
                                                 
-                                                $xml .= $this->openNodeXml('                    ','<level4',$sqlResult[$l5]);
+                                                $xml .= $this->openNodeXml('<level4',$sqlResult[$l5]);
                                                 if ($sqlResult[$l5]['menu_icon'] != '') {
-                                                    $xml .= '        <icon>'.$sqlResult[$l5]['menu_icon'].'</icon>'."\n";
+                                                    $xml .= '<icon>'.$sqlResult[$l5]['menu_icon'].'</icon>';
                                                 }
-                                                $xml .= '                    </level4>'."\n";
+                                                $xml .= '</level4>';
                                             }
                                         }
                                         if ($sqlResult[$l4]['menu_icon'] != '') {
-                                            $xml .= '        <icon>'.$sqlResult[$l4]['menu_icon'].'</icon>'."\n";
+                                            $xml .= '<icon>'.$sqlResult[$l4]['menu_icon'].'</icon>';
                                         }
-                                        $xml .= '                </level3>'."\n";
+                                        $xml .= '</level3>';
                                     }
                                 }
                                 if ($sqlResult[$l3]['menu_icon'] != '') {
-                                    $xml .= '        <icon>'.$sqlResult[$l3]['menu_icon'].'</icon>'."\n";
+                                    $xml .= '<icon>'.$sqlResult[$l3]['menu_icon'].'</icon>';
                                 }
-                                $xml .= '            </level2>'."\n";
+                                $xml .= '</level2>';
                             }
                         }
                         if ($sqlResult[$l2]['menu_icon'] != '') {
-                            $xml .= '        <icon>'.$sqlResult[$l2]['menu_icon'].'</icon>'."\n";
+                            $xml .= '<icon>'.$sqlResult[$l2]['menu_icon'].'</icon>';
                         }
-                        $xml .= '        </level1>'."\n";
+                        $xml .= '</level1>';
                     }
                 }
                 
                 if ($sqlResult[$l1]['menu_icon'] != '') {
-                    $xml .= '        <icon>'.$sqlResult[$l1]['menu_icon'].'</icon>'."\n";
+                    $xml .= '<icon>'.$sqlResult[$l1]['menu_icon'].'</icon>';
                 }
-                $xml .= '    </menu>'."\n";
+                $xml .= '</menu>';
             }
         }
         
-        $xml .= '</PrumoMenu>'."\n";
+        $xml .= '</PrumoMenu>';
         return $xml;
     }
 }

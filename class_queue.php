@@ -47,7 +47,7 @@ class PrumoQueue extends PrumoSearch
     }
     
     /**
-     * Gera o código completo
+     * Gera o código completo no lado do cliente
      *
      * @param $verbose boolean: quando true imprime o código gerado
      *
@@ -90,76 +90,19 @@ class PrumoQueue extends PrumoSearch
     }
     
     /**
-     * Adiciona um filtro na pesquisa
-     *
-     * @param $field string: nome do campo
-     * @param $operator string: operador lógico
-     * @param $value string: valor do campo
-     * @param $visible boolean: indica se o filtro deve aparecer na view
-     */
-    public function addFilter($field, $operator, $value, $visible)
-    {
-        $booVisible = $visible == false ? 'false' : 'true';
-        
-        echo '<script type="text/javascript">'."\n";
-        echo '    '.$this->name.'.pFilter.addFilter(null,\''.$field.'\',\''.$operator.'\',\''.$value.'\',\'\','.$booVisible.');'."\n";
-        echo '    '.$this->name.'.pFilter.draw();'."\n";
-        echo '</script>'."\n";
-    }
-    
-    /**
      * Inicializa o objeto no lado do cliente
      *
      * @return string: código gerado
      */
     protected function initClientObject()
     {
-        // instancia o objeto PrumoSearch no cliente
         $clientObject = $this->ind. '<script type="text/javascript">'."\n";
         $clientObject .= $this->ind. '    '.$this->name.' = new PrumoQueue(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
-        
-        // repassa condicionalmente o pog debug para o objeto ajax
         if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
         }
-        
         $clientObject .= $this->ind. '</script>'."\n";
         
         return $clientObject;
-    }
-    
-    /**
-     * Adiciona um campo
-     *
-     * @param $params array: array com os parâmetros do campo
-     */
-    public function addField($params)
-    {
-        parent::addField($params);
-        
-        $param = pParameters($params);
-        if (! isset($this->param['priorityfield']) or $this->param['priorityfield'] == '') {
-            $this->param['priorityfield'] = $param['name'];
-        }
-    }
-    
-    /**
-     * Define o campo de ordenação da consulta
-     *
-     * @param $orderby string: nome do campo de ordenação
-     */
-    public function setOrderby($orderby)
-    {
-        $this->orderby = $orderby;
-    }
-    
-    /**
-     * Gera o código SQL da ordenação da consulta
-     *
-     * @return string: SQL da ordenação da consulta
-     */
-    public function sqlOrderby()
-    {
-        return $this->orderby == '' ? ' ORDER BY ' .$this->param['priorityfield']: ' ORDER BY ' .$this->param['priorityfield'] . ',' . $this->orderby;
     }
 }

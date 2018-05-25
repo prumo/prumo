@@ -1587,7 +1587,7 @@ class PrumoCrud extends PrumoBasic
         for ($i = 0; $i < count($this->field); $i++) {
             
             if ($this->field[$i]['pk']) {
-                $pCrudList .= $this->pCrudList->addFieldReturn($this->field[$i]['name'], $this->field[$i]['fieldid'], false);
+                $pCrudList .= $this->pCrudList->addFieldReturn($this->field[$i]['name'], $this->field[$i]['fieldid'], false, false);
             }
         }
         

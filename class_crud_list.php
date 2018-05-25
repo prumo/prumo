@@ -38,49 +38,6 @@ class PrumoCrudList extends PrumoSearch
     }
     
     /**
-     * Adiciona um campo onde o registro escolhido deve ser retornado
-     *
-     * @param $fieldName string: nome do campo
-     * @param $idReturn string: id do input html. Quando não informado, copia do $fieldName
-     * @param $verbose boolean: quando true imprime o código gerado na tela
-     * @param $linkInput boolean: sem efeito, apenas para manter a compatibilidade com o prumoSearch
-     * @param $noRetrieve boolean: sem efeito, apenas para manter a compatibilidade com o prumoSearch
-     *
-     * @return string: código javascript gerado
-     */
-    public function addFieldReturn($fieldName, $idReturn='', $verbose=true, $linkInput=true, $noRetrieve=false)
-    {
-        if (empty($idReturn)) {
-            $idReturn = $fieldName;
-        }
-        
-        // valida duplicidade
-        for ($i = 0; $i < count($this->fieldReturn); $i++) {
-            if ($this->fieldReturn[$i][0] == $fieldName) {
-                $msg = _('Campo ":fieldName:" duplicado em :objName:->addFieldReturn.');
-                $msg = str_replace(':fieldName:', $fieldName, $msg);
-                $msg = str_replace(':objName:', $this->name, $msg);
-                throw new Exception($msg);
-            }
-        }
-        
-        $this->fieldReturn[] = array($fieldName, $idReturn);
-        
-        $field = $this->fieldByName($fieldName);
-        $fieldType = $field['type'];
-        
-        $fieldReturn  = $this->ind.'<script type="text/javascript">'."\n";
-        $fieldReturn .= $this->ind. '    '.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\''.", false);\n";
-        $fieldReturn .= $this->ind.'</script>'."\n";
-        
-        if ($verbose) {
-            echo $fieldReturn;
-        }
-        
-        return $fieldReturn;
-    }
-    
-    /**
      * Inicializa o objeto no lado do cliente
      *
      * @return string: código gerado

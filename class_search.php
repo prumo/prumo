@@ -112,6 +112,10 @@ class PrumoSearch extends PrumoBasic
         
         $this->field[$lastField]['sqlname'] = isset($param['sqlname']) ? $param['sqlname'] : $param['name'];
         $this->field[$lastField]['pk'] = isset($param['pk']) ? true : false;
+        
+        if (empty($this->orderby)) {
+            $this->setOrderby($param['name']);
+        }
     }
     
     /**
@@ -149,7 +153,7 @@ class PrumoSearch extends PrumoBasic
         
         $fieldReturn  = $this->ind.'<script type="text/javascript">'."\n";
         $fieldReturn .= $this->ind. '    '.$this->name.'.addFieldReturn(\''.$fieldName.'\',\''.$idReturn.'\',\''.$fieldType.'\', '.$noRetrieve.");\n";
-        if ($linkInput and $this->autoFilter) {
+        if ($linkInput && $this->autoFilter) {
             $fieldReturn .= $this->ind. '    inputField = document.getElementById(\''.$idReturn.'\');'."\n";
             $fieldReturn .= $this->ind. '    inputField.pSearch = '.$this->name.';'."\n";
             $fieldReturn .= $this->ind. '    '."\n";
