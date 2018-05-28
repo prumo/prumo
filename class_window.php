@@ -34,6 +34,8 @@ class PrumoWindow
     public $showBtClose;
     public $commandClose;
     
+    public $jsAfterHide = null;
+    
     /**
      * Construtor da classe PrumoWindow
      *
@@ -114,6 +116,9 @@ class PrumoWindow
         $pWindow .= $this->ind . '    '.$this->getObjName().'.title = \''.$this->title.'\';'."\n";
         $pWindow .= $this->ind . '    '.$this->getObjName().'.align = \''.$this->align.'\';'."\n";
         $pWindow .= $this->ind . '    '.$this->getObjName().'.vAlign = \''.$this->vAlign.'\';'."\n";        
+        if ($this->jsAfterHide != null) {
+            $pWindow .= $this->ind . '    '.$this->getObjName().'.afterHide = function() { '.$this->jsAfterHide.' }'."\n";
+        }
         $pWindow .= $this->ind . '</script>'."\n";
         
         if ($verbose) {

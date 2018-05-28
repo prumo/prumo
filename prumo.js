@@ -3958,10 +3958,15 @@ function PrumoWindow(objName)
         this.position();
     }
     
+    this.afterHide = function() {
+        //
+    }
+    
     this.hide = function()
     {
         document.getElementById(this.objName+'_veil').style.display = 'none';
         this.div.style.display = 'none';
+        this.afterHide();
     }
     
     this.move = function()
