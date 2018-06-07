@@ -1661,6 +1661,8 @@ class PrumoCrud extends PrumoBasic
     
     /**
      * Inicializa os objetos no lado do cliente
+     *
+     * @return string: código js dos cruds recursivamente
      */
     private function initClientObject()
     {
@@ -1803,16 +1805,31 @@ class PrumoCrud extends PrumoBasic
         //// trata onload
         $onload = '';
         
-        // preenche os campos
-        for ($i = 0; $i < count($this->field); $i++) {
-            $id = $this->field[$i]['fieldid'];
-            if (isset($_GET[$id]) and !empty($_GET[$id])) {
-                $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
+        $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
+        if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
+            $onload .= $this->ind . '        '.$this->name.'.bt_new();'."\n";
+            
+            // preenche os campos
+            for ($i = 0; $i < count($this->field); $i++) {
+                $id = $this->field[$i]['fieldid'];
+                if (isset($_GET[$id]) && ! empty($_GET[$id]) && $this->field[$i]['type'] != 'serial') {
+                    $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
+                }
+            }
+            
+            $onload .= $this->ind . '        '.$this->name.'.retrieveVirtual();'."\n";
+        } else {
+            // preenche os campos
+            for ($i = 0; $i < count($this->field); $i++) {
+                $id = $this->field[$i]['fieldid'];
+                if (isset($_GET[$id]) && ! empty($_GET[$id])) {
+                    $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
+                }
             }
         }
         
         // verifica se deve abrir algum registro ou a listagem
-        if ($this->parent1x1 == null and $this->parent1xN == '') {
+        if ($this->parent1x1 == null && $this->parent1xN == '') {
             
             $countPk = 0;
             $countPkValue = 0;
@@ -1821,14 +1838,16 @@ class PrumoCrud extends PrumoBasic
                 if ($this->field[$i]['pk']) {
                     $countPk++;
                     $id = $this->field[$i]['fieldid'];
-                    if (isset($_GET[$id]) and !empty($_GET[$id])) {
+                    if (isset($_GET[$id]) && ! empty($_GET[$id])) {
                         $countPkValue++;
                     }
                 }
             }
             
-            if (! isset($this->param['autolist']) or $this->param['autolist'] != 'false') {
-                if ($countPk > 0 and $countPk == $countPkValue) {
+            $autoList = (! isset($this->param['autolist']) || $this->param['autolist'] != 'false');
+            
+            if ($inicialStateNew == false && $autoList == true) {
+                if ($countPk > 0 && $countPk == $countPkValue) {
                     $onload .= $this->ind . '        '.$this->name.'.doRetrieve();'."\n";
                 } elseif ($this->pCrudList) {
                     $onload .= $this->ind . '        '.$this->name.'.bt_search();'."\n";
@@ -1843,7 +1862,30 @@ class PrumoCrud extends PrumoBasic
         }
         
         $clientObject .= $this->ind. '</script>'."\n";
+        $clientObject .= $this->initClientObject1x1();
         
+        if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
+            $clientObject .= $this->ind. '<script type="text/javascript">'."\n";
+            $clientObject .= $this->ind . '    window.addEventListener("load", function() {'."\n";
+            $clientObject .= $this->ind . '        '.$this->name.'.visibleSon1x1();'."\n";
+            $clientObject .= $this->ind . '    });'."\n";
+            $clientObject .= $this->ind. '</script>'."\n";
+        }
+        
+        return $clientObject;
+    }
+    
+    /**
+     * Inicializa os objetos no lado do cliente com relacionamento 1x1 recursivamente
+     *
+     * @return string: código js dos cruds filhos recursivamente
+     */
+    public function initClientObject1x1()
+    {
+        $clientObject = '';
+        for ($i = 0; $i < count($this->son1x1); $i++) {
+            $clientObject .= $this->son1x1[$i]->initClientObject();
+        }
         return $clientObject;
     }
     
@@ -2041,26 +2083,13 @@ class PrumoCrud extends PrumoBasic
                     }
                 } else {
                     
-                    echo $this->initClientObject();
-                    
                     if (isset($this->param['drawform']) && $this->param['drawform']) {
                         $this->drawForms();
                     }
                     
-                    $this->initClientObject1x1();
+                    echo $this->initClientObject();
                 }
             }
-        }
-    }
-    
-    /**
-     * Inicializa os objetos no lado do cliente com relacionamento 1x1 recursivamente
-     */
-    public function initClientObject1x1()
-    {
-        for ($i = 0; $i < count($this->son1x1); $i++) {
-            echo $this->son1x1[$i]->initClientObject();
-            $this->son1x1[$i]->initClientObject1x1();
         }
     }
     
