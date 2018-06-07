@@ -600,10 +600,13 @@ class PrumoSearch extends PrumoBasic
      *
      * @returns string: html dos controles
      */
-    public function makeButton($verbose=true)
+    public function makeButton($verbose=true, $text='')
     {
-        $iconSearch = pGetTheme('icons/prumoSearch.png',true);
-        $button = '<button class="pButton-outline" type="button" id="'.$this->name.'Bt" onClick="javascript:'.$this->name.'.goSearch();"><img src="'.$iconSearch.'" alt="PrumoSearch" /></button>';
+        if (!$text) {
+            $iconSearch = pGetTheme('icons/prumoSearch.png',true);
+            $text = '<img src="'.$iconSearch.'" alt="PrumoSearch" />';
+        }
+        $button = '<button class="pButton-outline" type="button" id="'.$this->name.'Bt" onClick="javascript:'.$this->name.'.goSearch();">' . $text . '</button>';
         
         if ($verbose) {
             echo $button;

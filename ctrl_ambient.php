@@ -81,6 +81,7 @@ require_once $GLOBALS['pConfig']['prumoPath'].'/class_connection.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_grid.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_login.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_search.php';
+require_once $GLOBALS['pConfig']['prumoPath'].'/class_list.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue_set.php';
 require_once $GLOBALS['pConfig']['prumoPath'].'/class_window.php';
