@@ -1805,6 +1805,10 @@ class PrumoCrud extends PrumoBasic
         //// trata onload
         $onload = '';
         
+        if (isset($_GET['initialState'])) {
+            $clientObject .= $this->ind . '    '. $this->name.'.initialState = \''.$_GET['initialState'].'\';'."\n";
+        }
+        
         $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
         if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
             $onload .= $this->ind . '        '.$this->name.'.bt_new();'."\n";

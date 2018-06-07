@@ -675,6 +675,8 @@ function PrumoCrud(objName, ajaxFile)
     
     this.defaultParamCreate;
     
+    this.initialState = '';
+    
     this.pAjax = new prumoAjax(ajaxFile);
     this.pAjax.ajaxFormat = 'xml';
     this.pAjax.parent = this;
