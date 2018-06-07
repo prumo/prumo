@@ -1812,25 +1812,16 @@ class PrumoCrud extends PrumoBasic
         $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
         if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
             $onload .= $this->ind . '        '.$this->name.'.bt_new();'."\n";
-            
-            // preenche os campos
-            for ($i = 0; $i < count($this->field); $i++) {
-                $id = $this->field[$i]['fieldid'];
-                if (isset($_GET[$id]) && ! empty($_GET[$id]) && $this->field[$i]['type'] != 'serial') {
-                    $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
-                }
-            }
-            
-            $onload .= $this->ind . '        '.$this->name.'.retrieveVirtual();'."\n";
-        } else {
-            // preenche os campos
-            for ($i = 0; $i < count($this->field); $i++) {
-                $id = $this->field[$i]['fieldid'];
-                if (isset($_GET[$id]) && ! empty($_GET[$id])) {
-                    $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
-                }
+        }
+        
+        // preenche os campos
+        for ($i = 0; $i < count($this->field); $i++) {
+            $id = $this->field[$i]['fieldid'];
+            if (isset($_GET[$id]) && ! empty($_GET[$id]) && ($inicialStateNew == false || $this->field[$i]['type'] != 'serial')) {
+                $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
             }
         }
+        $onload .= $this->ind . '        '.$this->name.'.retrieveVirtual();'."\n";
         
         // verifica se deve abrir algum registro ou a listagem
         if ($this->parent1x1 == null && $this->parent1xN == '') {
@@ -2087,11 +2078,11 @@ class PrumoCrud extends PrumoBasic
                     }
                 } else {
                     
+                    echo $this->initClientObject();
+                    
                     if (isset($this->param['drawform']) && $this->param['drawform']) {
                         $this->drawForms();
                     }
-                    
-                    echo $this->initClientObject();
                 }
             }
         }
