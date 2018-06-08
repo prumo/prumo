@@ -1444,10 +1444,16 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
     
+    // @todo deprecated - mantido apenas para compatibilidade até expirar o cache
+    this.onStateChange = function()
+    {
+        return this.afterStateChange();
+    }
+    
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
      */
-    this.onStateChange = function()
+    this.afterStateChange = function()
     {
         return true;
     }
@@ -1674,7 +1680,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        this.onStateChange();
+        this.afterStateChange();
     }
     
     /**

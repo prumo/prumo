@@ -158,7 +158,7 @@ $searchUsers->addFieldReturn('username', 'username_copy_from');
         pSimpleAjax('prumo/ctrl_user_groups.php', param, 'div_lists');
     }
     
-    crudUsers.onStateChange = function() {
+    crudUsers.afterStateChange = function() {
         if (this.state == 'view') {
             document.getElementById('div_groups').style.display = 'block';
             refreshLists();
