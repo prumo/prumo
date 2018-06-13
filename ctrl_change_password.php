@@ -29,26 +29,35 @@ if ($prumoGlobal['currentUser'] == '') {
     $xml .= '<msg>'._('Sua sessão expirou, faça login novamente').'</msg>';
 } else {
     // monta o sql
-    $password = md5($_POST['password']);
-    $newPassword = md5($_POST['new_password']);
+    $password = $_POST['password'];
+
+    $newPassword = sodium_crypto_pwhash_str(
+        $_POST['new_password'],
+        SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE,
+        SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE
+    );
     $schema = $pConnectionPrumo->getSchema();
     
-    $sqlConsulta = 'SELECT username FROM '.$schema.'syslogin WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').' AND "password"='.pFormatSql($password, 'string').';';
-    
-    $sqlUdate  = 'UPDATE '.$schema.'syslogin SET "password"='.pFormatSql($newPassword, 'string').' ';
-    $sqlUdate .= 'WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').';';
+    $sqlConsulta = 'SELECT password FROM '.$schema.'syslogin WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string');
+    $dbPassword = $pConnectionPrumo->sqlquery($sqlConsulta);
+
+    $sqlUdate  = 'UPDATE '.$schema.'syslogin SET "password"='.pFormatSql($newPassword, 'string').' WHERE username='.pFormatSql($prumoGlobal['currentUser'], 'string').';';
     
     // retorna a mensagem em xml
     if ($_POST['new_password'] == '') {
         $xml  = '<err>err</err>'."\n";
         $xml .= '<msg>'._('A nova senha não pode ficar em branco.').'</msg>';
-    } elseif ($pConnectionPrumo->sqlquery($sqlConsulta) != $prumoGlobal['currentUser']) {
+    } elseif (sodium_crypto_pwhash_str_verify($dbPassword, $password) === false) {
         $xml  = '<err>err</err>'."\n";
         $xml .= '<msg>'._('A senha atual não confere.').'</msg>';
     } else {
-        $pConnectionPrumo->sqlquery($sqlUdate);
-        $xml = '<msg>'._('Senha alterada com sucesso!').'</msg>';
+        if ($pConnectionPrumo->sqlquery($sqlUdate) === false) {
+            $xml = '<msg>' . _('Erro atualizando a senha.') . '</msg>';
+        } else {
+            $xml = '<msg>' . _('Senha alterada com sucesso!') . '</msg>';
+        }
     }
+    sodium_memzero($password);
 }
 
 $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);

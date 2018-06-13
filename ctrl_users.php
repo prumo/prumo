@@ -28,7 +28,11 @@ class PrumoUsers extends PrumoCrud
     {
         $tableName = $this->param['tablename'];
         $schema = $this->pConnection->getSchema($this->param['schema']);
-        $password = md5($_POST['new_username']);
+        $password = sodium_crypto_pwhash_str(
+            $_POST['new_username'],
+            SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE,
+            SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE
+        );
         $sql = 'INSERT INTO '.$schema.$tableName.' (username,fullname,password,enabled) VALUES (:new_username:,:new_fullname:,\''.$password.'\',:new_enabled:);';
         return $sql;
     }

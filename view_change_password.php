@@ -38,7 +38,7 @@ pProtect('prumo_changePassword');
         
         if (new_password != new_password_confirm) {
             alert(gettext('As senhas não conferem.'));
-        } elseif (new_password == '') {
+        } else if (new_password == '') {
             alert(gettext('A nova senha não pode ficar em branco.'));
         } else {
             params = 'password='+password+'&new_password='+new_password;

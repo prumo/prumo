@@ -14,7 +14,7 @@ CREATE TABLE prumo.syslogin
 (
   username character varying(30) NOT NULL,
   fullname character varying(50) NOT NULL,
-  "password" character varying(40),
+  "password" character varying(120),
   enabled boolean NOT NULL DEFAULT 't',
   CONSTRAINT syslogin_pkey PRIMARY KEY (username)
 )
@@ -179,7 +179,7 @@ INSERT INTO prumo.routines (routine, link, enabled, type, menu_parent, menu_labe
 INSERT INTO prumo.routines (routine, link, enabled, type, menu_parent, menu_label, menu_icon) VALUES ('prumo_update',         'prumo/view_update.php',          't', 'view', 'prumo_system',         'Atualização',          'prumo/images/icons/system.png');
 INSERT INTO prumo.routines (routine, link, enabled, type, menu_parent, menu_label, menu_icon) VALUES ('prumo_devtools',       'prumo/ctrl_devtools.php',        't', 'view', 'prumo_system',         'Desenvolvimento',      'prumo/images/icons/system.png');
 
-INSERT INTO prumo.syslogin(username, fullname, "password") VALUES ('admin', 'Administrador do sistema', '21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO prumo.syslogin(username, fullname, "password") VALUES ('admin', 'Administrador do sistema', '$argon2id$v=19$m=65536,t=2,p=1$Rul0StMsJYFfy/LJuWn8aw$crsoRO623LuQFT7ZcgRcLrFWJbMT/E27eNzl8yVp33A');
 
 INSERT INTO prumo.groups(enabled, groupname) VALUES ('t', 'sysadmin');
 INSERT INTO prumo.groups(enabled, groupname) VALUES ('t', 'dev');

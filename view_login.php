@@ -58,7 +58,7 @@ require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
     
     function goLogin() {
         params = '&txtUsername='+document.getElementById('txtUsername').value;
-        params += '&txtPassword='+md5(document.getElementById('txtPassword').value);
+        params += '&txtPassword='+document.getElementById('txtPassword').value;
         ajaxLogin.goAjax(params);
     }
     

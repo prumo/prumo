@@ -95,19 +95,21 @@ class PrumoLogin
             $sql = 'SELECT password,fullname FROM '.$this->connection->getSchema().'syslogin '.
                    ' WHERE enabled='.pFormatSql(true,'boolean').
                    '   AND username='.pFormatSql($this->username,'string').';';
-            $autentication = $this->connection->sql2Array($sql);
+            $authentication = $this->connection->fetchAssoc($sql);
             
-            $password = (isset($autentication[0]['password'])) ? $autentication[0]['password'] : '';
+            $dbPassword = (isset($authentication['password'])) ? $authentication['password'] : '';
             
-            $this->fullName = (isset($autentication[0]['fullname'])) ? $autentication[0]['fullname'] : $this->fullName = '';
+            $this->fullName = (isset($authentication['fullname'])) ? $authentication['fullname'] : $this->fullName = '';
              
-            if ($password != '' and $this->password == $password) {
+            if ($dbPassword != '' && sodium_crypto_pwhash_str_verify($dbPassword, $this->password) === true) {
                 $this->logged = true;
                 $this->sessionRegister();
             } else {
                 $this->logged = false;
                 $this->err = _('Usuário ou senha incorreta');
             }
+            sodium_memzero($this->password);
+            $this->password = $dbPassword;
         } else {
             
             $this->logged = false;
