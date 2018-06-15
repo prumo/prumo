@@ -30,7 +30,7 @@ class PrumoCrudList extends PrumoSearch
     {
 		$lines = $pageLines ? $pageLines : $this->pageLines();
         
-        if (isset($this->param['fastcreate']) and $this->param['fastcreate']) {
+        if (isset($this->param['fastcreate']) && $this->param['fastcreate']) {
             $lines++;
         }
         
@@ -51,26 +51,26 @@ class PrumoCrudList extends PrumoSearch
         $clientObject .= $this->ind. '    '.$this->name.'.parent = '.$this->param['crudname'].';'."\n";
         
         // repassa condicionalmente o pog debug para o objeto ajax
-        if (isset($this->param['debug']) and $this->param['debug']) {
+        if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
         }
         
         // repassa parametro auto click
         $clientObject .= $this->ind . '    '. $this->name.'.autoClick = ';
-        $clientObject .= (isset($this->param['autoclick']) and $this->param['autoclick']) ? 'true;'."\n" : 'false;'."\n";
+        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick']) ? 'true;'."\n" : 'false;'."\n";
         
         //fastCreate
-        if (isset($this->param['fastcreate']) and $this->param['fastcreate']) {
+        if (isset($this->param['fastcreate']) && $this->param['fastcreate']) {
             $clientObject .= $this->ind . '    '. $this->name.'.fastCreate = true;'."\n";
         }
         
         //fastUpdate
-        if (isset($this->param['fastupdate']) and $this->param['fastupdate']) {
+        if (isset($this->param['fastupdate']) && $this->param['fastupdate']) {
             $clientObject .= $this->ind . '    '. $this->name.'.fastUpdate = true;'."\n";
         }
         
         //fastDelete
-        if (isset($this->param['fastdelete']) and $this->param['fastdelete']) {
+        if (isset($this->param['fastdelete']) && $this->param['fastdelete']) {
             $clientObject .= $this->ind . '    '. $this->name.'.fastDelete = true;'."\n";
         }
         
@@ -105,9 +105,9 @@ class PrumoCrudList extends PrumoSearch
     {
         // adiciona uma columa a mais para os controles do fastCreate, fastupdate ou fastdelete
         if (
-            (isset($this->param['fastcreate']) and $this->param['fastcreate']) or
-            (isset($this->param['fastupdate']) and $this->param['fastupdate']) or
-            (isset($this->param['fastdelete']) and $this->param['fastdelete'])
+            (isset($this->param['fastcreate']) && $this->param['fastcreate']) ||
+            (isset($this->param['fastupdate']) && $this->param['fastupdate']) ||
+            (isset($this->param['fastdelete']) && $this->param['fastdelete'])
         ) {
             $this->pGrid->addColumn('name=prumoControls,label=,align=center');
         }

@@ -50,12 +50,12 @@ if (! file_exists($GLOBALS['pConfig']['appPath'].'/prumo.php')) {
     
     $msg = _('É necessário ativar a extensão %extension% no PHP');
     
-    if ($requirePgsql and !extension_loaded('pgsql')) {
+    if ($requirePgsql && ! extension_loaded('pgsql')) {
         $txtError .= '    <p>'.str_replace('%extension%', 'php_pgsql', $msg).'.</p>'."\n";
         $error++;
     }
     
-    if ($requireSqlite3 and !extension_loaded('sqlite3')) {
+    if ($requireSqlite3 && ! extension_loaded('sqlite3')) {
         $txtError .= '    <p>'.str_replace('%extension%','php_sqlite3',$msg).', ';
         $txtError .= _('ou utilizar outro servidor de banco de dados PostgreSQL para a base de dados do Framework').'.</p>';
         $txtError .= '    <p>'._('Mais detalhes você encontra nos comentários do arquivo de exemplo prumo.php').'</p>'."\n";
@@ -84,7 +84,7 @@ if ($error > 0) {
 
 $pLogin = new PrumoLogin($GLOBALS['pConfig']['appIdent'], '', '');
 
-if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
+if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
     $pLogin->logoff();
     pRedirect($GLOBALS['pConfig']['prumoWebPath']);
 } else {
@@ -132,11 +132,11 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
     
                 <div>
                     <?php
-                    if (isset($_GET['page']) and $_GET['page'] == 'prumo_code_generator') {
+                    if (isset($_GET['page']) && $_GET['page'] == 'prumo_code_generator') {
                         include $GLOBALS['pConfig']['prumoPath'].'/dev/view_code_generator.php';
-                    } elseif (isset($_GET['page']) and $_GET['page'] == 'prumo_db_update') {
+                    } else if (isset($_GET['page']) && $_GET['page'] == 'prumo_db_update') {
                         include $GLOBALS['pConfig']['prumoPath'].'/dev/view_db_update.php';
-                    } elseif (isset($_GET['page'])) {
+                    } else if (isset($_GET['page'])) {
                         include $GLOBALS['pConfig']['appPath'].'/'.$prumoPage[$_GET['page']];
                     } else {
                     ?>

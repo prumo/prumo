@@ -47,7 +47,7 @@ if ($prumoGlobal['currentUser'] == '') {
     if ($_POST['new_password'] == '') {
         $xml  = '<err>err</err>'."\n";
         $xml .= '<msg>'._('A nova senha não pode ficar em branco.').'</msg>';
-    } elseif (sodium_crypto_pwhash_str_verify($dbPassword, $password) === false) {
+    } else if (sodium_crypto_pwhash_str_verify($dbPassword, $password) === false) {
         $xml  = '<err>err</err>'."\n";
         $xml .= '<msg>'._('A senha atual não confere.').'</msg>';
     } else {

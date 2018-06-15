@@ -44,7 +44,7 @@ if ($_POST['update'] == 'app') {
                 
                 $pathParts = pathinfo($scriptUpdateDir.$scriptUpdateAll[$i]);
                 
-                if (strtolower($pathParts['extension']) == 'php' and upToDate($scriptUpdateAll[$i], $pConnection,'app') == false) {
+                if (strtolower($pathParts['extension']) == 'php' && upToDate($scriptUpdateAll[$i], $pConnection,'app') == false) {
                     $scriptUpdateNew[] = $scriptUpdateAll[$i];
                 }
             }
@@ -89,7 +89,7 @@ if ($_POST['update'] == 'framework') {
             
             $pathParts = pathinfo($scriptUpdateDir.$scriptUpdateAll[$i]);
             
-            if (strtolower($pathParts['extension']) == 'php' and upToDate($scriptUpdateAll[$i], $pConnectionPrumo) == false) {
+            if (strtolower($pathParts['extension']) == 'php' && upToDate($scriptUpdateAll[$i], $pConnectionPrumo) == false) {
                 $scriptUpdateNew[] = $scriptUpdateAll[$i];
             }
         }

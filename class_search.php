@@ -44,7 +44,7 @@ class PrumoSearch extends PrumoBasic
         $this->constructedGrid = false;        
         $this->page = 1;
         $this->fieldReturn = array();
-        $this->autoFilter = (!isset($this->param['autofilter']) or $this->param['autofilter'] != 'false');
+        $this->autoFilter = (! isset($this->param['autofilter']) || $this->param['autofilter'] != 'false');
     }
     
     /**
@@ -405,7 +405,7 @@ class PrumoSearch extends PrumoBasic
         $arrCondition = array();
         $iValue = 0;
         for ($i = 0; $i < count($fieldName); $i++) {
-            if ($value[$i] != '' or $operator[$i] == 'is null' or $operator[$i] == 'not is null') {
+            if ($value[$i] != '' || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
                 $field = $this->fieldByName($fieldName[$i]);
                 $condition = $this->pConnection->getSqlOperator($operator[$i]);
                 $condition = str_replace(':field:', $field['sqlname'], $condition);
@@ -602,7 +602,7 @@ class PrumoSearch extends PrumoBasic
      */
     public function makeButton($verbose=true, $text='')
     {
-        if (!$text) {
+        if (! $text) {
             $iconSearch = pGetTheme('icons/prumoSearch.png',true);
             $text = '<img src="'.$iconSearch.'" alt="PrumoSearch" />';
         }
@@ -622,7 +622,7 @@ class PrumoSearch extends PrumoBasic
     {
         if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'makeXml') {
             $this->makeXml(true);
-        } elseif (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
+        } else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
             $this->doRetrieve(true);
         } else {
             $this->draw(true);
@@ -702,7 +702,7 @@ class PrumoSearch extends PrumoBasic
         // monta campos
         $fields = '';
         for ($i = 0; $i < count($this->field); $i++) {
-            if (! isset($this->field[$i]['virtual']) or $this->field[$i]['virtual'] == false) {
+            if (! isset($this->field[$i]['virtual']) || $this->field[$i]['virtual'] == false) {
                 if ($fields != '') {
                     $fields .= ',';
                 }

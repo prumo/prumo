@@ -157,10 +157,10 @@ class PrumoConnection
             }
             
             if (
-                ($logInsert and stristr($sql, 'insert')) or 
-                ($logRetrieve and stristr($sql, 'select')) or
-                ($logUpdate and stristr($sql, 'update')) or
-                ($logDelete and stristr($sql, 'delete'))
+                ($logInsert && stristr($sql, 'insert')) || 
+                ($logRetrieve && stristr($sql, 'select')) ||
+                ($logUpdate && stristr($sql, 'update')) ||
+                ($logDelete && stristr($sql, 'delete'))
             ) {
                 
                 if ($pConnectionPrumo->sgdb() == 'sqlite3') {

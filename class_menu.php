@@ -358,7 +358,7 @@ class PrumoMenu
         $id = str_replace(' ','_',$node['menu_label']);
         $id = strtolower($id);
         $xmlReturn = $start.' id="'.$id.'" label="'._($node['menu_label']).'">';
-        if ($node['routine'] != '' and $node['childs'] == 0) {
+        if ($node['routine'] != '' && $node['childs'] == 0) {
             if (isset($node['link'])) {
                 $explode = explode(':',$node['link']);
                 $protocol = $explode[0];
@@ -419,22 +419,22 @@ class PrumoMenu
                 $xml .= $this->openNodeXml('<menu',$sqlResult[$l1]);
                 
                 for ($l2=0; $l2 < count($sqlResult); $l2++) {
-                    if ($sqlResult[$l2]['menu_parent'] != '' and $sqlResult[$l2]['menu_parent'] == $l1Cod) {
+                    if ($sqlResult[$l2]['menu_parent'] != '' && $sqlResult[$l2]['menu_parent'] == $l1Cod) {
                         $l2Cod = $sqlResult[$l2]['routine'];
                         $xml .= $this->openNodeXml('<level1',$sqlResult[$l2]);
                         
                         for ($l3=0; $l3 < count($sqlResult); $l3++) {
-                            if ($sqlResult[$l3]['menu_parent'] != '' and $sqlResult[$l3]['menu_parent'] == $l2Cod) {
+                            if ($sqlResult[$l3]['menu_parent'] != '' && $sqlResult[$l3]['menu_parent'] == $l2Cod) {
                                 $l3Cod = $sqlResult[$l3]['routine'];
                                 $xml .= $this->openNodeXml('<level2',$sqlResult[$l3]);
                                 
                                 for ($l4=0; $l4 < count($sqlResult); $l4++) {
-                                    if ($sqlResult[$l4]['menu_parent'] != '' and $sqlResult[$l4]['menu_parent'] == $l3Cod) {
+                                    if ($sqlResult[$l4]['menu_parent'] != '' && $sqlResult[$l4]['menu_parent'] == $l3Cod) {
                                         $l4Cod = $sqlResult[$l4]['routine'];
                                         $xml .= $this->openNodeXml('<level3',$sqlResult[$l4]);
                                         
                                         for ($l5=0; $l5 < count($sqlResult); $l5++) {
-                                            if ($sqlResult[$l5]['menu_parent'] != '' and $sqlResult[$l5]['menu_parent'] == $l4Cod) {
+                                            if ($sqlResult[$l5]['menu_parent'] != '' && $sqlResult[$l5]['menu_parent'] == $l4Cod) {
                                                 $l5Cod = $sqlResult[$l5]['routine'];
                                                 
                                                 $xml .= $this->openNodeXml('<level4',$sqlResult[$l5]);

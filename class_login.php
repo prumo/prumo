@@ -60,7 +60,7 @@ class PrumoLogin
             $this->password = $password;
         }
         
-        $this->session = !empty($this->username);
+        $this->session = ! empty($this->username);
     }
     
     /**
@@ -141,7 +141,7 @@ class PrumoLogin
         $_SESSION[$this->ident.'_prumoUserPassword'] = $this->password;
         $_SESSION[$this->ident.'_config'] = $GLOBALS['pConfig']['appPath'].'/prumo.php';
         
-        $this->session = (isset($_SESSION[$this->ident.'_prumoUserName']) and isset($_SESSION[$this->ident.'_prumoUserPassword']));
+        $this->session = (isset($_SESSION[$this->ident.'_prumoUserName']) && isset($_SESSION[$this->ident.'_prumoUserPassword']));
         
         return $this->isSession();
     }
@@ -167,7 +167,7 @@ class PrumoLogin
         
         session_write_close();
         
-        $this->session = (isset($_SESSION[$this->ident.'_prumoUserName']) and isset($_SESSION[$this->ident.'_prumoUserPassword']));
+        $this->session = (isset($_SESSION[$this->ident.'_prumoUserName']) && isset($_SESSION[$this->ident.'_prumoUserPassword']));
         
         return $this->isSession();
     }

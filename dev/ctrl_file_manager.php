@@ -34,10 +34,10 @@ if (isset($_POST['open'])) {
 if (isset($_POST['save'])) {
     $fileName = $GLOBALS['pConfig']['appPath'].'/'.$_POST['filename'];
     
-    if (file_exists($fileName) and !is_writable($fileName)) {
+    if (file_exists($fileName) && ! is_writable($fileName)) {
         $msg = _('Sem permissão de escrita para o arquivo "%filename%".');
         echo str_replace('%filename%',$_POST['filename'],$msg);
-    } elseif (! is_writable($GLOBALS['pConfig']['appPath'])) {
+    } else if (! is_writable($GLOBALS['pConfig']['appPath'])) {
         echo _('Sem permissão de escrita na pasta da aplicação.');
     } else {
         file_put_contents($fileName, $_POST['code']);

@@ -100,7 +100,7 @@ class PrumoCrud extends PrumoBasic
         // permissões
         if (isset($this->param['routine'])) {
             $this->setPermissions($this->param['routine']);
-        } elseif (isset($this->param['permission'])) {
+        } else if (isset($this->param['permission'])) {
             $this->permission = $this->param['permission'];
         } else {
             $this->permission = 'crud';
@@ -116,7 +116,7 @@ class PrumoCrud extends PrumoBasic
         // audit
         if (isset($this->param['audit'])) {
             $this->audit = $this->param['audit'] === 'false' ? false : true;
-        } elseif (isset($this->param['routine']) && !empty($this->param['routine'])) {
+        } else if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
             $this->audit = pGetAudit($this->param['routine']);
         } else {
             $this->audit = false;
@@ -157,22 +157,22 @@ class PrumoCrud extends PrumoBasic
             $autoClick = isset($this->param['autoclick']) ? ',autoClick' : '';
             
             $fastCreate = '';
-            if (isset($this->param['fastcreate']) and $this->param['fastcreate'] and $this->getPermission('c')) {
+            if (isset($this->param['fastcreate']) && $this->param['fastcreate'] && $this->getPermission('c')) {
                 $fastCreate = ',fastCreate';
             }
             
             $fastUpdate = '';
-            if (isset($this->param['fastupdate']) and $this->param['fastupdate'] and $this->getPermission('u')) {
+            if (isset($this->param['fastupdate']) && $this->param['fastupdate'] && $this->getPermission('u')) {
                 $fastUpdate = ',fastUpdate';
             }
             
             $fastDelete = '';
-            if (isset($this->param['fastdelete']) and $this->param['fastdelete'] and $this->getPermission('d')) {
+            if (isset($this->param['fastdelete']) && $this->param['fastdelete'] && $this->getPermission('d')) {
                 $fastDelete = ',fastDelete';
             }
             
             $routine = '';
-            if (isset($this->param['routine']) and $this->param['routine'] != '') {
+            if (isset($this->param['routine']) && $this->param['routine'] != '') {
                 $routine = ',routine='.$this->param['routine'];
             }
             
@@ -252,7 +252,7 @@ class PrumoCrud extends PrumoBasic
         if (isset($param['capslock'])) {
             $this->field[$fieldIndex]['capslock'] = $param['capslock'] ? true : false;
         } else {
-            if ($this->field[$fieldIndex]['type'] == 'string' or $this->field[$fieldIndex]['type'] == 'text') {
+            if ($this->field[$fieldIndex]['type'] == 'string' || $this->field[$fieldIndex]['type'] == 'text') {
                 $this->field[$fieldIndex]['capslock'] = $this->capsLock;
             } else {
                 $this->field[$fieldIndex]['capslock'] = false;
@@ -260,7 +260,7 @@ class PrumoCrud extends PrumoBasic
         }
         
         // parâmetro list
-        if ($this->param['list'] and !$this->field[$fieldIndex]['virtual']) {
+        if ($this->param['list'] && ! $this->field[$fieldIndex]['virtual']) {
             $this->pCrudList->addField($params);
         }
         
@@ -390,7 +390,7 @@ class PrumoCrud extends PrumoBasic
         $sqlVal = $this->pConnection->replacePrumoGlobals($sqlVal);
         
         // Quanto possui objeto pai, verifica os valores dos campos no objeto pai (apenas para evento retrieve)
-        if ($this->parent1x1 != null and $this->action == 'r') {
+        if ($this->parent1x1 != null && $this->action == 'r') {
             
             // Carrega um objeto xml através dos dados do pai 1x1
             $xml = $this->parent1x1->xmlRetrieve;
@@ -421,7 +421,7 @@ class PrumoCrud extends PrumoBasic
                 $value = pFormatSql($values[$this->field[$i]['name']], $this->field[$i]['type'], $this->field[$i]['capslock']);
                 $field = ':new_'.$this->field[$i]['name'].':';
                 $sqlVal = str_replace($field, $value, $sqlVal);
-            } elseif (isset($_POST['new_'.$this->field[$i]['fieldid']])) {
+            } else if (isset($_POST['new_'.$this->field[$i]['fieldid']])) {
                 
                 //substitui o parametro pelo valor de acordo com fieldId do campo
                 $value = pFormatSql($_POST['new_'.$this->field[$i]['fieldid']], $this->field[$i]['type'], $this->field[$i]['capslock']);
@@ -435,13 +435,13 @@ class PrumoCrud extends PrumoBasic
                 $value = pFormatSql($_POST['old_'.$this->field[$i]['fieldid']], $this->field[$i]['type'], false);
                 $field = ':old_'.$this->field[$i]['name'].':';
                 $sqlVal = str_replace($field, $value, $sqlVal);
-            } elseif (isset($values[$this->field[$i]['name']])) {
+            } else if (isset($values[$this->field[$i]['name']])) {
                 
                 //em casos de onduplicate=true em relacionamentos 1x1 que manipulam a mesma tabela pode haver este caso
                 $value = pFormatSql($values[$this->field[$i]['name']], $this->field[$i]['type'], false);
                 $field = ':old_'.$this->field[$i]['name'].':';
                 $sqlVal = str_replace($field, $value, $sqlVal);
-            } elseif (isset($_POST['new_'.$this->field[$i]['fieldid']])) {
+            } else if (isset($_POST['new_'.$this->field[$i]['fieldid']])) {
                 
                 //em casos de onduplicate=true em relacionamentos 1x1 que manipulam a mesma tabela pode haver este caso
                 $value = pFormatSql($_POST['new_'.$this->field[$i]['fieldid']], $this->field[$i]['type'], false);
@@ -508,7 +508,7 @@ class PrumoCrud extends PrumoBasic
             
             for ($i = 0; $i < count($this->field); $i++) {
                 
-                if ($this->field[$i]['type'] != 'serial' and $this->field[$i]['nocreate'] == false and $this->field[$i]['virtual'] == false) {
+                if ($this->field[$i]['type'] != 'serial' && $this->field[$i]['nocreate'] == false && $this->field[$i]['virtual'] == false) {
                     
                     if ($fields != '') {
                         $fields .= ',';
@@ -651,9 +651,9 @@ class PrumoCrud extends PrumoBasic
                 if ($this->field[$i]['virtual'] == false) {
                     
                     if (
-                        !isset($_POST['new_'.$this->field[$i]['fieldid']]) or
-                        !isset($_POST['old_'.$this->field[$i]['fieldid']]) or
-                        $_POST['new_'.$this->field[$i]['fieldid']] != plainFormat($this->field[$i]['type'], $currentValue[$this->field[$i]['name']]) and 
+                        ! isset($_POST['new_'.$this->field[$i]['fieldid']]) or
+                        ! isset($_POST['old_'.$this->field[$i]['fieldid']]) or
+                        $_POST['new_'.$this->field[$i]['fieldid']] != plainFormat($this->field[$i]['type'], $currentValue[$this->field[$i]['name']]) && 
                         $this->field[$i]['name'] != 'prumoUser' and
                         $this->field[$i]['noupdate'] == false
                     ) {
@@ -748,7 +748,7 @@ class PrumoCrud extends PrumoBasic
         $childParent = array();
         for ($i = 0; $i < count($this->field); $i++) {
             
-            if ($this->field[$i]['pk'] and $this->field[$i]['type'] == 'integer') {
+            if ($this->field[$i]['pk'] && $this->field[$i]['type'] == 'integer') {
                 $childParent[] = $this->field[$i]['name'];
             }
         }
@@ -793,7 +793,7 @@ class PrumoCrud extends PrumoBasic
             
             if ($this->callBeforeCreate()) {
                 
-                if (isset($this->param['onduplicate']) and $this->param['onduplicate'] == 'error') {
+                if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'error') {
                     
                     // verifica se possui registro duplicado
                     $sqlCount = $this->sqlValues($this->sqlCount());
@@ -828,7 +828,7 @@ class PrumoCrud extends PrumoBasic
                     
                     $pkValue = $this->syncPk($this->parent1x1->serialFields);
                     
-                    if (isset($this->param['onduplicate']) and $this->param['onduplicate'] == 'update') {
+                    if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'update') {
                         
                         // verifica se já existe um registro com esta chave primária
                         $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
@@ -1299,7 +1299,7 @@ class PrumoCrud extends PrumoBasic
             $extension = isset($info['extension']) ? $info['extension'] : '';
             
             //apenas arquivos .php
-            if (strtolower($extension) == 'php' and $info['basename'] != 'index.php' and $info['basename'] != 'prumo.php') {
+            if (strtolower($extension) == 'php' && $info['basename'] != 'index.php' && $info['basename'] != 'prumo.php') {
                 $fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
                 
                 // verifica se o arquivo inicializa o objeto informado
@@ -1390,12 +1390,12 @@ class PrumoCrud extends PrumoBasic
         // campos
         for ($i = 0; $i < count($this->field); $i++) {
             
-            if (! $this->field[$i]['nohtml'] and ($this->parent1x1 == null or !$this->field[$i]['pk'])) {
+            if (! $this->field[$i]['nohtml'] && ($this->parent1x1 == null || ! $this->field[$i]['pk'])) {
                 
                 $label = $this->field[$i]['label'];
                 $id = $this->field[$i]['fieldid'];
                 $notNull = $this->field[$i]['notnull'] ? '*' : '';
-                $disabled = ($this->field[$i]['readonly'] or $this->field[$i]['type'] == 'serial') ? ' disabled="disabled"' : '';
+                $disabled = ($this->field[$i]['readonly'] || $this->field[$i]['type'] == 'serial') ? ' disabled="disabled"' : '';
                 
                 if (isset($this->field[$i]['search'])) {
                     
@@ -1430,7 +1430,7 @@ class PrumoCrud extends PrumoBasic
                 $form .= $ind.'<tr>'."\n";
                 if ($this->field[$i]['type'] == 'boolean') {
                     
-                    if (isset($this->field[$i]['default']) and ($this->field[$i]['default'] == 'true' or $this->field[$i]['default'] == 't')) {
+                    if (isset($this->field[$i]['default']) && ($this->field[$i]['default'] == 'true' || $this->field[$i]['default'] == 't')) {
                         $checked = ' checked="checked"';
                     } else {
                         $checked = '';
@@ -1438,25 +1438,25 @@ class PrumoCrud extends PrumoBasic
                     
                     $form .= $ind.'    <td class="prumoFormLabel"><br /></td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="checkbox"'.$disabled.$checked.$onChange.' />'.$label.' '.$search.'</td>'."\n";
-                } elseif ($this->field[$i]['type'] == 'date') {
+                } else if ($this->field[$i]['type'] == 'date') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text" size="9" maxlength="10"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
-                } elseif ($this->field[$i]['type'] == 'integer' or $this->field[$i]['type'] == 'serial') {
+                } else if ($this->field[$i]['type'] == 'integer' || $this->field[$i]['type'] == 'serial') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text" size="9"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
-                } elseif ($this->field[$i]['type'] == 'timestamp') {
+                } else if ($this->field[$i]['type'] == 'timestamp') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text" size="17" maxlength="19"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
-                } elseif ($this->field[$i]['type'] == 'text') {
+                } else if ($this->field[$i]['type'] == 'text') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><textarea id="'.$id.'" cols="26" rows="3" '.$disabled.$onChange.'>'.$defaultValue.'</textarea>'.$search.$notNull.'</td>'."\n";
                 } else {
                     
-                    if (isset($this->field[$i]['size']) and $this->field[$i]['size'] != '') {
+                    if (isset($this->field[$i]['size']) && $this->field[$i]['size'] != '') {
                         
                         $size = $this->field[$i]['size'] > 40 ? 40 :$this->field[$i]['size'];
                         $maxLength = ' maxlength='.$this->field[$i]['size'];
@@ -1504,12 +1504,12 @@ class PrumoCrud extends PrumoBasic
             
             $haveFieldReturn = false;
             for ($i = 0; $i < count($this->field); $i++) {
-                if (isset($this->field[$i]['search']) or $this->field[$i]['virtual']) {
+                if (isset($this->field[$i]['search']) || $this->field[$i]['virtual']) {
                     $haveFieldReturn = true;
                 }
             }
             
-            if ($withPhpCode and $haveFieldReturn) {
+            if ($withPhpCode && $haveFieldReturn) {
                 $form .= "\n";
                 $form .= '<?php'."\n";
             }
@@ -1538,7 +1538,7 @@ class PrumoCrud extends PrumoBasic
                 }
                 
                 // addFieldReturn para campos virtuais
-                if ($withPhpCode and $this->field[$i]['virtual']) {
+                if ($withPhpCode && $this->field[$i]['virtual']) {
                     if ($this->field[$i]['name'] = $this->field[$i]['fieldid']) {
                         $form .= '$'.$lastSearch.'->addFieldReturn(\''.$this->field[$i]['name'].'\');'."\n";
                     } else {
@@ -1547,7 +1547,7 @@ class PrumoCrud extends PrumoBasic
                 }
             }
             
-            if ($withPhpCode and $haveFieldReturn) {
+            if ($withPhpCode && $haveFieldReturn) {
                 $form .= '$'.$pSearch.'->crudState(\''.$this->name.'\');'."\n";
                 $form .= '?>'."\n";
             }
@@ -1751,9 +1751,9 @@ class PrumoCrud extends PrumoBasic
             if (! substr_count($template, 'id=\"\"')) {
                 if (substr_count($template, 'input')) {
                     $template = str_replace('input', 'input id=\"\"', $template);
-                } elseif (substr_count($template, 'select')) {
+                } else if (substr_count($template, 'select')) {
                     $template = str_replace('select', 'select id=\"\"', $template);
-                } elseif (substr_count($template, 'textarea')) {
+                } else if (substr_count($template, 'textarea')) {
                     $template = str_replace('textarea', 'textarea id=\"\"', $template);
                 }
             }
@@ -1844,7 +1844,7 @@ class PrumoCrud extends PrumoBasic
             if ($inicialStateNew == false && $autoList == true) {
                 if ($countPk > 0 && $countPk == $countPkValue) {
                     $onload .= $this->ind . '        '.$this->name.'.doRetrieve();'."\n";
-                } elseif ($this->pCrudList) {
+                } else if ($this->pCrudList) {
                     $onload .= $this->ind . '        '.$this->name.'.bt_search();'."\n";
                 }
             }
@@ -1965,7 +1965,7 @@ class PrumoCrud extends PrumoBasic
      */
     public function autoInit()
     {
-        if (isset($_GET['ddl']) or isset($_GET['htmlcode']) or isset($_GET['executeddl'])) {
+        if (isset($_GET['ddl']) || isset($_GET['htmlcode']) || isset($_GET['executeddl'])) {
             
             header('Content-type: text/html; charset=UTF-8');
             pProtect('prumo_devtools');
@@ -1991,7 +1991,7 @@ class PrumoCrud extends PrumoBasic
             }
         } else {
             
-            if (isset($_POST[$this->name.'_action']) and $_POST[$this->name.'_action'] != '') {
+            if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] != '') {
             
                 $this->action = $_POST[$this->name.'_action'];
                 $this->cascadeAction();
@@ -2004,7 +2004,7 @@ class PrumoCrud extends PrumoBasic
                             $this->doCreate(true);
                         } else {
                             
-                            if (isset($this->param['routine']) and !empty($this->param['routine'])) {
+                            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'c');
                             }
                             $this->doAccessDenied(true);
@@ -2018,7 +2018,7 @@ class PrumoCrud extends PrumoBasic
                             $this->doRetrieve(true);
                         } else {
                             
-                            if (isset($this->param['routine']) and !empty($this->param['routine'])) {
+                            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'r');
                             }
                             $this->doAccessDenied(true);
@@ -2032,7 +2032,7 @@ class PrumoCrud extends PrumoBasic
                             $this->doUpdate(true);
                         } else {
                             
-                            if (isset($this->param['routine']) and !empty($this->param['routine'])) {
+                            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'u');
                             }
                             $this->doAccessDenied(true);
@@ -2046,7 +2046,7 @@ class PrumoCrud extends PrumoBasic
                             $this->doDelete(true);
                         } else {
                             
-                            if (isset($this->param['routine']) and !empty($this->param['routine'])) {
+                            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'd');
                             }
                             
@@ -2064,13 +2064,13 @@ class PrumoCrud extends PrumoBasic
                 
                 if (isset($_POST['pSearch_'.$this->name.'_action']) && $_POST['pSearch_'.$this->name.'_action'] != '') {
                     $this->pSearch->autoInit();
-                } elseif (isset($_POST['pCrudList_'.$this->name.'_action']) && $_POST['pCrudList_'.$this->name.'_action'] != '') {
+                } else if (isset($_POST['pCrudList_'.$this->name.'_action']) && $_POST['pCrudList_'.$this->name.'_action'] != '') {
                     
                     if ($this->getPermission('r')) {
                         $this->pCrudList->makeXml(true);
                     } else {
                         
-                        if (isset($this->param['routine']) and !empty($this->param['routine'])) {
+                        if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                             pLogAcessDenied($this->param['routine'], 'r');
                         }
                         
@@ -2102,14 +2102,14 @@ class PrumoCrud extends PrumoBasic
         for ($i = 0; $i < count($this->field); $i++) {
             
             // campos da tabela (exceto virtuais)
-            if (! isset($this->field[$i]['virtual']) or $this->field[$i]['virtual'] == false) {
+            if (! isset($this->field[$i]['virtual']) || $this->field[$i]['virtual'] == false) {
                 
                 $name = $this->field[$i]['name'];
                 $type = ' '.$this->pConnection->dbType($this->field[$i]['type']);
                 $notNull = $this->field[$i]['notnull'] ? ' NOT NULL' : '';
-                $default = (isset($this->field[$i]['default']) and $this->field[$i]['default'] != '') ? ' DEFAULT '.$this->field[$i]['default'] : '';
+                $default = (isset($this->field[$i]['default']) && $this->field[$i]['default'] != '') ? ' DEFAULT '.$this->field[$i]['default'] : '';
                 
-                if (isset($this->field[$i]['size']) and $this->field[$i]['size'] != '') {
+                if (isset($this->field[$i]['size']) && $this->field[$i]['size'] != '') {
                     
                     $size = '('.$this->field[$i]['size'].')';
                     

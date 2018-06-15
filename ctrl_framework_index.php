@@ -24,7 +24,7 @@ require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
     
 $pLogin = new PrumoLogin($GLOBALS['pConfig']['appIdent'], '', '');
 
-if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
+if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
     
     $pLogin->logoff();
     pRedirect($GLOBALS['pConfig']['appWebPath'].'/index.php');
@@ -39,7 +39,7 @@ if (isset($_GET['action']) and $_GET['action'] == 'logoff') {
             include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
         } else {
             
-            if ($GLOBALS['pConfig']['appWebPath'] == '' or $GLOBALS['pConfig']['appWebPath'] == '/') {
+            if ($GLOBALS['pConfig']['appWebPath'] == '' || $GLOBALS['pConfig']['appWebPath'] == '/') {
                 pRedirect($GLOBALS['pConfig']['afterLogin']);
             } else {
                 pRedirect($GLOBALS['pConfig']['appWebPath'].'/'.$GLOBALS['pConfig']['afterLogin']);

@@ -25,7 +25,7 @@ function getObjSearchList()
         $info = pathinfo($fileList[$i]);
         
         //apenas arquivos .php
-        if (isset($info['extension']) and strtolower($info['extension']) == 'php' and $info['basename'] != 'index.php' and $info['basename'] != 'prumo.php') {
+        if (isset($info['extension']) && strtolower($info['extension']) == 'php' && $info['basename'] != 'index.php' && $info['basename'] != 'prumo.php') {
             $fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
             
             // verifica se o arquivo inicializa o objeto informado

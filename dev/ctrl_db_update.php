@@ -25,7 +25,7 @@ pProtect('prumo_devtools');
 // verifica se existe a pasta de scripts de atualização do banco da aplicação
 $scriptDir = $GLOBALS['pConfig']['appPath'].'/updatedb';
 
-if (! is_writable($GLOBALS['pConfig']['appPath']) and !file_exists($scriptDir)) {
+if (! is_writable($GLOBALS['pConfig']['appPath']) && ! file_exists($scriptDir)) {
     
     $msg = _('Diretório "%dir%" não possui permissão de escrita, nada feito!');
     echo str_replace('%dir%', $GLOBALS['pConfig']['appPath'], $msg);

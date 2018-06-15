@@ -27,7 +27,7 @@ pCheckPOST('username');
 $readonly = pPermitted('prumo_users', 'u') ? '' : ' readonly="readonly" disabled="disabled"';
 
 ///////////////////// grava alterações ///////////////////
-if (isset($_POST['action']) and $_POST['action'] == 'write') {
+if (isset($_POST['action']) && $_POST['action'] == 'write') {
     
     if (pPermitted('prumo_users', 'u')) {
         

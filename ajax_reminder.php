@@ -23,7 +23,7 @@ require_once $GLOBALS['pConfig']['prumoPath'] . '/class_reminder.php';
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 $id = isset($_POST['id']) ? $_POST['id'] : '';
 
-if (!$id) {
+if (! $id) {
     echo _('Campo não informado') . ' (ID)';
     exit;
 }

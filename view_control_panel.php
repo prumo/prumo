@@ -28,7 +28,7 @@ function listThemes()
     for ($i = 0; $i<count($prumoThemes); $i++) {
         $themePath = $GLOBALS['pConfig']['prumoPath'].'/themes/'.$prumoThemes[$i];
         if (is_dir($themePath)) {
-            if ($prumoThemes[$i] != '.' and $prumoThemes[$i] != '..' and $prumoThemes[$i] != '.svn') {
+            if ($prumoThemes[$i] != '.' && $prumoThemes[$i] != '..' && $prumoThemes[$i] != '.svn') {
                 $themes[] = $prumoThemes[$i];
             }
         }
@@ -79,7 +79,7 @@ $inputTheme .= '                    </select>'."\n";
                         <td class="prumoFormLabel"><br /></td>
                         <td class="prumoFormFields"><b><?=_('BANCO DE DADOS DA APLICAÇÃO');?></b></td>
                     </tr>
-                    <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) { ?>
+                    <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) { ?>
                     <tr>
                         <td class="prumoFormLabel"><br /></td>
                         <td class=""><?=_('Modo "dbSingle" ativado, configurações de conectividade disponível em prumo.php');?></td>
@@ -88,30 +88,30 @@ $inputTheme .= '                    </select>'."\n";
                     <tr>
                         <td class="prumoFormLabel">sgdb:</td>
                         <td class="prumoFormFields">
-                            <select name="sgdb" id="sgdb"<?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled"' ?>>
+                            <select name="sgdb" id="sgdb"<?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled"' ?>>
                                 <option <?php if ($GLOBALS['pConfig']['sgdb'] == 'pgsql') echo 'selected ';?>value="pgsql">pgsql</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">dbHost:</td>
-                        <td class="prumoFormFields"><input id="dbHost" type="text" value="<?=$GLOBALS['pConfig']['dbHost'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
+                        <td class="prumoFormFields"><input id="dbHost" type="text" value="<?=$GLOBALS['pConfig']['dbHost'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">dbPort:</td>
-                        <td class="prumoFormFields"><input id="dbPort" type="text" value="<?=$GLOBALS['pConfig']['dbPort'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
+                        <td class="prumoFormFields"><input id="dbPort" type="text" value="<?=$GLOBALS['pConfig']['dbPort'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">dbName:</td>
-                        <td class="prumoFormFields"><input id="dbName" type="text" value="<?=$GLOBALS['pConfig']['dbName'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
+                        <td class="prumoFormFields"><input id="dbName" type="text" value="<?=$GLOBALS['pConfig']['dbName'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">dbUserName:</td>
-                        <td class="prumoFormFields"><input id="dbUserName" type="text" value="<?=$GLOBALS['pConfig']['dbUserName'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
+                        <td class="prumoFormFields"><input id="dbUserName" type="text" value="<?=$GLOBALS['pConfig']['dbUserName'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">dbPassword:</td>
-                        <td class="prumoFormFields"><input id="dbPassword" type="password" value="<?=$GLOBALS['pConfig']['dbPassword'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) and $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
+                        <td class="prumoFormFields"><input id="dbPassword" type="password" value="<?=$GLOBALS['pConfig']['dbPassword'] ?>" size="30" <?php if (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']) echo ' disabled="disabled" ' ?>/></td>
                     </tr>
                     <tr>
                         <td class="prumoFormLabel">appSchema:</td>

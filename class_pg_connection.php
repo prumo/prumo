@@ -137,7 +137,7 @@ class PrumoPgConnection
      */
     public function connected($reconnect=false)
     {
-        if ($reconnect and $this->connected == false) {
+        if ($reconnect && $this->connected == false) {
             $this->connect();
         }
         

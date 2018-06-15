@@ -24,7 +24,7 @@ function pGetConfigDb()
     global $pConfig;
     global $pConnectionPrumo;
     
-    $dbSingle = (isset($pConfig['dbSingle']) and $pConfig['dbSingle']);
+    $dbSingle = (isset($pConfig['dbSingle']) && $pConfig['dbSingle']);
     
     require_once $pConfig['prumoPath'].'/ctrl_connection_admin.php';
     
@@ -224,7 +224,7 @@ function prumoInfo()
     // $GLOBALS['pConfig']
     echo '<table border="0" cellpadding="3" width="800">'."\n";
     foreach($GLOBALS['pConfig'] as $param => $value) {
-        if ($param == 'dbPassword' or $param == 'dbPassword_prumo') {
+        if ($param == 'dbPassword' || $param == 'dbPassword_prumo') {
             echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">******</td></tr>'."\n";
         } else {
             echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
@@ -276,7 +276,7 @@ function pParameters($params)
             
             // bolean true
             $arrParams[strtolower($theRow[0])] = true;
-        } elseif (count($theRow) == 2) {
+        } else if (count($theRow) == 2) {
             
             // normal parameter
             $arrParams[strtolower($theRow[0])] = str_replace(':.:', ',', $theRow[1]);
@@ -353,7 +353,7 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
  */
 function pFormatSqlNull($value, $type)
 {
-    return ($type != 'boolean' and $value == '') ? 'NULL': $value;
+    return ($type != 'boolean' && $value == '') ? 'NULL': $value;
 }
 
 /**
@@ -475,7 +475,7 @@ trait PGetName
             $instance = array();
             
             foreach ($GLOBALS as $key => $value) {
-                if (is_object($value) and get_class($value) == $className) {
+                if (is_object($value) && get_class($value) == $className) {
                     $instance[] = $key;
                 }
             }

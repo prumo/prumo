@@ -24,7 +24,7 @@ pProtect('prumo_controlPanel');
 $configToWrite[] = 'appIdent';
 $configToWrite[] = 'appName';
 
-if (! isset($GLOBALS['pConfig']['dbSingle']) or !$GLOBALS['pConfig']['dbSingle']) {
+if (! isset($GLOBALS['pConfig']['dbSingle']) || !$GLOBALS['pConfig']['dbSingle']) {
     $configToWrite[] = 'sgdb';
     $configToWrite[] = 'dbHost';
     $configToWrite[] = 'dbPort';

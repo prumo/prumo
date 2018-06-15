@@ -94,7 +94,7 @@ class PrumoSqlite3Connection
             return false;
         }
         
-        if ($exists and $this->connection) {
+        if ($exists && $this->connection) {
             $this->connected = true;
             $this->err = '';
             return true;
@@ -125,7 +125,7 @@ class PrumoSqlite3Connection
      */
     function connected($reconnect=false)
     {
-        if ($reconnect and $this->connected == false) {
+        if ($reconnect && $this->connected == false) {
             $this->connect();
         }
         

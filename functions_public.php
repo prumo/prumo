@@ -76,7 +76,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                     if (in_array($char, array('+', '-'))) {
                         $delimiterFound = false;
                         $newNum = $char . $newNum;
-                    } elseif (in_array($char, array('.', ','))) {
+                    } else if (in_array($char, array('.', ','))) {
                         
                         if (! $delimiterFound) {
                             $newNum = '.' . $newNum;
@@ -252,9 +252,9 @@ function pParamCheck($param, $method='POST')
     } else {
         
         if (
-            ($method == 'GET' and (!isset($_GET[$param])))
+            ($method == 'GET' && (! isset($_GET[$param])))
             or
-            ($method == 'POST' and (!isset($_POST[$param])))
+            ($method == 'POST' && (! isset($_POST[$param])))
         ) {
             
             $msg = _('Parâmetro %param% não informado!');
@@ -288,7 +288,7 @@ function pError($text, $stderr)
 {
     if ($stderr == 'html') {
         echo $text."\n";
-    } elseif ($stderr == 'js') {
+    } else if ($stderr == 'js') {
         $tratedText = str_replace('\'','\\\'',$text);
         echo '<script type="text/javascript">' . "\n";
         echo '    alert(\''.$tratedText.'\')' . "\n";
@@ -368,17 +368,17 @@ function pXmlError($err, $msg, $verbose=false)
  */
 function htmlFormat($type, $value)
 {
-    if ($type == 'timestamp' and $value != '') {
+    if ($type == 'timestamp' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } elseif ($type == 'date' and $value != '') {
+    } else if ($type == 'date' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } elseif ($type == 'time' and $value != '') {
+    } else if ($type == 'time' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } elseif ($type == 'numeric' and $value != '') {
+    } else if ($type == 'numeric' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } elseif ($type == 'integer' and $value != '') {
+    } else if ($type == 'integer' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } elseif ($type == 'boolean' and $value != '') {
+    } else if ($type == 'boolean' && $value != '') {
         
         if ($value == 't') {
             $formatedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" checked="checked" />';
@@ -389,7 +389,7 @@ function htmlFormat($type, $value)
         $formatedValue = str_replace($value, '\\n', '<br />');
     }
     
-    if ($formatedValue == '//' or $formatedValue == '//::') {
+    if ($formatedValue == '//' || $formatedValue == '//::') {
         $formatedValue = '';
     }
     
@@ -406,7 +406,7 @@ function htmlFormat($type, $value)
  */
 function plainFormat($type, $value)
 {
-    if ($type == 'timestamp' and $value != '') {
+    if ($type == 'timestamp' && $value != '') {
         
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
@@ -416,19 +416,19 @@ function plainFormat($type, $value)
         $second = substr($value, 17, 2);
         $timestamp = substr($value, 17, 2);
         $formatedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
-    } elseif ($type == 'date' and $value != '') {
+    } else if ($type == 'date' && $value != '') {
         
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
         $day = substr($value, 8, 2);
         
         $formatedValue = $day . '/' . $month . '/' . $year;
-    } elseif ($type == 'time' and $value != '') {
+    } else if ($type == 'time' && $value != '') {
         
         $time = substr($value, 0, 8);
         
         $formatedValue = $time;
-    } elseif ($type == 'numeric' and $value != '') {
+    } else if ($type == 'numeric' && $value != '') {
         
         $number = str_replace('.', ',', str_replace(',', '', $value));
         
@@ -457,7 +457,7 @@ function pPermitted($routine, $permission='any')
     $arrPermission = getPermission($routine);
     
     if ($permission == 'any') {
-        return ($arrPermission['c'] or $arrPermission['r'] or $arrPermission['u'] or $arrPermission['d']);
+        return ($arrPermission['c'] || $arrPermission['r'] || $arrPermission['u'] || $arrPermission['d']);
     } else {
         return $arrPermission[$permission];
     }
@@ -497,14 +497,14 @@ function pListFiles($directory, $include='', $exclude='', $recursive=true)
     $fileList = array();
     
     for ($i = 0; $i < count($list); $i++) {
-        if ($list[$i] != '.' and $list[$i] != '..') {
+        if ($list[$i] != '.' && $list[$i] != '..') {
             $current = $directory . DIRECTORY_SEPARATOR . $list[$i];
             
-            if (is_file($current) and (empty($include) or preg_match($include, strtolower($current))) and (empty($exclude) or !preg_match($exclude, strtolower($current)))) {    
+            if (is_file($current) && (empty($include) || preg_match($include, strtolower($current))) && (empty($exclude) || ! preg_match($exclude, strtolower($current)))) {    
                 $fileList[] = $current;
             }
             
-            if (is_dir($current) and $recursive) {
+            if (is_dir($current) && $recursive) {
                 $fileList = array_merge($fileList, pListFiles($current, $include, $exclude));
             }
         }

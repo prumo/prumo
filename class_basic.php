@@ -98,8 +98,8 @@ class PrumoBasic
         $size    = isset($param['size']) ? $param['size'] : null;
         $default = isset($param['default']) ? $param['default'] : null;
         $type    = isset($param['type']) ? $param['type'] : 'string';
-        $notNull = (isset($param['notnull']) and $param['notnull']);
-        $visible = (!isset($param['visible']) or $param['visible'] != 'false');
+        $notNull = (isset($param['notnull']) && $param['notnull']);
+        $visible = (! isset($param['visible']) || $param['visible'] != 'false');
         
         $field = array(
                     'name' => $name,

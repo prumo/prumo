@@ -119,7 +119,7 @@ if (! extension_loaded('sodium')) {
 }
 
 //verifica se as configurações estão salvas no banco e busca as informações
-if ($GLOBALS['pConfig']['sgdb_prumo'] == 'pgsql' or $GLOBALS['pConfig']['sgdb_prumo'] == 'sqlite3') {
+if ($GLOBALS['pConfig']['sgdb_prumo'] == 'pgsql' || $GLOBALS['pConfig']['sgdb_prumo'] == 'sqlite3') {
     pGetConfigDb();
 }
 
