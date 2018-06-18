@@ -6,10 +6,10 @@
  * documentation files (the “Software”), to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
  * Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
@@ -37,7 +37,7 @@ class PrumoLogin
      * @param $username string: nome do usuário
      * @param $password string: senha codificada
      */
-    function __construct($ident, $username, $password)
+    public function __construct($ident, $username, $password)
     {
         global $pConnectionPrumo;
         
@@ -64,9 +64,9 @@ class PrumoLogin
     }
     
     /**
-     * Retorna o array de erros de login
+     * Retorna o erro de login
      *
-     * @return array
+     * @return string
      */
     public function getErr()
     {
@@ -92,23 +92,27 @@ class PrumoLogin
     {
         if ($this->connection->getConnection()) {
             
-            $sql = 'SELECT password,fullname FROM '.$this->connection->getSchema().'syslogin '.
-                   ' WHERE enabled='.pFormatSql(true,'boolean').
-                   '   AND username='.pFormatSql($this->username,'string').';';
+            $sql = 'SELECT password,fullname FROM ' . $this->connection->getSchema() . 'syslogin '
+                 . ' WHERE enabled=' . pFormatSql(true, 'boolean')
+                 . '   AND username=' . pFormatSql($this->username, 'string') . ';';
             $authentication = $this->connection->fetchAssoc($sql);
             
             $dbPassword = (isset($authentication['password'])) ? $authentication['password'] : '';
             
             $this->fullName = (isset($authentication['fullname'])) ? $authentication['fullname'] : $this->fullName = '';
              
-            if ($dbPassword != '' && sodium_crypto_pwhash_str_verify($dbPassword, $this->password) === true) {
+            if ($dbPassword != '' && $this->password != '' &&
+                sodium_crypto_pwhash_str_verify($dbPassword, $this->password) === true
+            ) {
                 $this->logged = true;
                 $this->sessionRegister();
             } else {
                 $this->logged = false;
                 $this->err = _('Usuário ou senha incorreta');
             }
-            sodium_memzero($this->password);
+            if ($this->password) {
+                sodium_memzero($this->password);
+            }
             $this->password = $dbPassword;
         } else {
             
