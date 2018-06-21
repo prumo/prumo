@@ -2281,12 +2281,12 @@ function PrumoFilter(objName, useSimilaritySearch)
             
             if (this.filter[i].visible) {
                 
-                var fieldName = document.getElementById(this.objName+'_'+i+'_field').value;
+                var fieldName = this.filter[i].fieldName;
                 var fieldLabel = this.fieldLabelByName(fieldName);
                 var fieldType = this.fieldTypeByName(fieldName);
-                var fieldOperator = document.getElementById(this.objName+'_'+i+'_operator').value;
-                var fieldValue = document.getElementById(this.objName+'_'+i+'_value').value;
-                var fieldValue2 = document.getElementById(this.objName+'_'+i+'_value2').value;
+                var fieldOperator = this.filter[i].operator;
+                var fieldValue = this.filter[i].value;
+                var fieldValue2 = this.filter[i].value2;
                 
                 msg = '';
                 if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
@@ -2318,7 +2318,9 @@ function PrumoFilter(objName, useSimilaritySearch)
                     
                     msg = msg.replace('%fieldValue%', fieldValue);
                     if (err == '') {
-                        document.getElementById(this.objName+'_'+i+'_value').focus();
+                        if (document.getElementById(this.objName+'_'+i+'_value') != undefined) {
+                            document.getElementById(this.objName+'_'+i+'_value').focus();
+                        }
                     }
                 }
                 
@@ -2348,7 +2350,9 @@ function PrumoFilter(objName, useSimilaritySearch)
                     
                     msg = msg.replace('%fieldValue%', fieldValue2);
                     if (err == '') {
-                        document.getElementById(this.objName+'_'+i+'_value2').focus();
+                        if (document.getElementById(this.objName+'_'+i+'_value2') != undefined) {
+                            document.getElementById(this.objName+'_'+i+'_value2').focus();
+                        }
                     }
                 }
             }
@@ -3211,7 +3215,7 @@ function PrumoSearch(objName, ajaxFile)
     {
         if (this.pAjax.working) {
             alert(this.objName + ': ' + gettext('já está trabalhando'));
-        } else {
+        } else if (this.pFilter.validateFilters()) {
             
             if (page != undefined) {
                 this.page = page;
@@ -3304,9 +3308,7 @@ function PrumoSearch(objName, ajaxFile)
     
     this.cmdSearch = function()
     {
-        if (this.pFilter.validateFilters()) {
-            this.goSearch(1);
-        }
+        this.goSearch(1);
     }
     
     this.cmdSearchAll = function()
@@ -3455,22 +3457,23 @@ function PrumoSearch(objName, ajaxFile)
                             for (iReturn in this.fieldReturn) {
                                 document.getElementById(this.fieldReturn[iReturn][1]).value = '';
                             }
+                        } 
+                        
+                        for (iFieldSearch in this.pFilter.fieldName) {
+                            if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
+                                var fieldType = this.pFilter.fieldType[iFieldSearch];
+                            }
+                        }
+                        
+                        if (fieldType == 'string') {
+                            var operator = 'like';
                         } else {
-                            
-                            for (iFieldSearch in this.pFilter.fieldName) {
-                                if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
-                                    var fieldType = this.pFilter.fieldType[iFieldSearch];
-                                }
-                            }
-                            
-                            if (fieldType == 'string') {
-                                var operator = 'like';
-                            } else {
-                                var operator = 'equal';
-                            }
-                            
-                            this.pFilter.clearValues();
-                            this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
+                            var operator = 'equal';
+                        }
+                        
+                        this.pFilter.clearValues();
+                        this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
+                        if (objField.value != '') {
                             this.goSearch(1);
                         }
                     }
