@@ -147,9 +147,9 @@ $searchUsers->addFieldReturn('username', 'username_copy_from');
         param += '&action=write';
 
         var select = document.getElementById('active_group');        
-        for (i in select.options) {
+        for (var i in select.options) {
             
-            var groupName = select.options[i].value
+            var groupName = select.options[i].value;
             if (groupName != undefined) {
                 param += '&groupname[]='+groupName;
             }

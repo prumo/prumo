@@ -1768,7 +1768,9 @@ function PrumoCrud(objName, ajaxFile)
     
     this.hide = function()
     {
-        document.getElementById(this.objName+'_form').style.display = 'none';
+        if (document.getElementById(this.objName+'_form') != undefined) {
+            document.getElementById(this.objName+'_form').style.display = 'none';
+        }
         if (this.pCrudList) {
             document.getElementById('pCrudList_'+this.objName).style.display = 'none';
         }

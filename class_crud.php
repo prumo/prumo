@@ -1775,9 +1775,13 @@ class PrumoCrud extends PrumoBasic
         $clientObject .= $this->ind.'    '.$this->name.'.fieldDefault = Array('.$fieldDefault.');'."\n";
         $clientObject .= $this->ind.'    '.$this->name.'.fieldTemplate = Array('.$fieldTemplate.');'."\n";
         $clientObject .= $this->ind.'    '.$this->name.'.fieldValidator = '.json_encode($this->validator)."\n";
-            
+        
         // repassa as permissões CRUD para o cliente
-        echo "\n";
+        $clientObject .= "\n";
+        $clientObject .= $this->ind.'    '.$this->name. '.permC = ' . ($this->getPermission('c') ? 'true' : 'false').';'."\n";
+        $clientObject .= $this->ind.'    '.$this->name. '.permR = ' . ($this->getPermission('r') ? 'true' : 'false').';'."\n";
+        $clientObject .= $this->ind.'    '.$this->name. '.permU = ' . ($this->getPermission('u') ? 'true' : 'false').';'."\n";
+        $clientObject .= $this->ind.'    '.$this->name. '.permD = ' . ($this->getPermission('d') ? 'true' : 'false').';'."\n";
         
         // ligação do crud com o search
         $clientObject .= "\n";
