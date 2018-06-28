@@ -542,6 +542,10 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.visibleSon1x1();
                 this.parent.retrieveVirtual();
                 this.parent.afterRetrieve();
+                if (this.parent.initialState == 'edit') {
+                    this.parent.bt_edit();
+                    this.parent.initialState = '';
+                }
             } else if (this.cmd == 'update') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
