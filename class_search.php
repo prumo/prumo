@@ -217,6 +217,7 @@ class PrumoSearch extends PrumoBasic
         
         $clientObject .= $this->ind.'    '.$this->name.'.fieldName = Array('.$fieldName.');'."\n";
         $clientObject .= $this->ind.'    '.$this->name.'.fieldPk = Array('.$fieldPk.');'."\n";
+        $clientObject .= $this->ind.'    document.pSearch.push('.$this->name.');'."\n";
         
         $clientObject .= $this->ind. '</script>'."\n";
         

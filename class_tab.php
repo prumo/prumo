@@ -32,7 +32,7 @@ class PrumoTab
     public $visible;
     
     /**
-     * Constritor da classe PrumoTab
+     * Construtor da classe PrumoTab
      */
     function __construct()
     {
@@ -101,6 +101,7 @@ class PrumoTab
             $top .= $this->ind.'    '.$this->getObjName().'.addTab(\''.$this->tab[$i].'\');'."\n";
         }
         
+        $top .= $this->ind.'    document.pTab.push('.$this->getObjName().');'."\n";
         $top .= $this->ind.'</script>'."\n";
         $top .= $this->ind.'<fieldset id="'.$this->getObjName().'"'.$visible.'>'."\n";
         $top .= $this->ind.'    <legend>'."\n";

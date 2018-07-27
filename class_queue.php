@@ -101,6 +101,7 @@ class PrumoQueue extends PrumoSearch
         if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
         }
+        $clientObject .= $this->ind.'    document.pQueue.push('.$this->name.');'."\n";
         $clientObject .= $this->ind. '</script>'."\n";
         
         return $clientObject;

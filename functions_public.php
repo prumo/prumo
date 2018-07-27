@@ -40,7 +40,6 @@ function pAddQuote($value, $useQuote=true)
  */
 function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
 {
-    
     $valueNoInjection = pSqlNoInjection($value, $type);
     
     if ($capsLock) {
@@ -98,10 +97,9 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
             if ($valueNoInjection == '') {
                 return "NULL";
             } else {
-                
-                if (pCheckDate($valueNoInjection, 'dd/mm/aaaa', 1000, 3000)) {
-                    list ($dia, $mes, $ano) = preg_split ('/[\/\.-]+/', $valueNoInjection);
-                    return pAddQuote("$ano-$mes-$dia");
+                if (pCheckDate($valueNoInjection)) {
+                    $arrDate = pParseDate($valueNoInjection);
+                    return pAddQuote($arrDate['year'].'-'.$arrDate['month'].'-'.$arrDate['day']);
                 } else {
                     return "NULL";
                 }
@@ -117,39 +115,35 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
             if ($valueNoInjection == '') {
                 return "NULL";
             } else {
-                $ano     = trim(substr($valueNoInjection, 6, 4));
-                $mes     = trim(substr($valueNoInjection, 3, 2));
-                $dia     = trim(substr($valueNoInjection, 0, 2));
-                $hora    = trim(substr($valueNoInjection, 11, 2));
-                $minuto  = trim(substr($valueNoInjection, 14, 2));
-                $fuso    = '';
-                
-                if (substr($valueNoInjection, 16, 1) == ':') {
-                    $segundo = trim(substr($valueNoInjection, 17, 2));
-                    $fuso = trim(substr($valueNoInjection, 19));
-                }
-                else {
-                    $segundo = '';
-                    $fuso = trim(substr($valueNoInjection, 16));
+                while ($valueNoInjection != str_replace('  ', ' ', $valueNoInjection)) {
+                    $valueNoInjection = str_replace('  ', ' ', $valueNoInjection);
                 }
                 
-                $fuso = in_array(substr($fuso, 0, 1), array('+', '-')) ? substr($fuso, 0, 1) . str_replace("'", '', pFormatSql(substr($fuso, 1), 'time')) : '';
+                $part = explode(' ', $valueNoInjection);
                 
-                if (empty($hora)) $hora = '00';
-                if (empty($minuto)) $minuto = '00';
-                if (empty($segundo)) $segundo = '00';
+                $arrDate = pParseDate($part[0]);
                 
-                if (strlen($hora) == 1) {
-                    $hora = '0'.$hora;
-                }
-                if (strlen($minuto) == 1) {
-                    $minuto = '0'.$minuto;
-                }
-                if (strlen($segundo) == 1) {
-                    $segundo = '0'.$segundo;
+                $fuso = '';
+                $partFuso = explode('+', $part[1]);
+                if (isset($partFuso[1])) {
+                    $fuso = '+'.$partFuso[1];
+                } else {
+                    $partFuso = explode('-', $part[1]);
+                    if (isset($partFuso[1])) {
+                        $fuso = '-'.$partFuso[1];
+                    }
                 }
                 
-                return pAddQuote("$ano-$mes-$dia $hora:$minuto:$segundo$fuso");
+                $arrTime = pParseTime($partFuso[0]);
+                
+                $year   = $arrDate['year'];
+                $month  = $arrDate['month'];
+                $day    = $arrDate['day'];
+                $hour   = $arrTime['hour'];
+                $minute = $arrTime['minute'];
+                $second = $arrTime['second'];
+                
+                return pAddQuote("$year-$month-$day $hour:$minute:$second$fuso");
             }
         break;
 
@@ -163,55 +157,19 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
  * Valida data
  *
  * @param @data string: data a ser validade em formato string
- * @param $dateFormat string: ddmmaaaa ou aaaammdd
- * @param $minYear integer: menor ano possível
- * @param $maxYear integer: maior ano possível
  *
  * @return boolean
  */
-function pCheckDate($date, $dateFormat='ddmmaaaa', $minYear=1900, $maxYear=2100)
+function pCheckDate($date)
 {
-    
-    $strDate = pSqlNoInjection($date, 'date')."\n";
-    
-    $strDate = str_replace('/', '', $strDate);
-    $strDate = str_replace('.', '', $strDate);
-    
-    $dateFormat = str_replace('/', '', strtolower($dateFormat));
-    $dateFormat = str_replace('.', '', $dateFormat);
-    
-    if (strlen($strDate) < 8) {
+    $arrDate = pParseDate($date);
+    if ($arrDate === false) {
+        return false;
+    } else if (checkdate($arrDate['month'], $arrDate['day'], $arrDate['year'])) {
+        return true;
+    } else {
         return false;
     }
-    
-    switch ($dateFormat) {
-        
-        case 'ddmmaaaa':        
-            $day = substr($strDate, 0, 2);
-            $month = substr($strDate, 2, 2);
-            $year = substr($strDate, 4, 4);
-        break;
-        
-        case 'aaammdd':
-            $day = substr($strDate, 0, 4);
-            $month = substr($strDate, 4, 2);
-            $year = substr($strDate, 6, 2);
-        break;
-        
-        default:
-            return false;
-        break;
-    }
-    
-    if ($year < $minYear) {
-        return false;
-    }
-    
-    if ($year > $maxYear) {
-        return false;
-    }
-    
-    return checkdate($month, $day, $year);
 }
 
 /**
@@ -368,18 +326,27 @@ function pXmlError($err, $msg, $verbose=false)
  */
 function htmlFormat($type, $value)
 {
-    if ($type == 'timestamp' && $value != '') {
+    if ($type == 'timestamp' && ! empty($value)) {
+        $year = substr($value, 0, 4);
+        $month = substr($value, 5, 2);
+        $day = substr($value, 8, 2);
+        $hour = substr($value, 11, 2);
+        $minute = substr($value, 14, 2);
+        $second = substr($value, 17, 2);
+        $timestamp = substr($value, 17, 2);
+        $formatedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
+    } else if ($type == 'date' && ! empty($value)) {
+        $year = substr($value, 0, 4);
+        $month = substr($value, 5, 2);
+        $day = substr($value, 8, 2);
+        $formatedValue = $day . '/' . $month . '/' . $year;
+    } else if ($type == 'time' && ! empty($value)) {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'date' && $value != '') {
+    } else if ($type == 'numeric' && ! empty($value)) {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'time' && $value != '') {
+    } else if ($type == 'integer' && ! empty($value)) {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'numeric' && $value != '') {
-        $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'integer' && $value != '') {
-        $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'boolean' && $value != '') {
-        
+    } else if ($type == 'boolean' && ! empty($value)) {
         if ($value == 't') {
             $formatedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" checked="checked" />';
         } else {
@@ -406,32 +373,12 @@ function htmlFormat($type, $value)
  */
 function plainFormat($type, $value)
 {
-    if ($type == 'timestamp' && $value != '') {
-        
-        $year = substr($value, 0, 4);
-        $month = substr($value, 5, 2);
-        $day = substr($value, 8, 2);
-        $hour = substr($value, 11, 2);
-        $minute = substr($value, 14, 2);
-        $second = substr($value, 17, 2);
-        $timestamp = substr($value, 17, 2);
-        $formatedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
-    } else if ($type == 'date' && $value != '') {
-        
-        $year = substr($value, 0, 4);
-        $month = substr($value, 5, 2);
-        $day = substr($value, 8, 2);
-        
-        $formatedValue = $day . '/' . $month . '/' . $year;
-    } else if ($type == 'time' && $value != '') {
-        
+    //@todo converter no lado do cliente o formato da data e hora
+    if ($type == 'time' && ! empty($value)) {
         $time = substr($value, 0, 8);
-        
         $formatedValue = $time;
-    } else if ($type == 'numeric' && $value != '') {
-        
+    } else if ($type == 'numeric' && ! empty($value)) {
         $number = str_replace('.', ',', str_replace(',', '', $value));
-        
         $formatedValue = $number;
     } else {
         $formatedValue = $value;

@@ -328,7 +328,7 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
         break;
         
         case "date":
-            $valueNoInjection = preg_replace("/[^0-9\/]/", "", $valueNoInjection);
+            $valueNoInjection = preg_replace("/[^0-9\-\/\/]/", "", $valueNoInjection);
         break;
         
         case "time":
@@ -336,7 +336,7 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
         break;
         
         case "timestamp":
-            $valueNoInjection = preg_replace("/[^0-9\:\/\ -]/", "", $valueNoInjection);
+            $valueNoInjection = preg_replace("/[^0-9\:\+\-\/\ ]/", "", $valueNoInjection);
         break;
     }
     
@@ -433,6 +433,82 @@ function pAuditLog($routine, $objName, $sqlCommand, $crud)
         pXmlError('SqlError', $pConnectionPrumo->getErr(), true);
         exit;
     }
+}
+
+/**
+ * Separa os campos de uma data (dia, mês e ano)
+ *
+ * @param $date string: data
+ *
+ * @return array: array associativo com as partes da data
+ * @return bool: false em caso de falha
+ */
+function pParseDate(string $date)
+{
+    if (substr_count($date, '/') > 0) {
+        $part = explode('/', $date);
+        $day   = trim($part[0]);
+        $month = isset($part[1]) ? trim($part[1]) : '00';
+        $year  = isset($part[2]) ? trim($part[2]) : '00';
+    } else if (substr_count($date, '-') > 0) {
+        $part = explode('-', $date);
+        $year  = trim($part[0]);
+        $month = isset($part[1]) ? trim($part[1]) : '00';
+        $day   = isset($part[2]) ? trim($part[2]) : '00';
+    } else {
+        return false;
+    }
+    
+    if (empty($day)) $day = '00';
+    if (empty($month)) $month = '00';
+    
+    if (strlen($day) == 1) {
+        $day = '0'.$day;
+    }
+    if (strlen($month) == 1) {
+        $month = '0'.$month;
+    }
+    
+    return array(
+        'year'  => trim($year),
+        'month' => trim($month),
+        'day'   => trim($day)
+    );
+}
+
+/**
+ * Separa os campos de um horário (horas, minutos, segundos e timezone)
+ *
+ * @param $time string: horário
+ *
+ * @return array: array associativo com as partes do horário
+ */
+function pParseTime(string $date)
+{
+    $part = explode(':', $date);
+    $hour = substr(trim($part[0]), 0, 2);
+    $minute = isset($part[1]) ? trim($part[1]) : '00';
+    $second = isset($part[2]) ? trim($part[2]) : '00';
+    
+    if (empty($hour)) $hour = '00';
+    if (empty($minute)) $minute = '00';
+    if (empty($second)) $second = '00';
+    
+    if (strlen($hour) == 1) {
+        $hour = '0'.$hour;
+    }
+    if (strlen($minute) == 1) {
+        $minute = '0'.$minute;
+    }
+    if (strlen($second) == 1) {
+        $second = '0'.$second;
+    }
+    
+    return array(
+        'hour' => $hour,
+        'minute' => $minute,
+        'second' => $second
+    );
 }
 
 /**

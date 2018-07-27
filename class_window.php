@@ -119,6 +119,7 @@ class PrumoWindow
         if ($this->jsAfterHide != null) {
             $pWindow .= $this->ind . '    '.$this->getObjName().'.afterHide = function() { '.$this->jsAfterHide.' }'."\n";
         }
+        $pWindow .= $this->ind.'    document.pWindow.push('.$this->name.');'."\n";
         $pWindow .= $this->ind . '</script>'."\n";
         
         if ($verbose) {

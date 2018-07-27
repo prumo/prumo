@@ -42,7 +42,7 @@ require_once $GLOBALS['pConfig']['prumoPath'] . '/ctrl_reminder.php';
             </tr>
             <tr>
                 <td class="prumoFormLabel"><?=_('Lembrar em');?>:</td>
-                <td class="prumoFormFields"><input id="reminder_date" type="text" size="10" maxlength="10"/>*</td>
+                <td class="prumoFormFields"><input id="reminder_date" type="date" size="10" maxlength="10"/>*</td>
             </tr>
             <tr>
                 <td class="prumoFormLabel"><?=_('Repetir a cada');?>:</td>

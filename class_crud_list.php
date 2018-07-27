@@ -73,7 +73,7 @@ class PrumoCrudList extends PrumoSearch
         if (isset($this->param['fastdelete']) && $this->param['fastdelete']) {
             $clientObject .= $this->ind . '    '. $this->name.'.fastDelete = true;'."\n";
         }
-        
+        $clientObject .= $this->ind.'    document.pCrudList.push('.$this->name.');'."\n";
         $clientObject .= $this->ind. '</script>'."\n";
         
         return $clientObject;

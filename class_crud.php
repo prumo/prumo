@@ -64,7 +64,7 @@ class PrumoCrud extends PrumoBasic
         'numeric'   => '<input type="text" size="5" />',
         'date'      => '<input type="date" size="9" />',
         'time'      => '<input type="time" size="9" />',
-        'timestamp' => '<input type="datetime" size="15" />',
+        'timestamp' => '<input type="datetime-local" size="15" />',
         'boolean'   => '<input type="checkbox" />'
     );
     
@@ -651,10 +651,10 @@ class PrumoCrud extends PrumoBasic
                 if ($this->field[$i]['virtual'] == false) {
                     
                     if (
-                        ! isset($_POST['new_'.$this->field[$i]['fieldid']]) or
-                        ! isset($_POST['old_'.$this->field[$i]['fieldid']]) or
-                        $_POST['new_'.$this->field[$i]['fieldid']] != plainFormat($this->field[$i]['type'], $currentValue[$this->field[$i]['name']]) && 
-                        $this->field[$i]['name'] != 'prumoUser' and
+                        ! isset($_POST['new_'.$this->field[$i]['fieldid']]) ||
+                        ! isset($_POST['old_'.$this->field[$i]['fieldid']]) ||
+                        pFormatSql($_POST['new_'.$this->field[$i]['fieldid']], $this->field[$i]['type']) != pFormatSql(plainFormat($this->field[$i]['type'], $currentValue[$this->field[$i]['name']]), $this->field[$i]['type']) &&
+                        $this->field[$i]['name'] != 'prumoUser' &&
                         $this->field[$i]['noupdate'] == false
                     ) {
                         if ($values != '') {
@@ -1860,6 +1860,7 @@ class PrumoCrud extends PrumoBasic
             $clientObject .= $this->ind . '    });'."\n";
         }
         
+        $clientObject .= $this->ind.'    document.pCrud.push('.$this->name.');'."\n";
         $clientObject .= $this->ind. '</script>'."\n";
         $clientObject .= $this->initClientObject1x1();
         

@@ -107,20 +107,29 @@ function pSimpleAjax(file, param, result)
  */
 function isDate(value)
 {
-    var date = value;
-    var arrDate = new Array();
-    var ExpReg = new RegExp("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[12][0-9]{3}");
-    arrDate = date.split("/");
+    if (value.split("/").length - 1 > 0) {
+        var arrDate = value.split("/");
+        var day = arrDate[0];
+        var month = arrDate[1];
+        var year = arrDate[2];
+    } else if (value.split("-").length - 1 > 0) {
+        var arrDate = value.split("-");
+        var year = arrDate[0];
+        var month = arrDate[1];
+        var day = arrDate[2];
+    } else {
+        return false;
+    }
     
-    if (date.search(ExpReg) == -1) {
+    if (((month == 1) || (month == 3) || (month == 5) || (month == 7) || (month == 8) || (month == 10) || (month == 12)) && (day < 1 || day > 31)) {
         return false;
-    } else if (((arrDate[1] == 4) || (arrDate[1] == 6) || (arrDate[1] == 9) || (arrDate[1] == 11)) && (arrDate[0] > 30)) {
+    } else if (((month == 4) || (month == 6) || (month == 9) || (month == 11)) && (day < 1 || day > 30)) {
         return false;
-    } else if (arrDate[1] == 2) {
-        if ((arrDate[0] > 28) && ((arrDate[2]%4) != 0)) {
+    } else if (month == 2) {
+        if ((day > 28) && ((year%4) != 0)) {
             return false;
         }
-        if ((arrDate[0] > 29)&&((arrDate[2]%4)==0)) {
+        if ((day > 29) && ((year%4) == 0)) {
             return false;
         }
     }
@@ -260,13 +269,17 @@ function format(type, value, textStyle)
         var minute = value.substring(14, 16);
         var second = value.substring(17, 19);
         var timestamp = value.substring(17, 19);
-        var formatedValue = day + '/' + month + '/' + year + ' ' + hour + ':' + minute + ':' + second;
-    } else if (type == 'time' && value != '') {
+        if (textStyle == 'html') {
+            var formatedValue = day + '/' + month + '/' + year + ' ' + hour + ':' + minute + ':' + second;
+        } else {
+            var formatedValue = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
+        }
+    } else if (type == 'time' && value != '' && textStyle == 'html') {
         var hour = value.substring(0, 2);
         var minute = value.substring(3, 5);
         var second = value.substring(6, 8)
         var formatedValue = hour + ':' + minute + ':' + second;
-    } else if (type == 'date' && value != '') {
+    } else if (type == 'date' && value != '' && textStyle == 'html') {
         var year = value.substring(0, 4);
         var month = value.substring(5, 7);
         var day = value.substring(8, 10);
@@ -459,6 +472,7 @@ function prumoAjax(ajaxFile, process)
     }
 }
 
+document.pCrud = Array();
 function PrumoCrud(objName, ajaxFile)
 {
     this.objName = objName;
@@ -542,6 +556,7 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.visibleSon1x1();
                 this.parent.retrieveVirtual();
                 this.parent.afterRetrieve();
+                this.parent.afterRetrieve2();
                 if (this.parent.initialState == 'edit') {
                     this.parent.bt_edit();
                     this.parent.initialState = '';
@@ -1268,16 +1283,18 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
     
-    // @todo deprecated - mantido apenas para compatibilidade até expirar o cache
-    this.onStateChange = function()
+    /**
+     * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
+     */
+    this.afterStateChange = function()
     {
-        return this.afterStateChange();
+        return true;
     }
     
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
      */
-    this.afterStateChange = function()
+    this.afterStateChange2 = function()
     {
         return true;
     }
@@ -1350,6 +1367,14 @@ function PrumoCrud(objName, ajaxFile)
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
     this.afterRetrieve = function()
+    {
+        return true;
+    }
+    
+    /**
+     * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
+     */
+    this.afterRetrieve2 = function()
     {
         return true;
     }
@@ -1505,6 +1530,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         this.afterStateChange();
+        this.afterStateChange2();
     }
     
     /**
@@ -1953,8 +1979,11 @@ function PrumoCrud(objName, ajaxFile)
     }
 }
 
+document.pFilter = Array();
+
 function PrumoFilter(objName, useSimilaritySearch)
 {
+    this.prumoClass = 'PrumoFilter';
     this.objName = objName;
     this.pAjax = new prumoAjax();
     this.pAjax.ajaxFormat = 'xml';
@@ -1969,6 +1998,17 @@ function PrumoFilter(objName, useSimilaritySearch)
     
     this.filter = new Array();
     this.count = 0;
+    
+    this.inputType = new Array();
+    this.inputType['serial']    = 'number',
+    this.inputType['integer']   = 'number',
+    this.inputType['string']    = 'text',
+    this.inputType['text']      = 'text',
+    this.inputType['numeric']   = 'number',
+    this.inputType['date']      = 'date',
+    this.inputType['time']      = 'time',
+    this.inputType['timestamp'] = 'datetime',
+    this.inputType['boolean']   = 'select'
     
     //operadores lógicos para campos em formato texto
     this.textOperators = Array(
@@ -2212,6 +2252,13 @@ function PrumoFilter(objName, useSimilaritySearch)
     }
     
     /**
+     * gatilho disparado depois do selectFieldChange
+     */
+    this.afterSelectFieldChange = function() {
+        // método que pode ser usado pelo desenvolvedor da aplicação
+    }
+    
+    /**
      * Evento disparado pelo onChange do select "nome do campo"
      * 
      * @param selectFieldName string: nome do campo
@@ -2254,8 +2301,10 @@ function PrumoFilter(objName, useSimilaritySearch)
         
         // redesenha o input
         var currentValue = document.getElementById(this.objName+'_'+index+'_value').value;
+        var currentValue2 = document.getElementById(this.objName+'_'+index+'_value2').value;
         
         var htmlInput = '';
+        var htmlInput2 = '';
         var labelTrue = gettext('Sim');
         var labelFalse = gettext('Não');
         if (operatorType == 'boolean') {
@@ -2264,13 +2313,24 @@ function PrumoFilter(objName, useSimilaritySearch)
             htmlInput += '<option value="f">'+labelFalse+'</option>';
             htmlInput += '<option value=""></option>';
             htmlInput += '</select>';
+            htmlInput2  = '<select id="'+this.objName+'_'+index+'_value2" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')">';
+            htmlInput2 += '<option value="t">'+labelTrue+'</option>';
+            htmlInput2 += '<option value="f">'+labelFalse+'</option>';
+            htmlInput2 += '<option value=""></option>';
+            htmlInput2 += '</select>';
         } else {
-            htmlInput = '<input type="text" id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
+            let fieldType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
+            htmlInput = '<input type="'+fieldType+'" id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
+            htmlInput2 = '<input type="'+fieldType+'" id="'+this.objName+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
         }
         
         document.getElementById(this.objName+'_'+index+'_input').innerHTML = htmlInput;
         document.getElementById(this.objName+'_'+index+'_value').value = currentValue;
         document.getElementById(this.objName+'_'+index+'_value').focus();
+        document.getElementById(this.objName+'_'+index+'_input2').innerHTML = htmlInput2;
+        document.getElementById(this.objName+'_'+index+'_value2').value = currentValue2;
+        
+        this.afterSelectFieldChange();
     }
     
     /**
@@ -2730,6 +2790,7 @@ function prumoValidator(validator)
     }
 }
 
+document.pGrid = Array();
 function PrumoGrid(objName)
 {
     this.xmlIdentification;
@@ -3041,6 +3102,7 @@ function PrumoMenu(objName)
     }
 }
 
+document.pSearch = Array();
 function PrumoSearch(objName, ajaxFile)
 {
     this.objName = objName;
@@ -3118,6 +3180,11 @@ function PrumoSearch(objName, ajaxFile)
     }
     
     this.afterSearch = function()
+    {
+        //implementar conforme necessidade
+    }
+    
+    this.afterSearch2 = function()
     {
         //implementar conforme necessidade
     }
@@ -3209,6 +3276,7 @@ function PrumoSearch(objName, ajaxFile)
         lastReturn.focus();
         
         this.afterSearch();
+        this.afterSearch2();
     }
     
     this.beforeSearch = function()
@@ -3540,6 +3608,7 @@ function PrumoSearch(objName, ajaxFile)
     }
 }
 
+document.pCrudList = Array();
 function PrumoCrudList(objName, ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
@@ -3550,11 +3619,15 @@ function PrumoCrudList(objName, ajaxFile)
     this.fastUpdate = false;
     this.fastDelete = false;
     
+    this.afterFastCrud = function() {
+        // gatilho
+    }
+    
     this.fastCRUD = function()
     {
         if (this.fastCreate || this.fastUpdate || this.fastDelete) {
             
-            var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
+            let xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
             
             //laço que com a quantidade de linhas do xml
             if (this.fastDelete) {
@@ -3610,6 +3683,8 @@ function PrumoCrudList(objName, ajaxFile)
                 
                 this.parent.unFreezeFields();
             }
+            
+            this.afterFastCrud();
         }
     }
     
@@ -3675,6 +3750,7 @@ function PrumoCrudList(objName, ajaxFile)
             }
             
             this.parent.unFreezeFields();
+            this.afterFastCrud();
         } else {
             
             for (var i=0; i < this.fieldReturn.length; i++) {
@@ -3708,10 +3784,12 @@ function PrumoCrudList(objName, ajaxFile)
             this.parent.doRetrieve();
             this.parent.backToForms();
             this.afterSearch();
+            this.afterSearch2();
         }
     }
 }
 
+document.pQueue = Array();
 function PrumoQueue(objName,ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
@@ -3739,6 +3817,7 @@ function PrumoQueue(objName,ajaxFile)
     
 }
 
+document.pTab = Array();
 function PrumoTab(objName)
 {
     this.objName = objName;
@@ -3774,6 +3853,7 @@ function PrumoTab(objName)
     }
 }
 
+document.pWindow = Array();
 function PrumoWindow(objName)
 {
     this.objName = objName;

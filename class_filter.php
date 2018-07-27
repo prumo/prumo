@@ -157,6 +157,7 @@ class PrumoFilter
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.fieldLabel = new Array('.$filterLabel.");\n";
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.fieldType  = new Array('.$filterType.");\n";
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.draw();'."\n";
+        $jsFilters .= $this->ind.'    document.pFilter.push(pFilter_'.$this->parentName.');'."\n";
         $jsFilters .= $this->ind.'</script>'."\n";
         
         return $jsFilters;

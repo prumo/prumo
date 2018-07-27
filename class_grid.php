@@ -169,6 +169,7 @@ class PrumoGrid
         $client  = $this->ind.'<script type="text/javascript">'."\n";
         $client .= $this->ind.'    pGrid_'.$this->parentName.' = new PrumoGrid(\'pGrid_'.$this->parentName.'\');'."\n";
         $client .= $this->ind.'    pGrid_'.$this->parentName.'.lines = '.$this->lines.';'."\n";
+        $client .= $this->ind.'    document.pGrid.push(pGrid_'.$this->parentName.');'."\n";
         $client .= $this->ind.'</script>'."\n";
         
         return $client;
