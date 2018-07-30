@@ -194,7 +194,6 @@ function prumoIsType(value, type)
     var isValid = true;
     
     switch(type) {
-        
         case 'serial':
             if (! regexInteger.test(value)) {
                 isValid = false;
@@ -205,28 +204,23 @@ function prumoIsType(value, type)
                 isValid = false;
             }
             break;
-        
         case 'numeric':
             if (! regexFloat.test(value)) {
                 isValid = false;
             }
             break;
-        
         case 'date':
             if (! isDate(value)) {
                 isValid = false;
             }
             break;
-    
         case 'time':
             if (! isTime(value)) {
                 isValid = false;
             }
             break;
-    
         case 'timestamp':
-            
-            partValue = value.split(" ");
+            let partValue = value.replace("T", " ").split(" ");
             
             if (partValue.length != 2) {
                 isValid = false;
@@ -236,14 +230,12 @@ function prumoIsType(value, type)
                 isValid = false;
             }
             break;
-    
         case 'boolean':
             if (value != 't' && value != 'f') {
                 isValid = false;
             }
             break;
     }
-    
     return isValid;
 }
 

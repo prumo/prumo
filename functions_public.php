@@ -119,7 +119,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                     $valueNoInjection = str_replace('  ', ' ', $valueNoInjection);
                 }
                 
-                $part = explode(' ', $valueNoInjection);
+                $part = explode(' ', str_replace('T', ' ', $valueNoInjection));
                 
                 $arrDate = pParseDate($part[0]);
                 
