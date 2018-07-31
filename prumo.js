@@ -2258,11 +2258,11 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.selectFieldChange = function(selectFieldName, index)
     {
-        var operatorType = this.operatorTypeByName(selectFieldName.value);
-        var selectOperator = document.getElementById(this.objName+'_'+index+'_operator');
+        let operatorType = this.operatorTypeByName(selectFieldName.value);
+        let selectOperator = document.getElementById(this.objName+'_'+index+'_operator');
         
-        var arrOperators = Array();
-        var arrOperatorsName = Array();
+        let arrOperators = Array();
+        let arrOperatorsName = Array();
         
         if (operatorType == 'text') {
             arrOperators     = this.textOperators;
@@ -2277,8 +2277,8 @@ function PrumoFilter(objName, useSimilaritySearch)
             arrOperatorsName = this.booleanOperatorsName;
         }
         
-        var htmlOptions = '';
-        for (var j=0; j < arrOperators.length; j++) {
+        let htmlOptions = '';
+        for (let j=0; j < arrOperators.length; j++) {
             htmlOptions += '<option value="'+arrOperators[j]+'">'+arrOperatorsName[j]+'</option>\n';
         }
         
@@ -2292,13 +2292,13 @@ function PrumoFilter(objName, useSimilaritySearch)
         document.getElementById(this.objName+'_'+index+'_value').focus();
         
         // redesenha o input
-        var currentValue = document.getElementById(this.objName+'_'+index+'_value').value;
-        var currentValue2 = document.getElementById(this.objName+'_'+index+'_value2').value;
+        let currentValue = document.getElementById(this.objName+'_'+index+'_value').value;
+        let currentValue2 = document.getElementById(this.objName+'_'+index+'_value2').value;
         
-        var htmlInput = '';
-        var htmlInput2 = '';
-        var labelTrue = gettext('Sim');
-        var labelFalse = gettext('Não');
+        let htmlInput = '';
+        let htmlInput2 = '';
+        let labelTrue = gettext('Sim');
+        let labelFalse = gettext('Não');
         if (operatorType == 'boolean') {
             htmlInput  = '<select id="'+this.objName+'_'+index+'_value" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')">';
             htmlInput += '<option value="t">'+labelTrue+'</option>';
@@ -2313,7 +2313,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         } else {
             let fieldType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
             htmlInput = '<input type="'+fieldType+'" id="'+this.objName+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
-            htmlInput2 = '<input type="'+fieldType+'" id="'+this.objName+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
+            htmlInput2 = '<input type="'+fieldType+'" id="'+this.objName+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValue2Change(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
         }
         
         document.getElementById(this.objName+'_'+index+'_input').innerHTML = htmlInput;
@@ -2462,7 +2462,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      * @param inputObject objeto dom
      * @param index integer: número do filtro
      */
-    this.inputValueChange = function(inputObject,index)
+    this.inputValueChange = function(inputObject, index)
     {
         this.filter[index].value = inputObject.value;
     }
@@ -2473,7 +2473,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      * @param inputObject objeto dom
      * @param index integer: número do filtro
      */
-    this.input2ValueChange = function(inputObject,index)
+    this.inputValue2Change = function(inputObject, index)
     {
         this.filter[index].value2 = inputObject.value;
     }
@@ -2617,8 +2617,8 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.draw = function()
     {
-        htmlFilters = '<table cellpadding="0" cellspacing="0">\n';
-        for (var i=0; i < this.filter.length; i++) {
+        let htmlFilters = '<table cellpadding="0" cellspacing="0">\n';
+        for (let i=0; i < this.filter.length; i++) {
             if (this.filter[i].visible) {
                 htmlFilters += '    <tr>\n';
                 htmlFilters += '        <td>\n';
@@ -2639,7 +2639,7 @@ function PrumoFilter(objName, useSimilaritySearch)
                 htmlFilters += '        <td>\n';
                 htmlFilters += '            <span id="'+this.objName+'_'+i+'_input2">\n';
                 htmlFilters += '                &nbsp;&nbsp;e&nbsp;\n';
-                htmlFilters += '                <input type="text" id="'+this.objName+'_'+i+'_value2" size="15" onchange="'+this.objName+'.input2ValueChange(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
+                htmlFilters += '                <input type="text" id="'+this.objName+'_'+i+'_value2" size="15" onchange="'+this.objName+'.inputValue2Change(this,'+i+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+i+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+i+')" />&nbsp;\n';
                 htmlFilters += '            </span>\n';
                 htmlFilters += '        </td>\n';
                 htmlFilters += '        <td id="'+this.objName+'_'+i+'_controls">\n';
@@ -2653,7 +2653,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         document.getElementById(this.objName+'_filters').innerHTML = htmlFilters;
         
         // chama o metodo configure filter para passar os valores do objeto para a interface
-        for (var i=0; i < this.filter.length; i++) {
+        for (let i=0; i < this.filter.length; i++) {
             this.configureFilter(this.filter[i].fieldName,i);
         }
         
