@@ -25,7 +25,7 @@ class PrumoLogin
     private $fullName;
     private $logged;
     private $ident;
-    private $connection;
+    private $pConnection;
     private $username;
     private $err;
     private $session;
@@ -42,18 +42,13 @@ class PrumoLogin
         global $pConnectionPrumo;
         
         $this->ident = $ident;
-        $this->connection = $pConnectionPrumo;
+        $this->pConnection = $pConnectionPrumo;
         $this->logged = false;
         $this->err = '';
         
         if ($username == '') {
-            
             if (isset($_SESSION[$ident.'_prumoUserName'])) {
                 $this->username = $_SESSION[$ident.'_prumoUserName'];
-            }
-            
-            if (isset($_SESSION[$ident.'_prumoUserPassword'])) {
-                $this->password = $_SESSION[$ident.'_prumoUserPassword'];
             }
         } else {
             $this->username = $username;
@@ -84,40 +79,90 @@ class PrumoLogin
     }
     
     /**
+     * Checa determinada senha com o registro no banco de dados
+     *
+     * @return bool
+     */
+    public function checkPassword()
+    {
+        $sql = 'SELECT' . PHP_EOL
+             . '    password' . PHP_EOL
+             . 'FROM ' . $this->pConnection->getSchema() . 'syslogin' . PHP_EOL
+             . 'WHERE enabled=' . pFormatSql(true, 'boolean') . PHP_EOL
+             . 'AND username=' . pFormatSql($this->username, 'string') . ';';
+        $dbPassword = $this->pConnection->sqlQuery($sql);
+        
+        if (empty($dbPassword) || empty($this->password)) {
+            return false;
+        }
+        
+        $check = function_exists('sodium_crypto_pwhash_str_verify') ? sodium_crypto_pwhash_str_verify($dbPassword, $this->password) : false;
+        
+        // fallback para md5
+        if ($check === false) {
+            $check = md5($this->password) === $dbPassword;
+        }
+        
+        if (function_exists('sodium_memzero')) {
+            sodium_memzero($this->password);
+            sodium_memzero($dbPassword);
+            sodium_memzero($sql);
+        }
+        
+        return $check;
+    }
+    
+    /**
+     * Altera a senha
+     *
+     * @param $newPassword string: nova senha
+     *
+     * @return bool
+     */
+    public function changePassword(string $newPassword)
+    {
+        if (function_exists('sodium_crypto_pwhash_str')) {
+            $encPassword = sodium_crypto_pwhash_str(
+                $newPassword,
+                SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE,
+                SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE
+            );
+        } else {
+            $encPassword = md5($newPassword);
+        }
+        
+        $sql = 'UPDATE ' . $this->pConnection->getSchema() . 'syslogin' . PHP_EOL
+             . 'SET "password"=' . pFormatSql($encPassword, 'string') . PHP_EOL
+             . 'WHERE username=' . pFormatSql($this->username, 'string') . ';';
+        $query = $this->pConnection->sqlQuery($sql);
+        
+        if (function_exists('sodium_memzero')) {
+            sodium_memzero($newPassword);
+            sodium_memzero($encPassword);
+            sodium_memzero($sql);
+        }
+        
+        return $query === false ? false : true;
+    }
+    
+    /**
      * Faz login
      *
      * @return boolean
      */
     public function login()
     {
-        if ($this->connection->getConnection()) {
-            
-            $sql = 'SELECT password,fullname FROM ' . $this->connection->getSchema() . 'syslogin '
-                 . ' WHERE enabled=' . pFormatSql(true, 'boolean')
-                 . '   AND username=' . pFormatSql($this->username, 'string') . ';';
-            $authentication = $this->connection->fetchAssoc($sql);
-            
-            $dbPassword = (isset($authentication['password'])) ? $authentication['password'] : '';
-            
-            $this->fullName = (isset($authentication['fullname'])) ? $authentication['fullname'] : $this->fullName = '';
-             
-            if ($dbPassword != '' && $this->password != '' &&
-                sodium_crypto_pwhash_str_verify($dbPassword, $this->password) === true
-            ) {
-                $this->logged = true;
-                $this->sessionRegister();
-            } else {
-                $this->logged = false;
-                $this->err = _('Usuário ou senha incorreta');
-            }
-            if ($this->password) {
-                sodium_memzero($this->password);
-            }
-            $this->password = $dbPassword;
+        if ($this->pConnection->getConnection() === false) {
+            $this->err = $this->pConnection->getErr();
+            return false;
+        }
+        
+        $this->logged = $this->checkPassword();
+        
+        if ($this->logged) {
+            $this->sessionRegister();
         } else {
-            
-            $this->logged = false;
-            $this->err = $this->connection->getErr();
+            $this->err = _('Usuário ou senha incorreta');
         }
         
         return $this->logged;
@@ -140,6 +185,12 @@ class PrumoLogin
      */
     private function sessionRegister()
     {
+        $sql = 'SELECT' . PHP_EOL
+             . '    fullname' . PHP_EOL
+             . 'FROM ' . $this->pConnection->getSchema() . 'syslogin' . PHP_EOL
+             . 'WHERE username=' . pFormatSql($this->username, 'string') . ';';
+        $this->fullName = $this->pConnection->sqlQuery($sql);
+        
         $_SESSION[$this->ident.'_prumoUserName'] = $this->username;
         $_SESSION[$this->ident.'_prumoFullName'] = $this->fullName;
         $_SESSION[$this->ident.'_prumoUserPassword'] = $this->password;
