@@ -28,7 +28,7 @@ if (! isset($pConfig['appPath']))               $pConfig['appPath']             
 if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? getAppWebPath() : '';
 if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = __DIR__;
 if (! isset($pConfig['prumoWebPath']))          $pConfig['prumoWebPath']          = $pConfig['appWebPath'].'/prumo';
-if ($pConfig['prumoWebPath'] == '/')            $pConfig['prumoWebPath']          = '';
+if ($pConfig['appWebPath'] == '/')              $pConfig['prumoWebPath']          = '/prumo';
 
 // Conectividade com Banco de dados Prumo
 if (! isset($pConfig['dbSingle']))              $pConfig['dbSingle']              = false;
@@ -198,9 +198,9 @@ function getAppWebPath($dir=false, $dirWeb=false)
         $dir = isset($_SERVER['SCRIPT_FILENAME']) ? dirname($_SERVER['SCRIPT_FILENAME']) : '';
         $dirWeb = isset($_SERVER['SCRIPT_NAME']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
     }
-    if ($dir === '') {
+    if ($dirWeb === '') {
         return '';
     }
-    return file_exists($dir.'/prumo.php') ? $dirWeb : getAppWebPath(dirname($dir), dirname($dirWeb) == '' ? '/' : dirname($dirWeb));
+    return file_exists($dir.'/prumo.php') ? $dirWeb : getAppWebPath(dirname($dir), dirname($dirWeb));
 }
 
