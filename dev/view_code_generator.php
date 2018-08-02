@@ -16,14 +16,14 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/dev/func_code_generator.php';
+require_once dirname(dirname(__DIR__)).'/prumo.php';
+require_once dirname(__DIR__).'/ctrl_connection_admin.php';
+require_once dirname(__DIR__).'/dev/func_code_generator.php';
 
 pProtect('prumo_devtools');
 
 // datalist para o arquivo
-$fileList = scandir($GLOBALS['pConfig']['appPath']);
+$fileList = scandir(dirname(dirname(__DIR__)));
 sort($fileList);
 $dataList = '<datalist id="list_file">'."\n";
 for ($i = 0; $i < count($fileList); $i++) {

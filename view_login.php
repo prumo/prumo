@@ -43,7 +43,7 @@ $html = str_replace(':submit:', $inputSubmit, $html);
 
 echo $html;
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
+require_once __DIR__.'/view_loading.php';
 ?>
 
 <script type="text/javascript">
@@ -70,4 +70,4 @@ require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
 </script>
 
 <?php
-include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
+include __DIR__.'/view_footer.php';

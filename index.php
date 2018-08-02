@@ -16,13 +16,13 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
+require_once dirname(__DIR__).'/prumo.php';
 
 ////////////////////// validação das configurações do ambiente //////////////////////
 $error = 0;
 $txtError = '';
 
-if (! file_exists($GLOBALS['pConfig']['appPath'].'/prumo.php')) {
+if (! file_exists(dirname(__DIR__).'/prumo.php')) {
     $txtError .= '<p><img src=\'images/logo_small.png\' alt=\'logo\' /></p>'."\n";
     $txtError .= '<h1>'._('Pré configuração').'</h1>'."\n";
     
@@ -103,8 +103,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
             exit;
         }
 
-        require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
-        require_once $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
+        require_once __DIR__.'/view_header.php';
+        require_once __DIR__.'/view_loading.php';
 
         ?>
 
@@ -133,11 +133,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
                 <div>
                     <?php
                     if (isset($_GET['page']) && $_GET['page'] == 'prumo_code_generator') {
-                        include $GLOBALS['pConfig']['prumoPath'].'/dev/view_code_generator.php';
+                        include __DIR__.'/dev/view_code_generator.php';
                     } else if (isset($_GET['page']) && $_GET['page'] == 'prumo_db_update') {
-                        include $GLOBALS['pConfig']['prumoPath'].'/dev/view_db_update.php';
+                        include __DIR__.'/dev/view_db_update.php';
                     } else if (isset($_GET['page'])) {
-                        include $GLOBALS['pConfig']['appPath'].'/'.$prumoPage[$_GET['page']];
+                        include dirname(__DIR__).'/'.$prumoPage[$_GET['page']];
                     } else {
                     ?>
                         <fieldset>
@@ -186,12 +186,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
         </div>
 
         <?php
-        include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
+        include __DIR__.'/view_footer.php';
         
     } else {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
-        include $GLOBALS['pConfig']['prumoPath'].'/view_login.php';
-        require_once $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
+        require_once __DIR__.'/view_header.php';
+        include __DIR__.'/view_login.php';
+        require_once __DIR__.'/view_footer.php';
     }
 }
 

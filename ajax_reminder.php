@@ -16,9 +16,9 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
-require_once $GLOBALS['pConfig']['prumoPath'] . '/class_reminder.php';
+require_once dirname(__DIR__).'/prumo.php';
+require_once __DIR__.'/ctrl_connection_admin.php';
+require_once __DIR__.'/class_reminder.php';
 
 $action = isset($_POST['action']) ? $_POST['action'] : '';
 $id = isset($_POST['id']) ? $_POST['id'] : '';

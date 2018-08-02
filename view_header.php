@@ -26,13 +26,13 @@ echo '<html>'."\n\n";
 echo '<head>'."\n";
 echo '    <title>' . $GLOBALS['pConfig']['appIdent'] . ' ' . $GLOBALS['pConfig']['appName'].'</title>'."\n";
 
-if (file_exists($GLOBALS['pConfig']['appPath'].'/favicon.ico')) {
+if (file_exists(dirname(__DIR__).'/favicon.ico')) {
     echo '    <link rel="shortcut icon" href="'.$GLOBALS['pConfig']['appWebPath'].'/favicon.ico" type="image/x-icon" />'."\n";
 }
 
 echo '    <link type="text/css" rel="stylesheet" media="screen" href="'.$prumoStyle.'" />'."\n";
 
-if (file_exists($GLOBALS['pConfig']['appPath'].'/style.css')) {
+if (file_exists(dirname(__DIR__).'/style.css')) {
     echo '    <link type="text/css" rel="stylesheet" media="screen" href="'.$GLOBALS['pConfig']['appWebPath'].'/style.css" />'."\n";
 }
 

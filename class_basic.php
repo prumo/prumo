@@ -39,7 +39,7 @@ class PrumoBasic
     function __construct($params)
     {
         global $pConnection;
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php';
+        require_once __DIR__.'/ctrl_connection.php';
         
         $this->pConnection = $pConnection;
         
@@ -61,7 +61,7 @@ class PrumoBasic
             if (dirname($_SERVER["SCRIPT_FILENAME"]) == dirname($lastInclusion)) {
                 $this->param['xmlfile'] = basename($lastInclusion);
             } else {
-                $this->param['xmlfile'] = $GLOBALS['pConfig']['appWebPath'] . str_replace($GLOBALS['pConfig']['appPath'], '', $lastInclusion);
+                $this->param['xmlfile'] = $GLOBALS['pConfig']['appWebPath'] . str_replace(dirname(__DIR__), '', $lastInclusion);
             }
         }
         

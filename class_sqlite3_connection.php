@@ -70,7 +70,7 @@ class PrumoSqlite3Connection
         if (! extension_loaded('sqlite3')) {
             $msg = _('É necessário ativar a extensão %extension% no PHP, ou alterar o banco de dados do framework para PostgreSQL editando o arquivo %file%.');
             $msg = str_replace('%extension%', 'sqlite3', $msg);
-            $this->err = str_replace('%file%', $GLOBALS['pConfig']['appPath'].'/prumo.php', $msg);
+            $this->err = str_replace('%file%', dirname(__DIR__).'/prumo.php', $msg);
             $this->connected = false;
             return false;
         }

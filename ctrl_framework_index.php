@@ -20,7 +20,7 @@
  * Este arquivo controla a interface do sistema
  */
 
-require_once $GLOBALS['pConfig']['prumoPath'].'/view_header.php';
+require_once __DIR__.'/view_header.php';
     
 $pLogin = new PrumoLogin($GLOBALS['pConfig']['appIdent'], '', '');
 
@@ -34,9 +34,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
         
         if ($GLOBALS['pConfig']['afterLogin'] == 'index.php') {
             
-            include $GLOBALS['pConfig']['prumoPath'].'/view_loading.php';
-            include $GLOBALS['pConfig']['prumoPath'].'/view_page.php';
-            include $GLOBALS['pConfig']['prumoPath'].'/view_footer.php';
+            include __DIR__.'/view_loading.php';
+            include __DIR__.'/view_page.php';
+            include __DIR__.'/view_footer.php';
         } else {
             
             if ($GLOBALS['pConfig']['appWebPath'] == '' || $GLOBALS['pConfig']['appWebPath'] == '/') {
@@ -46,6 +46,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
             }
         }
     } else {
-        include $GLOBALS['pConfig']['prumoPath'].'/view_login.php';
+        include __DIR__.'/view_login.php';
     }
 }

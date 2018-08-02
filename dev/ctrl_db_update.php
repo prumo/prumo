@@ -16,19 +16,19 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php';
+require_once dirname(dirname(__DIR__)).'/prumo.php';
+require_once dirname(__DIR__).'/ctrl_connection_admin.php';
+require_once dirname(__DIR__).'/ctrl_connection.php';
 
 pProtect('prumo_devtools');
 
 // verifica se existe a pasta de scripts de atualização do banco da aplicação
-$scriptDir = $GLOBALS['pConfig']['appPath'].'/updatedb';
+$scriptDir = dirname(dirname(__DIR__)).'/updatedb';
 
-if (! is_writable($GLOBALS['pConfig']['appPath']) && ! file_exists($scriptDir)) {
+if (! is_writable(dirname(dirname(__DIR__))) && ! file_exists($scriptDir)) {
     
     $msg = _('Diretório "%dir%" não possui permissão de escrita, nada feito!');
-    echo str_replace('%dir%', $GLOBALS['pConfig']['appPath'], $msg);
+    echo str_replace('%dir%', dirname(dirname(__DIR__)), $msg);
     
     exit;
 }
@@ -38,7 +38,7 @@ if (! file_exists($scriptDir)) {
     if (! mkdir($scriptDir)) {
         
         $msg = _('Erro ao criar o diretório "%dir%", nada feito!');
-        echo str_replace('%dir%', $GLOBALS['pConfig']['appPath'], $msg);
+        echo str_replace('%dir%', dirname(dirname(__DIR__)), $msg);
         
         exit;
     }

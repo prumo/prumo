@@ -31,7 +31,7 @@ $pHtmlPreLayout = str_replace(':fullName:', $prumoGlobal['currentFullName'], $pH
 
 
 // menu
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+require_once __DIR__.'/ctrl_connection_admin.php';
 $pMenu = new PrumoMenu();
 $pMenu->ind = '            ';
 $pHtmlMenu  = $pMenu->draw(false);
@@ -47,7 +47,7 @@ $pHtmlPreLayout = str_replace(':footer:',$pHtmlFooter,$pHtmlPreLayout);
 $pArrHtmlLayout = explode(':desktop:',$pHtmlPreLayout);
 echo $pArrHtmlLayout[0];
 
-require_once $GLOBALS['pConfig']['prumoPath'] . '/class_reminder.php';
+require_once __DIR__.'/class_reminder.php';
 $reminder = new Reminder($pConnectionPrumo);
 $reminder->verify();
 $reminder->show();
@@ -57,7 +57,7 @@ if (isset($_GET['page']) && $prumoPage[$_GET['page']]) {
     pProtect($_GET['page']);
     $pPage = $prumoPage[$_GET['page']];
 } else {
-    $pPage = file_exists($GLOBALS['pConfig']['appPath'].'/desktop.php') ? $GLOBALS['pConfig']['appPath'].'/desktop.php' : $GLOBALS['pConfig']['prumoPath'].'/view_submission.php';
+    $pPage = file_exists(dirname(__DIR__).'/desktop.php') ? dirname(__DIR__).'/desktop.php' : __DIR__.'/view_submission.php';
 }
 include $pPage;
 

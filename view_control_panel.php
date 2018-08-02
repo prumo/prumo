@@ -16,17 +16,17 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
+require_once dirname(__DIR__).'/prumo.php';
 
 pProtect('prumo_controlPanel');
 
 function listThemes()
 {
-    $prumoThemes = scandir($GLOBALS['pConfig']['prumoPath'].'/themes');
+    $prumoThemes = scandir(__DIR__.'/themes');
     
     $themes = array();
     for ($i = 0; $i<count($prumoThemes); $i++) {
-        $themePath = $GLOBALS['pConfig']['prumoPath'].'/themes/'.$prumoThemes[$i];
+        $themePath = __DIR__.'/themes/'.$prumoThemes[$i];
         if (is_dir($themePath)) {
             if ($prumoThemes[$i] != '.' && $prumoThemes[$i] != '..' && $prumoThemes[$i] != '.svn') {
                 $themes[] = $prumoThemes[$i];

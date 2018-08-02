@@ -26,7 +26,7 @@ function pGetConfigDb()
     
     $dbSingle = (isset($pConfig['dbSingle']) && $pConfig['dbSingle']);
     
-    require_once $pConfig['prumoPath'].'/ctrl_connection_admin.php';
+    require_once __DIR__.'/ctrl_connection_admin.php';
     
     if ($pConnectionPrumo->connected(true) == false) {
         
@@ -72,7 +72,7 @@ function loadPermission()
     global $prumoGlobal;
     
     if (! isset($pConnectionPrumo)) {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+        require_once __DIR__.'/ctrl_connection_admin.php';
     }
     
     $schema = $pConnectionPrumo->getSchema();
@@ -400,7 +400,7 @@ function pAuditLog($routine, $objName, $sqlCommand, $crud)
     global $pConfig;
     global $pConnectionPrumo;
     
-    require_once $pConfig['prumoPath'].'/ctrl_connection_admin.php';
+    require_once __DIR__.'/ctrl_connection_admin.php';
     
     if ($pConnectionPrumo->sgdb() == 'sqlite3') {
         $now = 'datetime(\'now\')';
@@ -523,7 +523,7 @@ function pGetAudit($routine)
     global $pConnectionPrumo;
     
     if (! isset($pConnectionPrumo)) {
-        require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+        require_once __DIR__.'/ctrl_connection_admin.php';
     }
     
     $sql = 'SELECT audit FROM '.$pConnectionPrumo->getSchema().'routines WHERE routine='.pFormatSql($routine, 'string').';';

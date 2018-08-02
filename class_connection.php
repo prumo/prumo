@@ -126,7 +126,7 @@ class PrumoConnection
             
             $this->getObjName();
             
-            require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+            require_once __DIR__.'/ctrl_connection_admin.php';
             
             $logInsert = false;
             $logRetrieve = false;

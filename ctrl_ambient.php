@@ -24,10 +24,10 @@ $pConfig['version'] = '2.3.3';
 // Configurações de path e identificação
 if (! isset($pConfig['appIdent']))              $pConfig['appIdent']              = 'Prumo';
 if (! isset($pConfig['appName']))               $pConfig['appName']               = 'Framework para PHP';
-if (! isset($pConfig['appPath']))               $pConfig['appPath']               = isset($_SERVER['REMOTE_ADDR']) ? dirname($_SERVER['SCRIPT_FILENAME']) : getcwd();
+if (! isset($pConfig['appPath']))               $pConfig['appPath']               = dirname(__DIR__);
 if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
 if ($pConfig['appWebPath'] == '/')              $pConfig['appWebPath']            = '';
-if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = $pConfig['appPath'].'/prumo';
+if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = __DIR__;
 if (! isset($pConfig['prumoWebPath']))          $pConfig['prumoWebPath']          = $pConfig['appWebPath'].'/prumo';
 if ($pConfig['prumoWebPath'] == '/')            $pConfig['prumoWebPath']          = '';
 
@@ -39,7 +39,7 @@ if (! isset($pConfig['dbPort_prumo']))          $pConfig['dbPort_prumo']        
 if (! isset($pConfig['dbUserName_prumo']))      $pConfig['dbUserName_prumo']      = '';
 if (! isset($pConfig['dbPassword_prumo'] ))     $pConfig['dbPassword_prumo']      = '';
 if (! isset($pConfig['loginSchema_prumo']))     $pConfig['loginSchema_prumo']     = 'prumo';
-if (! isset($pConfig['dbName_prumo']))          $pConfig['dbName_prumo']          = $pConfig['prumoPath'].'/db/db_prumo.sqlite3';
+if (! isset($pConfig['dbName_prumo']))          $pConfig['dbName_prumo']          = __DIR__.'/db/db_prumo.sqlite3';
 
 // Conectividade com Banco de dados da aplicação
 if (! isset($pConfig['sgdb']))                  $pConfig['sgdb']                  = 'pgsql';
@@ -72,24 +72,24 @@ if (! isset($pConfig['preferHttps']))           $pConfig['preferHttps']         
 ////////////////////////////////// fim da configurações padrão //////////////////////////////
 
 //carrega todas as classes
-require_once $GLOBALS['pConfig']['prumoPath'].'/functions_private.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/functions_public.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_basic.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_pg_connection.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_sqlite3_connection.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_connection.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_grid.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_login.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_search.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_list.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_queue_set.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_window.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_filter.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_menu.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_crud.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_crud_list.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/class_tab.php';
+require_once __DIR__.'/functions_private.php';
+require_once __DIR__.'/functions_public.php';
+require_once __DIR__.'/class_basic.php';
+require_once __DIR__.'/class_pg_connection.php';
+require_once __DIR__.'/class_sqlite3_connection.php';
+require_once __DIR__.'/class_connection.php';
+require_once __DIR__.'/class_grid.php';
+require_once __DIR__.'/class_login.php';
+require_once __DIR__.'/class_search.php';
+require_once __DIR__.'/class_list.php';
+require_once __DIR__.'/class_queue.php';
+require_once __DIR__.'/class_queue_set.php';
+require_once __DIR__.'/class_window.php';
+require_once __DIR__.'/class_filter.php';
+require_once __DIR__.'/class_menu.php';
+require_once __DIR__.'/class_crud.php';
+require_once __DIR__.'/class_crud_list.php';
+require_once __DIR__.'/class_tab.php';
 
 session_start();
 
@@ -161,7 +161,7 @@ if ($GLOBALS['pConfig']['logDelete_prumo'] == 't') {
 setlocale(LC_ALL, $GLOBALS['pConfig']['locale']);
 
 //pasta das tabelas de tradução para gettext
-bindtextdomain('Prumo', $GLOBALS['pConfig']['prumoPath'].'/locale');
+bindtextdomain('Prumo', __DIR__.'/locale');
 
 //seta o dominio Prumo
 textdomain('Prumo');
@@ -171,11 +171,11 @@ textdomain('Prumo');
 */
 
 //configura o prumoPage, buscando no banco de dados a tabela "routines"
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+require_once __DIR__.'/ctrl_connection_admin.php';
 
 // quando em modo dbSingle, levanta a conexão com o banco de dados da aplicação
 if ($GLOBALS['pConfig']['dbSingle']) {
-    require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php';
+    require_once __DIR__.'/ctrl_connection.php';
 }
 
 $sqlPrumoRoutines = 'SELECT routine,link FROM '.$pConnectionPrumo->getSchema().'routines;';

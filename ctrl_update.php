@@ -16,8 +16,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection.php';
+require_once dirname(__DIR__).'/prumo.php';
+require_once __DIR__.'/ctrl_connection.php';
 
 pProtect('prumo_update');
 pCheckPOST('update');
@@ -34,7 +34,7 @@ if ($_POST['update'] == 'app') {
         sleep(1);
         
         // prepara a lista de arquivos na pasta de atualização da aplicação
-        $scriptUpdateDir = $GLOBALS['pConfig']['appPath'].'/updatedb/';
+        $scriptUpdateDir = dirname(__DIR__).'/updatedb/';
         if (is_dir($scriptUpdateDir)) {
             
             $scriptUpdateAll = scandir($scriptUpdateDir);
@@ -81,7 +81,7 @@ if ($_POST['update'] == 'framework') {
         sleep(1);
         
         // prepara a lista de arquivos na pasta de atualização
-        $scriptUpdateDir = $GLOBALS['pConfig']['prumoPath'].'/updatedb/'.$GLOBALS['pConfig']['sgdb_prumo'].'/';
+        $scriptUpdateDir = __DIR__.'/updatedb/'.$GLOBALS['pConfig']['sgdb_prumo'].'/';
         $scriptUpdateAll = scandir($scriptUpdateDir);
         $scriptUpdateNew = array();
         

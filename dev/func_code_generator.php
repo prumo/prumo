@@ -19,14 +19,14 @@
 function getObjSearchList()
 {
     $list = array();
-    $fileList = scandir($GLOBALS['pConfig']['appPath']);
+    $fileList = scandir(dirname(dirname(__DIR__)));
     for ($i = 0; $i < count($fileList); $i++) {
         
         $info = pathinfo($fileList[$i]);
         
         //apenas arquivos .php
         if (isset($info['extension']) && strtolower($info['extension']) == 'php' && $info['basename'] != 'index.php' && $info['basename'] != 'prumo.php') {
-            $fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
+            $fileContent = file_get_contents(dirname(dirname(__DIR__)) . '/' . $fileList[$i]);
             
             // verifica se o arquivo inicializa o objeto informado
             if (substr_count($fileContent, '= new PrumoSearch(') > 0) {

@@ -194,7 +194,7 @@ class PrumoLogin
         $_SESSION[$this->ident.'_prumoUserName'] = $this->username;
         $_SESSION[$this->ident.'_prumoFullName'] = $this->fullName;
         $_SESSION[$this->ident.'_prumoUserPassword'] = $this->password;
-        $_SESSION[$this->ident.'_config'] = $GLOBALS['pConfig']['appPath'].'/prumo.php';
+        $_SESSION[$this->ident.'_config'] = dirname(__DIR__).'/prumo.php';
         
         $this->session = (isset($_SESSION[$this->ident.'_prumoUserName']) && isset($_SESSION[$this->ident.'_prumoUserPassword']));
         

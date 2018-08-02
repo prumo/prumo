@@ -16,8 +16,8 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
-require_once $GLOBALS['pConfig']['prumoPath'].'/ctrl_connection_admin.php';
+require_once dirname(__DIR__).'/prumo.php';
+require_once __DIR__.'/ctrl_connection_admin.php';
 
 pProtect('prumo_controlPanel');
 

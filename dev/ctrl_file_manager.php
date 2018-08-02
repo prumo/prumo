@@ -16,12 +16,12 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once 'prumo.php';
+require_once dirname(dirname(__DIR__)).'/prumo.php';
 
 pProtect('prumo_devtools');
 
 if (isset($_POST['open'])) {
-    $fileName = $GLOBALS['pConfig']['appPath'].'/'.$_POST['filename'];
+    $fileName = dirname(dirname(__DIR__)).'/'.$_POST['filename'];
     
     if (file_exists($fileName)) {
         $fileContent = file_get_contents($fileName);
@@ -32,12 +32,12 @@ if (isset($_POST['open'])) {
 }
 
 if (isset($_POST['save'])) {
-    $fileName = $GLOBALS['pConfig']['appPath'].'/'.$_POST['filename'];
+    $fileName = dirname(dirname(__DIR__)).'/'.$_POST['filename'];
     
     if (file_exists($fileName) && ! is_writable($fileName)) {
         $msg = _('Sem permissão de escrita para o arquivo "%filename%".');
         echo str_replace('%filename%',$_POST['filename'],$msg);
-    } else if (! is_writable($GLOBALS['pConfig']['appPath'])) {
+    } else if (! is_writable(dirname(dirname(__DIR__)))) {
         echo _('Sem permissão de escrita na pasta da aplicação.');
     } else {
         file_put_contents($fileName, $_POST['code']);

@@ -1292,7 +1292,7 @@ class PrumoCrud extends PrumoBasic
      */
     private function requirePrumoSearch($objName)
     {
-        $fileList = scandir($GLOBALS['pConfig']['appPath']);
+        $fileList = scandir(dirname(__DIR__));
         for ($i = 0; $i < count($fileList); $i++) {
             
             $info = pathinfo($fileList[$i]);
@@ -1300,11 +1300,11 @@ class PrumoCrud extends PrumoBasic
             
             //apenas arquivos .php
             if (strtolower($extension) == 'php' && $info['basename'] != 'index.php' && $info['basename'] != 'prumo.php') {
-                $fileContent = file_get_contents($GLOBALS['pConfig']['appPath'] . '/' . $fileList[$i]);
+                $fileContent = file_get_contents(dirname(__DIR__) . '/' . $fileList[$i]);
                 
                 // verifica se o arquivo inicializa o objeto informado
                 if (substr_count($fileContent, '$'.$objName.' = new PrumoSearch(') > 0) {
-                    return 'require_once $GLOBALS[\'pConfig\'][\'appPath\'].\'/'.$fileList[$i].'\';';
+                    return 'require_once __DIR__.\'/'.$fileList[$i].'\';';
                 }
             }
         }
@@ -1362,8 +1362,8 @@ class PrumoCrud extends PrumoBasic
                     }
                 }
                 
-                $required = str_replace($GLOBALS['pConfig']['appPath'], '', $_SERVER["SCRIPT_FILENAME"]);
-                $form .= 'require_once $GLOBALS[\'pConfig\'][\'appPath\'].\''.$required.'\';'."\n";
+                $required = str_replace(dirname(__DIR__), '', $_SERVER["SCRIPT_FILENAME"]);
+                $form .= 'require_once __DIR__.\''.$required.'\';'."\n";
                 $form .= '?>'."\n\n";
             }
             

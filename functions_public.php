@@ -287,8 +287,8 @@ function pXmlAddParent($xml, $parent)
  */
 function pGetTheme($fileName, $webPath)
 {
-    $path = $webPath ? $GLOBALS['pConfig']['prumoWebPath'] : $GLOBALS['pConfig']['prumoPath'];
-    $file = $GLOBALS['pConfig']['prumoPath'].'/themes/'.$GLOBALS['pConfig']['theme'].'/'.$fileName;
+    $path = $webPath ? $GLOBALS['pConfig']['prumoWebPath'] : __DIR__;
+    $file = __DIR__.'/themes/'.$GLOBALS['pConfig']['theme'].'/'.$fileName;
     
     return file_exists($file) ? $path.'/themes/'.$GLOBALS['pConfig']['theme'].'/'.$fileName : $path.'/themes/default/'.$fileName;
 }
@@ -478,7 +478,7 @@ function pFileLocal2Web($location)
             $locationWeb[] = pFileLocal2Web($location[$i]);
         }
     } else {
-        $locationWeb = $GLOBALS['pConfig']['appPath'] == dirname($location) ? basename($location) : substr($location, strlen($GLOBALS['pConfig']['appPath'])+1);
+        $locationWeb = dirname(__DIR__) == dirname($location) ? basename($location) : substr($location, strlen(dirname(__DIR__))+1);
     }
     
     return $locationWeb;
