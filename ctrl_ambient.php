@@ -198,7 +198,7 @@ function getAppWebPath($dir=false, $dirWeb=false)
         $dir = isset($_SERVER['SCRIPT_FILENAME']) ? dirname($_SERVER['SCRIPT_FILENAME']) : '';
         $dirWeb = isset($_SERVER['SCRIPT_NAME']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
     }
-    if ($dirWeb === '') {
+    if ($dirWeb === '/' || $dirWeb === '') {
         return '';
     }
     return file_exists($dir.'/prumo.php') ? $dirWeb : getAppWebPath(dirname($dir), dirname($dirWeb));
