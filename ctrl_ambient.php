@@ -25,8 +25,7 @@ $pConfig['version'] = '2.3.3';
 if (! isset($pConfig['appIdent']))              $pConfig['appIdent']              = 'Prumo';
 if (! isset($pConfig['appName']))               $pConfig['appName']               = 'Framework para PHP';
 if (! isset($pConfig['appPath']))               $pConfig['appPath']               = dirname(__DIR__);
-if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
-if ($pConfig['appWebPath'] == '/')              $pConfig['appWebPath']            = '';
+if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? getAppWebPath() : '';
 if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = __DIR__;
 if (! isset($pConfig['prumoWebPath']))          $pConfig['prumoWebPath']          = $pConfig['appWebPath'].'/prumo';
 if ($pConfig['prumoWebPath'] == '/')            $pConfig['prumoWebPath']          = '';
@@ -185,3 +184,23 @@ for ($i = 0; $i<count($prumoRoutines); $i++) {
         $prumoPage[$prumoRoutines[$i]['routine']] = $prumoRoutines[$i]['link'];
     }
 }
+
+/**
+ * Retorna o diretório da aplicação (onde tem o arquivo prumo.php)
+ *
+ * @param $dir string: o diretório onde deve ser procurado a aplicação
+ *
+ * @return string
+ */
+function getAppWebPath($dir=false, $dirWeb=false)
+{
+    if ($dir === false && $dirWeb === false) {
+        $dir = dirname($_SERVER['SCRIPT_FILENAME']);
+        $dirWeb = dirname($_SERVER['SCRIPT_NAME']);
+    }
+    if (empty($dir)) {
+        throw new Exception(_('appPath não pode ser ""!'));
+    }
+    return file_exists($dir.'/prumo.php') ? $dirWeb : getAppWebPath(dirname($dir), dirname($dirWeb) == '' ? '/' : dirname($dirWeb));
+}
+
