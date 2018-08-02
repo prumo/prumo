@@ -28,7 +28,6 @@ if (! isset($pConfig['appPath']))               $pConfig['appPath']             
 if (! isset($pConfig['appWebPath']))            $pConfig['appWebPath']            = isset($_SERVER['REMOTE_ADDR']) ? getAppWebPath() : '';
 if (! isset($pConfig['prumoPath']))             $pConfig['prumoPath']             = __DIR__;
 if (! isset($pConfig['prumoWebPath']))          $pConfig['prumoWebPath']          = $pConfig['appWebPath'].'/prumo';
-if ($pConfig['appWebPath'] == '/')              $pConfig['prumoWebPath']          = '/prumo';
 
 // Conectividade com Banco de dados Prumo
 if (! isset($pConfig['dbSingle']))              $pConfig['dbSingle']              = false;
