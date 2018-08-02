@@ -195,11 +195,11 @@ for ($i = 0; $i<count($prumoRoutines); $i++) {
 function getAppWebPath($dir=false, $dirWeb=false)
 {
     if ($dir === false && $dirWeb === false) {
-        $dir = dirname($_SERVER['SCRIPT_FILENAME']);
-        $dirWeb = dirname($_SERVER['SCRIPT_NAME']);
+        $dir = isset($_SERVER['SCRIPT_FILENAME']) ? dirname($_SERVER['SCRIPT_FILENAME']) : '';
+        $dirWeb = isset($_SERVER['SCRIPT_NAME']) ? dirname($_SERVER['SCRIPT_NAME']) : '';
     }
-    if (empty($dir)) {
-        throw new Exception(_('appPath não pode ser ""!'));
+    if ($dir === '') {
+        return '';
     }
     return file_exists($dir.'/prumo.php') ? $dirWeb : getAppWebPath(dirname($dir), dirname($dirWeb) == '' ? '/' : dirname($dirWeb));
 }
