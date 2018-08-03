@@ -16,5 +16,5 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once dirname(__DIR__).'/prumo.php';
-require_once __DIR__.'/ctrl_framework_index.php';
+require_once __DIR__.'/prumo.php';
+require_once __DIR__.'/prumo/ctrl_framework_index.php';

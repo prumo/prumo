@@ -117,7 +117,7 @@ class PrumoQueueSet
                 
                 $pQueue = $this->pQueueName[$i];
                 global $$pQueue;
-                require($this->pQueueFilename[$i]);
+                require __DIR__.'/'.$this->pQueueFilename[$i];
                 
                 if ($i > 0) {
                     echo $this->ind.'<script type="text/javascript">'."\n";        

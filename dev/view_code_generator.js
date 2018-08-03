@@ -1196,7 +1196,7 @@ function replaceAll(str, from, to) {
 }
 
 window.onload = function() {
-	document.getElementById('prumo_code').value = "<?php\nrequire_once('prumo.php');\n\n";
+	document.getElementById('prumo_code').value = "<?php\nrequire_once __DIR__.'/prumo.php';\n\n";
 	document.getElementById('prumo_code').focus();
 	
 	code = new classCode();
