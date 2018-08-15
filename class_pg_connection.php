@@ -123,7 +123,7 @@ class PrumoPgConnection
      *
      * @return array
      */
-    public function getErr() : array
+    public function getErr()
     {
         return $this->err;
     }
