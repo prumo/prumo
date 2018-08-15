@@ -330,6 +330,16 @@ class PrumoConnection
     }
     
     /**
+     * Retorna o valor de um parâmetro
+     *
+     * @return string: valor do parâmetro
+     */
+    public function getParam($paramName)
+    {
+        return $this->param[$paramName];
+    }
+    
+    /**
      * Converte um determinado tipo no formato do SGDB, ex: 'string' => 'character varying'
      *
      * @type string: tipo de dado

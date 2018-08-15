@@ -33,7 +33,7 @@ function pGetConfigDb()
         echo $pConnectionPrumo->getErr();
         
         if ($pConnectionPrumo->sgdb() != 'sqlite3') {
-            echo ' ('.$pConnectionPrumo->param['dbname'].' - '.$pConnectionPrumo->sgdb().')';
+            echo ' ('.$pConnectionPrumo->getParam('dbname').' - '.$pConnectionPrumo->sgdb().')';
         }
         
         exit;

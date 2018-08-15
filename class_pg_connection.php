@@ -33,7 +33,7 @@ class PrumoPgConnection
      *
      * @param $params string: string de parametros (verificar o ctrl_connection.php para exemplo)
      */
-    function __construct($params)
+    function __construct(string $params)
     {
         $this->param = pParameters($params);
         $this->connected = false;
@@ -76,9 +76,9 @@ class PrumoPgConnection
     /**
      * Conecta no servidor de banco de dados PostgreSQL
      *
-     * @return boolean: sucesso ou fracasso na conexão
+     * @return bool: sucesso ou fracasso na conexão
      */
-    private function connect()
+    private function connect() : bool
     {
         $dbHost     = $this->param['dbhost'];
         $dbPort     = $this->param['dbport'];
@@ -100,7 +100,7 @@ class PrumoPgConnection
         }
         
         $pgString = "host=$dbHost port=$dbPort dbname=$dbName user=$dbUserName password=$dbPassword";
-        $this->connection = @pg_connect($pgString) ;
+        $this->connection = pg_connect($pgString) ;
         
         if ($this->connection) {
             
@@ -123,7 +123,7 @@ class PrumoPgConnection
      *
      * @return array
      */
-    public function getErr()
+    public function getErr() : array
     {
         return $this->err;
     }
@@ -131,11 +131,11 @@ class PrumoPgConnection
     /**
      * Verifica se a conexão com o PostgreSQL está estabelecida
      *
-     * @param reconnect boolean: indica se deve tentar reconectar caso esteja desconectado
+     * @param reconnect bool: indica se deve tentar reconectar caso esteja desconectado
      *
-     * @return boolean
+     * @return bool
      */
-    public function connected($reconnect=false)
+    public function connected(bool $reconnect=false) : bool
     {
         if ($reconnect && $this->connected == false) {
             $this->connect();
@@ -165,9 +165,9 @@ class PrumoPgConnection
      * @param $sql string: consulta SQL
      *
      * @return mixed: apenas o primeiro valor da primeira coluna retornada pela consulta SQL
-     * @return boolean false: em caso de falha na consulta SQL
+     * @return bool false: em caso de falha na consulta SQL
      */
-    public function sqlQuery($sql)
+    public function sqlQuery(string $sql)
     {
         if ($this->getConnection()) {
             
@@ -197,7 +197,7 @@ class PrumoPgConnection
      * @param $sql string: consulta SQL
      *
      * @return array: array associativo com o registro retornado pela consulta SQL sendo o nome da coluna a chave do array
-     * @return boolean false: em caso de falha na consulta SQL
+     * @return bool false: em caso de falha na consulta SQL
      */
     public function fetchAssoc($sql)
     {
@@ -229,7 +229,7 @@ class PrumoPgConnection
      * @param $sql string: consulta SQL
      *
      * @return array: array associativo com os registros retornados pela consulta SQL sendo o nome da coluna a chave do array
-     * @return boolean false: em caso de falha na consulta SQL
+     * @return bool false: em caso de falha na consulta SQL
      */
     public function sql2Array($sql)
     {
@@ -277,7 +277,7 @@ class PrumoPgConnection
      * @param $tableName string: nome da tag container
      *
      * @return string: xml com os dados retornados pela consulta SQL
-     * @return boolean: false em caso de falha
+     * @return bool: false em caso de falha
      */
     public function sqlXml($sql, $tableName)
     {
@@ -324,7 +324,7 @@ class PrumoPgConnection
      *
      * @return string: tipo de dados de acordo com o PostgreSQL
      */
-    public function dbType($type)
+    public function dbType(string $type)
     {
         $types = array(
             'string'    => 'character varying',
