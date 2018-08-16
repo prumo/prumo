@@ -1441,7 +1441,11 @@ class PrumoCrud extends PrumoBasic
                 } else if ($this->field[$i]['type'] == 'date') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
-                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text" size="9" maxlength="10"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="date"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+                } else if ($this->field[$i]['type'] == 'time') {
+                    
+                    $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
+                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="time"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
                 } else if ($this->field[$i]['type'] == 'integer' || $this->field[$i]['type'] == 'serial') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
@@ -1449,7 +1453,7 @@ class PrumoCrud extends PrumoBasic
                 } else if ($this->field[$i]['type'] == 'timestamp') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
-                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text" size="17" maxlength="19"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="datetime-local"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
                 } else if ($this->field[$i]['type'] == 'text') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
