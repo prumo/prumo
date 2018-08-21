@@ -539,8 +539,10 @@ function PrumoCrud(objName, ajaxFile)
                 }
                 
                 this.parent.afterCreate();
+                this.parent.afterCreate2();
             } else if (this.cmd == 'fast_create') {
                 this.parent.afterCreate();
+                this.parent.afterCreate2();
                 this.parent.stateChange('list');
             } else if (this.cmd == 'retrieve') {
                 this.parent.assignResponseXML(this.responseXML);
@@ -558,16 +560,20 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.stateChange('view');
                 this.parent.retrieveVirtual();
                 this.parent.afterUpdate();
+                this.parent.afterUpdate2();
                 for (var i in this.parent.son1x1) {
                     if (this.parent.verifySon(i)) {
                         this.parent.son1x1[i].afterUpdate();
+                        this.parent.son1x1[i].afterUpdate2();
                     }
                 }
             } else if (this.cmd == 'fast_update') {
                 this.parent.afterUpdate();
+                this.parent.afterUpdate2();
                 for (var i in this.son1x1) {
                     if (this.parent.verifySon(i)) {
                         this.parent.son1x1[i].afterUpdate();
+                        this.parent.son1x1[i].afterUpdate2();
                     }
                 }
                 this.parent.stateChange('list');
@@ -1348,9 +1354,25 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
+     */
+    this.afterCreate2 = function()
+    {
+        //
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
      */
     this.afterUpdate = function()
+    {
+        //
+    }
+    
+    /**
+     * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
+     */
+    this.afterUpdate2 = function()
     {
         //
     }
