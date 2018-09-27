@@ -31,7 +31,7 @@ class PrumoSearch extends PrumoBasic
     
     public $page;
     public $pFilter;
-    public $autoFilter; // quando true (default), prepara um filtro autometicamente quando o usuário altera qualquer campo que participe do fieldReturn
+    public $autoFilter; // quando true (default), prepara um filtro automaticamente quando o usuário altera qualquer campo que participe do fieldReturn
     
     /**
      * Construtor da classe PrumoSearch

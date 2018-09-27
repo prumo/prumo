@@ -38,6 +38,7 @@ if (! isset($pConfig['dbUserName_prumo']))      $pConfig['dbUserName_prumo']    
 if (! isset($pConfig['dbPassword_prumo'] ))     $pConfig['dbPassword_prumo']      = '';
 if (! isset($pConfig['loginSchema_prumo']))     $pConfig['loginSchema_prumo']     = 'prumo';
 if (! isset($pConfig['dbName_prumo']))          $pConfig['dbName_prumo']          = __DIR__.'/db/db_prumo.sqlite3';
+if (! isset($pConfig['dbIgnoreCommits']))       $pConfig['dbIgnoreCommits']       = false;
 
 // Conectividade com Banco de dados da aplicação
 if (! isset($pConfig['sgdb']))                  $pConfig['sgdb']                  = 'pgsql';

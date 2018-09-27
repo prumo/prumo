@@ -225,6 +225,23 @@ class PrumoConnection
     }
     
     /**
+     * Remove os commits de um comando Sql
+     *
+     * @param $sql string: comando sql
+     *
+     * @return string: comando sql tratado
+     */
+    private function removeCommits($sql)
+    {
+        $sql = str_replace('COMMIT;', '', $sql);
+        $sql = str_replace('COMMIT', '', $sql);
+        $sql = str_replace('commit;', '', $sql);
+        $sql = str_replace('commit', '', $sql);
+        
+        return $sql;
+    }
+    
+    /**
      * Executa uma consulta no banco de dados e retorna um único valor
      *
      * @param $sql string: consulta SQL
@@ -236,6 +253,14 @@ class PrumoConnection
     public function sqlQuery($sql, $ignoreLog=false)
     {
         $this->getObjName();
+        
+        if ($GLOBALS['pConfig']['dbIgnoreCommits'] === true) {
+            $sql = $this->removeCommits($sql);
+        }
+        
+        if (empty(trim($sql))) {
+            return '';
+        }
         
         $ret = $this->connection->sqlQuery($sql);
         
@@ -258,6 +283,14 @@ class PrumoConnection
     {
         $this->getObjName();
         
+        if ($GLOBALS['pConfig']['dbIgnoreCommits'] === true) {
+            $sql = $this->removeCommits($sql);
+        }
+        
+        if (empty(trim($sql))) {
+            return array();
+        }
+        
         $ret = $this->connection->fetchAssoc($sql);
         $this->logSql($sql, 'fetchAssoc');
         
@@ -277,6 +310,14 @@ class PrumoConnection
     {
         $this->getObjName();
         
+        if ($GLOBALS['pConfig']['dbIgnoreCommits'] === true) {
+            $sql = $this->removeCommits($sql);
+        }
+        
+        if (empty(trim($sql))) {
+            return array();
+        }
+        
         $ret = $this->connection->sql2Array($sql);
         $this->logSql($sql, 'sql2Array');
         
@@ -294,6 +335,14 @@ class PrumoConnection
     public function sqlXml($sql, $tableName)
     {
         $this->getObjName();
+        
+        if ($GLOBALS['pConfig']['dbIgnoreCommits'] === true) {
+            $sql = $this->removeCommits($sql);
+        }
+        
+        if (empty(trim($sql))) {
+            return '';
+        }
         
         $ret = $this->connection->sqlXml($sql, $tableName);
         $this->logSql($sql, 'sqlXml');
