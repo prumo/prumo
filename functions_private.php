@@ -206,7 +206,28 @@ function prumoInfo()
     echo '<head>'."\n";
     echo '    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'."\n";
     echo '    <title>prumoInfo()</title><meta name="ROBOTS" content="NOINDEX,NOFOLLOW,NOARCHIVE" />'."\n";
-    echo '    <link type="text/css" rel="stylesheet" media="screen" href="'.$GLOBALS['pConfig']['prumoWebPath'].'/view_framework_info.css" />'."\n";
+    
+    echo '<style type="text/css">'."\n";
+    echo 'body {background-color: #fff; color: #222; font-family: sans-serif;}'."\n";
+    echo 'pre {margin: 0; font-family: monospace;}'."\n";
+    echo 'a:link {color: #009; text-decoration: none; background-color: #fff;}'."\n";
+    echo 'a:hover {text-decoration: underline;}'."\n";
+    echo 'table {border-collapse: collapse; border: 0; width: 934px; box-shadow: 1px 2px 3px #ccc;}'."\n";
+    echo '.center {text-align: center;}'."\n";
+    echo '.center table {margin: 1em auto; text-align: left;}'."\n";
+    echo '.center th {text-align: center !important;}'."\n";
+    echo 'td, th {border: 1px solid #666; font-size: 75%; vertical-align: baseline; padding: 4px 5px;}'."\n";
+    echo 'h1 {font-size: 150%;}'."\n";
+    echo 'h2 {font-size: 125%;}'."\n";
+    echo '.p {text-align: left;}'."\n";
+    echo '.e {background-color: #ccf; width: 300px; font-weight: bold;}'."\n";
+    echo '.h {background-color: #99c; font-weight: bold;}'."\n";
+    echo '.v {background-color: #ddd; max-width: 300px; overflow-x: auto; word-wrap: break-word;}'."\n";
+    echo '.v i {color: #999;}'."\n";
+    echo 'img {float: right; border: 0;}'."\n";
+    echo 'hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}'."\n";
+    echo '</style>'."\n";
+    
     echo '</head>'."\n";
     echo '<body>'."\n";
     echo '<div class="center">'."\n";
@@ -219,7 +240,6 @@ function prumoInfo()
     echo '        <h1 class="p">Prumo Framework Version: '.$GLOBALS['pConfig']['version'].'</h1></td>'."\n";
     echo '    </tr>'."\n";
     echo '</table>'."\n";
-    echo '<br />'."\n";
 
     // $GLOBALS['pConfig']
     echo '<table border="0" cellpadding="3" width="800">'."\n";
@@ -231,8 +251,7 @@ function prumoInfo()
         }
     }
     echo '</table>'."\n";
-
-    echo '<br />'."\n";
+    
     echo '<h2>prumoPage</h2>'."\n";
 
     // $GLOBALS['prumoPage']
@@ -243,7 +262,6 @@ function prumoInfo()
     }
     echo '</table>'."\n";
     
-    echo '<br />'."\n";
     echo '<h2>prumoGlobal</h2>'."\n";
     
     // $GLOBALS['prumoGlobal']
@@ -251,6 +269,22 @@ function prumoInfo()
     foreach($GLOBALS['prumoGlobal'] as $param => $value) {
         echo '<tr><td class="e">$GLOBALS[\'prumoGlobal\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
     }
+    echo '</table>'."\n";
+    
+    echo '<h2>Prumo License</h2>'."\n";
+    echo '<table>'."\n";
+    echo '<tr class="v"><td>'."\n";
+    
+    echo '<p>'."\n";
+    echo 'Copyright (c) 2010 Emerson Casas Salvador <salvaemerson@gmail.com> e Odair Rubleski <orubleski@gmail.com>'."\n";
+    echo '</p>'."\n";
+    echo '<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:'."\n";
+    echo '</p>'."\n";
+    echo '<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.'."\n";
+    echo '</p>'."\n";
+    echo '<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.'."\n";
+    echo '</p>'."\n";
+    echo '</td></tr>'."\n";
     echo '</table>'."\n";
 }
 
