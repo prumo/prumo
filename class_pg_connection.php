@@ -33,7 +33,7 @@ class PrumoPgConnection
      *
      * @param $params string: string de parametros (verificar o ctrl_connection.php para exemplo)
      */
-    function __construct(string $params)
+    public function __construct(string $params)
     {
         $this->param = pParameters($params);
         $this->connected = false;
@@ -89,7 +89,7 @@ class PrumoPgConnection
         if (! extension_loaded('pgsql')) {
             
             $msg = _('É necessário ativar a extensão %extension% no PHP');
-            $this->err = str_replace('%extension%','pgsql',$msg);
+            $this->err = str_replace('%extension%', 'pgsql', $msg);
             $this->connected = false;
             
             return false;
@@ -131,11 +131,11 @@ class PrumoPgConnection
     /**
      * Verifica se a conexão com o PostgreSQL está estabelecida
      *
-     * @param reconnect bool: indica se deve tentar reconectar caso esteja desconectado
+     * @param $reconnect bool: indica se deve tentar reconectar caso esteja desconectado
      *
      * @return bool
      */
-    public function connected(bool $reconnect=false) : bool
+    public function connected(bool $reconnect = false) : bool
     {
         if ($reconnect && $this->connected == false) {
             $this->connect();
@@ -239,7 +239,7 @@ class PrumoPgConnection
             return false;
         }
         
-        $res = pg_query($connection,$sql);
+        $res = pg_query($connection, $sql);
         
         if ($res === false) {
             $this->err = pg_last_error($this->connection);
@@ -248,7 +248,7 @@ class PrumoPgConnection
         
         $ncols = pg_num_fields($res);
 
-        $arrayRerurn = array();
+        $arrayReturn = array();
         $i = 0;
         
         while ($row = pg_fetch_assoc($res)) {
@@ -260,14 +260,14 @@ class PrumoPgConnection
                 $fieldName = pg_field_name($res, $j);
                 $fieldValue = pg_fetch_result($res, $i, $fieldName);
                 
-                $thisRow[$fieldName] = $fieldValue;                        
+                $thisRow[$fieldName] = $fieldValue;
             }
             
-            $arrayRerurn[$i] = $thisRow;
+            $arrayReturn[$i] = $thisRow;
             $i++;
         }
         
-        return $arrayRerurn;
+        return $arrayReturn;
     }
     
     /**
