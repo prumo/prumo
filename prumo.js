@@ -752,7 +752,7 @@ function PrumoCrud(objName, ajaxFile)
     this.visibleSon1x1 = function()
     {
         this.readNewValues();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 this.son1x1[i].visibleForm(true);
             } else {
@@ -892,10 +892,10 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.setDefault = function()
     {
-        for (var i=0; i < this.fieldName.length; i++) {
-            inputField = document.getElementById(this.fieldId[i]);
+        for (let i=0; i < this.fieldName.length; i++) {
+            let inputField = document.getElementById(this.fieldId[i]);
             if (inputField != undefined && this.fieldDefault[i] != '') {
-                if (this.fieldType[i] == 'boolean') {
+                if (this.fieldType[i] == 'boolean' && inputField.getAttribute('type') == 'checkbox') {
                     if (this.fieldDefault[i] == 't' || this.fieldDefault[i] == 'true') {
                         inputField.setAttribute('checked','checked');
                         inputField.checked = true;
@@ -913,9 +913,9 @@ function PrumoCrud(objName, ajaxFile)
     this.paramPk = function()
     {
         param = '';
-        for (var i=0; i < this.fieldPk.length; i++) {
+        for (let i=0; i < this.fieldPk.length; i++) {
             if (this.fieldPk[i]) {
-                var fieldValue = this.fieldNewValue[this.fieldName[i]];
+                let fieldValue = this.fieldNewValue[this.fieldName[i]];
                 param += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldValue);
             }
         }
@@ -924,20 +924,20 @@ function PrumoCrud(objName, ajaxFile)
     
     this.syncPkSon = function()
     {
-        var arrRel = Array();
+        let arrRel = Array();
         
         //prepara um array com as chaves do objeto atual
-        var parentPk = Array();
-        for (var i in this.fieldId) {
+        let parentPk = Array();
+        for (let i in this.fieldId) {
             if (this.fieldPk[i]) {
                 parentPk.push(this.fieldId[i]);
             }
         }
         
         //laço que percorre os filhos 1x1
-        for (var i in this.son1x1) {
-            var sonPk = Array();
-            for (var j in this.son1x1[i].fieldPk) {
+        for (let i in this.son1x1) {
+            let sonPk = Array();
+            for (let j in this.son1x1[i].fieldPk) {
                 if (this.son1x1[i].fieldPk[j]) {
                     sonPk.push(this.son1x1[i].fieldName[j]);
                 }
@@ -945,31 +945,31 @@ function PrumoCrud(objName, ajaxFile)
             if (parentPk.length != sonPk.length) {
                 return false;
             } else {
-                for (var j in parentPk) {
+                for (let j in parentPk) {
                     arrRel.push(Array(parentPk[j],sonPk[j]));
                 }
             }
         }
         
         // replica o valor entre os campos chave
-        for (var i in this.son1x1) {
-            for (var j in arrRel) {
+        for (let i in this.son1x1) {
+            for (let j in arrRel) {
                 this.son1x1[i].fieldNewValue[arrRel[j][1]] = document.getElementById(arrRel[j][0]).value;
             }
         }
         
         // aplica o mesmo método recursivamente
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].syncPkSon();
         }
     }
     
     this.paramCreate = function()
     {
-        var params = '';
-        for (var i=0; i < this.fieldPk.length; i++) {
+        let params = '';
+        for (let i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
-                var fieldValue = this.fieldNewValue[this.fieldName[i]];
+                let fieldValue = this.fieldNewValue[this.fieldName[i]];
                 params += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldValue);
             }
         }
@@ -980,10 +980,10 @@ function PrumoCrud(objName, ajaxFile)
             params = this.objName+'_action=c'+params;
         }
         
-        for (iSon in this.son1x1) {
-            if (this.son1x1[iSon].isVisible) {            
-                if (this.verifySon(iSon)) {
-                    params += '&'+this.son1x1[iSon].paramCreate();
+        for (let i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {            
+                if (this.verifySon(i)) {
+                    params += '&'+this.son1x1[i].paramCreate();
                 }
             }
         }
