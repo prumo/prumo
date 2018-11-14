@@ -538,19 +538,19 @@ function PrumoCrud(objName, ajaxFile)
                     }
                 }
                 
-                this.parent.afterCreate();
-                this.parent.afterCreate2();
+                this.parent.afterCreateRecursive();
+                this.parent.afterCreate2Recursive();
             } else if (this.cmd == 'fast_create') {
-                this.parent.afterCreate();
-                this.parent.afterCreate2();
+                this.parent.afterCreateRecursive();
+                this.parent.afterCreate2Recursive();
                 this.parent.stateChange('list');
             } else if (this.cmd == 'retrieve') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
                 this.parent.visibleSon1x1();
                 this.parent.retrieveVirtual();
-                this.parent.afterRetrieve();
-                this.parent.afterRetrieve2();
+                this.parent.afterRetrieveRecursive();
+                this.parent.afterRetrieve2Recursive();
                 if (this.parent.initialState == 'edit') {
                     this.parent.bt_edit();
                     this.parent.initialState = '';
@@ -559,29 +559,17 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
                 this.parent.retrieveVirtual();
-                this.parent.afterUpdate();
-                this.parent.afterUpdate2();
-                for (var i in this.parent.son1x1) {
-                    if (this.parent.verifySon(i)) {
-                        this.parent.son1x1[i].afterUpdate();
-                        this.parent.son1x1[i].afterUpdate2();
-                    }
-                }
+                this.parent.afterUpdateRecursive();
+                this.parent.afterUpdate2Recursive();
             } else if (this.cmd == 'fast_update') {
-                this.parent.afterUpdate();
-                this.parent.afterUpdate2();
-                for (var i in this.son1x1) {
-                    if (this.parent.verifySon(i)) {
-                        this.parent.son1x1[i].afterUpdate();
-                        this.parent.son1x1[i].afterUpdate2();
-                    }
-                }
+                this.parent.afterUpdateRecursive();
+                this.parent.afterUpdate2Recursive();
                 this.parent.stateChange('list');
             } else if (this.cmd == 'delete') {
-                this.parent.afterDelete();
+                this.parent.afterDeleteRecursive();
                 this.parent.stateChange('new');
             } else if (this.cmd == 'fast_delete') {
-                this.parent.afterDelete();
+                this.parent.afterDeleteRecursive();
                 this.parent.stateChange('list');
             } else if (this.cmd == 'copyFrom') {
                 this.parent.assignResponseXML(this.responseXML);
@@ -1009,7 +997,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doCreate = function()
     {
-        if (this.beforeCreate()) {
+        if (this.beforeCreateRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
                 this.toggleFreezeControls(true);
@@ -1022,7 +1010,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doFastCreate = function()
     {
-        if (this.beforeCreate()) {
+        if (this.beforeCreateRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
                 this.toggleFreezeControls(true);
@@ -1050,7 +1038,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doRetrieve = function()
     {
-        if (this.beforeRetrieve()) {
+        if (this.beforeRetrieveRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.toggleFreezeControls(true);
                 this.readNewValues();
@@ -1099,7 +1087,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doUpdate = function()
     {
-        if (this.beforeUpdate()) {
+        if (this.beforeUpdateRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
                 this.toggleFreezeControls(true);
@@ -1113,7 +1101,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doFastUpdate = function()
     {
-        if (this.beforeUpdate()) {
+        if (this.beforeUpdateRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.freezeFields();
                 this.toggleFreezeControls(true);
@@ -1127,7 +1115,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doDelete = function()
     {
-        if (this.beforeDelete()) {
+        if (this.beforeDeleteRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
                 var param = this.paramPk();
@@ -1146,7 +1134,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.doFastDelete = function()
     {
-        if (this.beforeDelete()) {
+        if (this.beforeDeleteRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
                 var    param = this.paramPk();
@@ -1311,6 +1299,28 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
+    
+    /**
+     * Chama o beforeCreate recursivamente para filhos 1x1
+     *
+     * @returns boolean
+     */
+    this.beforeCreateRecursive = function()
+    {
+        if (! this.beforeCreate()) {
+            return false;
+        }
+        
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                if (! this.son1x1[i].beforeCreateRecursive()) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
         
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado antes do doRetrieve do PrumoCrud,
@@ -1320,6 +1330,28 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.beforeRetrieve = function()
     {
+        return true;
+    }
+    
+    /**
+     * Chama o beforeRetrieve recursivamente para filhos 1x1
+     *
+     * @returns boolean
+     */
+    this.beforeRetrieveRecursive = function()
+    {
+        if (! this.beforeRetrieve()) {
+            return false;
+        }
+        
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                if (! this.son1x1[i].beforeRetrieveRecursive()) {
+                    return false;
+                }
+            }
+        }
+        
         return true;
     }
     
@@ -1335,6 +1367,28 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Chama o beforeUpdate recursivamente para filhos 1x1
+     *
+     * @returns boolean
+     */
+    this.beforeUpdateRecursive = function()
+    {
+        if (! this.beforeUpdate()) {
+            return false;
+        }
+        
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                if (! this.son1x1[i].beforeUpdateRecursive()) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado antes do doDelete do PrumoCrud,
      * continuando somente se o retorno for true
      *
@@ -1342,6 +1396,28 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.beforeDelete = function()
     {
+        return true;
+    }
+    
+    /**
+     * Chama o beforeDelete recursivamente para filhos 1x1
+     *
+     * @returns boolean
+     */
+    this.beforeDeleteRecursive = function()
+    {
+        if (! this.beforeDelete()) {
+            return false;
+        }
+        
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                if (! this.son1x1[i].beforeDeleteRecursive()) {
+                    return false;
+                }
+            }
+        }
+        
         return true;
     }
     
@@ -1354,11 +1430,37 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Chama o afterCreate recursivamente para filhos 1x1
+     */
+    this.afterCreateRecursive = function()
+    {
+        this.afterCreate();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterCreateRecursive();
+            }
+        }
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
     this.afterCreate2 = function()
     {
         //
+    }
+    
+    /**
+     * Chama o afterCreate2 recursivamente para filhos 1x1
+     */
+    this.afterCreate2Recursive = function()
+    {
+        this.afterCreate2();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterCreate2Recursive();
+            }
+        }
     }
     
     /**
@@ -1370,11 +1472,37 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Chama o afterUpdate recursivamente para filhos 1x1
+     */
+    this.afterUpdateRecursive = function()
+    {
+        this.afterUpdate();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterUpdateRecursive();
+            }
+        }
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
      */
     this.afterUpdate2 = function()
     {
         //
+    }
+    
+    /**
+     * Chama o afterUpdate2 recursivamente para filhos 1x1
+     */
+    this.afterUpdate2Recursive = function()
+    {
+        this.afterUpdate2();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterUpdate2Recursive();
+            }
+        }
     }
     
     /**
@@ -1386,6 +1514,19 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Chama o afterRetrieve recursivamente para filhos 1x1
+     */
+    this.afterRetrieveRecursive = function()
+    {
+        this.afterRetrieve();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterRetrieveRecursive();
+            }
+        }
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
     this.afterRetrieve2 = function()
@@ -1394,11 +1535,37 @@ function PrumoCrud(objName, ajaxFile)
     }
     
     /**
+     * Chama o afterRetrieve2 recursivamente para filhos 1x1
+     */
+    this.afterRetrieve2Recursive = function()
+    {
+        this.afterRetrieve2();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterRetrieve2Recursive();
+            }
+        }
+    }
+    
+    /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o delete do PrumoCrud
      */
     this.afterDelete = function()
     {
         //
+    }
+    
+    /**
+     * Chama o afterDelete recursivamente para filhos 1x1
+     */
+    this.afterDeleteRecursive = function()
+    {
+        this.afterDelete();
+        for (var i in this.son1x1) {
+            if (this.son1x1[i].isVisible) {
+                this.son1x1[i].afterDeleteRecursive();
+            }
+        }
     }
     
     this.hideSon1xN = function()
