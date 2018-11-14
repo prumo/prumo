@@ -99,7 +99,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
             } else {
                 if (pCheckDate($valueNoInjection)) {
                     $arrDate = pParseDate($valueNoInjection);
-                    return pAddQuote($arrDate['year'].'-'.$arrDate['month'].'-'.$arrDate['day']);
+                    return pAddQuote($arrDate['year'].'-'.$arrDate['month'].'-'.$arrDate['day'], $useQuote);
                 } else {
                     return "NULL";
                 }
@@ -107,7 +107,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
         break;
         
         case "time":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection);
+            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "timestamp":
@@ -143,7 +143,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
                 $minute = $arrTime['minute'];
                 $second = $arrTime['second'];
                 
-                return pAddQuote("$year-$month-$day $hour:$minute:$second$fuso");
+                return pAddQuote("$year-$month-$day $hour:$minute:$second$fuso", $useQuote);
             }
         break;
 
