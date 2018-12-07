@@ -32,5 +32,7 @@ class PrumoList extends PrumoSearch
         
         $this->pGrid->lineEventOnData = '';
         $this->pGrid->pointerCursorOnData = false;
+
+        $this->param['autoclick'] = 'false';
     }
 }

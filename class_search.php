@@ -197,6 +197,10 @@ class PrumoSearch extends PrumoBasic
             $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
         }
 
+        // repassa parametro auto click
+        $clientObject .= $this->ind . '    '. $this->name.'.autoClick = ';
+        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] != 'false') ? 'true;'."\n" : 'false;'."\n";
+
         // repassa fields para o objeto cliente
         $fieldName = '';
         for ($i = 0; $i < count($this->field); $i++) {

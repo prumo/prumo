@@ -57,7 +57,7 @@ class PrumoCrudList extends PrumoSearch
         
         // repassa parametro auto click
         $clientObject .= $this->ind . '    '. $this->name.'.autoClick = ';
-        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick']) ? 'true;'."\n" : 'false;'."\n";
+        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] != 'false') ? 'true;'."\n" : 'false;'."\n";
         
         //fastCreate
         if (isset($this->param['fastcreate']) && $this->param['fastcreate']) {
