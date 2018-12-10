@@ -796,7 +796,13 @@ class PrumoCrud extends PrumoBasic
                 if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'error') {
                     
                     // verifica se possui registro duplicado
-                    $sqlCount = $this->sqlValues($this->sqlCount());
+                    if ($this->parent1x1 == null) {
+                        $sqlCount = $this->sqlValues($this->sqlCount());
+                    } else {
+                        $pkValue = $this->syncPk($this->parent1x1->serialFields);
+                        $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
+                    }
+                    
                     $count = $this->pConnection->sqlQuery($sqlCount);
                     if ($count === false) {
                         pXmlError('SqlError', $this->pConnection->getErr(), true);
@@ -804,8 +810,8 @@ class PrumoCrud extends PrumoBasic
                     }
                     
                     if ($count > 0) {
-                        pXmlError('Duplicated', _('Registro duplicado.'), true);
-                        return false;
+                        pXmlError('Duplicated', _('Registro duplicado.').' - '.$this->name, true);
+                        exit;
                     }
                 }
                 
