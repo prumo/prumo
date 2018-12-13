@@ -638,13 +638,14 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
     
-    this.addParent1x1 = function(parent,parentFieldCondition,conditionValue)
+    this.addParent1x1 = function(parent, parentFieldCondition, conditionValue, conditionOperator)
     {
         this.parent1x1 = parent;
         parent.son1x1.push(this);
         var arrCondition = Array();
         arrCondition['fieldName'] = parentFieldCondition;
         arrCondition['value'] = conditionValue;
+        arrCondition['operator'] = conditionOperator;
         this.parent1x1Condition = arrCondition;
     }
     
@@ -735,8 +736,15 @@ function PrumoCrud(objName, ajaxFile)
      *
      * @return boolean
      */
-    this.verifySon = function(i) {
-        return this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '';
+    this.verifySon = function(i)
+    {
+        if ((this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] == this.son1x1[i].parent1x1Condition['value'] || this.son1x1[i].parent1x1Condition['fieldName'] == '') && this.son1x1[i].parent1x1Condition['operator'] == 'equal') {
+            return true;
+        }
+        if (this.fieldNewValue[this.son1x1[i].parent1x1Condition['fieldName']] != this.son1x1[i].parent1x1Condition['value'] && this.son1x1[i].parent1x1Condition['operator'] == 'not equal') {
+            return true;
+        }
+        return false;
     }
     
     this.clearSerials = function()

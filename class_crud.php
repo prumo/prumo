@@ -306,17 +306,22 @@ class PrumoCrud extends PrumoBasic
      * @param $parent object: instancia do objeto pai
      * @param $parentFieldCondition string: nome do campo no objeto pai que deve obedecer uma condição/valor
      * @param $conditionValue string: valor condicional da campo no objeto pai
+     * @param $conditionOperator string: operador lógico para a condição (equal, not equal)
      */
-    public function addParent1x1($parent, $parentFieldCondition='', $conditionValue='')
+    public function addParent1x1($parent, $parentFieldCondition='', $conditionValue='', $conditionOperator='equal')
     {
         $parent->son1x1[] = $this;
         $this->parent1x1 = $parent;
         $arrCondition['fieldName'] = $parentFieldCondition;
         $arrCondition['value'] = $conditionValue;
+        $arrCondition['operator'] = $conditionOperator;
         $this->parent1x1Condition = $arrCondition;
         
         for ($i = 0; $i < count($this->parent1x1->field); $i++) {
-            if ($this->parent1x1->field[$i]['name'] == $parentFieldCondition) {
+            if ($this->parent1x1->field[$i]['name'] == $parentFieldCondition && $conditionOperator == 'equal') {
+                $this->parent1x1->field[$i]['haveChild'] = true;
+            }
+            if ($this->parent1x1->field[$i]['name'] != $parentFieldCondition && $conditionOperator == 'not equal') {
                 $this->parent1x1->field[$i]['haveChild'] = true;
             }
         }
@@ -1806,7 +1811,7 @@ class PrumoCrud extends PrumoBasic
         // ligações 1 to 1
         $clientObject .= "\n";
         if ($this->parent1x1 != null) {
-            $clientObject .= $this->ind.'    '.$this->name.'.addParent1x1('.$this->parent1x1->name.',\''.$this->parent1x1Condition['fieldName'].'\',\''.$this->parent1x1Condition['value'].'\');'."\n";
+            $clientObject .= $this->ind.'    '.$this->name.'.addParent1x1('.$this->parent1x1->name.',\''.$this->parent1x1Condition['fieldName'].'\',\''.$this->parent1x1Condition['value'].'\', \''.$this->parent1x1Condition['operator'].'\');'."\n";
         }
         
         if ($this->parent1xN != '') {
