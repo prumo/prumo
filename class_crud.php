@@ -94,7 +94,7 @@ class PrumoCrud extends PrumoBasic
         if (! isset($this->param['capslock'])) {
             $this->capsLock = false;
         } else {
-            $this->capsLock = $this->param['capslock'] ? true : false;
+            $this->capsLock = $this->param['capslock'] == 'true' ? true : false;
         }
         
         // permissões
@@ -250,7 +250,7 @@ class PrumoCrud extends PrumoBasic
         
         // parâmetro capsLock
         if (isset($param['capslock'])) {
-            $this->field[$fieldIndex]['capslock'] = $param['capslock'] ? true : false;
+            $this->field[$fieldIndex]['capslock'] = $param['capslock'] == 'true' ? true : false;
         } else {
             if ($this->field[$fieldIndex]['type'] == 'string' || $this->field[$fieldIndex]['type'] == 'text') {
                 $this->field[$fieldIndex]['capslock'] = $this->capsLock;
