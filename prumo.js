@@ -763,15 +763,24 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
     
-    this.visibleForm = function(state)
+    /**
+     * Gatilho disparado quando o formulário passa a ser visível ou invisível pela regra do relacionamento 1x1
+     */
+    this.onVisibleForm = function(stateVisible)
     {
-        if (state) {
+        //
+    }
+    
+    this.visibleForm = function(stateVisible)
+    {
+        if (stateVisible) {
             this.isVisible = true;
             document.getElementById(this.objName+'_form').style.display = 'block';
         } else {
             this.isVisible = false;
             document.getElementById(this.objName+'_form').style.display = 'none';
         }
+        this.onVisibleForm(stateVisible);
     }
     
     /**
