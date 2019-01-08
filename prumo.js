@@ -380,21 +380,21 @@ function prumoAjax(ajaxFile, process)
             var form = document.getElementById(this.formName);
             var inputs = form.getElementsByTagName('input');
             var i;
-            for (var i=0; i < inputs.length; i++) {
+            for (let i=0; i < inputs.length; i++) {
                 var name = inputs[i].name != '' ? inputs[i].name : inputs[i].id;
                 if ((inputs[i].type != 'checkbox') | inputs[i].type == 'checkbox' & inputs[i].checked == true) {
                     params += '&' + name + '=' + inputs[i].value;
                 }
             }
             var textareas = form.getElementsByTagName('textarea');
-            for (var i=0; i < textareas.length; i++) {
+            for (let i=0; i < textareas.length; i++) {
                 var name = textareas[i].name != '' ? textareas[i].name : textareas[i].id;
                 params += '&' + name + '=' + textareas[i].value;
             }
             var selects = form.getElementsByTagName('select');
-            for (var i=0; i < selects.length; i++) {
+            for (let i=0; i < selects.length; i++) {
                 var name = selects[i].name != '' ? selects[i].name : selects[i].id;
-                for (var j=0; j < selects[i].length; j++) {
+                for (let j=0; j < selects[i].length; j++) {
                     if (selects[i][j].selected) {
                         params += '&' + name + '[]=' + selects[i][j].value;
                     }
@@ -510,7 +510,7 @@ function PrumoCrud(objName, ajaxFile)
     this.pAjax.ajaxXmlOk = function()
     {
         // copia o cmd para os filhos 1x1
-        for (var i in this.parent.son1x1) {
+        for (let i in this.parent.son1x1) {
             this.parent.son1x1[i].pAjax.cmd = this.cmd;
         }
         
@@ -531,7 +531,7 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.retrieveVirtual();
                 
                 var controls = document.getElementById(this.parent.objName+'_control_view');
-                for (var i in controls.childNodes) {
+                for (let i in controls.childNodes) {
                     if (controls.childNodes[i].nodeType == 1) {
                         controls.childNodes[i].focus();
                         break;
@@ -614,11 +614,11 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.retrieveVirtual = function()
     {
-        for (var i in this.sonSearch) {
+        for (let i in this.sonSearch) {
         
             var canVirtual = false;
-            for (var j in this.sonSearch[i].fieldReturn) {
-                for (var k in this.fieldId) {
+            for (let j in this.sonSearch[i].fieldReturn) {
+                for (let k in this.fieldId) {
                     if (this.sonSearch[i].fieldReturn[j][1] == this.fieldId[k] && this.fieldVirtual[k] == true) {
                         canVirtual = true;
                     }
@@ -631,7 +631,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 this.son1x1[i].retrieveVirtual();
             }
@@ -679,7 +679,7 @@ function PrumoCrud(objName, ajaxFile)
                 alert(this.objName + ': ' + gettext('Falta preencher alguns campos'));
             }
         } else {
-            for (var i=0; i < this.fieldName.length; i++) {
+            for (let i=0; i < this.fieldName.length; i++) {
                 // quando é copia não deve preencher os campos noCreate
                 if (this.pAjax.cmd == 'copyFrom' && this.fieldNoCreate[i]) {
                     var value = '';
@@ -706,7 +706,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 this.son1x1[i].assignResponseXML(responseXML);
             }
@@ -717,12 +717,12 @@ function PrumoCrud(objName, ajaxFile)
     {
         this.fieldOldValue = Array();
         
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             this.fieldOldValue[this.fieldName[i]] = this.fieldNewValue[this.fieldName[i]];
         }
         
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 this.son1x1[i].resetFieldOldValue();
             }
@@ -799,9 +799,9 @@ function PrumoCrud(objName, ajaxFile)
         var msg = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" duplicado entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%"');
         var msgPk = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" difirente entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%", para campo chave primária do relacionamento 1x1');
         
-        for (var i in this.son1x1) {
-            for (var j in this.fieldId) {
-                for (var k in this.son1x1[i].fieldId) {
+        for (let i in this.son1x1) {
+            for (let j in this.fieldId) {
+                for (let k in this.son1x1[i].fieldId) {
                     if (this.fieldId[j] == this.son1x1[i].fieldId[k]) {
                         // excessão para a validação quando é campo chave primária de relacionamento 1x1
                         if (this.son1x1[i].parent1x1 == false || this.son1x1[i].fieldPk[k] == false) {
@@ -834,7 +834,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.readNewValues = function()
     {
-        for (var i=0; i < this.fieldName.length; i++) {
+        for (let i=0; i < this.fieldName.length; i++) {
             // verifica se tem pai ou campo não é chave primaria
             inputField = document.getElementById(this.fieldId[i]);
             if (inputField == null) {
@@ -851,14 +851,14 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].readNewValues();
         }
     }
     
     this.writeNewValues = function()
     {
-        for (var i=0; i < this.fieldName.length; i++) {
+        for (let i=0; i < this.fieldName.length; i++) {
             var value = this.fieldNewValue[this.fieldName[i]];
             // verifica se tem pai ou campo não é chave primaria
             if (this.parent1x1 == false || !this.fieldPk[i]) {
@@ -881,7 +881,7 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.clear = function()
     {
-        for (var i=0; i < this.fieldName.length; i++) {
+        for (let i=0; i < this.fieldName.length; i++) {
             if (this.fieldReadonly[i] == false || this.fieldNoCreate[i] == true) {
                 if (this.parent1x1 == false || !this.fieldPk[i] || this.fieldNoCreate[i] == true) {
                     inputField = document.getElementById(this.fieldId[i]);
@@ -898,7 +898,7 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].clear();
         }
         this.setDefault();
@@ -1047,7 +1047,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         params += this.objName+'_action=r'+this.paramPk();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             params += '&'+this.son1x1[i].paramRetrieve();
         }
         return params;
@@ -1079,7 +1079,7 @@ function PrumoCrud(objName, ajaxFile)
     this.paramUpdate = function()
     {
         var params = '';
-        for (var i=0; i < this.fieldPk.length; i++) {
+        for (let i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
                 var fieldNewValue = this.fieldNewValue[this.fieldName[i]];
                 var fieldOldValue = this.fieldOldValue[this.fieldName[i]];
@@ -1094,7 +1094,7 @@ function PrumoCrud(objName, ajaxFile)
             params = this.objName+'_action=u'+params;
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 params += '&'+this.son1x1[i].paramUpdate();
             }
@@ -1171,7 +1171,7 @@ function PrumoCrud(objName, ajaxFile)
     this.toggleFreezeControls = function(freeze)
     {
         var btName = Array('write_new', 'copy_from', 'clear', 'search', 'write_edit', 'cancel_edit', 'search_view', 'edit', 'delete', 'new', 'fast_create', 'fast_update');
-        for (var i=0; i < btName.length; i++) {
+        for (let i=0; i < btName.length; i++) {
             if (document.getElementById(this.objName+'_bt_'+btName[i]) != undefined) {
                 if (freeze == true) {
                     document.getElementById(this.objName+'_bt_'+btName[i]).setAttribute('disabled', 'disabled');
@@ -1185,7 +1185,7 @@ function PrumoCrud(objName, ajaxFile)
     this.freezeFields = function()
     {
         var fieldCount = this.fieldId.length;
-        for (var i=0; i < fieldCount; i++) {
+        for (let i=0; i < fieldCount; i++) {
             var inputField = document.getElementById(this.fieldId[i]);
             inputField.setAttribute('title',inputField.value);
             if (this.parent1x1 == false || !this.fieldPk[i]) {
@@ -1204,7 +1204,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        for (var i=0; i < this.sonSearch.length; i++) {
+        for (let i=0; i < this.sonSearch.length; i++) {
             document.getElementById(this.sonSearch[i].objName+'Bt').setAttribute('disabled','disabled');
         }
     }
@@ -1212,12 +1212,12 @@ function PrumoCrud(objName, ajaxFile)
     this.unFreezeFields = function()
     {
         
-        for (var i=0; i < this.sonSearch.length; i++) {
+        for (let i=0; i < this.sonSearch.length; i++) {
             document.getElementById(this.sonSearch[i].objName+'Bt').setAttribute('disabled','disabled')
         }
         
         var fieldCount = this.fieldId.length;
-        for (var i=0; i < fieldCount; i++) {
+        for (let i=0; i < fieldCount; i++) {
             
             var inputField = document.getElementById(this.fieldId[i]);
             var inputFastCreate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_add');
@@ -1258,9 +1258,9 @@ function PrumoCrud(objName, ajaxFile)
         }
         
         //desativa search que não tem ligação com nenhum campo
-        for (var i=0; i < this.sonSearch.length; i++) {
+        for (let i=0; i < this.sonSearch.length; i++) {
             var linkInput = false;
-            for (var j=0; j < fieldCount; j++) {
+            for (let j=0; j < fieldCount; j++) {
                 var inputField = document.getElementById(this.fieldId[j]);
                 if (inputField.pSearch != undefined && inputField.pSearch.objName == this.sonSearch[i].objName) {
                     linkInput = true;
@@ -1328,7 +1328,7 @@ function PrumoCrud(objName, ajaxFile)
             return false;
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeCreateRecursive()) {
                     return false;
@@ -1361,7 +1361,7 @@ function PrumoCrud(objName, ajaxFile)
             return false;
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeRetrieveRecursive()) {
                     return false;
@@ -1394,7 +1394,7 @@ function PrumoCrud(objName, ajaxFile)
             return false;
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeUpdateRecursive()) {
                     return false;
@@ -1427,7 +1427,7 @@ function PrumoCrud(objName, ajaxFile)
             return false;
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeDeleteRecursive()) {
                     return false;
@@ -1452,7 +1452,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterCreateRecursive = function()
     {
         this.afterCreate();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterCreateRecursive();
             }
@@ -1473,7 +1473,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterCreate2Recursive = function()
     {
         this.afterCreate2();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterCreate2Recursive();
             }
@@ -1494,7 +1494,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterUpdateRecursive = function()
     {
         this.afterUpdate();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterUpdateRecursive();
             }
@@ -1515,7 +1515,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterUpdate2Recursive = function()
     {
         this.afterUpdate2();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterUpdate2Recursive();
             }
@@ -1536,7 +1536,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterRetrieveRecursive = function()
     {
         this.afterRetrieve();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterRetrieveRecursive();
             }
@@ -1557,7 +1557,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterRetrieve2Recursive = function()
     {
         this.afterRetrieve2();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterRetrieve2Recursive();
             }
@@ -1578,7 +1578,7 @@ function PrumoCrud(objName, ajaxFile)
     this.afterDeleteRecursive = function()
     {
         this.afterDelete();
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 this.son1x1[i].afterDeleteRecursive();
             }
@@ -1712,7 +1712,7 @@ function PrumoCrud(objName, ajaxFile)
             alert(msg);
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].stateChange(newState);
         }
         
@@ -1748,7 +1748,7 @@ function PrumoCrud(objName, ajaxFile)
         var err = '';
         var fieldValue = '';
         
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             
             msg = '';
             fieldValue = this.fieldNewValue[this.fieldName[i]];
@@ -1799,7 +1799,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateType();
             }
@@ -1815,14 +1815,14 @@ function PrumoCrud(objName, ajaxFile)
     {
         this.readNewValues();
         var err = '';
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             if (this.fieldNotNull[i] && this.fieldNewValue[this.fieldName[i]] == '') {
                 var msg = '- '+gettext('Campo "%fieldLabel%" não pode ficar em branco')+'.\n'
                 err += msg.replace('%fieldLabel%',this.fieldLabel[i]);
             }
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateNotNull();
             }
@@ -1849,7 +1849,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         
         var fucusOk = false;
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             if (this.fieldNotNull[i] && this.fieldNewValue[this.fieldName[i]] == '') {
                 if (this.parent1x1 == false || !this.fieldPk[i]) {
                     
@@ -1870,7 +1870,7 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             if (fucusOk == false && this.son1x1[i].isVisible) {
                 this.son1x1[i].focusNotNull();
             }
@@ -1880,7 +1880,7 @@ function PrumoCrud(objName, ajaxFile)
     this.formFocus = function()
     {
         if (this.parent1x1 == false) {
-            for (var i in this.fieldName) {
+            for (let i in this.fieldName) {
                 inputField = document.getElementById(this.fieldId[i]);
                 if (inputField.getAttribute('disabled') != 'disabled') {
                     inputField.focus();
@@ -1933,7 +1933,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.readAutoClearValues = function()
     {
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             inputField = document.getElementById(this.fieldId[i]);
             if (inputField.getAttribute('type') == 'checkbox') {
                 if (inputField.checked) {
@@ -1946,14 +1946,14 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].readAutoClearValues();
         }
     }
     
     this.writeAutoClearValues = function()
     {
-        for (var i in this.fieldName) {
+        for (let i in this.fieldName) {
             inputField = document.getElementById(this.fieldId[i]);
             if (inputField.getAttribute('type') != 'checkbox') {
                 if (this.fieldAutoClearValue[this.fieldName[i]] != '') {
@@ -1962,7 +1962,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
         
-        for (var i in this.son1x1) {
+        for (let i in this.son1x1) {
             this.son1x1[i].writeAutoClearValues();
         }
     }
@@ -2096,7 +2096,7 @@ function PrumoCrud(objName, ajaxFile)
         this.stateChange('new');
         
         var fieldCount = this.fieldId.length;
-        for (var i=0; i < fieldCount; i++) {
+        for (let i=0; i < fieldCount; i++) {
             
             var id = this.objName+'_'+this.fieldName[i]+'_add';
             if (document.getElementById(id) != undefined) {
@@ -2127,7 +2127,7 @@ function PrumoCrud(objName, ajaxFile)
         this.clear();
         
         var fieldCount = this.fieldId.length;
-        for (var i=0; i < fieldCount; i++) {
+        for (let i=0; i < fieldCount; i++) {
             
             var id = this.objName+'_'+this.fieldName[i]+'_edit';
             inputFastUpdate = document.getElementById(id);
@@ -2165,7 +2165,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
             var fieldCount = this.fieldId.length;
-            for (var i=0; i < fieldCount; i++) {
+            for (let i=0; i < fieldCount; i++) {
                 if (this.fieldPk[i]) {
                     var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
                     this.inputSetValue(this.fieldId[i], value);
@@ -2233,6 +2233,31 @@ function PrumoFilter(objName, useSimilaritySearch)
          gettext('não termina com'),
          gettext('igual a'),
          gettext('diferente de'),
+         gettext('é nulo'),
+         gettext('não é nulo')
+    );
+    
+    //operadores lógicos para campos em formato data/hora
+    this.dateTimeOperators = Array(
+         'date_time equal',
+         'date_time not equal',
+         'date_time less than',
+         'date_time greater than',
+         'date_time less than or equal',
+         'date_time greater than or equal',
+         'date_time between',
+         'is null',
+         'not is null'
+    );
+    
+    this.dateTimeOperatorsName = Array(
+         gettext('igual a'),
+         gettext('diferente de'),
+         gettext('menor que'),
+         gettext('maior que'),
+         gettext('menor ou igual a'),
+         gettext('maior ou igual a'),
+         gettext('entre'),
          gettext('é nulo'),
          gettext('não é nulo')
     );
@@ -2315,7 +2340,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.focus = function()
     {
-        for (var i in this.filter) {
+        for (let i in this.filter) {
             if (this.filter[i].visible) {
                 document.getElementById(this.objName+'_'+i+'_value').focus();
                 break;
@@ -2385,7 +2410,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.fieldTypeByName = function(fieldName)
     {
-        for (var i=0; i < this.fieldName.length; i++) {
+        for (let i=0; i < this.fieldName.length; i++) {
             if (fieldName == this.fieldName[i]) {
                 return this.fieldType[i];
             }
@@ -2401,7 +2426,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.fieldLabelByName = function(fieldName)
     {
-        for (var i=0; i < this.fieldName.length; i++) {
+        for (let i=0; i < this.fieldName.length; i++) {
             if (fieldName == this.fieldName[i]) {
                 return this.fieldLabel[i];
             }
@@ -2433,13 +2458,13 @@ function PrumoFilter(objName, useSimilaritySearch)
                 return 'numeric';
                 break;
             case 'date':
-                return 'numeric';
+                return 'date_time';
                 break;
             case 'time':
-                return 'numeric';
+                return 'date_time';
                 break;
             case 'timestamp':
-                return 'numeric';
+                return 'date_time';
                 break;
             case 'boolean':
                 return 'boolean';
@@ -2473,6 +2498,10 @@ function PrumoFilter(objName, useSimilaritySearch)
         if (operatorType == 'text') {
             arrOperators     = this.textOperators;
             arrOperatorsName = this.textOperatorsName;
+        }
+        if (operatorType == 'date_time') {
+            arrOperators     = this.dateTimeOperators;
+            arrOperatorsName = this.dateTimeOperatorsName;
         }
         if (operatorType == 'numeric') {
             arrOperators     = this.numericOperators;
@@ -2541,7 +2570,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         var err = '';
         var msg = '';
         
-        for (var i in this.filter) {
+        for (let i in this.filter) {
             
             if (this.filter[i].visible) {
                 
@@ -2588,7 +2617,7 @@ function PrumoFilter(objName, useSimilaritySearch)
                     }
                 }
                 
-                if (fieldOperator == 'between' && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
+                if ((fieldOperator == 'between' || fieldOperator == 'date_time between') && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
                     
                     switch (fieldType) {
                         
@@ -2652,7 +2681,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             document.getElementById(this.objName+'_'+index+'_input').style.display = 'block';
         }
         
-        if (selectOperator.value == 'between') {
+        if (selectOperator.value == 'between' || selectOperator.value == 'date_time between') {
             document.getElementById(this.objName+'_'+index+'_input2').style.display = 'block';
         } else {
             document.getElementById(this.objName+'_'+index+'_input2').style.display = 'none';
@@ -2729,14 +2758,14 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         //Conta os filtros visíveis
         visibleFilters = 0;
-        for (var i=0; i < this.filter.length; i++) {
+        for (let i=0; i < this.filter.length; i++) {
             if (this.filter[i].visible) {
                 visibleFilters++;
             }
         }
         
         // laço que corre todos os filtros
-        for (var i=0; i < this.filter.length; i++) {
+        for (let i=0; i < this.filter.length; i++) {
         
             // coloca o botão apenas se o filtro é visível
             if (this.filter[i].visible) {
@@ -2763,7 +2792,7 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.clearValues = function()
     {
-        for (var i=0; i < this.filter.length; i++) {
+        for (let i=0; i < this.filter.length; i++) {
             if (this.filter[i].visible) {
                 this.filter[i].value  = '';
                 this.filter[i].value2 = '';
@@ -2799,11 +2828,11 @@ function PrumoFilter(objName, useSimilaritySearch)
             var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
             if (operator == '') {
                 switch (operatorType) {
-                    case 'text':
-                        arrOperators = this.textOperators;
-                        break;
                     case 'numeric':
                         arrOperators = this.numericOperators;
+                        break;
+                    case 'date_time':
+                        arrOperators = this.dateTimeOperators;
                         break;
                 default:
                     arrOperators = this.textOperators;
@@ -2829,7 +2858,7 @@ function PrumoFilter(objName, useSimilaritySearch)
                 htmlFilters += '    <tr>\n';
                 htmlFilters += '        <td>\n';
                 htmlFilters += '            <select id="'+this.objName+'_'+i+'_field" onchange="'+this.objName+'.selectFieldChange(this,'+i+')">\n';
-                for (var j=0; j < this.fieldName.length; j++) {
+                for (let j=0; j < this.fieldName.length; j++) {
                     htmlFilters += '                <option value="'+this.fieldName[j]+'">'+this.fieldLabel[j]+'</option>\n';
                 }
                 htmlFilters += '            </select>&nbsp;\n';
@@ -2904,7 +2933,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         this.filter = new Array()
         
         // laço que percorre o xml
-        for (var i=0; i < this.xmlData.length; i++) {
+        for (let i=0; i < this.xmlData.length; i++) {
             fieldName    = this.getValue('fieldName', i);
             operator     = this.getValue('operator', i);
             value        = this.getValue('value', i);
@@ -2929,10 +2958,9 @@ function PrumoFilter(objName, useSimilaritySearch)
      */
     this.privateSetFilter = function(fieldName, filterOperator, fieldValue, fieldValue2, visible)
     {
-        
         // Procura um campo no filtro visivel com o mesmo fieldName
-        var nothing = true;
-        for (var iFilter in this.filter) {
+        let nothing = true;
+        for (let iFilter in this.filter) {
             if (this.filter[iFilter].fieldName == fieldName && this.filter[iFilter].visible == visible) {
                 this.filter[iFilter].value = fieldValue;
                 this.filter[iFilter].value2 = fieldValue2;
@@ -3005,7 +3033,7 @@ function PrumoGrid(objName)
     
     this.table = document.getElementById(objName);
     
-    for (var i=1; i <= this.table.rows.length -1; i++) {
+    for (let i=1; i <= this.table.rows.length -1; i++) {
         this.table.rows[i].setAttribute('onmouseover', objName+'.onmouseover('+i+')');
     }
     
@@ -3016,7 +3044,7 @@ function PrumoGrid(objName)
             this.table.rows[i].setAttribute('class', 'prumoGridTrSelected');
         }
         
-        for (var j=1; j <= this.table.rows.length -1; j++) {
+        for (let j=1; j <= this.table.rows.length -1; j++) {
             if (j != i) {
                 if (j % 2 != 0) {
                     this.table.rows[j].setAttribute('class', 'prumoGridTrEven');
@@ -3031,10 +3059,10 @@ function PrumoGrid(objName)
     {
         pGrid = document.getElementById(this.objName);
         
-        for (var i=1; i < pGrid.rows.length; i++) {
+        for (let i=1; i < pGrid.rows.length; i++) {
             
             pGridRow = pGrid.rows[i];
-            for (var j=0; j < pGridRow.cells.length; j++) {
+            for (let j=0; j < pGridRow.cells.length; j++) {
                 pGridRow.cells[j].style.cursor = 'default';
                 pGridRow.cells[j].removeAttribute('onClick');
                 pGridRow.cells[j].innerHTML = '<br />';
@@ -3051,13 +3079,13 @@ function PrumoGrid(objName)
         this.clear();
         
         //laço que percorre o xml
-        for (var i=0; i < this.xmlData.length; i++) {
+        for (let i=0; i < this.xmlData.length; i++) {
             
             // faz referencia a celua do grid
             var pGridRowCells = document.getElementById(this.objName).rows[i+1].cells;
             
             var iColumn = 0;
-            for (var j=0; j < this.field.length; j++) {
+            for (let j=0; j < this.field.length; j++) {
                 
                 var valueCell = format(this.fieldType[j], this.getValue(this.field[j], i), 'html');
                 
@@ -3158,7 +3186,7 @@ function PrumoGridNavigation(objName)
         }
         
         // Laço que cria os botões da barra
-        for (var i=0; i < pageTo - pageFrom +1; i++) {
+        for (let i=0; i < pageTo - pageFrom +1; i++) {
             var iPage = pageFrom + i;
             if (iPage == this.page) {
                 htmlOut += '<button class="pButton-outline prumoPagination" disabled="disabled" onclick="'+this.objName+'.goSearch('+iPage+')">'+iPage+'</button>';
@@ -3279,7 +3307,7 @@ function PrumoMenu(objName)
     {
         var inputMenuValue = document.getElementById('prumo_input_menu').value;
         var dl = document.getElementById('prumo_list_menu');
-        for (var i=0; i < dl.options.length; i++) {
+        for (let i=0; i < dl.options.length; i++) {
             if (inputMenuValue == dl.options[i].value) {
                 location.href = 'index.php?page='+dl.options[i].getAttribute('routine');
             }
@@ -3395,7 +3423,7 @@ function PrumoSearch(objName, ajaxFile)
     this.parametersFilters = function()
     {
         param = '';
-        for (var i=0; i < this.pFilter.filter.length; i++) {
+        for (let i=0; i < this.pFilter.filter.length; i++) {
             param += '&fField[]='+encodeURIComponent(this.pFilter.filter[i].fieldName);
             param += '&fOperator[]='+this.pFilter.filter[i].operator;
             param += '&fValue[]='+encodeURIComponent(this.pFilter.filter[i].value);
@@ -3432,7 +3460,7 @@ function PrumoSearch(objName, ajaxFile)
     this.lineClick = function(lineIndex)
     {
         this.lineIndex = lineIndex;
-        for (var i=0; i < this.fieldReturn.length; i++) {
+        for (let i=0; i < this.fieldReturn.length; i++) {
             var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
             var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
             var noRetrieve = this.fieldReturn[i][3];
@@ -3516,10 +3544,10 @@ function PrumoSearch(objName, ajaxFile)
     {
         var param = 'objName='+this.objName+'&'+this.objName+'_action=r';
         
-        for (var i in this.fieldPk) {
+        for (let i in this.fieldPk) {
             if (this.fieldPk[i] == true) {
                 var idReturn = '';
-                for (var j in this.fieldReturn) {
+                for (let j in this.fieldReturn) {
                     if (this.fieldName[i] == this.fieldReturn[j][0]) {
                         idReturn = this.fieldReturn[j][1];
                     }
@@ -3541,11 +3569,11 @@ function PrumoSearch(objName, ajaxFile)
     {
         var havePk = false;
         var pkNull = false;
-        for (var i in this.fieldPk) {
+        for (let i in this.fieldPk) {
             if (this.fieldPk[i] == true) {
                 havePk = true;
                 var idReturn = '';
-                for (var j in this.fieldReturn) {
+                for (let j in this.fieldReturn) {
                     if (this.fieldName[i] == this.fieldReturn[j][0]) {
                         idReturn = this.fieldReturn[j][1];
                         if (document.getElementById(idReturn).value == '') {
@@ -3562,7 +3590,7 @@ function PrumoSearch(objName, ajaxFile)
         }
         
         if (havePk && pkNull) {
-            for (var i=0; i < this.fieldReturn.length; i++) {
+            for (let i=0; i < this.fieldReturn.length; i++) {
                 document.getElementById(this.fieldReturn[i][1]).value = '';
             }
         }
@@ -3618,7 +3646,7 @@ function PrumoSearch(objName, ajaxFile)
             inputField = document.getElementById(this.fieldFocusId);
             // Caso o usuário tenha digitado algum valor no campo
             if (this.fieldValueOnFocus != inputField.value) {
-                for (var i in this.fieldReturn) {            
+                for (let i in this.fieldReturn) {            
                     document.getElementById(this.fieldReturn[i][1]).value = "";
                 }
             }
@@ -3778,7 +3806,7 @@ function PrumoSearch(objName, ajaxFile)
                 order = 'asc';
             }
             var elements = this.pGrid.field;
-            for (var i in elements) {
+            for (let i in elements) {
                 element = document.getElementById('PrumoGridTh_' + this.objName + '_' + elements[i]);
                 if (elements[i] != field && this.pGrid.fieldVisible[i] == true) {
                     element.setAttribute('class', 'prumoGridTh');    
@@ -3832,13 +3860,13 @@ function PrumoCrudList(objName, ajaxFile)
                 
                 // pega o id da coluna onde será colocado o botão excluir
                 var iColumnControls = 0;
-                for (var j=0; j < this.pGrid.field.length; j++) {
+                for (let j=0; j < this.pGrid.field.length; j++) {
                     if (this.pGrid.fieldVisible[j]) {
                         iColumnControls++;
                     }
                 }
                 
-                for (var i=0; i < xmlData.length; i++) {
+                for (let i=0; i < xmlData.length; i++) {
                     
                     // linha do grid
                     var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
@@ -3855,7 +3883,7 @@ function PrumoCrudList(objName, ajaxFile)
                 
                 // percorre as colunas
                 var iColumn = 0;
-                for (var j=0; j < this.pGrid.field.length; j++) {
+                for (let j=0; j < this.pGrid.field.length; j++) {
                 
                     if (this.pGrid.fieldVisible[j]) {
                         
@@ -3895,7 +3923,7 @@ function PrumoCrudList(objName, ajaxFile)
             
             // percorre as colunas e adiciona os campos de edição
             var iColumn = 0;
-            for (var j=0; j < this.pGrid.field.length; j++) {
+            for (let j=0; j < this.pGrid.field.length; j++) {
                 
                 if (this.pGrid.fieldVisible[j]) {
                     
@@ -3933,14 +3961,14 @@ function PrumoCrudList(objName, ajaxFile)
             var i = xmlData.length + 1;
             
             var pGridRow = document.getElementById(this.pGrid.objName).rows[i];
-            for (var j=0; j < pGridRow.cells.length; j++) {
+            for (let j=0; j < pGridRow.cells.length; j++) {
                 pGridRow.cells[j].style.cursor = 'default';
                 pGridRow.cells[j].removeAttribute('onClick');
                 pGridRow.cells[j].innerHTML = '<br />';
             }
             
             // limpa os botoes de excluir dos outros registros
-            for (var i=0; i < xmlData.length; i++) {
+            for (let i=0; i < xmlData.length; i++) {
                 if (i != lineIndex) {
                     var pGridRowCells = document.getElementById(this.pGrid.objName).rows[i+1].cells;
                     pGridRowCells[iColumn].innerHTML = '<br />';
@@ -3951,7 +3979,7 @@ function PrumoCrudList(objName, ajaxFile)
             this.afterFastCrud();
         } else {
             
-            for (var i=0; i < this.fieldReturn.length; i++) {
+            for (let i=0; i < this.fieldReturn.length; i++) {
             
                 var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
                 var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
@@ -4039,7 +4067,7 @@ function PrumoTab(objName)
     this.showTab = function(tabName)
     {
         this.show();
-        for (var i in this.tabName) {
+        for (let i in this.tabName) {
             if (this.tabName[i] == tabName) {
                 document.getElementById(this.objName+'_tab_'+this.tabName[i]).style.display = 'block';
                 document.getElementById(this.objName+'_bt_'+this.tabName[i]).className= "pButton-outline active";

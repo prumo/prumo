@@ -40,6 +40,9 @@ class PrumoSqlite3Connection
         $this->err = '';
         
         $this->sqlOperator = array();
+        if ($GLOBALS['pConfig']['useSimilaritySearch'] == 't') {
+            $this->sqlOperator['similarity'] = 'similarity(:field:, \'%:value:\') > ' . $GLOBALS['pConfig']['similarityThreshold'];
+        }
         $this->sqlOperator['like']                  = ':field: like \'%:value:%\'';
         $this->sqlOperator['not like']              = 'NOT :field: like \'%:value:%\'';
         $this->sqlOperator['begins with']           = ':field: like \':value:%\'';
@@ -56,6 +59,13 @@ class PrumoSqlite3Connection
         $this->sqlOperator['greater than or equal'] = ':field: >= \':value:\'';
         $this->sqlOperator['is null']               = ':field: IS NULL';
         $this->sqlOperator['not is null']           = 'NOT :field: IS NULL';
+        $this->sqlOperator['date_time equal']                 = ':field: = \':value:\'';
+        $this->sqlOperator['date_time not equal']             = 'NOT :field: = \':value:\'';
+        $this->sqlOperator['date_time less than']             = ':field: < \':value:\'';
+        $this->sqlOperator['date_time greater than']          = ':field: > \':value:\'';
+        $this->sqlOperator['date_time less than or equal']    = ':field: <= \':value:\'';
+        $this->sqlOperator['date_time greater than or equal'] = ':field: >= \':value:\'';
+        $this->sqlOperator['date_time between']               = ':field: BETWEEN \':value:\' AND \':value2:\'';
     }
     
     /**

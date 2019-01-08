@@ -41,8 +41,7 @@ class PrumoPgConnection
         
         $this->sqlOperator = array();
         
-        global $pConfig;
-        if ($pConfig['useUnaccent'] == 't') {
+        if ($GLOBALS['pConfig']['useUnaccent'] == 't') {
             $this->sqlOperator['like']                  = 'unaccent(:field:) ilike unaccent(\'%:value:%\')';
             $this->sqlOperator['not like']              = 'NOT unaccent(:field:) ilike unaccent(\'%:value:%\')';
             $this->sqlOperator['begins with']           = 'unaccent(:field:) ilike unaccent(\':value:%\')';
@@ -57,8 +56,8 @@ class PrumoPgConnection
             $this->sqlOperator['not begins with']       = 'NOT :field: ilike \':value:%\'';
             $this->sqlOperator['not ends with']         = 'NOT :field: ilike \'%:value:\'';
         }
-        if ($pConfig['useSimilaritySearch'] == 't') {
-            $this->sqlOperator['similarity'] = 'similarity(:field:, \'%:value:\') > ' . $pConfig['similarityThreshold'];
+        if ($GLOBALS['pConfig']['useSimilaritySearch'] == 't') {
+            $this->sqlOperator['similarity'] = 'similarity(:field:, \'%:value:\') > ' . $GLOBALS['pConfig']['similarityThreshold'];
         }
         $this->sqlOperator['equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['not equal']             = 'NOT :field: = \':value:\'';
@@ -71,6 +70,13 @@ class PrumoPgConnection
         $this->sqlOperator['between']               = ':field: BETWEEN :value: AND :value2:';
         $this->sqlOperator['is null']               = ':field: IS NULL';
         $this->sqlOperator['not is null']           = 'NOT :field: IS NULL';
+        $this->sqlOperator['date_time equal']                 = ':field: = \':value:\'';
+        $this->sqlOperator['date_time not equal']             = 'NOT :field: = \':value:\'';
+        $this->sqlOperator['date_time less than']             = ':field: < \':value:\'';
+        $this->sqlOperator['date_time greater than']          = ':field: > \':value:\'';
+        $this->sqlOperator['date_time less than or equal']    = ':field: <= \':value:\'';
+        $this->sqlOperator['date_time greater than or equal'] = ':field: >= \':value:\'';
+        $this->sqlOperator['date_time between']               = ':field: BETWEEN \':value:\' AND \':value2:\'';
     }
     
     /**
