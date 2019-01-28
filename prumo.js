@@ -251,7 +251,7 @@ function gettext(str)
  * @param value string: valor
  * @param textStyle string: html ou text
  */
-function format(type, value, textStyle)
+function pFormat(type, value, textStyle)
 {
     if (type == 'timestamp' && value != '') {
         var year = value.substring(0, 4);
@@ -697,7 +697,7 @@ function PrumoCrud(objName, ajaxFile)
                 // trata quebra de linha
                 value = value.replace(/\\n/g,'\n');
                 if (value != '') {
-                    value = format(this.fieldType[i], value, 'text');
+                    value = pFormat(this.fieldType[i], value, 'text');
                 }
                 
                 this.fieldNewValue[this.fieldName[i]] = value;
@@ -2134,12 +2134,12 @@ function PrumoCrud(objName, ajaxFile)
             
             var oldValue = this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex);            
             if (inputFastUpdate == undefined) {
-                var newValue = format(this.fieldType[i], oldValue, 'text');
+                var newValue = pFormat(this.fieldType[i], oldValue, 'text');
             } else {
                 var newValue = this.inputGetValue(id);
             }
             
-            this.fieldOldValue[this.fieldName[i]] = format(this.fieldType[i], oldValue, 'text');
+            this.fieldOldValue[this.fieldName[i]] = pFormat(this.fieldType[i], oldValue, 'text');
             this.fieldNewValue[this.fieldName[i]] = newValue;
             
             this.inputSetValue(this.fieldId[i], newValue);
@@ -2167,7 +2167,7 @@ function PrumoCrud(objName, ajaxFile)
             var fieldCount = this.fieldId.length;
             for (let i=0; i < fieldCount; i++) {
                 if (this.fieldPk[i]) {
-                    var value = format(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
+                    var value = pFormat(this.fieldType[i], this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex), 'text');
                     this.inputSetValue(this.fieldId[i], value);
                 }
             }
@@ -3087,7 +3087,7 @@ function PrumoGrid(objName)
             var iColumn = 0;
             for (let j=0; j < this.field.length; j++) {
                 
-                var valueCell = format(this.fieldType[j], this.getValue(this.field[j], i), 'html');
+                var valueCell = pFormat(this.fieldType[j], this.getValue(this.field[j], i), 'html');
                 
                 if (this.fieldVisible[j] == true) {
                     
@@ -3469,9 +3469,9 @@ function PrumoSearch(objName, ajaxFile)
                     
                     var type = this.fieldReturn[i][2];
                     if (type == 'date') {
-                        fieldReturn.value = format(type, value, 'text');
+                        fieldReturn.value = pFormat(type, value, 'text');
                         if (this.pAjax.cmd == 'r') {
-                            fieldReturn.setAttribute('title', format(type, value, 'text'));
+                            fieldReturn.setAttribute('title', pFormat(type, value, 'text'));
                         }
                     } else {
                         if (fieldReturn.getAttribute('type') == 'checkbox') {
@@ -3481,9 +3481,9 @@ function PrumoSearch(objName, ajaxFile)
                                 fieldReturn.checked = false;
                             }
                         } else {
-                            fieldReturn.value = format(type, value, 'text');
+                            fieldReturn.value = pFormat(type, value, 'text');
                             if (this.pAjax.cmd == 'r') {
-                                fieldReturn.setAttribute('title',format(type, value, 'text'));
+                                fieldReturn.setAttribute('title',pFormat(type, value, 'text'));
                             }
                         }
                     }
@@ -3927,7 +3927,7 @@ function PrumoCrudList(objName, ajaxFile)
                 
                 if (this.pGrid.fieldVisible[j]) {
                     
-                    var value = format(this.pGrid.fieldType[j], this.pGrid.getValue(this.pGrid.field[j], lineIndex), 'text');
+                    var value = pFormat(this.pGrid.fieldType[j], this.pGrid.getValue(this.pGrid.field[j], lineIndex), 'text');
                     var pGridRowCells = document.getElementById(this.pGrid.objName).rows[lineIndex+1].cells;
                     var id = this.crudName+'_'+this.pGrid.field[j]+'_edit';
                     var htmlInput = this.parent.fieldTemplate[j];
@@ -3995,7 +3995,7 @@ function PrumoCrudList(objName, ajaxFile)
                             fieldReturn.checked = false;
                         }
                     } else {
-                        fieldReturn.value = format(type, value, 'text');
+                        fieldReturn.value = pFormat(type, value, 'text');
                     }
                 } else {
                 
