@@ -217,7 +217,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @param $params string: string de configuração do campo no formato do framework
      */
-    public function addField($params)
+    public function addField(string $params) : array
     {
         $this->startClientObjects();
         
@@ -267,6 +267,8 @@ class PrumoCrud extends PrumoBasic
         if (! $this->field[$fieldIndex]['virtual']) {
             $this->pSearch->addField($params);
         }
+        
+        return $this->field[$fieldIndex];
     }
     
     /**
@@ -275,7 +277,7 @@ class PrumoCrud extends PrumoBasic
      * @param string       $field     O fieldId
      * @param string|array $validator string para um único validador ou array com vários validadores
      */
-    public function addFieldValidator ($field, $validator)
+    public function addFieldValidator (string $field, $validator)
     {
         $validators = is_string($validator) ? array($validator) : $validator;
         $index = $this->fieldIndexById($field);
@@ -308,7 +310,7 @@ class PrumoCrud extends PrumoBasic
      * @param $conditionValue string: valor condicional da campo no objeto pai
      * @param $conditionOperator string: operador lógico para a condição (equal, not equal)
      */
-    public function addParent1x1($parent, $parentFieldCondition='', $conditionValue='', $conditionOperator='equal')
+    public function addParent1x1(PrumoCrud $parent, string $parentFieldCondition='', string $conditionValue='', string $conditionOperator='equal')
     {
         $parent->son1x1[] = $this;
         $this->parent1x1 = $parent;
@@ -334,7 +336,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL corrigido
      */
-    private function fixCondition($condition)
+    private function fixCondition(string $condition) : string
     {
         // corrige condições "campo=NULL" para "campo IS NULL" apos condição WHERE
         $arrSql = explode('WHERE', $condition);
@@ -351,32 +353,36 @@ class PrumoCrud extends PrumoBasic
      * Recupera o fieldName pelo fieldId
      *
      * @param: fieldId string
+     *
      * @return: string
      */
-    public function fieldNameById($fieldId)
+    public function fieldNameById(string $fieldId) : string
     {
         for ($i = 0; $i < count($this->field); $i++) {
             if ($this->field[$i]['fieldid'] == $fieldId) {
                 return $this->field[$i]['name'];
             }
         }
-        return false;
+        $msg = _('Campo com fieldId %fielId% não encontrado!');
+        throw new Exception(str_replace('%fielId%', $fieldId, $msg));
     }
     
     /**
      * Recupera o fieldIndex pelo fieldId
      *
      * @param: fieldId string
+     *
      * @return: integer
      */
-    public function fieldIndexById($fieldId)
+    public function fieldIndexById(string $fieldId) : int
     {
         for ($i = 0; $i < count($this->field); $i++) {
             if ($this->field[$i]['fieldid'] == $fieldId) {
                 return $i;
             }
         }
-        return false;
+        $msg = _('Campo com fieldId %fielId% não encontrado!');
+        throw new Exception(str_replace('%fielId%', $fieldId, $msg));
     }
     
     /**
@@ -387,7 +393,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: sql com os valores substituidos
      */
-    protected function sqlValues($sql, $values=array())
+    protected function sqlValues(string $sql, array $values=array()) : string
     {
         $sqlVal = $sql;
 
@@ -465,7 +471,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlCount()
+    public function sqlCount() : string
     {
         if ($this->customSqlCount != '') {
             $sql = $this->customSqlCount;
@@ -499,7 +505,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlCreate()
+    public function sqlCreate() : string
     {
         if ($this->customSqlCreate != '') {
             $sql = $this->customSqlCreate;
@@ -536,7 +542,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlRetrieve()
+    public function sqlRetrieve() : string
     {
         // monta condicao
         $condition = '';
@@ -583,7 +589,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlGetSerials()
+    public function sqlGetSerials() : string
     {
         $condition = '';
         for ($i = 0; $i < count($this->field); $i++) {
@@ -624,7 +630,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlUpdate($valuesParent=array())
+    public function sqlUpdate(array $valuesParent=array()) : string
     {
         if ($this->customSqlUpdate != '') {
             $sql = $this->customSqlUpdate;
@@ -687,7 +693,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlDelete()
+    public function sqlDelete() : string
     {
         $condition = '';
         if ($this->customSqlDelete != '') {
@@ -720,7 +726,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlUnique($fieldName, $excludePk=true)
+    public function sqlUnique(string $fieldName, bool $excludePk=true) : string
     {
         $tableName = $this->param['tablename'];
         $schema = $this->pConnection->getSchema($this->param['schema']);
@@ -745,7 +751,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns: array
      */
-    public function syncPk($serialsParent)
+    public function syncPk(array $serialsParent) : array
     {
         $serials = array();
         
@@ -783,10 +789,8 @@ class PrumoCrud extends PrumoBasic
      * Executa a rotina CREATE
      *
      * @param $verbose boolean: mostra resultado na tela
-     *
-     * @return boolean false: em caso de erro
      */
-    public function doCreate($verbose)
+    public function doCreate(bool $verbose)
     {
         global $prumoGlobal;
         
@@ -906,7 +910,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Chama o gatilho before create em todos os CRUDs recursivamente
      */
-    public function callBeforeCreate()
+    public function callBeforeCreate() : bool
     {
         if ($this->beforeCreate() == false) {
             return false;
@@ -933,7 +937,7 @@ class PrumoCrud extends PrumoBasic
      * Gatilho disparado depois do evento create
      * Função reservada para desenvolvedor da aplicação
      */
-    public function beforeCreate()
+    public function beforeCreate() : bool
     {
         // Reservado para desenvolvedor da aplicação, deve retornar true ou false
         return true;
@@ -942,7 +946,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Chama o gatilho before update em todos os CRUDs recursivamente
      */
-    public function callBeforeUpdate()
+    public function callBeforeUpdate() : bool
     {
         if ($this->beforeUpdate() == false) {
             return false;
@@ -994,7 +998,7 @@ class PrumoCrud extends PrumoBasic
      * Gatilho disparado depois do evento update
      * Função reservada para desenvolvedor da aplicação
      */
-    public function beforeUpdate()
+    public function beforeUpdate() : bool
     {
         // Reservado para desenvolvedor da aplicação, deve retornar true ou false
         return true;
@@ -1004,7 +1008,7 @@ class PrumoCrud extends PrumoBasic
      * Gatilho disparado depois do evento update
      * Função reservada para desenvolvedor da aplicação
      */
-    public function beforeDelete()
+    public function beforeDelete() : bool
     {
         // Reservado para desenvolvedor da aplicação, deve retornar true ou false
         return true;
@@ -1042,7 +1046,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @param $verbose boolean: mostra resultado na tela
      */
-    public function doAccessDenied($verbose)
+    public function doAccessDenied(bool $verbose) : string
     {
         global $prumoGlobal;
         
@@ -1068,7 +1072,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: resultado em XML
      */
-    public function doRetrieve($verbose, $values=array())
+    public function doRetrieve(bool $verbose, array $values=array()) : string
     {
         global $prumoGlobal;
         
@@ -1112,7 +1116,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns: array
      */
-    public function getPks()
+    public function getPks() : array
     {
         // procura campos serial
         $serialField = array();
@@ -1147,7 +1151,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: resultado em XML
      */
-    public function doUpdate($verbose, $valuesParent=array())
+    public function doUpdate(bool $verbose, array $valuesParent=array()) : string
     {
         global $prumoGlobal;
         
@@ -1229,7 +1233,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: resultado em XML
      */
-    public function doDelete($verbose)
+    public function doDelete(bool $verbose) : string
     {
         global $prumoGlobal;
         
@@ -1277,7 +1281,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Gera e imprime o código HTML que associa os objetos pSearch aos campos do CRUD (caso haja)
      */
-    public function drawSearch()
+    public function drawSearch() : string
     {
         $pSearch = $this->pSearch->draw(false);
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1301,7 +1305,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns string: linha de código php ex: require_once 'ctrl_search_pessoa.php';
      */
-    private function requirePrumoSearch($objName)
+    private function requirePrumoSearch(string $objName) : string
     {
         $fileList = scandir(dirname(__DIR__));
         for ($i = 0; $i < count($fileList); $i++) {
@@ -1328,7 +1332,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns string: html do formulário
      */    
-    public function drawForms($verbose=true, $withPhpCode=false)
+    public function drawForms(bool $verbose=true, bool $withPhpCode=false) : string
     {
         $form = '';
         if ($this->parent1x1 == null) {
@@ -1594,7 +1598,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: código HTML do crudList
      */
-    public function drawCrudList($verbose=true)
+    public function drawCrudList(bool $verbose=true) : string
     {
         $pCrudList = '<div id="pCrudList_'.$this->name.'" style="display:none;">'."\n";
         
@@ -1625,7 +1629,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns string: html dos controles
      */
-    public function drawControls($verbose=true)
+    public function drawControls(bool $verbose=true) : string
     {
         $permC = $this->getPermission('c') ? '' : ' style="display:none;"';
         $permR = $this->getPermission('r') ? '' : ' style="display:none;"';
@@ -1679,7 +1683,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: código js dos cruds recursivamente
      */
-    private function initClientObject()
+    private function initClientObject(): string
     {
         $clientObject = $this->drawSearch();
         
@@ -1895,7 +1899,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: código js dos cruds filhos recursivamente
      */
-    public function initClientObject1x1()
+    public function initClientObject1x1() : string
     {
         $clientObject = '';
         for ($i = 0; $i < count($this->son1x1); $i++) {
@@ -1929,7 +1933,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @param $routine string: nome da rotina
      */
-    private function setPermissions($routine)
+    private function setPermissions(string $routine)
     {
         $arrPermission = getPermission($routine);
         
@@ -1957,7 +1961,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns boolean
      */
-    public function getPermission($perm)
+    public function getPermission(string $perm) : bool
     {
         for ($i = 0; $i < strlen($this->permission); $i++) {
             if ($this->permission[$i] == $perm) {
@@ -1974,7 +1978,6 @@ class PrumoCrud extends PrumoBasic
     private function cascadeAction()
     {
         for ($i = 0; $i < count($this->son1x1); $i++) {
-            
             $this->son1x1[$i]->action = $this->action;
             $this->son1x1[$i]->cascadeAction();
         }
@@ -2111,7 +2114,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Monta o código para cada objeto de forma recursiva para relacionamentos 1x1
      */
-    public function ddl()
+    public function ddl() : string
     {
         $tableName = $this->param['tablename'];
         $schema = $this->pConnection->getSchema($this->param['schema']);
@@ -2199,7 +2202,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Cria a tabela no banco de dados, inclusive todas as relações 1x1
      */
-    public function executeDdl()
+    public function executeDdl() : string
     {
         $sqlOk = $this->pConnection->sqlQuery($this->ddl());
         if ($sqlOk === false) {

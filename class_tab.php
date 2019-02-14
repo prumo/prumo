@@ -48,7 +48,7 @@ class PrumoTab
      * @param $html string: código html a ser incluído na tab (opcional)
      * @param $routine string: quando informado, mostra a tab apenas quando o usuário logado tem permissão para a rotina
      */
-    public function addTab($tabName, $tabLabel, $include='', $html='', $routine='')
+    public function addTab(string $tabName, string $tabLabel, string $include='', string $html='', string $routine='')
     {
         $this->getObjName();
         
@@ -90,7 +90,7 @@ class PrumoTab
      *
      * @return string;
      */
-    public function htmlOpen($verbose)
+    public function htmlOpen(bool $verbose) : string
     {   
         $visible = $this->visible ? ' style="display:block"' : ' style="display:none"';
         
@@ -126,7 +126,7 @@ class PrumoTab
      *
      * @return string;
      */
-    public function htmlClose($verbose)
+    public function htmlClose(bool $verbose) : string
     {
         $html = $this->ind.'</fieldset>';
         
@@ -144,7 +144,7 @@ class PrumoTab
      *
      * @returns string;
      */
-    public function htmlOpenTab($verbose,$tabLabel)
+    public function htmlOpenTab(bool $verbose, string $tabLabel) : string
     {
         for ($i = 0; $i < count($this->tab); $i++) {
             if ($this->tabLabel[$i] == $tabLabel) {
@@ -166,7 +166,7 @@ class PrumoTab
      *
      * @returns string;
      */
-    public function htmlCloseTab($verbose)
+    public function htmlCloseTab(bool $verbose) : string
     {
         $html = $this->ind.'        </div>'."\n";
         
@@ -184,7 +184,7 @@ class PrumoTab
      *
      * @returns string;
      */
-    public function showTab($verbose, $tabName)
+    public function showTab(bool $verbose, string $tabName) : string
     {
         $js = ''."\n";
         $js .= $this->ind.'<script type="text/javascript">'."\n";

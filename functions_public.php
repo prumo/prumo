@@ -24,7 +24,7 @@
  *
  * @return string: texto inicial acrecido de aspas quando $useQuote == true
  */
-function pAddQuote($value, $useQuote=true)
+function pAddQuote(string $value, bool $useQuote=true) : string
 {
     return $useQuote ? "'$value'" : $value;
 }
@@ -38,7 +38,7 @@ function pAddQuote($value, $useQuote=true)
  *
  * @returns string
  */
-function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
+function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=true) : string
 {
     $valueNoInjection = pSqlNoInjection($value, $type);
     
@@ -160,7 +160,7 @@ function pFormatSql($value, $type, $capsLock=false, $useQuote=true)
  *
  * @return boolean
  */
-function pCheckDate($date)
+function pCheckDate(string $date) : bool
 {
     $arrDate = pParseDate($date);
     if ($arrDate === false) {
@@ -230,7 +230,7 @@ function pParamCheck($param, $method='POST')
  *
  * @param $usr string: url do redirecionamento
  */
-function pRedirect($url)
+function pRedirect(string $url)
 {
     echo '<script type="text/javascript">parent.location = \''.(empty($url) ? '/' : $url).'\'</script>'."\n";
     exit;
@@ -242,7 +242,7 @@ function pRedirect($url)
  * @param $text string: texto da mensagem
  * @param $stderr string: tipo de saída de erro (html ou js)
  */
-function pError($text, $stderr)
+function pError(string $text, string $stderr)
 {
     if ($stderr == 'html') {
         echo $text."\n";
@@ -264,7 +264,7 @@ function pError($text, $stderr)
  *
  * @return string: xml tratado
  */
-function pXmlAddParent($xml, $parent)
+function pXmlAddParent(string $xml, string $parent) : string
 {
     $arrXml = explode("\n", $xml);
     
@@ -285,7 +285,7 @@ function pXmlAddParent($xml, $parent)
  *
  * @return string caminho do arquivo de acordo com o tema
  */
-function pGetTheme($fileName, $webPath)
+function pGetTheme(string $fileName, string $webPath) : string
 {
     $path = $webPath ? $GLOBALS['pConfig']['prumoWebPath'] : __DIR__;
     $file = __DIR__.'/themes/'.$GLOBALS['pConfig']['theme'].'/'.$fileName;
@@ -302,7 +302,7 @@ function pGetTheme($fileName, $webPath)
  *
  * @return string: xml do erro
  */
-function pXmlError($err, $msg, $verbose=false)
+function pXmlError(string $err, string $msg, bool $verbose=false) : string
 {
     $xml  = '<err>'.$err.'</err>'."\n";
     $xml .= '<msg>'.$msg.'</msg>';
@@ -324,7 +324,7 @@ function pXmlError($err, $msg, $verbose=false)
  *
  * @return string: dado formatado em html
  */
-function htmlFormat($type, $value)
+function htmlFormat(string $type, string $value) : string
 {
     if ($type == 'timestamp' && ! empty($value)) {
         $year = substr($value, 0, 4);
@@ -371,7 +371,7 @@ function htmlFormat($type, $value)
  *
  * @return string: dado formatado em texto plano
  */
-function plainFormat($type, $value)
+function plainFormat(string $type, string $value) : string
 {
     //@todo converter no lado do cliente o formato da data e hora
     if ($type == 'time' && ! empty($value)) {
@@ -395,7 +395,7 @@ function plainFormat($type, $value)
  *
  * @return boolean
  */
-function pPermitted($routine, $permission='any')
+function pPermitted(string $routine, string $permission='any') : bool
 {
     if (empty($routine)) {
         return true;
@@ -416,7 +416,7 @@ function pPermitted($routine, $permission='any')
  * @param $routine string: nome da rotina
  * @param $permission string: permissões desejadas
  */
-function pProtect($routine, $permission='any')
+function pProtect(string $routine, string $permission='any')
 {
     if ($GLOBALS['prumoGlobal']['currentUser'] == '') {
         echo _('Sua sessão expirou, faça login novamente!');
@@ -438,7 +438,7 @@ function pProtect($routine, $permission='any')
  * 
  * @return array: lista de arquivos
  */
-function pListFiles($directory, $include='', $exclude='', $recursive=true)
+function pListFiles(string $directory, string $include='', string $exclude='', bool $recursive=true) : array
 {
     $list = scandir($directory, 0);
     $fileList = array();

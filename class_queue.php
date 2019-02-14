@@ -37,7 +37,7 @@ class PrumoQueue extends PrumoSearch
      *
      * @return string: código de saída
      */
-    protected function addWindow($pSearch)
+    protected function addWindow(string $pSearch) : string
     {
         $pQueue  = '<div id="div_'.$this->name.'">';
         $pQueue .= $pSearch;
@@ -53,7 +53,7 @@ class PrumoQueue extends PrumoSearch
      *
      * @return string: código gerado
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         // junta os objetos
         $pSearchInit = $this->initClientObject();
@@ -94,7 +94,7 @@ class PrumoQueue extends PrumoSearch
      *
      * @return string: código gerado
      */
-    protected function initClientObject()
+    protected function initClientObject() : string
     {
         $clientObject = $this->ind. '<script type="text/javascript">'."\n";
         $clientObject .= $this->ind. '    '.$this->name.' = new PrumoQueue(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";

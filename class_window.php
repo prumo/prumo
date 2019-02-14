@@ -54,8 +54,10 @@ class PrumoWindow
     
     /**
      * pega o comando javascript para fechar a janela
+     *
+     * @return string: código js
      */
-    protected function getCommandClose()
+    protected function getCommandClose() : string
     {
         if (empty($this->commandClose)) {
             $this->commandClose = $this->getObjName().'.hide()';
@@ -70,7 +72,7 @@ class PrumoWindow
      *
      * @returns string;
      */
-    public function drawTop($verbose=true)
+    public function drawTop(bool $verbose=true) : string
     {
         $this->getObjName();
         
@@ -103,7 +105,7 @@ class PrumoWindow
      *
      * @returns string;
      */
-    public function drawFooter($verbose=true)
+    public function drawFooter(bool $verbose=true) : string
     {
         $this->getObjName();
         
@@ -133,11 +135,11 @@ class PrumoWindow
      * Gera o código HTML da janela
      *
      * @param verbose boolean: quando true imprime o retorno
-     * @param
+     * @param htmlContent string: conteúdo HTML
      *
      * @returns string;
      */
-    public function draw($verbose, $htmlContent)
+    public function draw(bool $verbose, string $htmlContent) : string
     {
         $this->getObjName();
         

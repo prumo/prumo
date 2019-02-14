@@ -103,7 +103,7 @@ function loadPermission()
  * @param $routine string: rotina
  * @param $permission string: permissão
  */
-function pLogAcessDenied($routine, $permission)
+function pLogAcessDenied(string $routine, string $permission)
 {
     global $pConnectionPrumo;
     
@@ -123,12 +123,14 @@ function pLogAcessDenied($routine, $permission)
 
 /**
  * Verifica se determinado arquivo de atualização sql já foi executado
+ *
  * @param $fileName string: nome do arquivo que contém os comandos SQL de atualizaçãp do banco no formato do Prumo
  * @param $connection PrumoConnection: a conexão com o banco de dados a ser usada
  * @param $db string: 'framework' para banco de dados do framework e 'app' para o banco de dados da aplicação
+ *
  * @returns boolean
  */
-function upToDate($fileName, $connection, $db='framework')
+function upToDate(string $fileName, PrumoConnection $connection, string $db='framework') : bool
 {
     global $pConnectionPrumo;
     
@@ -146,10 +148,11 @@ function upToDate($fileName, $connection, $db='framework')
 
 /**
  * Grava no banco de dados da aplicação os scripts de atualização que já foram executados
+ *
  * @param $fileName string: nome do script, se informado '', apenas irá verificar e criar a tabela de atualização no
  * banco da app
  */
-function writeAppUpdate($fileName)
+function writeAppUpdate(string $fileName)
 {
     global $pConnection;
     global $pConnectionPrumo;
@@ -291,11 +294,11 @@ function prumoInfo()
 /**
  * Formata um array de parametros no formato do Prumo
  *
- * @param $params array: array de parametros
+ * @param $params string: string de parametros no formato do prumo (parametro=valor,outroParametro=valor,parametroBoleano)
  *
  * @return array: array formatado
  */
-function pParameters($params)
+function pParameters(string $params)
 {
     $escapeParams = str_replace('\\,', ':.:', $params);
     
@@ -335,7 +338,7 @@ function pParameters($params)
  *
  * @return string
  */
-function pSqlNoInjection($value, $type, $formatSqlNull=false)
+function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
 {
     $valueNoInjection = $value;
     
@@ -385,9 +388,9 @@ function pSqlNoInjection($value, $type, $formatSqlNull=false)
  *
  * @return string: dado formatado
  */
-function pFormatSqlNull($value, $type)
+function pFormatSqlNull($value, string $type)
 {
-    return ($type != 'boolean' && $value == '') ? 'NULL': $value;
+    return ($type != 'boolean' && $value == '') ? 'NULL' : $value;
 }
 
 /**
@@ -395,9 +398,9 @@ function pFormatSqlNull($value, $type)
  *
  * @param $routine string: nome da rotina
  *
- * @return string: permissões da rotina informada
+ * @return array: permissões da rotina informada
  */
-function getPermission($routine)
+function getPermission(string $routine) : array
 {
     global $prumoPermission;
     
@@ -429,7 +432,7 @@ function getPermission($routine)
  * @param $sqlCommand string: comando SQL
  * @param $crud string: ação do crud
  */
-function pAuditLog($routine, $objName, $sqlCommand, $crud)
+function pAuditLog(string $routine, string $objName, string $sqlCommand, string $crud)
 {
     global $pConfig;
     global $pConnectionPrumo;
@@ -552,7 +555,7 @@ function pParseTime(string $date)
  *
  * @return boolean
  */
-function pGetAudit($routine)
+function pGetAudit(string $routine) : bool
 {
     global $pConnectionPrumo;
     

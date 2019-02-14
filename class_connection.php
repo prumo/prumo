@@ -34,7 +34,7 @@ class PrumoConnection
      * @params string: parametros de conxão (é configurado em ctrl_connection.php)
      * @param $logType string: tipo de log (é configurado em ctrl_connection.php)
      */
-    function __construct($params, $logType=array())
+    function __construct(string $params, array $logType=array())
     {
         $this->param = pParameters($params);
         $this->err = '';
@@ -65,7 +65,7 @@ class PrumoConnection
     /**
      * Define o valor default para o schema do banco de dados
      */
-    public function setDefaultSchema($schema)
+    public function setDefaultSchema(string $schema)
     {
         $this->defaultSchema = $schema;
     }
@@ -75,7 +75,7 @@ class PrumoConnection
      *
      * @param $type string: tipo de log 'insert', 'select', 'update', 'delete'
      */
-    public function setLogType($type)
+    public function setLogType(string $type)
     {
         if (! in_array(strtolower($type), $this->logType)) {
             $this->logType[] = strtolower($type);
@@ -89,7 +89,7 @@ class PrumoConnection
      *
      * @return string
      */
-    public function getSchema($schema='')
+    public function getSchema(string $schema='') : string
     {
         $sgdb = $this->sgdb();
         $auxSchema = empty($schema) ? $this->defaultSchema : $schema;
@@ -117,7 +117,7 @@ class PrumoConnection
      * @param $sql string: comando SQL a ser gravado
      * @param $method string: o nome do método que executou o comando SQL
      */
-    private function logSql($sql, $method)
+    private function logSql(string $sql, string $method)
     {
         global $prumoGlobal;
         global $pConnectionPrumo;
@@ -196,7 +196,7 @@ class PrumoConnection
      *
      * @return array
      */
-    public function getErr()
+    public function getErr() : string
     {
         return $this->connection->getErr();
     }
@@ -218,7 +218,7 @@ class PrumoConnection
      *
      * @return boolean
      */
-    public function connected($reconnect=false)
+    public function connected(bool $reconnect=false) : bool
     {
         $this->getObjName();
         return $this->connection->connected($reconnect);
@@ -231,7 +231,7 @@ class PrumoConnection
      *
      * @return string: comando sql tratado
      */
-    private function removeCommits($sql)
+    private function removeCommits(string $sql) : string
     {
         $sql = str_replace('COMMIT;', '', $sql);
         $sql = str_replace('COMMIT', '', $sql);
@@ -250,7 +250,7 @@ class PrumoConnection
      * @return mixed: apenas o primeiro valor da primeira coluna retornada pela consulta SQL
      * @return boolean false: em caso de falha na consulta SQL
      */
-    public function sqlQuery($sql, $ignoreLog=false)
+    public function sqlQuery(string $sql, bool $ignoreLog=false)
     {
         $this->getObjName();
         
@@ -279,7 +279,7 @@ class PrumoConnection
      * @return array: array associativo com o registro retornado pela consulta SQL sendo o nome da coluna a chave do array
      * @return boolean false: em caso de falha na consulta SQL
      */
-    public function fetchAssoc($sql)
+    public function fetchAssoc(string $sql)
     {
         $this->getObjName();
         
@@ -306,7 +306,7 @@ class PrumoConnection
      * @return array: array associativo com os registros retornados pela consulta SQL sendo o nome da coluna a chave do array
      * @return boolean false: em caso de falha na consulta SQL
      */
-    public function sql2Array($sql)
+    public function sql2Array(string $sql)
     {
         $this->getObjName();
         
@@ -332,7 +332,7 @@ class PrumoConnection
      *
      * @param string: xml com os dados retornados pela consulta SQL
      */
-    public function sqlXml($sql, $tableName)
+    public function sqlXml(string $sql, string $tableName) : string
     {
         $this->getObjName();
         
@@ -355,7 +355,7 @@ class PrumoConnection
      *
      * @return string: operador lógico formatado ex: ':field: ilike \'%:value:%\''
      */
-    public function getSqlOperator($operator)
+    public function getSqlOperator(string $operator) : string
     {
         return $this->connection->sqlOperator[$operator];
     }
@@ -373,7 +373,7 @@ class PrumoConnection
      *
      * @return string: nome do SGDB
      */
-    public function sgdb()
+    public function sgdb() : string
     {
         return $this->param['sgdb'];
     }
@@ -383,7 +383,7 @@ class PrumoConnection
      *
      * @return string: valor do parâmetro
      */
-    public function getParam($paramName)
+    public function getParam(string $paramName) : string
     {
         return $this->param[$paramName];
     }
@@ -395,7 +395,7 @@ class PrumoConnection
      *
      * @return string: tipo de dados de acordo com o SGDB
      */
-    public function dbType($type)
+    public function dbType(string $type) : string
     {
         return $this->connection->dbType($type);
     }
@@ -407,7 +407,7 @@ class PrumoConnection
      *
      * @return string string: comando SQL com as variáveis globais substituídas
      */
-    public function replacePrumoGlobals($sqlIn)
+    public function replacePrumoGlobals(string $sqlIn) : string
     {
         $sqlOut = $sqlIn;
         

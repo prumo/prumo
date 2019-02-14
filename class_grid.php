@@ -36,7 +36,7 @@ class PrumoGrid
      * @param $parentName string: nome do objeto pai
      * @param $lines integer: quantidade de linhas do grid
      */
-    function __construct($parentName, $lines)
+    function __construct(string $parentName, int $lines)
     {
         $this->parentName = $parentName;
         $this->lines = $lines;
@@ -49,9 +49,9 @@ class PrumoGrid
     /**
      * Adiciona uma coluna no GRID
      *
-     * @param $params array: array com os parametros da coluna
+     * @param $params string: array com os parametros da coluna
      */
-    public function addColumn($params)
+    public function addColumn(string $params)
     {
         $param = pParameters($params);
         $name = $param['name'];
@@ -81,7 +81,7 @@ class PrumoGrid
      *
      * @return string: código HTML
      */
-    private function tableGridHeader()
+    private function tableGridHeader() : string
     {
         return "\n".$this->ind.'<table id="pGrid_'.$this->parentName.'" class="prumoGridTable">'."\n";
     }
@@ -91,7 +91,7 @@ class PrumoGrid
      *
      * @return string: código HTML
      */
-    private function tableClose()
+    private function tableClose() : string
     {
         return $this->ind.'</table>'."\n";
     }
@@ -101,7 +101,7 @@ class PrumoGrid
      *
      * @return string: código HTML
      */
-    private function dataHeader()
+    private function dataHeader() : string
     {
         $header  = $this->ind.'    <tr class="prumoGridTh">'."\n";
         
@@ -126,7 +126,7 @@ class PrumoGrid
      *
      * @return string: código HTML
      */
-    private function line($index)
+    private function line(int $index) : string
     {
         $line = is_int($index/2) ? $this->ind.'    <tr class="prumoGridTrEven">'."\n" : $this->ind.'    <tr class="prumoGridTrOdd">'."\n";
         
@@ -148,7 +148,7 @@ class PrumoGrid
      *
      * @return string: código HTML
      */
-    private function lines()
+    private function lines() : string
     {
         $lines = '';
         
@@ -164,7 +164,7 @@ class PrumoGrid
      *
      * @return string: código JS
      */
-    private function clientObject()
+    private function clientObject() : string
     {
         $client  = $this->ind.'<script type="text/javascript">'."\n";
         $client .= $this->ind.'    pGrid_'.$this->parentName.' = new PrumoGrid(\'pGrid_'.$this->parentName.'\');'."\n";
@@ -182,7 +182,7 @@ class PrumoGrid
      *
      * @return string: código HTML e JS
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         $htmlGrid  = $this->tableGridHeader();
         $htmlGrid .= $this->dataHeader();

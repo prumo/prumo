@@ -36,7 +36,7 @@ class PrumoFilter
      * @param $parentName string: nome do objeto pai, usado para manipular os objetos em js
      * @param $field array: parametros do field
      */
-    function __construct($parentName, $field)
+    function __construct(string $parentName, array $field)
     {
         global $pConfig;
         $this->pConfig = $pConfig;
@@ -52,7 +52,7 @@ class PrumoFilter
      *
      * @param $ind string: tabs para indentação no lado do cliente
      */
-    public function setIndentarion($ind)
+    public function setIndentarion(string $ind)
     {
         $this->ind = $ind;
     }
@@ -62,7 +62,7 @@ class PrumoFilter
      *
      * @return integer: quantidade de campos
      */
-    public function fieldCount()
+    public function fieldCount() : int
     {
         return count($this->field);
     }
@@ -74,7 +74,7 @@ class PrumoFilter
      *
      * @return string: código HTML e JS
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         $htmlFilters = $this->makeHtml();
         $htmlFilters .= $this->makeJs();
@@ -93,7 +93,7 @@ class PrumoFilter
      *
      * @return string: código HTML
      */
-    public function makeHtml()
+    public function makeHtml() : string
     {
         $htmlFilters  = $this->ind.'<div class="prumoFilter" align="center" id="pFilter_'.$this->parentName.'">'."\n";
         $htmlFilters .= $this->ind.'    <table>'."\n";
@@ -123,7 +123,7 @@ class PrumoFilter
      *
      * @return string: código JS
      */
-    private function makeJs()
+    private function makeJs() : string
     {
         $jsFilters  = $this->ind.'<script type="text/javascript">'."\n";
         $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.' = new PrumoFilter(\'pFilter_'.$this->parentName.'\', \''.$GLOBALS['pConfig']['useSimilaritySearch'].'\');'."\n";
@@ -166,7 +166,7 @@ class PrumoFilter
     /**
      * Prepara a carga de uma consulta
      */
-    public function loadQuery() 
+    public function loadQuery()
     {
         $this->filter = array();
         $this->filter['fieldName'] = isset($_POST['fField']) ? $_POST['fField'] : array();
@@ -209,7 +209,7 @@ class PrumoFilter
      *
      * @return string: código XML
      */
-    public function makeXmlFilter()
+    public function makeXmlFilter() : string
     {
         $this->loadQuery();
         $xmlFilters = '';
@@ -232,7 +232,7 @@ class PrumoFilter
      *
      * @return string: xml formatado
      */
-    private function formatXmlData($text)
+    private function formatXmlData(string $text) : string
     {
         $formatedText = $text;
         $formatedText = str_replace('&', '&amp;', $formatedText);

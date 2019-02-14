@@ -129,7 +129,7 @@ class PrumoPgConnection
      *
      * @return array
      */
-    public function getErr()
+    public function getErr() : string
     {
         return $this->err;
     }
@@ -205,7 +205,7 @@ class PrumoPgConnection
      * @return array: array associativo com o registro retornado pela consulta SQL sendo o nome da coluna a chave do array
      * @return bool false: em caso de falha na consulta SQL
      */
-    public function fetchAssoc($sql)
+    public function fetchAssoc(string $sql)
     {
         if ($this->getConnection()) {
             
@@ -237,7 +237,7 @@ class PrumoPgConnection
      * @return array: array associativo com os registros retornados pela consulta SQL sendo o nome da coluna a chave do array
      * @return bool false: em caso de falha na consulta SQL
      */
-    public function sql2Array($sql)
+    public function sql2Array(string $sql)
     {
         $connection = $this->getConnection();
         
@@ -285,7 +285,7 @@ class PrumoPgConnection
      * @return string: xml com os dados retornados pela consulta SQL
      * @return bool: false em caso de falha
      */
-    public function sqlXml($sql, $tableName)
+    public function sqlXml(string $sql, string $tableName)
     {
         $res = pg_query($this->getConnection(), $sql);
         

@@ -54,7 +54,7 @@ class PrumoQueueSet
      * @param $pQueueFilename string: nome do arquivo a ser incluído na tab (opcional)
      * @param $routine string: quando informado, mostra a tab apenas quando o usuário logado tem permissão para a rotina
      */
-    public function addQueue($pQueueName, $pQueueLabel, $pQueueFilename='', $routine='')
+    public function addQueue(string $pQueueName, string $pQueueLabel, string $pQueueFilename='', string $routine='')
     {
         if (pPermitted($routine)) {
             $this->pQueueName[] = $pQueueName;
@@ -72,7 +72,7 @@ class PrumoQueueSet
      * @param $fileName string: nome do arquivo a ser incluído na tab (opcional)
      * @param $routine string: nome da routine para verificar as permissões
      */
-    public function addTab($pQueueName, $pQueueLabel, $fileName='', $routine='')
+    public function addTab(string $pQueueName, string $pQueueLabel, string $fileName='', string $routine='')
     {
         if (pPermitted($routine)) {
             $this->pQueueName[] = $pQueueName;

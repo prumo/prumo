@@ -40,7 +40,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function extractIcon($node)
+    private function extractIcon($node) : string
     {
         return isset($node->icon) ? '<img src="'.$node->icon.'" alt="icon" /> ' : '';
     }
@@ -52,7 +52,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function extractLink($node)
+    private function extractLink($node) : string
     {
         return isset($node->link) ? $node->link : '';
     }
@@ -65,7 +65,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenu($arrParam, $node)
+    private function drawMenu(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -85,7 +85,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenuL1($arrParam, $node)
+    private function drawMenuL1(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -105,7 +105,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenuL2($arrParam, $node)
+    private function drawMenuL2(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -125,7 +125,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenuL3($arrParam, $node)
+    private function drawMenuL3(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -146,7 +146,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenuL4($arrParam, $node)
+    private function drawMenuL4(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -167,7 +167,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function drawMenuL5($arrParam, $node)
+    private function drawMenuL5(array $arrParam, $node) : string
     {
         $icon = $this->extractIcon($node);
         $link = $this->extractLink($node);
@@ -186,7 +186,7 @@ class PrumoMenu
      *
      * @return string: código gerado
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         global $pConnectionPrumo;
         global $prumoGlobal;
@@ -353,7 +353,7 @@ class PrumoMenu
      * @param $start string: inicio do node
      * @param $node string: conteudo
      */
-    function openNodeXml($start, $node)
+    function openNodeXml(string $start, array $node) : string
     {
         $id = str_replace(' ','_',$node['menu_label']);
         $id = strtolower($id);
@@ -381,7 +381,7 @@ class PrumoMenu
      *
      * @return string: texto montado
      */
-    public function dbXml()
+    public function dbXml() : string
     {
         global $pConnectionPrumo;
         global $prumoGlobal;

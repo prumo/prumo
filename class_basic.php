@@ -36,7 +36,7 @@ class PrumoBasic
      *
      * @param $params string: parâmetros principais
      */
-    function __construct($params)
+    function __construct(string $params)
     {
         global $pConnection;
         require_once __DIR__.'/ctrl_connection.php';
@@ -52,7 +52,7 @@ class PrumoBasic
     /**
      * Pega o nome do arquivo XML (controller da aplicação)
      */
-    private function getAjaxFileName()
+    private function getAjaxFileName() : string
     {
         $files = get_included_files();
         $lastInclusion = array_pop($files);
@@ -76,7 +76,7 @@ class PrumoBasic
      *
      * @return integer: quantidade de campos
      */
-    public function fieldCount()
+    public function fieldCount() : int
     {
         return count($this->field);
     }
@@ -88,7 +88,7 @@ class PrumoBasic
      *
      * @return array: campo formatado
      */
-    public function addField($params)
+    public function addField(string $params) : array
     {
         $this->getObjName();
     
@@ -123,19 +123,20 @@ class PrumoBasic
     /**
      * Pega um campo pelo nome
      *
-     * @param $name string: nome do campo
+     * @param $fieldName string: nome do campo
      *
      * @return array: campo completo
      */
-    public function fieldByName($name)
+    public function fieldByName(string $fieldName) : array
     {
         for ($i = 0; $i < $this->fieldCount(); $i++) {
-            if ($this->field[$i]['name'] == $name) {
+            if ($this->field[$i]['name'] == $fieldName) {
                 return $this->field[$i];
             }
         }
         
-        return null;
+        $msg = _('Campo %fielName% não encontrado!');
+        throw new Exception(str_replace('%fieldName%', $fieldName, $msg));
     }
     
     /**
@@ -145,7 +146,7 @@ class PrumoBasic
      * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
      * @param $fieldValue string: valor
      */
-    public function setFilter($fieldName, $filterOperator, $fieldValue, $fieldValue2='')
+    public function setFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='')
     {
         echo '<script type="text/javascript">'."\n";
         echo "    ".$this->name.".setFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
@@ -159,7 +160,7 @@ class PrumoBasic
      * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
      * @param $fieldValue string: valor
      */
-    public function setInvisibleFilter($fieldName, $filterOperator, $fieldValue, $fieldValue2='')
+    public function setInvisibleFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='')
     {
         echo '<script type="text/javascript">'."\n";
         echo "    ".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
@@ -171,7 +172,7 @@ class PrumoBasic
      *
      * @param $ind string: tabs para indentação no lado do cliente
      */
-    public function setIndentation($ind)
+    public function setIndentation(string $ind)
     {
         $this->ind = $ind;
     }

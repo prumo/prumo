@@ -37,7 +37,7 @@ class PrumoLogin
      * @param $username string: nome do usuário
      * @param $password string: senha codificada
      */
-    public function __construct($ident, $username, $password)
+    public function __construct(string $ident, string $username, string $password)
     {
         global $pConnectionPrumo;
         
@@ -63,7 +63,7 @@ class PrumoLogin
      *
      * @return string
      */
-    public function getErr()
+    public function getErr() : string
     {
         return $this->err;
     }
@@ -73,7 +73,7 @@ class PrumoLogin
      *
      * @return boolean
      */
-    public function isSession()
+    public function isSession() : bool
     {
         return $this->session;
     }
@@ -83,7 +83,7 @@ class PrumoLogin
      *
      * @return bool
      */
-    public function checkPassword()
+    public function checkPassword() : bool
     {
         $sql = 'SELECT' . PHP_EOL
              . '    password' . PHP_EOL
@@ -119,7 +119,7 @@ class PrumoLogin
      *
      * @return bool
      */
-    public function changePassword(string $newPassword)
+    public function changePassword(string $newPassword) : bool
     {
         if (function_exists('sodium_crypto_pwhash_str')) {
             $encPassword = sodium_crypto_pwhash_str(
@@ -150,7 +150,7 @@ class PrumoLogin
      *
      * @return boolean
      */
-    public function login()
+    public function login() : bool
     {
         if ($this->pConnection->getConnection() === false) {
             $this->err = $this->pConnection->getErr();
@@ -173,7 +173,7 @@ class PrumoLogin
      *
      * @return boolean
      */
-    public function logoff()
+    public function logoff() : bool
     {
         return $this->sessionUnRegister();
     }
@@ -183,7 +183,7 @@ class PrumoLogin
      *
      * @return boolean: estado da sessão
      */
-    private function sessionRegister()
+    private function sessionRegister() : bool
     {
         $sql = 'SELECT' . PHP_EOL
              . '    fullname' . PHP_EOL
@@ -206,7 +206,7 @@ class PrumoLogin
      *
      * @return boolean: estado da sessão
      */
-    private function sessionUnRegister()
+    private function sessionUnRegister() : bool
     {
         if (isset($_SESSION[$this->ident.'_prumoUserName'])) {
             unset($_SESSION[$this->ident.'_prumoUserName']);

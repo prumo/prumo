@@ -42,7 +42,7 @@ class PrumoCrudList extends PrumoSearch
      *
      * @return string: código gerado
      */
-    private function initClientObject()
+    private function initClientObject() : string
     {
         // instancia o objeto PrumoCrudList no cliente
         $clientObject  = $this->ind. '<script type="text/javascript">'."\n";
@@ -84,7 +84,7 @@ class PrumoCrudList extends PrumoSearch
      *
      * @return string: código html do botão
      */
-    protected function makeShortcut()
+    protected function makeShortcut() : string
     {
         if (! isset($this->param['routine']) || empty($this->param['routine']) || pPermitted($this->param['routine'], 'c')) {
             $onClick = $this->pFilter->btNew = $this->param['crudname'].'.bt_new()';
@@ -101,7 +101,7 @@ class PrumoCrudList extends PrumoSearch
      *
      * @return string: código gerado
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         // adiciona uma columa a mais para os controles do fastCreate, fastupdate ou fastdelete
         if (
@@ -134,7 +134,7 @@ class PrumoCrudList extends PrumoSearch
      *
      * @return string: código JS
      */
-    private function makeCrudLink()
+    private function makeCrudLink() : string
     {
         $htmlCrudLink  = $this->ind.'        <script type="text/javascript">'."\n";
         $htmlCrudLink .= $this->ind.'            '.$this->param['crudname'].'.pCrudList = '.$this->name.';'."\n";

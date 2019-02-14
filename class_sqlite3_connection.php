@@ -33,7 +33,7 @@ class PrumoSqlite3Connection
      *
      * @param $params string: string de parametros (verificar o ctrl_connection.php para exemplo)
      */
-    function __construct($params)
+    function __construct(string $params)
     {
         $this->param = pParameters($params);
         $this->connected = false;
@@ -73,7 +73,7 @@ class PrumoSqlite3Connection
      *
      * @return boolean: sucesso ou fracasso na conexão
      */
-    private function connect()
+    private function connect() : bool
     {
         $dbName = $this->param['dbname'];
         
@@ -121,7 +121,7 @@ class PrumoSqlite3Connection
      *
      * @return array
      */
-    function getErr()
+    function getErr() : string
     {
         return $this->err;
     }
@@ -164,7 +164,7 @@ class PrumoSqlite3Connection
      * @return mixed: apenas o primeiro valor da primeira coluna retornada pela consulta SQL
      * @return boolean false: em caso de falha na consulta SQL
      */
-    function sqlQuery($sql)
+    function sqlQuery(string $sql)
     {
         if ($this->getConnection()) {
             $result = $this->connection->querySingle($sql);
@@ -182,7 +182,7 @@ class PrumoSqlite3Connection
      * @return array: array associativo com o registro retornado pela consulta SQL sendo o nome da coluna a chave do array
      * @return boolean false: em caso de falha na consulta SQL
      */
-    function fetchAssoc($sql)
+    function fetchAssoc(string $sql)
     {
         if ($this->getConnection()) {
             
@@ -203,7 +203,7 @@ class PrumoSqlite3Connection
      * @return array: array associativo com os registros retornados pela consulta SQL sendo o nome da coluna a chave do array
      * @return boolean false: em caso de falha na consulta SQL
      */
-    function sql2Array($sql)
+    function sql2Array(string $sql)
     {
         $connection = $this->getConnection();
         if (! $connection) {
@@ -242,7 +242,7 @@ class PrumoSqlite3Connection
      *
      * @param string: xml com os dados retornados pela consulta SQL
      */
-    function sqlXml($sql, $tableName)
+    function sqlXml(string $sql, string $tableName) : string
     {
         $connection = $this->getConnection();
         $res = $this->connection->query($sql);
@@ -284,7 +284,7 @@ class PrumoSqlite3Connection
      *
      * @return string: tipo de dados de acordo com o SQLite3
      */
-    function dbType($type)
+    function dbType(string $type) : string
     {
         $types = array(
             'string'    => 'text',

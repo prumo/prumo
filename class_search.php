@@ -36,7 +36,7 @@ class PrumoSearch extends PrumoBasic
     /**
      * Construtor da classe PrumoSearch
      */
-    function __construct($params)
+    function __construct(string $params)
     {
         parent::__construct($params);
         
@@ -52,7 +52,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @param $connecion object: conexão com o banco de dados
      */
-    public function setConnection($connecion)
+    public function setConnection(PrumoConnection $connecion)
     {
         $this->pConnection = $connecion;
     }
@@ -77,7 +77,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return integer: número de linhas do grid
      */
-    protected function pageLines()
+    protected function pageLines() : int
     {
         return isset($this->param['pagelines']) ? $this->param['pagelines'] : $GLOBALS['pConfig']['searchLines'];
     }
@@ -87,7 +87,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @param $params string: string de configuração do campo no formato do framework
      */
-    public function addField($params)
+    public function addField(string $params) : array
     {
         if ($this->constructedGrid == false) {
             
@@ -116,6 +116,8 @@ class PrumoSearch extends PrumoBasic
         if (empty($this->orderby)) {
             $this->setOrderby($param['name']);
         }
+        
+        return $this->field[$lastField];
     }
     
     /**
@@ -129,7 +131,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código javascript gerado
      */
-    public function addFieldReturn($fieldName, $idReturn='', $verbose=true, $linkInput=true, $noRetrieve=false)
+    public function addFieldReturn(string $fieldName, string $idReturn='', bool $verbose=true, bool $linkInput=true, bool $noRetrieve=false) : string
     {
         if (empty($idReturn)) {
             $idReturn = $fieldName;
@@ -187,7 +189,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código gerado
      */
-    private function initClientObject()
+    private function initClientObject() : string
     {
         // instancia o objeto PrumoSearch no cliente
         $clientObject = $this->ind. '<script type="text/javascript">'."\n";
@@ -232,7 +234,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código HTML dos filtros
      */
-    protected function makeFilters()
+    protected function makeFilters() : string
     {
         $this->pFilter->shortcut = $this->makeShortcut();
         
@@ -251,7 +253,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código HTML do grid
      */
-    protected function makeGrid()
+    protected function makeGrid() : string
     {
         $htmlGrid = $this->pGrid->draw(false);
         
@@ -303,7 +305,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código HTML da barra de navegação
      */
-    protected function makeGridNavigation()
+    protected function makeGridNavigation() : string
     {
         $htmlGridNavigation = $this->ind.'        <div id="pGridNavigation_'.$this->name.'" class="prumoGridNavigation"></div>'."\n";
         $htmlGridNavigation .= $this->ind.'        <br />'."\n";
@@ -323,7 +325,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código html do link
      */
-    protected function makeShortcut()
+    protected function makeShortcut() : string
     {
         global $pConnectionPrumo;
         
@@ -358,7 +360,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código gerado
      */
-    public function draw($verbose)
+    public function draw(bool $verbose) : string
     {
         // junta os objetos
         $pSearchInit = $this->initClientObject();
@@ -384,7 +386,7 @@ class PrumoSearch extends PrumoBasic
      * @param $value string: valor do campo
      * @param $visible boolean: indica se o filtro deve aparecer na view
      */
-    public function addFilter($field, $operator, $value, $visible)
+    public function addFilter(string $field, string $operator, string $value, bool $visible)
     {
         $booVisible = $visible == false ? 'false' : 'true';
         
@@ -399,7 +401,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código SQL
      */
-    public function sqlCondition()
+    public function sqlCondition() : string
     {
         $fieldName = $this->pFilter->filter['fieldName'];
         $operator  = $this->pFilter->filter['operator'];
@@ -433,7 +435,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @param $orderby string: nome do campo de ordenação
      */
-    public function setOrderby($orderby)
+    public function setOrderby(string $orderby)
     {
         $this->orderby = pFormatSql($orderby, 'string', false, false);
     }
@@ -443,7 +445,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: SQL da ordenação da consulta
      */
-    public function sqlOrderby() 
+    public function sqlOrderby() : string
     {
         $fieldName = $this->pFilter->filter['fieldName'];
         $visible   = $this->pFilter->filter['visible'];
@@ -469,7 +471,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código SQL
      */
-    public function sqlSearch()
+    public function sqlSearch() : string
     {
         $offsetNum = ($this->page - 1) * $this->pageLines();
         
@@ -504,7 +506,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @param $sql string: consulta SQL
      */
-    public function setSqlSearch($sql)
+    public function setSqlSearch(string $sql)
     {
         if ($this->fixedSqlSearch == '') {
             for ($i = 0; $i < $this->fieldCount(); $i++) {
@@ -520,7 +522,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlCount()
+    public function sqlCount() : string
     {
         $tableName = $this->param['tablename'];
         
@@ -542,7 +544,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: XML completo
      */
-    public function makeXml($verbose)
+    public function makeXml(bool $verbose) : string
     {
         global $prumoGlobal;
         
@@ -604,7 +606,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @returns string: html dos controles
      */
-    public function makeButton($verbose=true, $text='')
+    public function makeButton(bool $verbose=true, string $text='') : string
     {
         if (! $text) {
             $iconSearch = pGetTheme('icons/prumoSearch.png',true);
@@ -641,7 +643,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código gerado
      */
-    public function crudState($crudName, $verbose=true)
+    public function crudState(string $crudName, bool $verbose=true) : string
     {
         $state  = '<script type="text/javascript">'."\n";
         $state .= '    '.$crudName.'.addSonSearch('.$this->name.');'."\n";
@@ -661,7 +663,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: código de saída
      */
-    private function addWindow($pSearch)
+    private function addWindow(string $pSearch) : string
     {
         $title = isset($this->param['title']) ? $this->param['title'] : $this->name;
         
@@ -690,7 +692,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlRetrieve()
+    public function sqlRetrieve() : string
     {
         // monta condicao
         $condition = '';
@@ -732,7 +734,7 @@ class PrumoSearch extends PrumoBasic
      *
      * @return string: resultado em XML
      */
-    private function doRetrieve($verbose)
+    private function doRetrieve(bool $verbose) : string
     {
         global $prumoGlobal;
         
