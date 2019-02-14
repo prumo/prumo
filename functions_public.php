@@ -324,7 +324,7 @@ function pXmlError(string $err, string $msg, bool $verbose=false) : string
  *
  * @return string: dado formatado em html
  */
-function htmlFormat(string $type, string $value) : string
+function htmlFormat(string $type, $value) : string
 {
     if ($type == 'timestamp' && ! empty($value)) {
         $year = substr($value, 0, 4);
@@ -371,7 +371,7 @@ function htmlFormat(string $type, string $value) : string
  *
  * @return string: dado formatado em texto plano
  */
-function plainFormat(string $type, string $value) : string
+function plainFormat(string $type, $value) : string
 {
     //@todo converter no lado do cliente o formato da data e hora
     if ($type == 'time' && ! empty($value)) {
