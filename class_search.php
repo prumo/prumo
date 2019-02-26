@@ -299,14 +299,7 @@ class PrumoSearch extends PrumoBasic
      */
     protected function makeGridNavigation() : string
     {
-        $htmlGridNavigation = "{$this->ind}\t\t<div id=\"{$this->name}_pGridNavigation\" class=\"prumoGridNavigation\"></div>\n";
-        $htmlGridNavigation .= "{$this->ind}\t\t<br />\n";
-        $htmlGridNavigation .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
-        $htmlGridNavigation .= "{$this->ind}\t\t\t{$this->name}.pGridNavigation = new PrumoGridNavigation('{$this->name}');\n";
-        
-        $htmlGridNavigation .= "{$this->ind}\t\t</script>\n";
-        
-        return $htmlGridNavigation;
+        return "{$this->ind}\t\t<div id=\"{$this->name}_pGridNavigation\" class=\"prumoGridNavigation\"></div>\n{$this->ind}\t\t<br />\n";
     }
     
     /**

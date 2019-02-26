@@ -3123,10 +3123,8 @@ function PrumoGrid(objName)
     }
 }
 
-function PrumoGridNavigation(parentName)
+function PrumoGridNavigation()
 {
-    this.parentName = parentName;
-    this.objName = parentName + '.pGridNavigation';
     this.xmlIdentification = 'pGridStatus';
     this.count;
     this.pageLines;
@@ -3138,11 +3136,24 @@ function PrumoGridNavigation(parentName)
     this.registersTo;
     this.pages;
     
-    this.element = document.getElementById(this.objName.replace('.', '_'));
+    this.getParentName = function()
+    {
+        return this.parent.objName;
+    }
+    
+    this.getObjName = function()
+    {
+        return this.getParentName() + '.pGridNavigation';
+    }
+    
+    this.getElement = function()
+    {
+        return document.getElementById(this.getObjName().replace('.', '_'));
+    }
     
     this.clear = function()
     {
-        this.element.innerHTML = gettext('Carregando')+'...';
+        this.getElement().innerHTML = gettext('Carregando')+'...';
     }
     
     this.recalc = function()
@@ -3179,34 +3190,34 @@ function PrumoGridNavigation(parentName)
         
         // botão primeira página
         if (thisBar > 2) {
-            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.parentName+'.goSearch(1)">1...</button>';
+            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch(1)">1...</button>';
         }
         
         // botão pagina anterior
         if (thisBar > 1) {
             var lastPage = pageFrom - 1;
-            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.parentName+'.goSearch('+lastPage+')">&lt;</button>';
+            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+lastPage+')">&lt;</button>';
         }
         
         // Laço que cria os botões da barra
         for (let i=0; i < pageTo - pageFrom +1; i++) {
             var iPage = pageFrom + i;
             if (iPage == this.page) {
-                htmlOut += '<button class="pButton-outline prumoPagination" disabled="disabled" onclick="'+this.parentName+'.goSearch('+iPage+')">'+iPage+'</button>';
+                htmlOut += '<button class="pButton-outline prumoPagination" disabled="disabled" onclick="'+this.getParentName()+'.goSearch('+iPage+')">'+iPage+'</button>';
             } else {
-                htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.parentName+'.goSearch('+iPage+')">'+iPage+'</button>';
+                htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+iPage+')">'+iPage+'</button>';
             }
         }
         
         // botão próxima pagina
         if (iPage != this.pages && this.page != 0) {
             var nextPage = iPage + 1;
-            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.parentName+'.goSearch('+nextPage+')">&gt;</button>';
+            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+nextPage+')">&gt;</button>';
         }
         
         // botão última página
         if (bars - thisBar > 1) {
-            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.parentName+'.goSearch('+this.pages+')">...'+this.pages+'</button>';
+            htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+this.pages+')">...'+this.pages+'</button>';
         }
         
         // monta a barra de status
@@ -3216,7 +3227,7 @@ function PrumoGridNavigation(parentName)
         htmlOut += gettext('Página')+' '+this.page+' '+gettext('de')+' '+this.pages;
         htmlOut += '<br />';
     
-        this.element.innerHTML = htmlOut;
+        this.getElement().innerHTML = htmlOut;
     }
     
     /**
@@ -3344,7 +3355,8 @@ function PrumoSearch(objName, ajaxFile)
     this.pAjax;
     this.pFilter;
     this.pGrid;
-    this.pGridNavigation;
+    this.pGridNavigation = new PrumoGridNavigation();
+    this.pGridNavigation.parent = this;
     
     this.autoClick = true;
     
