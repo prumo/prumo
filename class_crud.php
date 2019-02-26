@@ -1285,15 +1285,14 @@ class PrumoCrud extends PrumoBasic
     {
         $pSearch = $this->pSearch->draw(false);
         for ($i = 0; $i < count($this->field); $i++) {
-            
             if ($this->field[$i]['pk']) {
                 $pSearch .= $this->pSearch->addFieldReturn($this->field[$i]['name'], $this->field[$i]['fieldid'], false, false);
             }
         }
         
-        $pSearch .= '<script type="text/javascript">'."\n";
-        $pSearch .= '    pSearch_'.$this->name.'.crudName = \''.$this->name.'\';'."\n";
-        $pSearch .= '</script>'."\n";
+        $pSearch .= "{$this->ind}<script type=\"text/javascript\">\n";
+        $pSearch .= "{$this->ind}\tpSearch_{$this->name}.crudName = '{$this->name}';\n";
+        $pSearch .= "{$this->ind}</script>\n";
         
         return $pSearch;
     }
@@ -1600,7 +1599,7 @@ class PrumoCrud extends PrumoBasic
      */
     public function drawCrudList(bool $verbose=true) : string
     {
-        $pCrudList = '<div id="pCrudList_'.$this->name.'" style="display:none;">'."\n";
+        $pCrudList = "{$this->ind}<div id=\"pCrudList_{$this->name}\" style=\"display:none;\">\n";
         
         $pCrudList .= $this->pCrudList->draw(false);
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1610,10 +1609,10 @@ class PrumoCrud extends PrumoBasic
             }
         }
         
-        $pCrudList .= '</div>'."\n";
-        $pCrudList .= '<script type="text/javascript">'."\n";
-        $pCrudList .= '    pCrudList_'.$this->name.'.crudName = \''.$this->name.'\';'."\n";
-        $pCrudList .= '</script>'."\n";
+        $pCrudList .= "{$this->ind}</div>\n";
+        $pCrudList .= "{$this->ind}<script type=\"text/javascript\">\n";
+        $pCrudList .= "{$this->ind}\tpCrudList_{$this->name}.crudName = '{$this->name}';\n";
+        $pCrudList .= "{$this->ind}</script>\n";
         
         if ($verbose) {
             echo $pCrudList;
@@ -1636,37 +1635,33 @@ class PrumoCrud extends PrumoBasic
         $permU = $this->getPermission('u') ? '' : ' style="display:none;"';
         $permD = $this->getPermission('d') ? '' : ' style="display:none;"';
         
-        $ind = $this->ind.'                ';
-        
         $controls = "\n";
-        $controls .= $ind.'<span id="'.$this->name.'_controls">'."\n";
-        $controls .= $ind.'    <span id="'.$this->name.'_control_new" style="display:block;">'."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_write_new" '.$permC.' onclick="'.$this->name.'.bt_write_new()">'._('Gravar').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_copy_from" '.$permC.' onclick="'.$this->name.'.bt_copyFrom()">'._('Copiar de').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_clear" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Limpar').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_search" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
-        $controls .= $ind.'    </span>'."\n";
+        $controls .= "{$this->ind}\t\t\t\t\t<span id=\"{$this->name}_controls\">\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t<span id=\"{$this->name}_control_new\" style=\"display:block;\">\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_write_new\" $permC onclick=\"{$this->name}.bt_write_new()\">"._('Gravar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_copy_from\" $permC onclick=\"{$this->name}.bt_copyFrom()\">"._('Copiar de')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton warning\" id=\"{$this->name}_bt_clear\" $permC onclick=\"{$this->name}.bt_new()\">"._('Limpar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_search\" $permR onclick=\"{$this->name}.bt_search()\">"._('Listar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t</span>\n";
         
-        $controls .= $ind.'    <span id="'.$this->name.'_control_edit" style="display:none;">'."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_write_edit" '.$permU.' onclick="'.$this->name.'.bt_write_edit()">'._('Gravar Alterações').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_cancel_edit" '.$permU.' onclick="'.$this->name.'.bt_cancel_edit()">'._('Cancelar').'</button> '."\n";
-        $controls .= $ind.'    </span>'."\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t<span id=\"{$this->name}_control_edit\" style=\"display:none;\">\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_write_edit\" $permU onclick=\"{$this->name}.bt_write_edit()\">"._('Gravar Alterações')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton warning\" id=\"{$this->name}_bt_cancel_edit\" $permU onclick=\"{$this->name}.bt_cancel_edit()\">"._('Cancelar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t</span>\n";
         
-        $controls .= $ind.'    <span id="'.$this->name.'_control_view" style="display:none;">'."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_search_view" '.$permR.' onclick="'.$this->name.'.bt_search()">'._('Listar').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton warning" id="'.$this->name.'_bt_edit" '.$permU.' onclick="'.$this->name.'.bt_edit()">'._('Alterar').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton danger" id="'.$this->name.'_bt_delete" '.$permD.' onclick="'.$this->name.'.bt_delete()">'._('Excluir').'</button> '."\n";
-        $controls .= $ind.'        <button class="pButton" id="'.$this->name.'_bt_new" '.$permC.' onclick="'.$this->name.'.bt_new()">'._('Inserir Novo').'</button> '."\n";
-        $controls .= $ind.'    </span>'."\n";
-        $controls .= $ind.'</span>'."\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t<span id=\"{$this->name}_control_view\" style=\"display:none;\">\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_search_view\" $permR onclick=\"{$this->name}.bt_search()\">"._('Listar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton warning\" id=\"{$this->name}_bt_edit\" $permU onclick=\"{$this->name}.bt_edit()\">"._('Alterar')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton danger\" id=\"{$this->name}_bt_delete\" $permD onclick=\"{$this->name}.bt_delete()\">"._('Excluir')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_bt_new\" $permC onclick=\"{$this->name}.bt_new()\">"._('Inserir Novo')."</button>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t\t</span>\n";
+        $controls .= "{$this->ind}\t\t\t\t\t</span>\n";
         
         if ($this->param['autoclear']) {
-            $controls .= $ind.'<script type="text/javascript">'."\n";
-            $controls .= $ind.'    window.onload = function() { '.$this->name.'.autoClear(); }'."\n";
-            $controls .= $ind.'</script>'."\n";
+            $controls .= "{$this->ind}\t\t\t\t\t<script type=\"text/javascript\">\n";
+            $controls .= "{$this->ind}\t\t\t\t\t\twindow.onload = function() { {$this->name}.autoClear(); }\n";
+            $controls .= "{$this->ind}\t\t\t\t\t</script>\n";
         }
-        
-        $controls .= "\n";
         
         //seta a propriedade maxlength dos campos quando necessário
         $controls .= $this->initMaxLength();
@@ -1688,12 +1683,12 @@ class PrumoCrud extends PrumoBasic
         $clientObject = $this->drawSearch();
         
         // instancia o objeto PrumoSearch no cliente
-        $clientObject .= $this->ind. '<script type="text/javascript">'."\n";
-        $clientObject .= $this->ind. '    '.$this->name.' = new PrumoCrud(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
+        $clientObject .= "{$this->ind}<script type=\"text/javascript\">\n";
+        $clientObject .= "{$this->ind}\t{$this->name} = new PrumoCrud('{$this->name}', '{$this->ajaxFile}');\n";
         
         // repassa condicionalmente o debug para o objeto ajax
         if (isset($this->param['debug']) && $this->param['debug']) {
-            $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.pAjax.debug = true;\n";
         }
         
         // repassa fields para o objeto cliente
@@ -1781,70 +1776,69 @@ class PrumoCrud extends PrumoBasic
             
         }
         
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldName = Array('.$fieldName.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldPk = Array('.$fieldPk.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldId = Array('.$fieldId.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldLabel = Array('.$fieldLabel.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldType = Array('.$fieldType.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldNotNull = Array('.$fieldNotNull.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldReadonly = Array('.$fieldReadonly.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldNoCreate = Array('.$fieldNoCreate.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldNoUpdate = Array('.$fieldNoUpdate.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldVirtual = Array('.$fieldVirtual.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldDefault = Array('.$fieldDefault.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldTemplate = Array('.$fieldTemplate.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldValidator = '.json_encode($this->validator)."\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldPk = Array($fieldPk);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldId = Array($fieldId);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldLabel = Array($fieldLabel);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldType = Array($fieldType);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldNotNull = Array($fieldNotNull);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldReadonly = Array($fieldReadonly);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldNoCreate = Array($fieldNoCreate);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldNoUpdate = Array($fieldNoUpdate);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldVirtual = Array($fieldVirtual);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldDefault = Array($fieldDefault);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldTemplate = Array($fieldTemplate);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldValidator = ".json_encode($this->validator)."\n";
         
         // repassa as permissões CRUD para o cliente
         $clientObject .= "\n";
-        $clientObject .= $this->ind.'    '.$this->name. '.permC = ' . ($this->getPermission('c') ? 'true' : 'false').';'."\n";
-        $clientObject .= $this->ind.'    '.$this->name. '.permR = ' . ($this->getPermission('r') ? 'true' : 'false').';'."\n";
-        $clientObject .= $this->ind.'    '.$this->name. '.permU = ' . ($this->getPermission('u') ? 'true' : 'false').';'."\n";
-        $clientObject .= $this->ind.'    '.$this->name. '.permD = ' . ($this->getPermission('d') ? 'true' : 'false').';'."\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.permC = " . ($this->getPermission('c') ? 'true' : 'false').";\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.permR = " . ($this->getPermission('r') ? 'true' : 'false').";\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.permU = " . ($this->getPermission('u') ? 'true' : 'false').";\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.permD = " . ($this->getPermission('d') ? 'true' : 'false').";\n";
         
         // ligação do crud com o search
         $clientObject .= "\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.pSearch = pSearch_'.$this->name.";\n";
-
+        $clientObject .= "{$this->ind}\t{$this->name}.pSearch = pSearch_{$this->name};\n";
+        
         // evento after Search
         $clientObject .= "\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.pSearch.afterSearch = function() {'."\n";
-        $clientObject .= $this->ind.'        '.$this->name.'.doCopyFrom();'."\n";
-        $clientObject .= $this->ind.'    }'."\n";
-
+        $clientObject .= "{$this->ind}\t{$this->name}.pSearch.afterSearch = function() {\n";
+        $clientObject .= "{$this->ind}\t\t{$this->name}.doCopyFrom();\n";
+        $clientObject .= "{$this->ind}\t}\n";
+        
         // ligações 1 to 1
         $clientObject .= "\n";
         if ($this->parent1x1 != null) {
-            $clientObject .= $this->ind.'    '.$this->name.'.addParent1x1('.$this->parent1x1->name.',\''.$this->parent1x1Condition['fieldName'].'\',\''.$this->parent1x1Condition['value'].'\', \''.$this->parent1x1Condition['operator'].'\');'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.addParent1x1({$this->parent1x1->name},'{$this->parent1x1Condition['fieldName']}', '{$this->parent1x1Condition['value']}', '{$this->parent1x1Condition['operator']}');\n";
         }
         
         if ($this->parent1xN != '') {
             $clientObject .= "\n";
-            $clientObject .= $this->ind . '    '. $this->name.'.addParent1xN('.$this->parent1xN.');'."\n";
-            $clientObject .= $this->ind . '    '. $this->name.'.pSearch.autoClick = false;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.addParent1xN({$this->parent1xN});\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.pSearch.autoClick = false;\n";
         }
-        
         
         //// trata onload
         $onload = '';
         
         if (isset($_GET['initialState'])) {
-            $clientObject .= $this->ind . '    '. $this->name.'.initialState = \''.$_GET['initialState'].'\';'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.initialState = '{$_GET['initialState']}';\n";
         }
         
         $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
         if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
-            $onload .= $this->ind . '        '.$this->name.'.bt_new();'."\n";
+            $onload .= "{$this->ind}\t\t{$this->name}.bt_new();\n";
         }
         
         // preenche os campos
         for ($i = 0; $i < count($this->field); $i++) {
             $id = $this->field[$i]['fieldid'];
             if (isset($_GET[$id]) && ! empty($_GET[$id]) && ($inicialStateNew == false || $this->field[$i]['type'] != 'serial')) {
-                $onload .= $this->ind . '        '. $this->name.'.inputSetValue(\''.$id.'\', \''.str_replace("\n", '\n', urldecode($_GET[$id])).'\');'."\n";
+                $onload .= "{$this->ind}\t\t{$this->name}.inputSetValue('$id', '".str_replace("\n", '\n', urldecode($_GET[$id]))."');\n";
             }
         }
-        $onload .= $this->ind . '        '.$this->name.'.retrieveVirtual();'."\n";
+        $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
         
         // verifica se deve abrir algum registro ou a listagem
         if ($this->parent1x1 == null && $this->parent1xN == '') {
@@ -1866,29 +1860,29 @@ class PrumoCrud extends PrumoBasic
             
             if ($inicialStateNew == false && $autoList == true) {
                 if ($countPk > 0 && $countPk == $countPkValue) {
-                    $onload .= $this->ind . '        '.$this->name.'.doRetrieve();'."\n";
+                    $onload .= "{$this->ind}\t\t{$this->name}.doRetrieve();\n";
                 } else if ($this->pCrudList) {
-                    $onload .= $this->ind . '        '.$this->name.'.bt_search();'."\n";
+                    $onload .= "{$this->ind}\t\t{$this->name}.bt_search();\n";
                 }
             }
         }
         
         if (! empty($onload)) {
-            $clientObject .= $this->ind . '    window.addEventListener("load", function() {'."\n";
-            $clientObject .= $this->ind .$onload;
-            $clientObject .= $this->ind . '    });'."\n";
+            $clientObject .= "{$this->ind}\twindow.addEventListener(\"load\", function() {\n";
+            $clientObject .= "{$this->ind}\t$onload\n";
+            $clientObject .= "{$this->ind}\t});\n";
         }
         
-        $clientObject .= $this->ind.'    document.pCrud.push('.$this->name.');'."\n";
-        $clientObject .= $this->ind. '</script>'."\n";
+        $clientObject .= "{$this->ind}\tdocument.pCrud.push({$this->name});\n";
+        $clientObject .= "{$this->ind}</script>\n";
         $clientObject .= $this->initClientObject1x1();
         
         if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
-            $clientObject .= $this->ind. '<script type="text/javascript">'."\n";
-            $clientObject .= $this->ind . '    window.addEventListener("load", function() {'."\n";
-            $clientObject .= $this->ind . '        '.$this->name.'.visibleSon1x1();'."\n";
-            $clientObject .= $this->ind . '    });'."\n";
-            $clientObject .= $this->ind. '</script>'."\n";
+            $clientObject .= "{$this->ind}<script type=\"text/javascript\">\n";
+            $clientObject .= "{$this->ind}\twindow.addEventListener(\"load\", function() {\n";
+            $clientObject .= "{$this->ind}\t\t{$this->name}.visibleSon1x1();\n";
+            $clientObject .= "{$this->ind}\t});\n";
+            $clientObject .= "{$this->ind}</script>\n";
         }
         
         return $clientObject;
@@ -1917,15 +1911,14 @@ class PrumoCrud extends PrumoBasic
         for ($i = 0; $i < count($this->field); $i++) {
             
             if ($this->field[$i]['size'] != '') {
-                
-                $out .= $this->ind.'    inputField = document.getElementById(\''.$this->field[$i]['fieldid'].'\');'."\n";
-                $out .= $this->ind.'    if (inputField.getAttribute(\'maxlength\') == undefined) {'."\n";
-                $out .= $this->ind.'        inputField.setAttribute(\'maxlength\','.$this->field[$i]['size'].');'."\n";
-                $out .= $this->ind.'    }'."\n";
+                $out .= "{$this->ind}\tinputField = document.getElementById('{$this->field[$i]['fieldid']}');\n";
+                $out .= "{$this->ind}\tif (inputField.getAttribute('maxlength') == undefined) {\n";
+                $out .= "{$this->ind}\t\tinputField.setAttribute('maxlength',{$this->field[$i]['size']});\n";
+                $out .= "{$this->ind}\t}\n";
             }
         }
         
-        return $out != '' ? $this->ind.'<script type="text/javascript">'."\n".$out.$this->ind.'</script>'."\n" : '';
+        return $out != '' ? "{$this->ind}<script type=\"text/javascript\">\n$out{$this->ind}</script>\n" : '';
     }
     
     /**
@@ -1998,15 +1991,11 @@ class PrumoCrud extends PrumoBasic
                 $htmlCode = $this->drawForms(false,true);
                 $htmlCode = str_replace('<','&lt;',$htmlCode);
                 $htmlCode = str_replace('>','&gt;',$htmlCode);
-                echo "<pre>\n";
-                echo $htmlCode;
-                echo "\n</pre>\n";
+                echo "<pre>\n$htmlCode\n</pre>\n";
             }
         
             if (isset($_GET['ddl'])) {
-                echo '<pre>'."\n";
-                echo $this->ddl();
-                echo "\n".'</pre>';
+                echo "<pre>\n".$this->ddl()."\n</pre>";
             }
             
             if (isset($_GET['executeddl'])) {

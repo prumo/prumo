@@ -23,7 +23,7 @@ class PrumoFilter
 {
     
     private $parentName;
-    private $ind;
+    private $ind = '';
     private $countVisible;
     
     public $field;
@@ -95,23 +95,23 @@ class PrumoFilter
      */
     public function makeHtml() : string
     {
-        $htmlFilters  = $this->ind.'<div class="prumoFilter" align="center" id="pFilter_'.$this->parentName.'">'."\n";
-        $htmlFilters .= $this->ind.'    <table>'."\n";
-        $htmlFilters .= $this->ind.'        <tr>'."\n";
-        $htmlFilters .= $this->ind.'            <td id="pFilter_'.$this->parentName.'_filters" style="text-align:left">'."\n";
-        $htmlFilters .= $this->ind.'            </td>'."\n";
-        $htmlFilters .= $this->ind.'            <td id="pFilter_'.$this->parentName.'_controls">'."\n";
-        $htmlFilters .= $this->ind.'                <div style="text-align:center;">'."\n";
-        $htmlFilters .= $this->ind.'                    <button class="pButton" id="'.$this->parentName.'_btSearch" onclick="'.$this->parentName.'.cmdSearch()">'._('Pesquisar').'</button>'."\n";
-        $htmlFilters .= $this->ind.'                    <button class="pButton" id="'.$this->parentName.'_btSearchAll" onclick="'.$this->parentName.'.cmdSearchAll()">'._('Todos').'</button>'."\n";
+        $htmlFilters  = "{$this->ind}<div class=\"prumoFilter\" align=\"center\" id=\"pFilter_{$this->parentName}\">\n";
+        $htmlFilters .= "{$this->ind}\t<table>\n";
+        $htmlFilters .= "{$this->ind}\t\t<tr>\n";
+        $htmlFilters .= "{$this->ind}\t\t\t<td id=\"pFilter_{$this->parentName}_filters\" style=\"text-align:left\">\n";
+        $htmlFilters .= "{$this->ind}\t\t\t</td>\n";
+        $htmlFilters .= "{$this->ind}\t\t\t<td id=\"pFilter_{$this->parentName}_controls\">\n";
+        $htmlFilters .= "{$this->ind}\t\t\t\t<div style=\"text-align:center;\">\n";
+        $htmlFilters .= "{$this->ind}\t\t\t\t\t<button class=\"pButton\" id=\"{$this->parentName}_btSearch\" onclick=\"{$this->parentName}.cmdSearch()\">"._('Pesquisar')."</button>\n";
+        $htmlFilters .= "{$this->ind}\t\t\t\t\t<button class=\"pButton\" id=\"{$this->parentName}_btSearchAll\" onclick=\"{$this->parentName}.cmdSearchAll()\">"._('Todos')."</button>\n";
         if (! empty($this->shortcut)) {
-            $htmlFilters .= $this->ind.'                    '.$this->shortcut."\n";
+            $htmlFilters .= "{$this->ind}\t\t\t\t\t{$this->shortcut}\n";
         }
-        $htmlFilters .= $this->ind.'                </div>'."\n";
-        $htmlFilters .= $this->ind.'            </td>'."\n";
-        $htmlFilters .= $this->ind.'        </tr>'."\n";
-        $htmlFilters .= $this->ind.'    </table>'."\n";
-        $htmlFilters .= $this->ind.'</div>'."\n";
+        $htmlFilters .= "{$this->ind}\t\t\t\t</div>\n";
+        $htmlFilters .= "{$this->ind}\t\t\t</td>\n";
+        $htmlFilters .= "{$this->ind}\t\t</tr>\n";
+        $htmlFilters .= "{$this->ind}\t</table>\n";
+        $htmlFilters .= "{$this->ind}</div>\n";
         
         return $htmlFilters;
     }
@@ -125,11 +125,11 @@ class PrumoFilter
      */
     private function makeJs() : string
     {
-        $jsFilters  = $this->ind.'<script type="text/javascript">'."\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.' = new PrumoFilter(\'pFilter_'.$this->parentName.'\', \''.$GLOBALS['pConfig']['useSimilaritySearch'].'\');'."\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.prumoWebPath = \''.$GLOBALS['pConfig']['prumoWebPath'].'\';'."\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.parent = '.$this->parentName.';'."\n";
-
+        $jsFilters  = "{$this->ind}<script type=\"text/javascript\">\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName} = new PrumoFilter('pFilter_{$this->parentName}', '{$GLOBALS['pConfig']['useSimilaritySearch']}');\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.prumoWebPath = '{$GLOBALS['pConfig']['prumoWebPath']}';\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.parent = {$this->parentName};\n";
+        
         // passa informação dos fields do servidor para o filter
         $filterName = '';
         $filterLabel = '';
@@ -137,28 +137,28 @@ class PrumoFilter
         
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             
-            $filterName .= '"'.$this->field[$i]['name'].'"';
+            $filterName .= "\"{$this->field[$i]['name']}\"";
             if ($i < $this->fieldCount() -1) {
                 $filterName .= ',';
             }
             
-            $filterLabel .= '"'.$this->field[$i]['label'].'"';
+            $filterLabel .= "\"{$this->field[$i]['label']}\"";
             if ($i < $this->fieldCount() -1) {
                 $filterLabel .= ',';
             }
             
-            $filterType .= '"'.$this->field[$i]['type'].'"';
+            $filterType .= "\"{$this->field[$i]['type']}\"";
             if ($i < $this->fieldCount() -1) {
                 $filterType .= ',';
             }
         }
         
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.fieldName  = new Array('.$filterName.");\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.fieldLabel = new Array('.$filterLabel.");\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.fieldType  = new Array('.$filterType.");\n";
-        $jsFilters .= $this->ind.'    pFilter_'.$this->parentName.'.draw();'."\n";
-        $jsFilters .= $this->ind.'    document.pFilter.push(pFilter_'.$this->parentName.');'."\n";
-        $jsFilters .= $this->ind.'</script>'."\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.fieldName  = new Array($filterName);\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.fieldLabel = new Array($filterLabel);\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.fieldType  = new Array($filterType);\n";
+        $jsFilters .= "{$this->ind}\tpFilter_{$this->parentName}.draw();\n";
+        $jsFilters .= "{$this->ind}\tdocument.pFilter.push(pFilter_{$this->parentName});\n";
+        $jsFilters .= "{$this->ind}</script>\n";
         
         return $jsFilters;
     }

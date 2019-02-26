@@ -26,7 +26,7 @@ class PrumoGrid
     private $lines;
     private $column;
     public $width;
-    public $ind;
+    public $ind = '';
     public $lineEventOnData;
     public $pointerCursorOnData;
     
@@ -83,7 +83,7 @@ class PrumoGrid
      */
     private function tableGridHeader() : string
     {
-        return "\n".$this->ind.'<table id="pGrid_'.$this->parentName.'" class="prumoGridTable">'."\n";
+        return "\n{$this->ind}<table id=\"pGrid_{$this->parentName}\" class=\"prumoGridTable\">\n";
     }
     
     /**
@@ -93,7 +93,7 @@ class PrumoGrid
      */
     private function tableClose() : string
     {
-        return $this->ind.'</table>'."\n";
+        return "{$this->ind}</table>\n";
     }
     
     /**
@@ -103,18 +103,17 @@ class PrumoGrid
      */
     private function dataHeader() : string
     {
-        $header  = $this->ind.'    <tr class="prumoGridTh">'."\n";
+        $header = "{$this->ind}\t<tr class=\"prumoGridTh\">\n";
         
         for ($i = 0; $i < count($this->column); $i++) {
             
             if ($this->column[$i]['visible'] != false) {
-                $header .= $this->ind.'        <th class="prumoGridTh" id="PrumoGridTh_'.$this->parentName .'_'.$this->column[$i]['name'].'" style="text-align:'.$this->column[$i]['labelalign']
-                                                              .'" onclick="' . $this->parentName . '.sort(\'' . $this->column[$i]['name'] . '\')'
-                                                              .'">'.$this->column[$i]['label'].'</th>'."\n";
+                $header .= "{$this->ind}\t\t<th class=\"prumoGridTh\" id=\"PrumoGridTh_{$this->parentName}_{$this->column[$i]['name']}\" style=\"text-align:{$this->column[$i]['labelalign']}"
+                                                              ."\" onclick=\"{$this->parentName}.sort('{$this->column[$i]['name']}')\">{$this->column[$i]['label']}</th>\n";
             }
         }
         
-        $header .= $this->ind.'    </tr>'."\n";
+        $header .= "{$this->ind}\t</tr>\n";
         
         return $header;
     }
@@ -128,17 +127,16 @@ class PrumoGrid
      */
     private function line(int $index) : string
     {
-        $line = is_int($index/2) ? $this->ind.'    <tr class="prumoGridTrEven">'."\n" : $this->ind.'    <tr class="prumoGridTrOdd">'."\n";
+        $line = is_int($index/2) ? "{$this->ind}\t<tr class=\"prumoGridTrEven\">\n" : "{$this->ind}\t<tr class=\"prumoGridTrOdd\">\n";
         
         for ($i = 0; $i < count($this->column); $i++) {
             
             if ($this->column[$i]['visible'] != false) {
-                $line .= $this->ind.'        <td class="prumoGridTd" style="text-align:'.$this->column[$i]['align']
-                                                                                                  .'"><br /></td>'."\n";
+                $line .= "{$this->ind}\t\t<td class=\"prumoGridTd\" style=\"text-align:{$this->column[$i]['align']}\"><br /></td>\n";
             }
         }
         
-        $line .= $this->ind.'    </tr>'."\n";
+        $line .= "{$this->ind}\t</tr>\n";
         
         return $line;
     }
@@ -166,11 +164,11 @@ class PrumoGrid
      */
     private function clientObject() : string
     {
-        $client  = $this->ind.'<script type="text/javascript">'."\n";
-        $client .= $this->ind.'    pGrid_'.$this->parentName.' = new PrumoGrid(\'pGrid_'.$this->parentName.'\');'."\n";
-        $client .= $this->ind.'    pGrid_'.$this->parentName.'.lines = '.$this->lines.';'."\n";
-        $client .= $this->ind.'    document.pGrid.push(pGrid_'.$this->parentName.');'."\n";
-        $client .= $this->ind.'</script>'."\n";
+        $client  = "{$this->ind}<script type=\"text/javascript\">\n";
+        $client .= "{$this->ind}\tpGrid_{$this->parentName} = new PrumoGrid('pGrid_{$this->parentName}');\n";
+        $client .= "{$this->ind}\tpGrid_{$this->parentName}.lines = {$this->lines};\n";
+        $client .= "{$this->ind}\tdocument.pGrid.push(pGrid_{$this->parentName});\n";
+        $client .= "{$this->ind}</script>\n";
         
         return $client;
     }

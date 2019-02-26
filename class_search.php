@@ -67,7 +67,7 @@ class PrumoSearch extends PrumoBasic
         $this->getObjName();
         $lines = $pageLines ? $pageLines : $this->pageLines();
         $this->pGrid = new PrumoGrid($this->name, $lines);
-        $this->pGrid->ind = $this->ind . '        ';
+        $this->pGrid->ind = $this->ind . "\t\t";
         $this->pGrid->lineEventOnData = $this->name.'.lineClick(%)';
         $this->pGrid->pointerCursorOnData = true;
     }
@@ -104,7 +104,7 @@ class PrumoSearch extends PrumoBasic
         
         $this->pGrid->addColumn($params);
         $this->pFilter = new PrumoFilter($this->name, $this->field);
-        $this->pFilter->setIndentarion($this->ind.'        ');
+        $this->pFilter->setIndentarion($this->ind."\t\t");
         
         $param = pParameters($params);
         
@@ -192,16 +192,17 @@ class PrumoSearch extends PrumoBasic
     private function initClientObject() : string
     {
         // instancia o objeto PrumoSearch no cliente
-        $clientObject = $this->ind. '<script type="text/javascript">'."\n";
-        $clientObject .= $this->ind. '    '.$this->name.' = new PrumoSearch(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
+        $clientObject = "{$this->ind}<script type=\"text/javascript\">\n";
+        $clientObject .= "{$this->ind}\t{$this->name} = new PrumoSearch('{$this->name}', '{$this->ajaxFile}');\n";
+        
         // repassa condicionalmente o debug para o objeto ajax
         if (isset($this->param['debug']) && $this->param['debug']) {
-            $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.pAjax.debug = true;\n";
         }
 
         // repassa parametro auto click
-        $clientObject .= $this->ind . '    '. $this->name.'.autoClick = ';
-        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] == 'false') ? 'false;'."\n" : 'true;'."\n";
+        $clientObject .= "{$this->ind}\t$this->name.autoClick = ";
+        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] == 'false') ? "false;\n" : "true;\n";
 
         // repassa fields para o objeto cliente
         $fieldName = '';
@@ -209,7 +210,7 @@ class PrumoSearch extends PrumoBasic
             if ($fieldName != '') {
                 $fieldName .= ',';
             }
-            $fieldName .= '"'.$this->field[$i]['name'].'"';
+            $fieldName .= "\"{$this->field[$i]['name']}\"";
         }
         
         $fieldPk = '';
@@ -220,11 +221,11 @@ class PrumoSearch extends PrumoBasic
             $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
         }
         
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldName = Array('.$fieldName.');'."\n";
-        $clientObject .= $this->ind.'    '.$this->name.'.fieldPk = Array('.$fieldPk.');'."\n";
-        $clientObject .= $this->ind.'    document.pSearch.push('.$this->name.');'."\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldPk = Array($fieldPk);\n";
+        $clientObject .= "{$this->ind}\tdocument.pSearch.push({$this->name});\n";
         
-        $clientObject .= $this->ind. '</script>'."\n";
+        $clientObject .= "{$this->ind}</script>\n";
         
         return $clientObject;
     }
@@ -241,9 +242,9 @@ class PrumoSearch extends PrumoBasic
         $htmlFilters = $this->pFilter->draw(false);
         
         // vinculo com o PrumoFilter
-        $htmlFilters .= $this->ind. '        <script type="text/javascript">'."\n";
-        $htmlFilters .= $this->ind. '            '.$this->name.'.pFilter = pFilter_'.$this->name.";\n";
-        $htmlFilters .= $this->ind. '        </script>'."\n";
+        $htmlFilters .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
+        $htmlFilters .= "{$this->ind}\t\t\t{$this->name}.pFilter = pFilter_{$this->name}\n";
+        $htmlFilters .= "{$this->ind}\t\t</script>\n";
         
         return $htmlFilters;
     }
@@ -258,25 +259,25 @@ class PrumoSearch extends PrumoBasic
         $htmlGrid = $this->pGrid->draw(false);
         
         // passa informação dos fields do servidor para o grid
-        $htmlGrid .= $this->ind.'        <script type="text/javascript">'."\n";
+        $htmlGrid .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
         
-        $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.field = new Array(';
+        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.field = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
-            $htmlGrid .= '"'.$this->field[$i]['name'].'"';
+            $htmlGrid .= "\"{$this->field[$i]['name']}\"";
             if ($i < $this->fieldCount() -1) {
                 $htmlGrid .= ',';
             }
         }
-        $htmlGrid .= ');'."\n";
-        $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.fieldType = new Array(';
+        $htmlGrid .= ");\n";
+        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.fieldType = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
-            $htmlGrid .= '"'.$this->field[$i]['type'].'"';
+            $htmlGrid .= "\"{$this->field[$i]['type']}\"";
             if ($i < $this->fieldCount() -1) {
                 $htmlGrid .= ',';
             }
         }
-        $htmlGrid .= ');'."\n";
-        $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.fieldVisible = new Array(';
+        $htmlGrid .= ");\n";
+        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.fieldVisible = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             $fieldVisible = $this->field[$i]['visible'] == true ? 'true' : 'false';
             $htmlGrid .= $fieldVisible;
@@ -284,18 +285,18 @@ class PrumoSearch extends PrumoBasic
                 $htmlGrid .= ',';
             }
         }
-        $htmlGrid .= ');'."\n";
+        $htmlGrid .= ");\n";
         
-        $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.xmlIdentification = \''.$this->name.'\';'."\n";
-        $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.lineEventOnData = \''.$this->pGrid->lineEventOnData.'\';'."\n";
+        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.xmlIdentification = '{$this->name}';\n";
+        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.lineEventOnData = '{$this->pGrid->lineEventOnData}';\n";
         if ($this->pGrid->pointerCursorOnData) {
-            $htmlGrid .= $this->ind. '            pGrid_'.$this->name.'.pointerCursorOnData = true;'."\n";
+            $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.pointerCursorOnData = true;\n";
         }
         
         // vinculo com o PrumoGrid
-        $htmlGrid .= $this->ind. '            '.$this->name.'.pGrid = pGrid_'.$this->name.";\n";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid = pGrid_{$this->name}\n";
         
-        $htmlGrid .= $this->ind.'        </script>'."\n";
+        $htmlGrid .= "{$this->ind}\t\t</script>\n";
         
         return $htmlGrid;
     }
@@ -307,15 +308,15 @@ class PrumoSearch extends PrumoBasic
      */
     protected function makeGridNavigation() : string
     {
-        $htmlGridNavigation = $this->ind.'        <div id="pGridNavigation_'.$this->name.'" class="prumoGridNavigation"></div>'."\n";
-        $htmlGridNavigation .= $this->ind.'        <br />'."\n";
-        $htmlGridNavigation .= $this->ind.'        <script type="text/javascript">'."\n";
-        $htmlGridNavigation .= $this->ind.'            pGridNavigation_'.$this->name.' = new PrumoGridNavigation(\''.$this->name.'\');'."\n";
+        $htmlGridNavigation = "{$this->ind}\t\t<div id=\"pGridNavigation_{$this->name}\" class=\"prumoGridNavigation\"></div>\n";
+        $htmlGridNavigation .= "{$this->ind}\t\t<br />\n";
+        $htmlGridNavigation .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
+        $htmlGridNavigation .= "{$this->ind}\t\t\tpGridNavigation_{$this->name} = new PrumoGridNavigation('{$this->name}');\n";
         
         // vinculo com o PrumoGridNavigation
-        $htmlGridNavigation .= $this->ind.'            '.$this->name.'.pGridNavigation = pGridNavigation_'.$this->name.';'."\n";
-
-        $htmlGridNavigation .= $this->ind.'        </script>'."\n";
+        $htmlGridNavigation .= "{$this->ind}\t\t\t{$this->name}.pGridNavigation = pGridNavigation_{$this->name};\n";
+        
+        $htmlGridNavigation .= "{$this->ind}\t\t</script>\n";
         
         return $htmlGridNavigation;
     }
@@ -390,10 +391,10 @@ class PrumoSearch extends PrumoBasic
     {
         $booVisible = $visible == false ? 'false' : 'true';
         
-        echo '<script type="text/javascript">'."\n";
-        echo '    '.$this->name.'.pFilter.addFilter(null,\''.$field.'\',\''.$operator.'\',\''.$value.'\',\'\','.$booVisible.');'."\n";
-        echo '    '.$this->name.'.pFilter.draw();'."\n";
-        echo '</script>'."\n";
+        echo "<script type=\"text/javascript\">\n";
+        echo "\t{$this->name}.pFilter.addFilter(null,'$field','$operator','$value','','$booVisible');\n";
+        echo "\t{$this->name}.pFilter.draw();\n";
+        echo "</script>\n";
     }
     
     /**
@@ -609,10 +610,10 @@ class PrumoSearch extends PrumoBasic
     public function makeButton(bool $verbose=true, string $text='') : string
     {
         if (! $text) {
-            $iconSearch = pGetTheme('icons/prumoSearch.png',true);
-            $text = '<img src="'.$iconSearch.'" alt="PrumoSearch" />';
+            $iconSearch = pGetTheme('icons/prumoSearch.png', true);
+            $text = "<img src=\"$iconSearch\" alt=\"PrumoSearch\" />\n";
         }
-        $button = '<button class="pButton-outline" type="button" id="'.$this->name.'Bt" onClick="javascript:'.$this->name.'.goSearch();">' . $text . '</button>';
+        $button = "<button class=\"pButton-outline\" type=\"button\" id=\"{$this->name}Bt\" onClick=\"javascript:{$this->name}.goSearch();\">$text</button>";
         
         if ($verbose) {
             echo $button;
@@ -645,9 +646,9 @@ class PrumoSearch extends PrumoBasic
      */
     public function crudState(string $crudName, bool $verbose=true) : string
     {
-        $state  = '<script type="text/javascript">'."\n";
-        $state .= '    '.$crudName.'.addSonSearch('.$this->name.');'."\n";
-        $state .= '</script>'."\n";
+        $state  = "<script type=\"text/javascript\">\n";
+        $state .= "\t$crudName.addSonSearch({$this->name});\n";
+        $state .= "</script>\n";
         
         if ($verbose) {
             echo $state;
@@ -667,22 +668,22 @@ class PrumoSearch extends PrumoBasic
     {
         $title = isset($this->param['title']) ? $this->param['title'] : $this->name;
         
-        $pWindow = new PrumoWindow('pWindow_'.$this->name);
+        $pWindow = new PrumoWindow("pWindow_{$this->name}");
         $pWindow->title = $title;
         $pWindow->ind = $this->ind;
-        $pWindow->commandClose = $this->name.'.cancel()';
-        $pSearchReturn = $pWindow->draw(false,$pSearch);
+        $pWindow->commandClose = "{$this->name}.cancel()";
+        $pSearchReturn = $pWindow->draw(false, $pSearch);
         
         // vinculo do PrumoWindow com o PrumoSearch
-        $pSearchReturn .= $this->ind.'<script type="text/javascript">'."\n";
-        $pSearchReturn .= $this->ind.'    '.$this->name.'.pWindow = pWindow_'.$this->name.";\n";
+        $pSearchReturn .= "{$this->ind}<script type=\"text/javascript\">\n";
+        $pSearchReturn .= "{$this->ind}\t{$this->name}.pWindow = pWindow_{$this->name};\n";
         
         // repassa parametro modal do PrumoSearch (que só faz sentido se tiver pWindow, por isso o codigo esta aqui)
         if (isset($this->param['modal'])) {
-            $pSearchReturn .= $this->ind. '            '.$this->name.'.modal = '.$this->param['modal'].";\n";
+            $pSearchReturn .= "{$this->ind}\t\t\t\t{$this->name}.modal = {$this->param['modal']};\n";
         }
-        $pSearchReturn .= $this->ind. '    '.$this->name.'.pAjax.pLoading = new prumoLoading(\'pWindow_'.$this->name.'_loading\');'."\n";
-        $pSearchReturn .= $this->ind.'</script>'."\n";
+        $pSearchReturn .= "{$this->ind}\t{$this->name}.pAjax.pLoading = new prumoLoading('pWindow_{$this->name}_loading');\n";
+        $pSearchReturn .= "{$this->ind}</script>\n";
         
         return $pSearchReturn;
     }

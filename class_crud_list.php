@@ -45,36 +45,36 @@ class PrumoCrudList extends PrumoSearch
     private function initClientObject() : string
     {
         // instancia o objeto PrumoCrudList no cliente
-        $clientObject  = $this->ind. '<script type="text/javascript">'."\n";
-        $clientObject .= $this->ind. '    '.$this->name.' = new PrumoCrudList(\''.$this->name.'\',\''.$this->ajaxFile.'\');'."\n";
-        $clientObject .= $this->ind. '    '.$this->name.'.objName = \''.$this->name.'\';'."\n";
-        $clientObject .= $this->ind. '    '.$this->name.'.parent = '.$this->param['crudname'].';'."\n";
+        $clientObject  = "{$this->ind}<script type=\"text/javascript\">\n";
+        $clientObject .= "{$this->ind}\t{$this->name} = new PrumoCrudList('{$this->name}','{$this->ajaxFile}');\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.objName = '{$this->name}';\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.parent = {$this->param['crudname']};\n";
         
         // repassa condicionalmente o pog debug para o objeto ajax
         if (isset($this->param['debug']) && $this->param['debug']) {
-            $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.pAjax.debug = true;\n";
         }
         
         // repassa parametro auto click
-        $clientObject .= $this->ind . '    '. $this->name.'.autoClick = ';
-        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] != 'false') ? 'true;'."\n" : 'false;'."\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.autoClick = ";
+        $clientObject .= (isset($this->param['autoclick']) && $this->param['autoclick'] != 'false') ? "true;\n" : "false;\n";
         
         //fastCreate
         if (isset($this->param['fastcreate']) && $this->param['fastcreate']) {
-            $clientObject .= $this->ind . '    '. $this->name.'.fastCreate = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.fastCreate = true;\n";
         }
         
         //fastUpdate
         if (isset($this->param['fastupdate']) && $this->param['fastupdate']) {
-            $clientObject .= $this->ind . '    '. $this->name.'.fastUpdate = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.fastUpdate = true;\n";
         }
         
         //fastDelete
         if (isset($this->param['fastdelete']) && $this->param['fastdelete']) {
-            $clientObject .= $this->ind . '    '. $this->name.'.fastDelete = true;'."\n";
+            $clientObject .= "{$this->ind}\t{$this->name}.fastDelete = true;\n";
         }
-        $clientObject .= $this->ind.'    document.pCrudList.push('.$this->name.');'."\n";
-        $clientObject .= $this->ind. '</script>'."\n";
+        $clientObject .= "{$this->ind}\tdocument.pCrudList.push({$this->name});\n";
+        $clientObject .= "{$this->ind}</script>\n";
         
         return $clientObject;
     }
@@ -88,7 +88,7 @@ class PrumoCrudList extends PrumoSearch
     {
         if (! isset($this->param['routine']) || empty($this->param['routine']) || pPermitted($this->param['routine'], 'c')) {
             $onClick = $this->pFilter->btNew = $this->param['crudname'].'.bt_new()';
-            return $this->ind.'                    <button class="pButton" id="'.$this->name.'_btNew" onclick="'.$onClick.'">'._('Inserir Novo').'</button>'."\n";
+            return "{$this->ind}\t\t\t\t\t<button class=\"pButton\" id=\"{$this->name}_btNew\" onclick=\"$onClick\">"._('Inserir Novo')."</button>\n";
         } else {
             return '';
         }
@@ -136,9 +136,9 @@ class PrumoCrudList extends PrumoSearch
      */
     private function makeCrudLink() : string
     {
-        $htmlCrudLink  = $this->ind.'        <script type="text/javascript">'."\n";
-        $htmlCrudLink .= $this->ind.'            '.$this->param['crudname'].'.pCrudList = '.$this->name.';'."\n";
-        $htmlCrudLink .= $this->ind.'        </script>'."\n";
+        $htmlCrudLink  = "{$this->ind}\t\t<script type=\"text/javascript\">\n";
+        $htmlCrudLink .= "{$this->ind}\t\t\t{$this->param['crudname']}.pCrudList = {$this->name};\n";
+        $htmlCrudLink .= "{$this->ind}\t\t</script>\n";
         
         return $htmlCrudLink;
     }
