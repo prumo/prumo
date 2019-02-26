@@ -237,7 +237,7 @@ function prumoInfo()
     echo '<table border="0" width="800">'."\n";
     echo '    <tr class="h">'."\n";
     echo '        <td>'."\n";
-    echo '            <a href="https://github.com/prumo/framework">'."\n";
+    echo '            <a href="https://github.com/prumo/prumo">'."\n";
     echo '                <img border="0" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/logo_small.png" alt="Prumo Logo" />'."\n";
     echo '            </a>'."\n";
     echo '        <h1 class="p">Prumo Framework Version: '.$GLOBALS['pConfig']['version'].'</h1></td>'."\n";
@@ -247,7 +247,7 @@ function prumoInfo()
     // $GLOBALS['pConfig']
     echo '<table border="0" cellpadding="3" width="800">'."\n";
     foreach($GLOBALS['pConfig'] as $param => $value) {
-        if ($param == 'dbPassword' || $param == 'dbPassword_prumo') {
+        if (in_array($param, array('dbPassword', 'dbPassword_prumo', 'defaultPassword'))) {
             echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">******</td></tr>'."\n";
         } else {
             echo '<tr><td class="e">$GLOBALS[\'pConfig\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
@@ -263,6 +263,15 @@ function prumoInfo()
     foreach($GLOBALS['prumoPage'] as $param => $value) {
         echo '<tr><td class="e">$GLOBALS[\'prumoPage\'][\''.$param.'\']</td><td class="v">'.$value.'</td></tr>'."\n";
     }
+    echo '</table>'."\n";
+    
+    echo '<h2>Sodium</h2>'."\n";
+
+    // $GLOBALS['prumoPage']
+    echo '<table border="0" cellpadding="3" width="800">'."\n";
+    echo '<tr><td class="e">function_exists(\'sodium_crypto_pwhash_str_verify\')</td><td class="v">'.(function_exists('sodium_crypto_pwhash_str_verify') ? 'true' : 'false').'</td></tr>'."\n";
+    echo '<tr><td class="e">function_exists(\'sodium_crypto_pwhash_str\')</td><td class="v">'.(function_exists('sodium_crypto_pwhash_str') ? 'true' : 'false').'</td></tr>'."\n";
+    echo '<tr><td class="e">function_exists(\'sodium_memzero\')</td><td class="v">'.(function_exists('sodium_memzero') ? 'true' : 'false').'</td></tr>'."\n";
     echo '</table>'."\n";
     
     echo '<h2>prumoGlobal</h2>'."\n";

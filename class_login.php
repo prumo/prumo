@@ -135,6 +135,10 @@ class PrumoLogin
              . 'SET "password"=' . pFormatSql($encPassword, 'string') . PHP_EOL
              . 'WHERE username=' . pFormatSql($this->username, 'string') . ';';
         $query = $this->pConnection->sqlQuery($sql);
+        if ($query === false) {
+            $this->err = $this->pConnection->getErr();
+            return false;
+        }
         
         if (function_exists('sodium_memzero')) {
             sodium_memzero($newPassword);
@@ -142,7 +146,7 @@ class PrumoLogin
             sodium_memzero($sql);
         }
         
-        return $query === false ? false : true;
+        return true;
     }
     
     /**
