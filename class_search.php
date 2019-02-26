@@ -311,25 +311,21 @@ class PrumoSearch extends PrumoBasic
     {
         global $pConnectionPrumo;
         
-        if (isset($this->param['menushortcut'])) {
+        if (isset($this->param['menushortcut']) && pPermitted($this->param['menushortcut'], 'c')) {
             
-            if (pPermitted($this->param['menushortcut'], 'c')) {
-                
-                $sql  = 'SELECT'."\n";
-                $sql .= '    routine,'."\n";
-                $sql .= '    link'."\n";
-                $sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines'."\n";
-                $sql .= 'WHERE routine='.pFormatSql($this->param['menushortcut'], 'string').';';
-                
-                $query = $pConnectionPrumo->fetchAssoc($sql);
-                
-                $isHttp = strtolower(substr($query['link'], 0, 4)) == 'http';
-                $href = $isHttp ? $query['link'] : 'index.php?page='.$query['routine'];
-                $link = '<a href="'.$href.'" target="_blank">'._('Cadastrar Novo').'</a>';
-                
-                return $link;
-            }
+            $sql  = 'SELECT'."\n";
+            $sql .= '    routine,'."\n";
+            $sql .= '    link'."\n";
+            $sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines'."\n";
+            $sql .= 'WHERE routine='.pFormatSql($this->param['menushortcut'], 'string').';';
             
+            $query = $pConnectionPrumo->fetchAssoc($sql);
+            
+            $isHttp = strtolower(substr($query['link'], 0, 4)) == 'http';
+            $href = $isHttp ? $query['link'] : 'index.php?page='.$query['routine'];
+            $link = '<a href="'.$href.'" target="_blank">'._('Cadastrar Novo').'</a>';
+            
+            return $link;
         } else {
             return '';
         }
