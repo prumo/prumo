@@ -21,8 +21,9 @@
  */
 class PrumoGrid
 {
-    
     private $parentName;
+    private $jsName;
+    private $htmlId;
     private $lines;
     private $column;
     public $width;
@@ -39,6 +40,8 @@ class PrumoGrid
     function __construct(string $parentName, int $lines)
     {
         $this->parentName = $parentName;
+        $this->jsName = "$parentName.pGrid";
+        $this->htmlId = str_replace('.', '_', $this->jsName);
         $this->lines = $lines;
         $column = array();
         $this->width = 0;
@@ -83,7 +86,7 @@ class PrumoGrid
      */
     private function tableGridHeader() : string
     {
-        return "\n{$this->ind}<table id=\"pGrid_{$this->parentName}\" class=\"prumoGridTable\">\n";
+        return "\n{$this->ind}<table id=\"{$this->htmlId}\" class=\"prumoGridTable\">\n";
     }
     
     /**
@@ -165,9 +168,9 @@ class PrumoGrid
     private function clientObject() : string
     {
         $client  = "{$this->ind}<script type=\"text/javascript\">\n";
-        $client .= "{$this->ind}\tpGrid_{$this->parentName} = new PrumoGrid('pGrid_{$this->parentName}');\n";
-        $client .= "{$this->ind}\tpGrid_{$this->parentName}.lines = {$this->lines};\n";
-        $client .= "{$this->ind}\tdocument.pGrid.push(pGrid_{$this->parentName});\n";
+        $client .= "{$this->ind}\t{$this->jsName} = new PrumoGrid('{$this->jsName}');\n";
+        $client .= "{$this->ind}\t{$this->jsName}.lines = {$this->lines};\n";
+        $client .= "{$this->ind}\tdocument.pGrid.push({$this->jsName});\n";
         $client .= "{$this->ind}</script>\n";
         
         return $client;

@@ -69,7 +69,7 @@ class PrumoQueue extends PrumoSearch
         // muda o evento click
         $pQueue = "\n";
         $pQueue .= '<script type="text/javascript">'."\n";
-        $pQueue .= '    pGrid_'.$this->name.'.lineEventOnData = \''.$this->name.'.lineClick(%)\';'."\n";
+        $pQueue .= '    '.$this->name.'.pGrid.lineEventOnData = \''.$this->name.'.lineClick(%)\';'."\n";
         $pQueue .= '</script>'."\n";
         
         $pSearch = $pSearchInit . $pSearchChilds . $pQueue;

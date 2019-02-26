@@ -238,13 +238,7 @@ class PrumoSearch extends PrumoBasic
     protected function makeFilters() : string
     {
         $this->pFilter->shortcut = $this->makeShortcut();
-        
         $htmlFilters = $this->pFilter->draw(false);
-        
-        // vinculo com o PrumoFilter
-        $htmlFilters .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
-        $htmlFilters .= "{$this->ind}\t\t\t{$this->name}.pFilter = pFilter_{$this->name}\n";
-        $htmlFilters .= "{$this->ind}\t\t</script>\n";
         
         return $htmlFilters;
     }
@@ -261,7 +255,7 @@ class PrumoSearch extends PrumoBasic
         // passa informação dos fields do servidor para o grid
         $htmlGrid .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
         
-        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.field = new Array(";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.field = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             $htmlGrid .= "\"{$this->field[$i]['name']}\"";
             if ($i < $this->fieldCount() -1) {
@@ -269,7 +263,7 @@ class PrumoSearch extends PrumoBasic
             }
         }
         $htmlGrid .= ");\n";
-        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.fieldType = new Array(";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.fieldType = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             $htmlGrid .= "\"{$this->field[$i]['type']}\"";
             if ($i < $this->fieldCount() -1) {
@@ -277,7 +271,7 @@ class PrumoSearch extends PrumoBasic
             }
         }
         $htmlGrid .= ");\n";
-        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.fieldVisible = new Array(";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.fieldVisible = new Array(";
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             $fieldVisible = $this->field[$i]['visible'] == true ? 'true' : 'false';
             $htmlGrid .= $fieldVisible;
@@ -287,14 +281,11 @@ class PrumoSearch extends PrumoBasic
         }
         $htmlGrid .= ");\n";
         
-        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.xmlIdentification = '{$this->name}';\n";
-        $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.lineEventOnData = '{$this->pGrid->lineEventOnData}';\n";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.xmlIdentification = '{$this->name}';\n";
+        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.lineEventOnData = '{$this->pGrid->lineEventOnData}';\n";
         if ($this->pGrid->pointerCursorOnData) {
-            $htmlGrid .= "{$this->ind}\t\t\tpGrid_{$this->name}.pointerCursorOnData = true;\n";
+            $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid.pointerCursorOnData = true;\n";
         }
-        
-        // vinculo com o PrumoGrid
-        $htmlGrid .= "{$this->ind}\t\t\t{$this->name}.pGrid = pGrid_{$this->name}\n";
         
         $htmlGrid .= "{$this->ind}\t\t</script>\n";
         
@@ -308,13 +299,10 @@ class PrumoSearch extends PrumoBasic
      */
     protected function makeGridNavigation() : string
     {
-        $htmlGridNavigation = "{$this->ind}\t\t<div id=\"pGridNavigation_{$this->name}\" class=\"prumoGridNavigation\"></div>\n";
+        $htmlGridNavigation = "{$this->ind}\t\t<div id=\"{$this->name}_pGridNavigation\" class=\"prumoGridNavigation\"></div>\n";
         $htmlGridNavigation .= "{$this->ind}\t\t<br />\n";
         $htmlGridNavigation .= "{$this->ind}\t\t<script type=\"text/javascript\">\n";
-        $htmlGridNavigation .= "{$this->ind}\t\t\tpGridNavigation_{$this->name} = new PrumoGridNavigation('{$this->name}');\n";
-        
-        // vinculo com o PrumoGridNavigation
-        $htmlGridNavigation .= "{$this->ind}\t\t\t{$this->name}.pGridNavigation = pGridNavigation_{$this->name};\n";
+        $htmlGridNavigation .= "{$this->ind}\t\t\t{$this->name}.pGridNavigation = new PrumoGridNavigation('{$this->name}');\n";
         
         $htmlGridNavigation .= "{$this->ind}\t\t</script>\n";
         
