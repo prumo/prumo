@@ -311,6 +311,7 @@ function pXmlError(string $err, string $msg, bool $verbose=false) : string
     if ($verbose) {
         Header('Content-type: application/xml; charset=UTF-8');
         echo $xml;
+        exit;
     }
     
     return $xml;
