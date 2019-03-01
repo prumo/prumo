@@ -538,35 +538,35 @@ class PrumoSearch extends PrumoBasic
             $this->pFilter->loadQuery();
             
             $count = $this->pConnection->sqlQuery($this->sqlCount());
+            if ($count !== false) {
+                $xml = $this->pConnection->sqlXml($this->sqlSearch(), $this->name);
+            }
+            
             if ($count === false) {
-                pXmlError('SqlError', $this->pConnection->getErr(), true);
-                exit;
+                $xml = pXmlError('SqlError', $this->pConnection->getErr());
+            } else if ($xml === false && $count !== false) {
+                $xml = pXmlError('SqlError', $this->pConnection->getErr());
+            } else {
+                
+                $xmlStatus  = '<count>'.$count.'</count>'."\n";
+                $xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>'."\n";
+                $xmlStatus .= '<page>'.$this->page.'</page>';
+                $xmlStatus = pXmlAddParent($xmlStatus, 'pGridStatus');
+                
+                $xml .= $xmlStatus;
+                
+                $xml .= $this->pFilter->makeXmlFilter();
+                
+                $debugSql  = '<sql>'.$this->sqlSearch().'</sql>'."\n";
+                $debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
+                $debugSql = pXmlAddParent($debugSql, 'debugSql');
+                
+                if (isset($this->param['debug']) && $this->param['debug']) {
+                    $xml .= $debugSql;
+                }
+                
+                $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
             }
-            
-            $xml = $this->pConnection->sqlXml($this->sqlSearch(), $this->name);
-            if ($xml === false) {
-                pXmlError('SqlError', $this->pConnection->getErr(), true);
-                exit;
-            }
-            
-            $xmlStatus  = '<count>'.$count.'</count>'."\n";
-            $xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>'."\n";
-            $xmlStatus .= '<page>'.$this->page.'</page>';
-            $xmlStatus = pXmlAddParent($xmlStatus, 'pGridStatus');
-            
-            $xml .= $xmlStatus;
-            
-            $xml .= $this->pFilter->makeXmlFilter();
-            
-            $debugSql  = '<sql>'.$this->sqlSearch().'</sql>'."\n";
-            $debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
-            $debugSql = pXmlAddParent($debugSql, 'debugSql');
-            
-            if (isset($this->param['debug']) && $this->param['debug']) {
-                $xml .= $debugSql;
-            }
-            
-            $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
         }
         
         if ($verbose) {
@@ -722,11 +722,10 @@ class PrumoSearch extends PrumoBasic
             
             $xml = $this->pConnection->sqlXml($this->sqlRetrieve(), $this->name);
             if ($xml === false) {
-                pXmlError('SqlError', $this->pConnection->getErr(), true);
-                exit;
+                $xml = pXmlError('SqlError', $this->pConnection->getErr());
+            } else {
+                $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
             }
-            
-            $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
         }
         
         if ($verbose) {

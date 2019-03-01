@@ -331,8 +331,9 @@ class PrumoConnection
      * @param $tableName string: nome da tag container
      *
      * @param string: xml com os dados retornados pela consulta SQL
+     * @return bool: false em caso de falha
      */
-    public function sqlXml(string $sql, string $tableName) : string
+    public function sqlXml(string $sql, string $tableName)
     {
         $this->getObjName();
         

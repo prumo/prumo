@@ -241,8 +241,9 @@ class PrumoSqlite3Connection
      * @param $tableName string: nome da tag container
      *
      * @param string: xml com os dados retornados pela consulta SQL
+     * @return bool: false em caso de falha
      */
-    function sqlXml(string $sql, string $tableName) : string
+    function sqlXml(string $sql, string $tableName)
     {
         $connection = $this->getConnection();
         $res = $this->connection->query($sql);
