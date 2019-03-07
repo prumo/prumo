@@ -518,11 +518,9 @@ class PrumoSearch extends PrumoBasic
     /**
      * Gera o XML completo
      *
-     * @param $verbose boolean: quando true imprime o XML
-     *
      * @return string: XML completo
      */
-    public function makeXml(bool $verbose) : string
+    public function makeXml() : string
     {
         global $prumoGlobal;
         
@@ -569,11 +567,6 @@ class PrumoSearch extends PrumoBasic
             }
         }
         
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');
-            echo $xml;
-        }
-        
         return $xml;
     }
     
@@ -605,9 +598,11 @@ class PrumoSearch extends PrumoBasic
     public function autoInit()
     {
         if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'makeXml') {
-            $this->makeXml(true);
+            Header('Content-type: application/xml; charset=UTF-8');
+            echo $this->makeXml();
         } else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
-            $this->doRetrieve(true);
+            Header('Content-type: application/xml; charset=UTF-8');
+            $this->doRetrieve();
         } else {
             $this->draw(true);
         }
@@ -708,11 +703,9 @@ class PrumoSearch extends PrumoBasic
     /**
      * Executa a rotina RETRIEVE
      *
-     * @param $verbose boolean: mostra resultado na tela
-     *
      * @return string: resultado em XML
      */
-    private function doRetrieve(bool $verbose) : string
+    private function doRetrieve() : string
     {
         global $prumoGlobal;
         
@@ -726,11 +719,6 @@ class PrumoSearch extends PrumoBasic
             } else {
                 $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
             }
-        }
-        
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');        
-            echo $xml;
         }
         
         return $xml;

@@ -2079,7 +2079,7 @@ class PrumoCrud extends PrumoBasic
                 } else if (isset($_POST['pCrudList_'.$this->name.'_action']) && $_POST['pCrudList_'.$this->name.'_action'] != '') {
                     
                     if ($this->getPermission('r')) {
-                        $this->pCrudList->makeXml(true);
+                        $this->pCrudList->makeXml();
                     } else {
                         
                         if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
