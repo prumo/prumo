@@ -51,17 +51,17 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         case "string":
         case "text":
         case "longtext":
-            return empty($valueNoInjection) ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
+            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "integer":
         case "serial":
-            return empty($valueNoInjection) ? "NULL" : "$valueNoInjection";
+            return $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
         break;
         
         case "numeric":
             
-            if (empty($valueNoInjection)) {
+            if ($valueNoInjection == '') {
                 return "NULL";
             } else {
                 
@@ -94,7 +94,7 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         
         case "date":
             
-            if (empty($valueNoInjection)) {
+            if ($valueNoInjection == '') {
                 return "NULL";
             } else {
                 if (pCheckDate($valueNoInjection)) {
@@ -107,12 +107,12 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         break;
         
         case "time":
-            return empty($valueNoInjection) ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
+            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "timestamp":
             
-            if (empty($valueNoInjection)) {
+            if ($valueNoInjection == '') {
                 return "NULL";
             } else {
                 while ($valueNoInjection != str_replace('  ', ' ', $valueNoInjection)) {
@@ -312,7 +312,7 @@ function pXmlError(string $err, string $msg) : string
  */
 function htmlFormat(string $type, $value)
 {
-    if ($type == 'timestamp' && ! empty($value)) {
+    if ($type == 'timestamp' && $value != '') {
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
         $day = substr($value, 8, 2);
@@ -321,18 +321,18 @@ function htmlFormat(string $type, $value)
         $second = substr($value, 17, 2);
         $timestamp = substr($value, 17, 2);
         $formatedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
-    } else if ($type == 'date' && ! empty($value)) {
+    } else if ($type == 'date' && $value != '') {
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
         $day = substr($value, 8, 2);
         $formatedValue = $day . '/' . $month . '/' . $year;
-    } else if ($type == 'time' && ! empty($value)) {
+    } else if ($type == 'time' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'numeric' && ! empty($value)) {
+    } else if ($type == 'numeric' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'integer' && ! empty($value)) {
+    } else if ($type == 'integer' && $value != '') {
         $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'boolean' && ! empty($value)) {
+    } else if ($type == 'boolean' && $value != '') {
         if ($value == 't') {
             $formatedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" checked="checked" />';
         } else {
@@ -360,10 +360,10 @@ function htmlFormat(string $type, $value)
 function plainFormat(string $type, $value)
 {
     //@todo converter no lado do cliente o formato da data e hora
-    if ($type == 'time' && ! empty($value)) {
+    if ($type == 'time' && $value != '') {
         $time = substr($value, 0, 8);
         $formatedValue = $time;
-    } else if ($type == 'numeric' && ! empty($value)) {
+    } else if ($type == 'numeric' && $value != '') {
         $number = str_replace('.', ',', str_replace(',', '', $value));
         $formatedValue = $number;
     } else {
