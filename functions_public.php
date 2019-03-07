@@ -51,17 +51,17 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         case "string":
         case "text":
         case "longtext":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
+            return empty($valueNoInjection) ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "integer":
         case "serial":
-            return $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
+            return empty($valueNoInjection) ? "NULL" : "$valueNoInjection";
         break;
         
         case "numeric":
             
-            if ($valueNoInjection == '') {
+            if (empty($valueNoInjection)) {
                 return "NULL";
             } else {
                 
@@ -94,7 +94,7 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         
         case "date":
             
-            if ($valueNoInjection == '') {
+            if (empty($valueNoInjection)) {
                 return "NULL";
             } else {
                 if (pCheckDate($valueNoInjection)) {
@@ -107,12 +107,12 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
         break;
         
         case "time":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
+            return empty($valueNoInjection) ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
         break;
         
         case "timestamp":
             
-            if ($valueNoInjection == '') {
+            if (empty($valueNoInjection)) {
                 return "NULL";
             } else {
                 while ($valueNoInjection != str_replace('  ', ' ', $valueNoInjection)) {
@@ -266,15 +266,7 @@ function pError(string $text, string $stderr)
  */
 function pXmlAddParent(string $xml, string $parent) : string
 {
-    $arrXml = explode("\n", $xml);
-    
-    $newXml = '<'.$parent.'>'."\n";
-    for ($i = 0; $i < count($arrXml); $i++) {
-        $newXml .= '    '.$arrXml[$i]."\n";
-    }
-    $newXml .= '</'.$parent.'>'."\n";
-    
-    return $newXml;
+    return "<$parent>$xml</$parent>";
 }
 
 /**
@@ -302,17 +294,10 @@ function pGetTheme(string $fileName, string $webPath) : string
  *
  * @return string: xml do erro
  */
-function pXmlError(string $err, string $msg, bool $verbose=false) : string
+function pXmlError(string $err, string $msg) : string
 {
-    $xml  = '<err>'.$err.'</err>'."\n";
-    $xml .= '<msg>'.$msg.'</msg>';
+    $xml = "<err>$err</err><msg>$msg</msg>";
     $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
-    
-    if ($verbose) {
-        Header('Content-type: application/xml; charset=UTF-8');
-        echo $xml;
-        exit;
-    }
     
     return $xml;
 }
@@ -419,7 +404,7 @@ function pPermitted(string $routine, string $permission='any') : bool
  */
 function pProtect(string $routine, string $permission='any')
 {
-    if ($GLOBALS['prumoGlobal']['currentUser'] == '') {
+    if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
         echo _('Sua sessão expirou, faça login novamente!');
         exit;
     }

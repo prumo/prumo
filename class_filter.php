@@ -40,8 +40,7 @@ class PrumoFilter
      */
     function __construct(string $parentName, array $field)
     {
-        global $pConfig;
-        $this->pConfig = $pConfig;
+        $this->pConfig = $GLOBALS['pConfig'];
         
         $this->parentName = $parentName;
         $this->jsName = "$parentName.pFilter";
@@ -242,7 +241,7 @@ class PrumoFilter
         $formatedText = $text;
         $formatedText = str_replace('&', '&amp;', $formatedText);
         
-        return $text == '' ? 'NULL' : $formatedText;
+        return empty($text) ? 'NULL' : $formatedText;
     }
     
 }

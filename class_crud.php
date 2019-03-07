@@ -137,7 +137,7 @@ class PrumoCrud extends PrumoBasic
             $this->clientObjectsStarted = true;
             $this->getObjName();
             
-            if ($this->param['tablename'] == '') {
+            if (empty($this->param['tablename'])) {
                 $this->param['tablename'] = $this->name;
             }
             
@@ -172,7 +172,7 @@ class PrumoCrud extends PrumoBasic
             }
             
             $routine = '';
-            if (isset($this->param['routine']) && $this->param['routine'] != '') {
+            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                 $routine = ',routine='.$this->param['routine'];
             }
             
@@ -343,7 +343,7 @@ class PrumoCrud extends PrumoBasic
         $fixedCondition = '';
         for ($i = 0; $i<count($arrSql); $i++) {
             $sqlPart = $i == 0 ? $arrSql[$i] : str_replace('=NULL', ' IS NULL', $arrSql[$i]);
-            $fixedCondition .= $fixedCondition == '' ? $sqlPart : 'WHERE'.$sqlPart;
+            $fixedCondition .= empty($fixedCondition) ? $sqlPart : 'WHERE'.$sqlPart;
         }
 
         return $fixedCondition;
@@ -473,7 +473,7 @@ class PrumoCrud extends PrumoBasic
      */
     public function sqlCount() : string
     {
-        if ($this->customSqlCount != '') {
+        if (! empty($this->customSqlCount)) {
             $sql = $this->customSqlCount;
         } else {
             
@@ -507,7 +507,7 @@ class PrumoCrud extends PrumoBasic
      */
     public function sqlCreate() : string
     {
-        if ($this->customSqlCreate != '') {
+        if (! empty($this->customSqlCreate)) {
             $sql = $this->customSqlCreate;
         } else {
             
@@ -521,7 +521,7 @@ class PrumoCrud extends PrumoBasic
                 
                 if ($this->field[$i]['type'] != 'serial' && $this->field[$i]['nocreate'] == false && $this->field[$i]['virtual'] == false) {
                     
-                    if ($fields != '') {
+                    if (! empty($fields)) {
                         $fields .= ',';
                         $values .= ',';
                     }
@@ -546,7 +546,7 @@ class PrumoCrud extends PrumoBasic
     {
         // monta condicao
         $condition = '';
-        if ($this->customSqlRetrieve != '') {
+        if (! empty($this->customSqlRetrieve)) {
             $sql = $this->customSqlRetrieve;
         } else {
             
@@ -568,7 +568,7 @@ class PrumoCrud extends PrumoBasic
                 
                 if ($this->field[$i]['virtual'] == false) {
                     
-                    if ($fields != '') {
+                    if (! empty($fields)) {
                         $fields .= ',';
                     }
                     $fields .= $this->field[$i]['name'];
@@ -609,7 +609,7 @@ class PrumoCrud extends PrumoBasic
             
             if ($this->field[$i]['type'] == 'serial' && $this->field[$i]['nocreate'] == false && $this->field[$i]['virtual'] == false) {
                 
-                if ($fields != '') {
+                if (! empty($fields)) {
                     $fields .= ',';
                 }
                 
@@ -632,7 +632,7 @@ class PrumoCrud extends PrumoBasic
      */
     public function sqlUpdate(array $valuesParent=array()) : string
     {
-        if ($this->customSqlUpdate != '') {
+        if (! empty($this->customSqlUpdate)) {
             $sql = $this->customSqlUpdate;
         } else {
             
@@ -668,7 +668,7 @@ class PrumoCrud extends PrumoBasic
                         $this->field[$i]['name'] != 'prumoUser' &&
                         $this->field[$i]['noupdate'] == false
                     ) {
-                        if ($values != '') {
+                        if (! empty($values)) {
                             $values .= ',';
                         }
                         
@@ -696,7 +696,7 @@ class PrumoCrud extends PrumoBasic
     public function sqlDelete() : string
     {
         $condition = '';
-        if ($this->customSqlDelete != '') {
+        if (! empty($this->customSqlDelete)) {
             $sql = $this->customSqlDelete;
         } else {
             
@@ -788,122 +788,110 @@ class PrumoCrud extends PrumoBasic
     /**
      * Executa a rotina CREATE
      *
-     * @param $verbose boolean: mostra resultado na tela
+     * @return string: xml
      */
-    public function doCreate(bool $verbose)
+    public function doCreate() : string
     {
-        global $prumoGlobal;
-        
         $this->action = 'c';
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
-        } else {
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+        }
             
-            if ($this->callBeforeCreate()) {
+        if ($this->callBeforeCreate()) {
+            
+            if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'error') {
                 
-                if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'error') {
+                // verifica se possui registro duplicado
+                if ($this->parent1x1 == null) {
+                    $sqlCount = $this->sqlValues($this->sqlCount());
+                } else {
+                    $pkValue = $this->syncPk($this->parent1x1->serialFields);
+                    $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
+                }
+                
+                $count = $this->pConnection->sqlQuery($sqlCount);
+                if ($count === false) {
+                    return pXmlError('SqlError', $this->pConnection->getErr());
+                }
+                
+                if ($count > 0) {
+                    return pXmlError('Duplicated', _('Registro duplicado.').' - '.$this->name);
+                }
+            }
+            
+            if ($this->parent1x1 == null) {
+                
+                $sql = $this->sqlValues($this->sqlCreate());
+                
+                $sqlOk = $this->pConnection->sqlQuery($sql);
+                if ($sqlOk === false) {
+                    return pXmlError('SqlError', $this->pConnection->getErr());
+                }
+                
+                if ($this->audit) {
+                    pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'CREATE');
+                }
+                
+                $this->serialFields = $this->getPks();
+            } else {
+                
+                $pkValue = $this->syncPk($this->parent1x1->serialFields);
+                
+                if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'update') {
                     
-                    // verifica se possui registro duplicado
-                    if ($this->parent1x1 == null) {
-                        $sqlCount = $this->sqlValues($this->sqlCount());
-                    } else {
-                        $pkValue = $this->syncPk($this->parent1x1->serialFields);
-                        $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
-                    }
-                    
+                    // verifica se já existe um registro com esta chave primária
+                    $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
                     $count = $this->pConnection->sqlQuery($sqlCount);
                     if ($count === false) {
-                        pXmlError('SqlError', $this->pConnection->getErr(), true);
-                        exit;
+                        return pXmlError('SqlError', $this->pConnection->getErr());
                     }
                     
                     if ($count > 0) {
-                        pXmlError('Duplicated', _('Registro duplicado.').' - '.$this->name, true);
-                        exit;
+                        
+                        //atualiza
+                        $sql = $this->sqlUpdate($this->parent1x1->serialFields);
+                        $sql = str_replace('old_', 'new_', $sql);
+                        $sql = $this->sqlValues($sql, $pkValue);
+                    } else {
+                        //insere
+                        $sql = $this->sqlValues($this->sqlCreate(), $pkValue);
                     }
+                } else {
+                    $sql = $this->sqlValues($this->sqlCreate(), $pkValue);
                 }
                 
-                if ($this->parent1x1 == null) {
-                    
-                    $sql = $this->sqlValues($this->sqlCreate());
+                if (! empty($sql)) {
                     
                     $sqlOk = $this->pConnection->sqlQuery($sql);
                     if ($sqlOk === false) {
-                        pXmlError('SqlError', $this->pConnection->getErr(), true);
-                        exit;
+                        return pXmlError('SqlError', $this->pConnection->getErr());
                     }
                     
                     if ($this->audit) {
                         pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'CREATE');
                     }
-                    
-                    $this->serialFields = $this->getPks();
-                } else {
-                    
-                    $pkValue = $this->syncPk($this->parent1x1->serialFields);
-                    
-                    if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'update') {
-                        
-                        // verifica se já existe um registro com esta chave primária
-                        $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
-                        $count = $this->pConnection->sqlQuery($sqlCount);
-                        if ($count === false) {
-                            pXmlError('SqlError', $this->pConnection->getErr(), true);
-                            exit;
-                        }
-                        
-                        if ($count > 0) {
-                            
-                            //atualiza
-                            $sql = $this->sqlUpdate($this->parent1x1->serialFields);
-                            $sql = str_replace('old_', 'new_', $sql);
-                            $sql = $this->sqlValues($sql, $pkValue);
-                        } else {
-                            //insere
-                            $sql = $this->sqlValues($this->sqlCreate(), $pkValue);
-                        }
-                    } else {
-                        $sql = $this->sqlValues($this->sqlCreate(), $pkValue);
-                    }
-                    
-                    if (! empty($sql)) {
-                        
-                        $sqlOk = $this->pConnection->sqlQuery($sql);
-                        if ($sqlOk === false) {
-                            pXmlError('SqlError', $this->pConnection->getErr(), true);
-                            exit;
-                        }
-                        
-                        if ($this->audit) {
-                            pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'CREATE');
-                        }
-                    }
-                    $this->serialFields = array_merge($this->getPks(), $this->parent1x1->serialFields);
                 }
-                
-                // laço que trata os objetos filhos
-                for ($i = 0; $i < count($this->son1x1); $i++) {
-                    
-                    if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                        $this->son1x1[$i]->doCreate(false);
-                    }
-                }
-                
-                if ($this->parent1x1 == null) {
-                    $this->afterCreate();
-                    $this->doRetrieve($verbose, $this->serialFields);
-                }
-            } else {
-                $xml = '<status>err</status>'."\n";
-                $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeCreate).'</msg>';
-                $xml = pXmlAddParent($xml, $this->name);
-                
-                if ($verbose) {
-                    Header('Content-type: application/xml; charset=UTF-8');
-                    echo $xml;
+                $this->serialFields = array_merge($this->getPks(), $this->parent1x1->serialFields);
+            }
+            
+            // laço que trata os objetos filhos
+            for ($i = 0; $i < count($this->son1x1); $i++) {
+                if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
+                    $this->son1x1[$i]->doCreate();
                 }
             }
+            
+            if ($this->parent1x1 == null) {
+                $this->afterCreate();
+                return $this->doRetrieve($this->serialFields);
+            }
+        } else {
+            $xml = '<status>err</status>';
+            $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeCreate).'</msg>';
+            $xml = pXmlAddParent($xml, $this->name);
+            
+            return $xml;
         }
     }
     
@@ -1044,21 +1032,14 @@ class PrumoCrud extends PrumoBasic
     /**
      * Ação executada quando ocorre um erro
      *
-     * @param $verbose boolean: mostra resultado na tela
+     * @return string: xml com a mensagem de erro
      */
-    public function doAccessDenied(bool $verbose) : string
+    public function doAccessDenied() : string
     {
-        global $prumoGlobal;
-        
-        if ($prumoGlobal['currentUser'] == '') {
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
             $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
         } else {
             $xml = pXmlError('access denied', _('Acesso Negado'));
-        }
-        
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');            
-            echo $xml;
         }
         
         return $xml;
@@ -1067,45 +1048,34 @@ class PrumoCrud extends PrumoBasic
     /**
      * Executa a rotina RETRIEVE
      *
-     * @param $verbose boolean: mostra resultado na tela
      * @param $values array: valor dos campos para ser substituído no comando SQL
      *
      * @return string: resultado em XML
      */
-    public function doRetrieve(bool $verbose, array $values=array()) : string
+    public function doRetrieve(array $values=array()) : string
     {
-        global $prumoGlobal;
-        
         $this->action = 'r';
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $this->xmlRetrieve = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
-        } else {
-            
-            $sql = $this->sqlValues($this->sqlRetrieve(), $this->syncPk($values));
-            $this->xmlRetrieve = $this->pConnection->sqlXml($sql, $this->name);
-            if ($this->xmlRetrieve === false) {
-                pXmlError('SqlError', $this->pConnection->getErr(), true);
-                exit;
-            }
-            
-            // laço que trata os objetos filhos recursivamente
-            for ($i = 0; $i < count($this->son1x1); $i++) {
-                
-                if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                    $this->xmlRetrieve .= $this->son1x1[$i]->doRetrieve(false);
-                }
-            }
-            
-            // adiciona o appIdent no XML
-            if ($this->parent1x1 == null) {
-                $this->xmlRetrieve = pXmlAddParent($this->xmlRetrieve, $GLOBALS['pConfig']['appIdent']);
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+        }
+        
+        $sql = $this->sqlValues($this->sqlRetrieve(), $this->syncPk($values));
+        $this->xmlRetrieve = $this->pConnection->sqlXml($sql, $this->name);
+        if ($this->xmlRetrieve === false) {
+            return pXmlError('SqlError', $this->pConnection->getErr());
+        }
+        
+        // laço que trata os objetos filhos recursivamente
+        for ($i = 0; $i < count($this->son1x1); $i++) {
+            if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
+                $this->xmlRetrieve .= $this->son1x1[$i]->doRetrieve();
             }
         }
         
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');    
-            echo $this->xmlRetrieve;
+        // adiciona o appIdent no XML
+        if ($this->parent1x1 == null) {
+            $this->xmlRetrieve = pXmlAddParent($this->xmlRetrieve, $GLOBALS['pConfig']['appIdent']);
         }
         
         return $this->xmlRetrieve;
@@ -1146,133 +1116,110 @@ class PrumoCrud extends PrumoBasic
     /**
      * Executa a rotina UPDATE
      *
-     * @param $verbose boolean: mostra resultado na tela
      * @param $valuesParent array: valor dos campos para ser substituído no comando SQL caso tenha um objeto pai (opcional)
      *
      * @return string: resultado em XML
      */
-    public function doUpdate(bool $verbose, array $valuesParent=array()) : string
+    public function doUpdate(array $valuesParent=array()) : string
     {
-        global $prumoGlobal;
-        
         $this->action = 'u';
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
-        } else {
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+        }
+        
+        if ($this->callBeforeUpdate()) {
             
-            if ($this->callBeforeUpdate()) {
-                
-                if ($this->parent1x1 == null) {
-                    $sql = $this->sqlValues($this->sqlUpdate($valuesParent));
-                } else {
-                    
-                    $sqlCount = $this->sqlValues($this->sqlCount(), $this->syncPk($valuesParent));
-                    $sonCount = $this->pConnection->sqlQuery($sqlCount);
-                    if ($sonCount === false) {
-                        pXmlError('SqlError', $this->pConnection->getErr(), true);
-                        exit;
-                    }
-                    
-                    // se não possui o registro na tabela filha da um create, se possui, da um update normal
-                    if ($sonCount == '0') {
-                        $sql = $this->sqlValues($this->sqlCreate(), $this->syncPk($valuesParent));
-                    } else {
-                        $sql = $this->sqlValues($this->sqlUpdate($valuesParent));
-                    }
-                }
-                
-                if (! empty($sql)) {
-                    
-                    $sqlOk = $this->pConnection->sqlQuery($sql);
-                    if ($sqlOk === false) {
-                        pXmlError('SqlError', $this->pConnection->getErr(), true);
-                        exit;
-                    }
-                    
-                    if ($this->audit) {
-                        pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'UPDATE');
-                    }
-                }
-                
-                $this->serialFields = $this->getPks();
-                
-                // laço que trata os objetos filhos
-                for ($i = 0; $i < count($this->son1x1); $i++) {
-                    
-                    if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                        $this->son1x1[$i]->doUpdate(false, $this->serialFields);
-                    }
-                }
-                
-                $this->afterUpdate();
-                
-                if ($this->parent1x1 == null) {
-                    $xml = $this->doRetrieve(false);
-                }
+            if ($this->parent1x1 == null) {
+                $sql = $this->sqlValues($this->sqlUpdate($valuesParent));
             } else {
-                $xml = '<status>err</status>'."\n";
-                $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeUpdate).'</msg>';
-                $xml = pXmlAddParent($xml, $this->name);
+                
+                $sqlCount = $this->sqlValues($this->sqlCount(), $this->syncPk($valuesParent));
+                $sonCount = $this->pConnection->sqlQuery($sqlCount);
+                if ($sonCount === false) {
+                    return pXmlError('SqlError', $this->pConnection->getErr());
+                }
+                
+                // se não possui o registro na tabela filha da um create, se possui, da um update normal
+                if ($sonCount == '0') {
+                    $sql = $this->sqlValues($this->sqlCreate(), $this->syncPk($valuesParent));
+                } else {
+                    $sql = $this->sqlValues($this->sqlUpdate($valuesParent));
+                }
             }
+            
+            if (! empty($sql)) {
+                
+                $sqlOk = $this->pConnection->sqlQuery($sql);
+                if ($sqlOk === false) {
+                    return pXmlError('SqlError', $this->pConnection->getErr());
+                }
+                
+                if ($this->audit) {
+                    pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'UPDATE');
+                }
+            }
+            
+            $this->serialFields = $this->getPks();
+            
+            // laço que trata os objetos filhos
+            for ($i = 0; $i < count($this->son1x1); $i++) {
+                if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
+                    $this->son1x1[$i]->doUpdate($this->serialFields);
+                }
+            }
+            
+            $this->afterUpdate();
+            
+            if ($this->parent1x1 == null) {
+                $xml = $this->doRetrieve();
+            } else {
+                $xml = '';
+            }
+        } else {
+            $xml = '<status>err</status>';
+            $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeUpdate).'</msg>';
+            $xml = pXmlAddParent($xml, $this->name);
         }
         
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');
-            echo $xml;
-            return $xml;
-        }
-        
-        return true;
+        return $xml;
     }
     
     /**
      * Executa a rotina DELETE
      *
-     * @param $verbose boolean: mostra resultado na tela
-     *
      * @return string: resultado em XML
      */
-    public function doDelete(bool $verbose) : string
+    public function doDelete() : string
     {
-        global $prumoGlobal;
-        
         $this->action = 'd';
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
-        } else {
-            
-            if ($this->beforeDelete()) {
-                
-                $sql = $this->sqlValues($this->sqlDelete());
-                
-                $sqlOk = $this->pConnection->sqlQuery($sql);
-                if ($sqlOk === false) {
-                    pXmlError('SqlError', $this->pConnection->getErr(), true);
-                    exit;
-                }
-                
-                if ($this->audit) {
-                    pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'DELETE');
-                }
-                
-                $xml = '<status>ok</status>'."\n";
-                $xml .= '<msg>'._('Registro excluído com sucesso!').'</msg>';
-                $xml = pXmlAddParent($xml, $this->name);
-                
-                $this->afterDelete();
-            } else {
-                
-                $xml = '<status>err</status>'."\n";
-                $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeDelete).'</msg>';
-                $xml = pXmlAddParent($xml, $this->name);
-            }
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
         }
         
-        if ($verbose) {
-            Header('Content-type: application/xml; charset=UTF-8');
-            echo $xml;
+        if ($this->beforeDelete()) {
+            
+            $sql = $this->sqlValues($this->sqlDelete());
+            
+            $sqlOk = $this->pConnection->sqlQuery($sql);
+            if ($sqlOk === false) {
+                return pXmlError('SqlError', $this->pConnection->getErr());
+            }
+            
+            if ($this->audit) {
+                pAuditLog($this->param['routine'], $this->getObjName(), $sql, 'DELETE');
+            }
+            
+            $xml = '<status>ok</status>';
+            $xml .= '<msg>'._('Registro excluído com sucesso!').'</msg>';
+            $xml = pXmlAddParent($xml, $this->name);
+            
+            $this->afterDelete();
+        } else {
+            $xml = '<status>err</status>';
+            $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeDelete).'</msg>';
+            $xml = pXmlAddParent($xml, $this->name);
         }
         
         return $xml;
@@ -1346,12 +1293,11 @@ class PrumoCrud extends PrumoBasic
                 $crudList = $this->drawCrudList(false);
             }
             
-            if ($this->containerType == '') {
+            if (empty($this->containerType)) {
                 
                 $this->containerType = 'fieldset';
                 
-                if ($this->parent1xN != '') {
-                    
+                if (! empty($this->parent1xN)) {
                     $this->containerType = 'div';
                     $this->containerVisible = false;
                 }
@@ -1474,7 +1420,7 @@ class PrumoCrud extends PrumoBasic
                     $form .= $ind.'    <td class="prumoFormFields"><textarea id="'.$id.'" cols="26" rows="3" '.$disabled.$onChange.'>'.$defaultValue.'</textarea>'.$search.$notNull.'</td>'."\n";
                 } else {
                     
-                    if (isset($this->field[$i]['size']) && $this->field[$i]['size'] != '') {
+                    if (isset($this->field[$i]['size']) && ! empty($this->field[$i]['size'])) {
                         
                         $size = $this->field[$i]['size'] > 40 ? 40 :$this->field[$i]['size'];
                         $maxLength = ' maxlength='.$this->field[$i]['size'];
@@ -1503,7 +1449,7 @@ class PrumoCrud extends PrumoBasic
             $form .= '        </table>'."\n";
             $form .= '        <br />'."\n";
         
-            if ($this->parent1xN == '') {
+            if (empty($this->parent1xN)) {
                 $form .= '        * '._('Campos de preenchimento obrigatório')."\n";
             }
             
@@ -1706,37 +1652,37 @@ class PrumoCrud extends PrumoBasic
         $fieldTemplate = '';
         for ($i = 0; $i < count($this->field); $i++) {
             
-            if ($fieldName != '') {
+            if (! empty($fieldName)) {
                 $fieldName .= ',';
             }
             $fieldName .= '"'.$this->field[$i]['name'].'"';
             
-            if ($fieldPk != '') {
+            if (! empty($fieldPk)) {
                 $fieldPk .= ',';
             }
             $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
             
-            if ($fieldId != '') {
+            if (! empty($fieldId)) {
                 $fieldId .= ',';
             }
             $fieldId .= '"'.$this->field[$i]['fieldid'].'"';
             
-            if ($fieldLabel != '') {
+            if (! empty($fieldLabel)) {
                 $fieldLabel .= ',';
             }
             $fieldLabel .= '"'.$this->field[$i]['label'].'"';
             
-            if ($fieldType != '') {
+            if (! empty($fieldType)) {
                 $fieldType .= ',';
             }
             $fieldType .= '"'.$this->field[$i]['type'].'"';
             
-            if ($fieldNotNull != '') {
+            if (! empty($fieldNotNull)) {
                 $fieldNotNull .= ',';
             }
             $fieldNotNull .= $this->field[$i]['notnull'] ? 'true' : 'false';
             
-            if ($fieldReadonly != '') {
+            if (! empty($fieldReadonly)) {
                 $fieldReadonly .= ',';
             }
             $fieldReadonly .= $this->field[$i]['readonly'] ? 'true' : 'false';
@@ -1747,17 +1693,17 @@ class PrumoCrud extends PrumoBasic
             $fieldNoUpdate .= empty($fieldNoUpdate) ? '' : ',';
             $fieldNoUpdate .= $this->field[$i]['noupdate'] ? 'true' : 'false';
             
-            if ($fieldVirtual != '') {
+            if (! empty($fieldVirtual)) {
                 $fieldVirtual .= ',';
             }
             $fieldVirtual .= $this->field[$i]['virtual'] ? 'true' : 'false';
             
-            if ($fieldDefault != '') {
+            if (! empty($fieldDefault)) {
                 $fieldDefault .= ',';
             }
             $fieldDefault .= isset($this->field[$i]['default']) ? '"'.$this->field[$i]['default'].'"' : '""';
             
-            if ($fieldTemplate != '') {
+            if (! empty($fieldTemplate)) {
                 $fieldTemplate .= ',';
             }
                 
@@ -1813,7 +1759,7 @@ class PrumoCrud extends PrumoBasic
             $clientObject .= "{$this->ind}\t{$this->name}.addParent1x1({$this->parent1x1->name},'{$this->parent1x1Condition['fieldName']}', '{$this->parent1x1Condition['value']}', '{$this->parent1x1Condition['operator']}');\n";
         }
         
-        if ($this->parent1xN != '') {
+        if (! empty($this->parent1xN)) {
             $clientObject .= "\n";
             $clientObject .= "{$this->ind}\t{$this->name}.addParent1xN({$this->parent1xN});\n";
             $clientObject .= "{$this->ind}\t{$this->name}.pSearch.autoClick = false;\n";
@@ -1827,7 +1773,7 @@ class PrumoCrud extends PrumoBasic
         }
         
         $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
-        if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
+        if ($inicialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
             $onload .= "{$this->ind}\t\t{$this->name}.bt_new();\n";
         }
         
@@ -1841,7 +1787,7 @@ class PrumoCrud extends PrumoBasic
         $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
         
         // verifica se deve abrir algum registro ou a listagem
-        if ($this->parent1x1 == null && $this->parent1xN == '') {
+        if ($this->parent1x1 == null && empty($this->parent1xN)) {
             
             $countPk = 0;
             $countPkValue = 0;
@@ -1877,7 +1823,7 @@ class PrumoCrud extends PrumoBasic
         $clientObject .= "{$this->ind}</script>\n";
         $clientObject .= $this->initClientObject1x1();
         
-        if ($inicialStateNew && $this->parent1x1 == null && $this->parent1xN == '') {
+        if ($inicialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
             $clientObject .= "{$this->ind}<script type=\"text/javascript\">\n";
             $clientObject .= "{$this->ind}\twindow.addEventListener(\"load\", function() {\n";
             $clientObject .= "{$this->ind}\t\t{$this->name}.visibleSon1x1();\n";
@@ -1910,7 +1856,7 @@ class PrumoCrud extends PrumoBasic
         $out = '';
         for ($i = 0; $i < count($this->field); $i++) {
             
-            if ($this->field[$i]['size'] != '') {
+            if (! empty($this->field[$i]['size'])) {
                 $out .= "{$this->ind}\tinputField = document.getElementById('{$this->field[$i]['fieldid']}');\n";
                 $out .= "{$this->ind}\tif (inputField.getAttribute('maxlength') == undefined) {\n";
                 $out .= "{$this->ind}\t\tinputField.setAttribute('maxlength',{$this->field[$i]['size']});\n";
@@ -1918,7 +1864,7 @@ class PrumoCrud extends PrumoBasic
             }
         }
         
-        return $out != '' ? "{$this->ind}<script type=\"text/javascript\">\n$out{$this->ind}</script>\n" : '';
+        return ! empty($out) ? "{$this->ind}<script type=\"text/javascript\">\n$out{$this->ind}</script>\n" : '';
     }
     
     /**
@@ -1987,7 +1933,6 @@ class PrumoCrud extends PrumoBasic
             pProtect('prumo_devtools');
             
             if (isset($_GET['htmlcode'])) {
-                
                 $htmlCode = $this->drawForms(false,true);
                 $htmlCode = str_replace('<','&lt;',$htmlCode);
                 $htmlCode = str_replace('>','&gt;',$htmlCode);
@@ -2003,23 +1948,24 @@ class PrumoCrud extends PrumoBasic
             }
         } else {
             
-            if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] != '') {
-            
+            if (isset($_POST[$this->name.'_action']) && ! empty($_POST[$this->name.'_action'])) {
+                
                 $this->action = $_POST[$this->name.'_action'];
                 $this->cascadeAction();
-            
+                
                 switch ($this->action) {
                     
                     case 'c':
                         
                         if ($this->getPermission('c')) {
-                            $this->doCreate(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doCreate();
                         } else {
-                            
                             if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'c');
                             }
-                            $this->doAccessDenied(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doAccessDenied();
                         }
                         
                         break;
@@ -2027,13 +1973,14 @@ class PrumoCrud extends PrumoBasic
                     case 'r':
                         
                         if ($this->getPermission('r')) {
-                            $this->doRetrieve(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doRetrieve();
                         } else {
-                            
                             if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'r');
                             }
-                            $this->doAccessDenied(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doAccessDenied();
                         }
                         
                         break;
@@ -2041,13 +1988,14 @@ class PrumoCrud extends PrumoBasic
                     case 'u':
                         
                         if ($this->getPermission('u')) {
-                            $this->doUpdate(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doUpdate();
                         } else {
-                            
                             if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'u');
                             }
-                            $this->doAccessDenied(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doAccessDenied();
                         }
                         
                         break;
@@ -2055,14 +2003,14 @@ class PrumoCrud extends PrumoBasic
                     case 'd':
                         
                         if ($this->getPermission('d')) {
-                            $this->doDelete(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doDelete();
                         } else {
-                            
                             if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                                 pLogAcessDenied($this->param['routine'], 'd');
                             }
-                            
-                            $this->doAccessDenied(true);
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doAccessDenied();
                         }
                         
                         break;
@@ -2074,19 +2022,21 @@ class PrumoCrud extends PrumoBasic
                 }
             } else {
                 
-                if (isset($_POST['pSearch_'.$this->name.'_action']) && $_POST['pSearch_'.$this->name.'_action'] != '') {
+                if (isset($_POST['pSearch_'.$this->name.'_action']) && ! empty($_POST['pSearch_'.$this->name.'_action'])) {
                     $this->pSearch->autoInit();
-                } else if (isset($_POST['pCrudList_'.$this->name.'_action']) && $_POST['pCrudList_'.$this->name.'_action'] != '') {
+                } else if (isset($_POST['pCrudList_'.$this->name.'_action']) && ! empty($_POST['pCrudList_'.$this->name.'_action'])) {
                     
                     if ($this->getPermission('r')) {
-                        $this->pCrudList->makeXml();
+                        Header('Content-type: application/xml; charset=UTF-8');
+                        echo $this->pCrudList->makeXml();
                     } else {
                         
                         if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
                             pLogAcessDenied($this->param['routine'], 'r');
                         }
                         
-                        $this->doAccessDenied(true);
+                        Header('Content-type: application/xml; charset=UTF-8');
+                        echo $this->doAccessDenied();
                     }
                 } else {
                     
@@ -2119,9 +2069,9 @@ class PrumoCrud extends PrumoBasic
                 $name = $this->field[$i]['name'];
                 $type = ' '.$this->pConnection->dbType($this->field[$i]['type']);
                 $notNull = $this->field[$i]['notnull'] ? ' NOT NULL' : '';
-                $default = (isset($this->field[$i]['default']) && $this->field[$i]['default'] != '') ? ' DEFAULT '.$this->field[$i]['default'] : '';
+                $default = (isset($this->field[$i]['default']) && ! empty($this->field[$i]['default'])) ? ' DEFAULT '.$this->field[$i]['default'] : '';
                 
-                if (isset($this->field[$i]['size']) && $this->field[$i]['size'] != '') {
+                if (isset($this->field[$i]['size']) && ! empty($this->field[$i]['size'])) {
                     
                     $size = '('.$this->field[$i]['size'].')';
                     
@@ -2143,7 +2093,7 @@ class PrumoCrud extends PrumoBasic
             
             if ($this->field[$i]['pk']) {
                 
-                if ($pk != '') {
+                if (! empty($pk)) {
                     $pk .= ',';
                 }
                 
@@ -2160,7 +2110,7 @@ class PrumoCrud extends PrumoBasic
                 
                 if ($this->parent1x1->field[$i]['pk']) {
                     
-                    if ($fk != '') {
+                    if (! empty($fk)) {
                         $fk .= ',';
                     }
                     

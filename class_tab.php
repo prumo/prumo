@@ -69,11 +69,11 @@ class PrumoTab
             
             $this->htmlOpenTab(true,$this->tabLabel[$i]);
             
-            if ($this->tabHtml[$i] != '') {
+            if (! empty($this->tabHtml[$i])) {
                 echo $this->tabHtml[$i];
             }
             
-            if ($this->tabInclude[$i] != '') {
+            if (! empty($this->tabInclude[$i])) {
                 include $this->tabInclude[$i];
             }
             

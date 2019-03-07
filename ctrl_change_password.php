@@ -25,7 +25,7 @@ require_once __DIR__.'/ctrl_connection_admin.php';
 Header('Content-type: application/xml; charset=UTF-8');
 
 // Verifica se existe usuário logado
-if ($prumoGlobal['currentUser'] == '') {
+if (empty($prumoGlobal['currentUser'])) {
     $xml  = '<err>err</err>'."\n";
     $xml .= '<msg>'._('Sua sessão expirou, faça login novamente').'</msg>';
 } else {
@@ -33,7 +33,7 @@ if ($prumoGlobal['currentUser'] == '') {
     $pLogin = new PrumoLogin($GLOBALS['pConfig']['appIdent'], $prumoGlobal['currentUser'], $_POST['password']);
     
     // retorna a mensagem em xml
-    if ($_POST['new_password'] == '') {
+    if (empty($_POST['new_password'])) {
         $xml  = '<err>err</err>'."\n";
         $xml .= '<msg>'._('A nova senha não pode ficar em branco.').'</msg>';
     } else if ($pLogin->checkPassword() === false) {

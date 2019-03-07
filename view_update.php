@@ -24,7 +24,7 @@ pProtect('prumo_update');
 <legend><?=_('Atualização')?></legend>
 
 <?php 
-if ($GLOBALS['pConfig']['scriptUpdateApp'] != '') {
+if (! empty($GLOBALS['pConfig']['scriptUpdateApp'])) {
     
     echo '<p><b>'._('Atualização da Aplicação').'</b></p>';
     echo '<p>';
@@ -39,7 +39,7 @@ if ($GLOBALS['pConfig']['scriptUpdateApp'] != '') {
     echo '<hr />'."\n";
 }
 
-if ($GLOBALS['pConfig']['scriptUpdateFramework'] != '') {
+if (! empty($GLOBALS['pConfig']['scriptUpdateFramework'])) {
     
     echo '<p><b>'._('Atualização do Prumo Framework').'</b></p>'."\n";
     echo '<p>'."\n";

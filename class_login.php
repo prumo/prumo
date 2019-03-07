@@ -46,7 +46,7 @@ class PrumoLogin
         $this->logged = false;
         $this->err = '';
         
-        if ($username == '') {
+        if (empty($username)) {
             if (isset($_SESSION[$ident.'_prumoUserName'])) {
                 $this->username = $_SESSION[$ident.'_prumoUserName'];
             }

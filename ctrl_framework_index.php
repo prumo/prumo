@@ -39,7 +39,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
             include __DIR__.'/view_footer.php';
         } else {
             
-            if ($GLOBALS['pConfig']['appWebPath'] == '' || $GLOBALS['pConfig']['appWebPath'] == '/') {
+            if (empty($GLOBALS['pConfig']['appWebPath']) || $GLOBALS['pConfig']['appWebPath'] == '/') {
                 pRedirect($GLOBALS['pConfig']['afterLogin']);
             } else {
                 pRedirect($GLOBALS['pConfig']['appWebPath'].'/'.$GLOBALS['pConfig']['afterLogin']);

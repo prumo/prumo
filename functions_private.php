@@ -21,10 +21,9 @@
  */
 function pGetConfigDb()
 {
-    global $pConfig;
     global $pConnectionPrumo;
     
-    $dbSingle = (isset($pConfig['dbSingle']) && $pConfig['dbSingle']);
+    $dbSingle = (isset($GLOBALS['pConfig']['dbSingle']) && $GLOBALS['pConfig']['dbSingle']);
     
     require_once __DIR__.'/ctrl_connection_admin.php';
     
@@ -48,17 +47,17 @@ function pGetConfigDb()
     }
     
     if (count($pConfigDb) > 0) {
-        $pConfigNew = array_replace($pConfig, $pConfigDb);
-        $pConfig = $pConfigNew;
+        $pConfigNew = array_replace($GLOBALS['pConfig'], $pConfigDb);
+        $GLOBALS['pConfig'] = $pConfigNew;
     }
     
     if ($dbSingle) {
-        $pConfig['sgdb']       = $pConfig['sgdb_prumo'];
-        $pConfig['dbHost']     = $pConfig['dbHost_prumo'];
-        $pConfig['dbPort']     = $pConfig['dbPort_prumo'];
-        $pConfig['dbName']     = $pConfig['dbName_prumo'];
-        $pConfig['dbUserName'] = $pConfig['dbUserName_prumo'];
-        $pConfig['dbPassword'] = $pConfig['dbPassword_prumo'];
+        $GLOBALS['pConfig']['sgdb']       = $GLOBALS['pConfig']['sgdb_prumo'];
+        $GLOBALS['pConfig']['dbHost']     = $GLOBALS['pConfig']['dbHost_prumo'];
+        $GLOBALS['pConfig']['dbPort']     = $GLOBALS['pConfig']['dbPort_prumo'];
+        $GLOBALS['pConfig']['dbName']     = $GLOBALS['pConfig']['dbName_prumo'];
+        $GLOBALS['pConfig']['dbUserName'] = $GLOBALS['pConfig']['dbUserName_prumo'];
+        $GLOBALS['pConfig']['dbPassword'] = $GLOBALS['pConfig']['dbPassword_prumo'];
     }
 }
 
@@ -69,7 +68,6 @@ function loadPermission()
 {
     global $pConnectionPrumo;
     global $prumoPermission;
-    global $prumoGlobal;
     
     if (! isset($pConnectionPrumo)) {
         require_once __DIR__.'/ctrl_connection_admin.php';
@@ -91,7 +89,7 @@ function loadPermission()
     $sql .= 'WHERE r.enabled=\'t\''."\n";
     $sql .= 'AND g.enabled=\'t\''."\n";
     $sql .= 'AND s.enabled=\'t\''."\n";
-    $sql .= 'AND gs.username=\''.$prumoGlobal['currentUser'].'\''."\n";
+    $sql .= 'AND gs.username=\''.$GLOBALS['prumoGlobal']['currentUser'].'\''."\n";
     $sql .= 'GROUP BY r.routine;'."\n";
     
     $prumoPermission = $pConnectionPrumo->sql2Array($sql);
@@ -156,7 +154,6 @@ function writeAppUpdate(string $fileName)
 {
     global $pConnection;
     global $pConnectionPrumo;
-    global $prumoGlobal;
     
     //verifica se a tabela existe na base de dados, caso não existe, cria
     $sql  = 'SELECT'."\n";
@@ -182,7 +179,7 @@ function writeAppUpdate(string $fileName)
         $pConnection->sqlQuery($sql);
     }
     
-    if ($fileName != '') {
+    if (! empty($fileName)) {
         
         $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'update_db_app ('."\n";
         $sql .= '    file_name,'."\n";
@@ -191,7 +188,7 @@ function writeAppUpdate(string $fileName)
         $sql .= ')'."\n";
         $sql .= 'VALUES ('."\n";
         $sql .= '    '.pFormatSql($fileName,'string').','."\n";
-        $sql .= '    '.pFormatSql($prumoGlobal['currentUser'],'string').','."\n";
+        $sql .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'],'string').','."\n";
         $sql .= '    now()'."\n";
         $sql .= ');'."\n";
         
@@ -399,7 +396,7 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
  */
 function pFormatSqlNull($value, string $type)
 {
-    return ($type != 'boolean' && $value == '') ? 'NULL' : $value;
+    return ($type != 'boolean' && empty($value)) ? 'NULL' : $value;
 }
 
 /**
@@ -443,7 +440,6 @@ function getPermission(string $routine) : array
  */
 function pAuditLog(string $routine, string $objName, string $sqlCommand, string $crud)
 {
-    global $pConfig;
     global $pConnectionPrumo;
     
     require_once __DIR__.'/ctrl_connection_admin.php';
@@ -476,8 +472,9 @@ function pAuditLog(string $routine, string $objName, string $sqlCommand, string 
     $sqlOk = $pConnectionPrumo->sqlQuery($sqlAuditLog, true);
     
     if ($sqlOk === false) {
-        pXmlError('SqlError', $pConnectionPrumo->getErr(), true);
-        exit;
+        Header('Content-type: application/xml; charset=UTF-8');
+        echo pXmlError('SqlError', $pConnectionPrumo->getErr());
+        throw new Exception($pConnectionPrumo->getErr());
     }
 }
 

@@ -207,7 +207,7 @@ class PrumoSearch extends PrumoBasic
         // repassa fields para o objeto cliente
         $fieldName = '';
         for ($i = 0; $i < count($this->field); $i++) {
-            if ($fieldName != '') {
+            if (! empty($fieldName)) {
                 $fieldName .= ',';
             }
             $fieldName .= "\"{$this->field[$i]['name']}\"";
@@ -215,7 +215,7 @@ class PrumoSearch extends PrumoBasic
         
         $fieldPk = '';
         for ($i = 0; $i < count($this->field); $i++) {
-            if ($fieldPk != '') {
+            if (! empty($fieldPk)) {
                 $fieldPk .= ',';
             }
             $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
@@ -389,7 +389,7 @@ class PrumoSearch extends PrumoBasic
         $arrCondition = array();
         $iValue = 0;
         for ($i = 0; $i < count($fieldName); $i++) {
-            if ($value[$i] != '' || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
+            if (! empty($value[$i]) || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
                 $field = $this->fieldByName($fieldName[$i]);
                 $condition = $this->pConnection->getSqlOperator($operator[$i]);
                 $condition = str_replace(':field:', $field['sqlname'], $condition);
@@ -458,7 +458,7 @@ class PrumoSearch extends PrumoBasic
         $fields = '';
         for ($i = 0; $i < $this->fieldCount(); $i++) {
             
-            if ($fields != '') {
+            if (! empty($fields)) {
                 $fields .= ',';
             }
             
@@ -470,7 +470,7 @@ class PrumoSearch extends PrumoBasic
         $orderby = $this->sqlOrderby();
         $condition = $this->sqlCondition();
         
-        if ($this->fixedSqlSearch != '') {
+        if (! empty($this->fixedSqlSearch)) {
             $sqlSearch = 'SELECT '.$fields.' FROM ('.$this->fixedSqlSearch.') fixed '.$condition.$orderby.$limit.$offset.';';
         } else {
             $sqlSearch = 'SELECT '.$fields.' FROM '.$this->pConnection->getSchema($this->param['schema']).$tableName.$condition.$orderby.$limit.$offset.';';
@@ -486,7 +486,7 @@ class PrumoSearch extends PrumoBasic
      */
     public function setSqlSearch(string $sql)
     {
-        if ($this->fixedSqlSearch == '') {
+        if (empty($this->fixedSqlSearch)) {
             for ($i = 0; $i < $this->fieldCount(); $i++) {
                 $this->field[$i]['sqlname'] = 'fixed.'.$this->field[$i]['sqlname'];
             }
@@ -506,7 +506,7 @@ class PrumoSearch extends PrumoBasic
         
         $condition = $this->sqlCondition();
         
-        if ($this->fixedSqlSearch != '') {
+        if (! empty($this->fixedSqlSearch)) {
             $sqlCount = 'SELECT count(*) FROM ('.$this->fixedSqlSearch.') fixed '.$condition.';';
         } else {
             $sqlCount = 'SELECT count(*) FROM '.$this->pConnection->getSchema($this->param['schema']).$tableName.$condition.';';
@@ -522,49 +522,45 @@ class PrumoSearch extends PrumoBasic
      */
     public function makeXml() : string
     {
-        global $prumoGlobal;
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+        }
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
+        $this->page = $_POST['page'];
+        
+        if (isset($_POST['orderBy'])) {
+            $this->setOrderby($_POST['orderBy']);
+        }
+        
+        $this->pFilter->loadQuery();
+        
+        $count = $this->pConnection->sqlQuery($this->sqlCount());
+        if ($count !== false) {
+            $xml = $this->pConnection->sqlXml($this->sqlSearch(), $this->name);
+        }
+        
+        if ($count === false || $xml === false) {
+            $xml = pXmlError('SqlError', $this->pConnection->getErr());
         } else {
-            $this->page = $_POST['page'];
             
-            if (isset($_POST['orderBy'])) {
-                $this->setOrderby($_POST['orderBy']);
+            $xmlStatus  = "<count>$count</count>";
+            $xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>';
+            $xmlStatus .= '<page>'.$this->page.'</page>';
+            $xmlStatus = pXmlAddParent($xmlStatus, 'pGridStatus');
+            
+            $xml .= $xmlStatus;
+            
+            $xml .= $this->pFilter->makeXmlFilter();
+            
+            $debugSql  = '<sql>'.$this->sqlSearch().'</sql>';
+            $debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
+            $debugSql = pXmlAddParent($debugSql, 'debugSql');
+            
+            if (isset($this->param['debug']) && $this->param['debug']) {
+                $xml .= $debugSql;
             }
             
-            $this->pFilter->loadQuery();
-            
-            $count = $this->pConnection->sqlQuery($this->sqlCount());
-            if ($count !== false) {
-                $xml = $this->pConnection->sqlXml($this->sqlSearch(), $this->name);
-            }
-            
-            if ($count === false) {
-                $xml = pXmlError('SqlError', $this->pConnection->getErr());
-            } else if ($xml === false && $count !== false) {
-                $xml = pXmlError('SqlError', $this->pConnection->getErr());
-            } else {
-                
-                $xmlStatus  = '<count>'.$count.'</count>'."\n";
-                $xmlStatus .= '<pageLines>'.$this->pageLines().'</pageLines>'."\n";
-                $xmlStatus .= '<page>'.$this->page.'</page>';
-                $xmlStatus = pXmlAddParent($xmlStatus, 'pGridStatus');
-                
-                $xml .= $xmlStatus;
-                
-                $xml .= $this->pFilter->makeXmlFilter();
-                
-                $debugSql  = '<sql>'.$this->sqlSearch().'</sql>'."\n";
-                $debugSql .= '<sqlCount>'.$this->sqlCount().'</sqlCount>';
-                $debugSql = pXmlAddParent($debugSql, 'debugSql');
-                
-                if (isset($this->param['debug']) && $this->param['debug']) {
-                    $xml .= $debugSql;
-                }
-                
-                $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
-            }
+            $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
         }
         
         return $xml;
@@ -602,7 +598,7 @@ class PrumoSearch extends PrumoBasic
             echo $this->makeXml();
         } else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
             Header('Content-type: application/xml; charset=UTF-8');
-            $this->doRetrieve();
+            echo $this->doRetrieve();
         } else {
             $this->draw(true);
         }
@@ -682,7 +678,7 @@ class PrumoSearch extends PrumoBasic
         $fields = '';
         for ($i = 0; $i < count($this->field); $i++) {
             if (! isset($this->field[$i]['virtual']) || $this->field[$i]['virtual'] == false) {
-                if ($fields != '') {
+                if (! empty($fields)) {
                     $fields .= ',';
                 }
                 $fields .= $this->field[$i]['name'];
@@ -691,7 +687,7 @@ class PrumoSearch extends PrumoBasic
         
         $tableName = $this->param['tablename'];
         
-        if ($this->fixedSqlSearch != '') {
+        if (! empty($this->fixedSqlSearch)) {
             $sql = 'SELECT '.$fields.' FROM ('.$this->fixedSqlSearch.') fixed '.$condition.';';
         } else {
             $sql = 'SELECT '.$fields.' FROM '.$this->pConnection->getSchema($this->param['schema']).$tableName.$condition.';';
@@ -707,18 +703,15 @@ class PrumoSearch extends PrumoBasic
      */
     private function doRetrieve() : string
     {
-        global $prumoGlobal;
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return pXmlError('session expires',_('Sua sessão expirou, faça login novamente.'));
+        }
         
-        if ($prumoGlobal['currentUser'] == '') {
-            $xml = pXmlError('session expires',_('Sua sessão expirou, faça login novamente.'));
+        $xml = $this->pConnection->sqlXml($this->sqlRetrieve(), $this->name);
+        if ($xml === false) {
+            $xml = pXmlError('SqlError', $this->pConnection->getErr());
         } else {
-            
-            $xml = $this->pConnection->sqlXml($this->sqlRetrieve(), $this->name);
-            if ($xml === false) {
-                $xml = pXmlError('SqlError', $this->pConnection->getErr());
-            } else {
-                $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
-            }
+            $xml = pXmlAddParent($xml, $GLOBALS['pConfig']['appIdent']);
         }
         
         return $xml;

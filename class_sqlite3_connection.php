@@ -248,7 +248,7 @@ class PrumoSqlite3Connection
         $connection = $this->getConnection();
         $res = $this->connection->query($sql);
         
-        $xmlTableName = $tableName == '' ? 'name_less_table' : $tableName;
+        $xmlTableName = empty($tableName) ? 'name_less_table' : $tableName;
         
         $ncols = $res->numColumns();
         $xml = '';
@@ -257,7 +257,7 @@ class PrumoSqlite3Connection
         
         while ($row = $res->fetchArray(SQLITE3_ASSOC)) {
             
-            $xml .= "<$xmlTableName>\n";
+            $xml .= "<$xmlTableName>";
             
             for ($j = 0; $j < $ncols; ++$j) {
                 
@@ -268,10 +268,10 @@ class PrumoSqlite3Connection
                 $fieldValue = str_replace("\r",'',$fieldValue);
                 $fieldValue = str_replace("\n",'\n',$fieldValue);
                 
-                $xml .= $fieldValue == '' ? "    <$fieldName>NULL</$fieldName>\n" : "    <$fieldName>$fieldValue</$fieldName>\n";
+                $xml .= empty($fieldValue) ? "<$fieldName>NULL</$fieldName>" : "<$fieldName>$fieldValue</$fieldName>";
             }
             
-            $xml .= "</$xmlTableName>\n";
+            $xml .= "</$xmlTableName>";
             $i++;
         }
         

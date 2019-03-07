@@ -119,7 +119,6 @@ class PrumoConnection
      */
     private function logSql(string $sql, string $method)
     {
-        global $prumoGlobal;
         global $pConnectionPrumo;
         
         if (count($this->logType) > 0) {
@@ -181,7 +180,7 @@ class PrumoConnection
                 $sqlLog .= 'VALUES('."\n";
                 $sqlLog .= '    '.$now.','."\n";
                 $sqlLog .= '    '.pFormatSql($this->getObjName(), 'string').','."\n";
-                $sqlLog .= '    '.pFormatSql($prumoGlobal['currentUser'], 'string').','."\n";
+                $sqlLog .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
                 $sqlLog .= '    '.pFormatSql($method, 'string').','."\n";
                 $sqlLog .= '    '.pFormatSql($sql, 'string')."\n";
                 $sqlLog .= ');'."\n";
@@ -422,7 +421,7 @@ class PrumoConnection
             
             $prumoUser = $_SESSION[$sessionName];
             
-            if ($prumoUser != '') {
+            if (! empty($prumoUser)) {
                 $prumoUser = pFormatSql($prumoUser, 'string');
                 $sqlOut = str_replace(':prumoUser:', $prumoUser, $sqlOut);
                 $sqlOut = str_replace(':new_prumoUser:', $prumoUser, $sqlOut);

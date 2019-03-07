@@ -182,7 +182,7 @@ if ($GLOBALS['pConfig']['dbSingle']) {
 $sqlPrumoRoutines = 'SELECT routine,link FROM '.$pConnectionPrumo->getSchema().'routines;';
 $prumoRoutines = $pConnectionPrumo->sql2Array($sqlPrumoRoutines);
 for ($i = 0; $i<count($prumoRoutines); $i++) {
-    if ($prumoRoutines[$i]['link'] != '') {
+    if (! empty($prumoRoutines[$i]['link'])) {
         $prumoPage[$prumoRoutines[$i]['routine']] = $prumoRoutines[$i]['link'];
     }
 }

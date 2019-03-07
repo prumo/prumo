@@ -294,7 +294,7 @@ class PrumoPgConnection
             return false;
         }
         
-        $xmlTableName = $tableName == '' ? pg_field_table($res, 0) : $tableName;
+        $xmlTableName = empty($tableName) ? pg_field_table($res, 0) : $tableName;
         
         $ncols = pg_num_fields($res);
         $xml = '';
@@ -302,7 +302,7 @@ class PrumoPgConnection
         $i = 0;
         while ($row = pg_fetch_assoc($res)) {
             
-            $xml .= "<$xmlTableName>\n";
+            $xml .= "<$xmlTableName>";
             
             for ($j = 0; $j < $ncols; ++$j) {
                 
@@ -313,10 +313,10 @@ class PrumoPgConnection
                 $fieldValue = str_replace("\r", '', $fieldValue);
                 $fieldValue = str_replace("\n", '\n', $fieldValue);
                 
-                $xml .= $fieldValue == '' ? "    <$fieldName>NULL</$fieldName>\n" : "    <$fieldName>$fieldValue</$fieldName>\n";
+                $xml .= empty($fieldValue) ? "<$fieldName>NULL</$fieldName>" : "<$fieldName>$fieldValue</$fieldName>";
             }
             
-            $xml .= "</$xmlTableName>\n";
+            $xml .= "</$xmlTableName>";
             $i++;
         }
         

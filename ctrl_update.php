@@ -25,7 +25,7 @@ pCheckPOST('update');
 // Atualiza Aplicação
 if ($_POST['update'] == 'app') {
     
-    if ($GLOBALS['pConfig']['scriptUpdateApp'] == '') {
+    if (empty($GLOBALS['pConfig']['scriptUpdateApp'])) {
         echo _('É necessário configurar o comando de atualização da aplicação no painel de controle');
     } else {
         
@@ -72,7 +72,7 @@ if ($_POST['update'] == 'app') {
 // Atualiza Framework
 if ($_POST['update'] == 'framework') {
     
-    if ($GLOBALS['pConfig']['scriptUpdateFramework'] == '') {
+    if (empty($GLOBALS['pConfig']['scriptUpdateFramework'])) {
         echo _('É necessário configurar o comando de atualização no painel de controle');
     } else {
         
