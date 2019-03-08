@@ -886,6 +886,9 @@ class PrumoCrud extends PrumoBasic
                 $this->afterCreate();
                 return $this->doRetrieve($this->serialFields);
             }
+            else {
+                return '';
+            }
         } else {
             $xml = '<status>err</status>';
             $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeCreate).'</msg>';
