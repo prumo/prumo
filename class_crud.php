@@ -130,7 +130,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return boolean true
      */
-    public function startClientObjects()
+    private function startClientObjects()
     {
         if ($this->clientObjectsStarted == false) {
             
@@ -374,7 +374,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return: integer
      */
-    public function fieldIndexById(string $fieldId) : int
+    private function fieldIndexById(string $fieldId) : int
     {
         for ($i = 0; $i < count($this->field); $i++) {
             if ($this->field[$i]['fieldid'] == $fieldId) {
@@ -471,7 +471,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlCount() : string
+    protected function sqlCount() : string
     {
         if (! empty($this->customSqlCount)) {
             $sql = $this->customSqlCount;
@@ -505,7 +505,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlCreate() : string
+    protected function sqlCreate() : string
     {
         if (! empty($this->customSqlCreate)) {
             $sql = $this->customSqlCreate;
@@ -542,7 +542,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlRetrieve() : string
+    protected function sqlRetrieve() : string
     {
         // monta condicao
         $condition = '';
@@ -589,7 +589,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlGetSerials() : string
+    private function sqlGetSerials() : string
     {
         $condition = '';
         for ($i = 0; $i < count($this->field); $i++) {
@@ -630,7 +630,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlUpdate(array $valuesParent=array()) : string
+    protected function sqlUpdate(array $valuesParent=array()) : string
     {
         if (! empty($this->customSqlUpdate)) {
             $sql = $this->customSqlUpdate;
@@ -693,7 +693,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    public function sqlDelete() : string
+    protected function sqlDelete() : string
     {
         $condition = '';
         if (! empty($this->customSqlDelete)) {
@@ -726,7 +726,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: comando SQL
      */
-    public function sqlUnique(string $fieldName, bool $excludePk=true) : string
+    private function sqlUnique(string $fieldName, bool $excludePk=true) : string
     {
         $tableName = $this->param['tablename'];
         $schema = $this->pConnection->getSchema($this->param['schema']);
@@ -751,7 +751,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns: array
      */
-    public function syncPk(array $serialsParent) : array
+    private function syncPk(array $serialsParent) : array
     {
         $serials = array();
         
@@ -878,7 +878,10 @@ class PrumoCrud extends PrumoBasic
             // laço que trata os objetos filhos
             for ($i = 0; $i < count($this->son1x1); $i++) {
                 if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                    $this->son1x1[$i]->doCreate();
+                    $xmlSon = $this->son1x1[$i]->doCreate();
+                    if (testXmlError($xmlSon)) {
+                        return $xml;
+                    }
                 }
             }
             
@@ -1037,7 +1040,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: xml com a mensagem de erro
      */
-    public function doAccessDenied() : string
+    private function doAccessDenied() : string
     {
         if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
             $xml = pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
@@ -1089,7 +1092,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns: array
      */
-    public function getPks() : array
+    private function getPks() : array
     {
         // procura campos serial
         $serialField = array();
@@ -1168,7 +1171,10 @@ class PrumoCrud extends PrumoBasic
             // laço que trata os objetos filhos
             for ($i = 0; $i < count($this->son1x1); $i++) {
                 if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                    $this->son1x1[$i]->doUpdate($this->serialFields);
+                    $sonXml = $this->son1x1[$i]->doUpdate($this->serialFields);
+                    if (testXmlError($sonXml)) {
+                        return $sonXml;
+                    }
                 }
             }
             
@@ -1231,7 +1237,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Gera e imprime o código HTML que associa os objetos pSearch aos campos do CRUD (caso haja)
      */
-    public function drawSearch() : string
+    private function drawSearch() : string
     {
         $pSearch = $this->pSearch->draw(false);
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1281,7 +1287,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns string: html do formulário
      */    
-    public function drawForms(bool $verbose=true, bool $withPhpCode=false) : string
+    private function drawForms(bool $verbose=true, bool $withPhpCode=false) : string
     {
         $form = '';
         if ($this->parent1x1 == null) {
@@ -1842,7 +1848,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: código js dos cruds filhos recursivamente
      */
-    public function initClientObject1x1() : string
+    private function initClientObject1x1() : string
     {
         $clientObject = '';
         for ($i = 0; $i < count($this->son1x1); $i++) {

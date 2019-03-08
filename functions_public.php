@@ -303,6 +303,19 @@ function pXmlError(string $err, string $msg) : string
 }
 
 /**
+ * Testa se determinado Xml é uma mensagem de erro
+ *
+ * @param $xml string: xml
+ *
+ * @return bool
+ */
+function testXmlError(string $xml) : bool
+{
+    $start = strlen($GLOBALS['pConfig']['appIdent']) + 2;
+    return (substr(trim($xml), $start, 5) == '<err>');
+}
+
+/**
  * Formata dados de acordo com o tipo, para mostrar ao usuário em HTML
  *
  * @param $type string: tipo de dado
