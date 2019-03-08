@@ -313,7 +313,7 @@ class PrumoPgConnection
                 $fieldValue = str_replace("\r", '', $fieldValue);
                 $fieldValue = str_replace("\n", '\n', $fieldValue);
                 
-                $xml .= empty($fieldValue) ? "<$fieldName>NULL</$fieldName>" : "<$fieldName>$fieldValue</$fieldName>";
+                $xml .= $fieldValue == '' ? "<$fieldName>NULL</$fieldName>" : "<$fieldName>$fieldValue</$fieldName>";
             }
             
             $xml .= "</$xmlTableName>";
