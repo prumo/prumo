@@ -23,15 +23,7 @@ class PrumoMenu
 {
     use PGetName;
     
-    public $ind;
-    
-    /**
-     * Construtor da classe PrumoMenu
-     */
-    function __construct()
-    {
-        $this->ind = '';
-    }
+    public $ind = '';
     
     /**
      * Gera o código HTML do ícone para determinado nó
@@ -40,7 +32,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function extractIcon($node) : string
+    private function extractIcon(object $node) : string
     {
         return isset($node->icon) ? '<img src="'.$node->icon.'" alt="icon" /> ' : '';
     }
@@ -52,7 +44,7 @@ class PrumoMenu
      *
      * @return string: código HTML
      */
-    private function extractLink($node) : string
+    private function extractLink(object $node) : string
     {
         return isset($node->link) ? $node->link : '';
     }

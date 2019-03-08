@@ -26,7 +26,7 @@ class PrumoList extends PrumoSearch
      *
      * @param $pageLines integer: numero de linhas do grid (quando não informado pega do arquivo de configuração)
      */
-    protected function constructGrid($pageLines=false)
+    protected function constructGrid(int $pageLines=0)
     {
         parent::constructGrid($pageLines);
         

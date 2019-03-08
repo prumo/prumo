@@ -41,7 +41,7 @@ class PrumoWindow
      *
      * @param $objName string: nome do objeto
      */
-    function __construct($objName='')
+    function __construct(string $objName='')
     {
         $this->name        = $objName;
         $this->width       = 930;

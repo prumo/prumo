@@ -22,7 +22,7 @@ class Reminder
     protected $schema;
     protected $activeUser;
     
-    public function __construct ($connection)
+    public function __construct (PrumoConnection $connection)
     {
         $this->setConnection($connection);
         $this->schema = $this->pConnection->getSchema($GLOBALS['pConfig']['loginSchema_prumo']);
@@ -34,7 +34,7 @@ class Reminder
      *
      * @param $connection object: PrumoConnection já instanciado e configurado
      */
-    public function setConnection ($connection)
+    public function setConnection (PrumoConnection $connection)
     {
         $this->pConnection = $connection;
     }
@@ -44,7 +44,7 @@ class Reminder
      *  
      * @param integer $id Para verificar um lembrete específico
      */
-    public function verify ($id = null)
+    public function verify (int $id = null)
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
         
@@ -94,7 +94,7 @@ class Reminder
      *  
      * @return string O HTML gerado
      */
-    public function show ($id = null, $verbose = true)
+    public function show (int $id = null, bool $verbose = true) : string
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
         
@@ -163,7 +163,7 @@ class Reminder
      * @param integer $id    O ID do lembrete a ser adiado
      * @param integer $hours A quantidade de horas até o lembrete ser mostrado novamente
      */
-    public function postponeActive ($id, $hours = 1)
+    public function postponeActive (int $id, int $hours = 1)
     {
         $sql  = 'UPDATE ' . $this->schema . 'active_reminder SET show_at=now()+ \'' . pFormatSql($hours, 'integer') . ' hours\'' . "\n";
         $sql .= 'WHERE id=' . pFormatSql($id, 'integer');
@@ -176,7 +176,7 @@ class Reminder
      * 
      * @param integer $id O ID do lembrete a ser removido
      */
-    public function deleteActive ($id)
+    public function deleteActive (int $id)
     {
         $sql = 'DELETE FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($id, 'integer');
         

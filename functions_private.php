@@ -586,7 +586,7 @@ trait PGetName
      *
      * @return string
      */
-    public function getObjName()
+    public function getObjName() : string
     {
         if (empty($this->name)) {
             

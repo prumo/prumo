@@ -133,7 +133,7 @@ class PrumoSqlite3Connection
      *
      * @return boolean
      */
-    function connected($reconnect=false)
+    function connected($reconnect=false) : bool
     {
         if ($reconnect && $this->connected == false) {
             $this->connect();

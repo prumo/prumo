@@ -71,7 +71,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Constritor da classe PrumoCrud
      */
-    function __construct($params)
+    function __construct(string $params)
     {
         parent::__construct($params);
         
@@ -130,7 +130,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return boolean true
      */
-    private function startClientObjects()
+    private function startClientObjects() : bool
     {
         if ($this->clientObjectsStarted == false) {
             
@@ -204,7 +204,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @param $connection object: PrumoConnection já instanciado e configurado
      */
-    public function setConnection($connection)
+    public function setConnection(PrumoConnection $connection)
     {
         $this->startClientObjects();
         $this->pConnection = $connection;
@@ -970,7 +970,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return boolean
      */
-    private function validateUnique($excludePk=true)
+    private function validateUnique($excludePk=true) : bool
     {
         // verifica unique
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1860,7 +1860,7 @@ class PrumoCrud extends PrumoBasic
     /**
      * Verifica quais campos possuem explicito o atributo size e seta a propriedade maxlength
      */
-    private function initMaxLength()
+    private function initMaxLength() : string
     {
         $out = '';
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1873,7 +1873,7 @@ class PrumoCrud extends PrumoBasic
             }
         }
         
-        return ! empty($out) ? "{$this->ind}<script type=\"text/javascript\">\n$out{$this->ind}</script>\n" : '';
+        return empty($out) ? '' : "{$this->ind}<script type=\"text/javascript\">\n$out{$this->ind}</script>\n";
     }
     
     /**
