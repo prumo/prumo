@@ -218,12 +218,12 @@ class PrumoFilter
         $this->loadQuery();
         $xmlFilters = '';
         for ($i = 0; $i < count($this->filter['fieldName']); $i++) {
-            $xmlFilter  = '<fieldName>'.$this->formatXmlData($this->filter['fieldName'][$i]).'</fieldName>'."\n";
-            $xmlFilter .= '<operator>'.$this->formatXmlData($this->filter['operator'][$i]).'</operator>'."\n";
-            $xmlFilter .= '<value>'.$this->formatXmlData($this->filter['value'][$i]).'</value>'."\n";
-            $xmlFilter .= '<value2>'.$this->formatXmlData($this->filter['value2'][$i]).'</value2>'."\n";
+            $xmlFilter  = '<fieldName>'.$this->formatXmlData($this->filter['fieldName'][$i]).'</fieldName>';
+            $xmlFilter .= '<operator>'.$this->formatXmlData($this->filter['operator'][$i]).'</operator>';
+            $xmlFilter .= '<value>'.$this->formatXmlData($this->filter['value'][$i]).'</value>';
+            $xmlFilter .= '<value2>'.$this->formatXmlData($this->filter['value2'][$i]).'</value2>';
             $xmlFilter .= '<visible>'.$this->formatXmlData($this->filter['visible'][$i]).'</visible>';
-            $xmlFilter = pXmlAddParent($xmlFilter,'pFilter');
+            $xmlFilter = pXmlAddParent($xmlFilter, 'pFilter');
             $xmlFilters .= $xmlFilter;
         }
         return $xmlFilters;
@@ -241,7 +241,7 @@ class PrumoFilter
         $formatedText = $text;
         $formatedText = str_replace('&', '&amp;', $formatedText);
         
-        return empty($text) ? 'NULL' : $formatedText;
+        return $text == '' ? 'NULL' : $formatedText;
     }
     
 }

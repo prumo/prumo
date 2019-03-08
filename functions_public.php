@@ -446,7 +446,7 @@ function pListFiles(string $directory, string $include='', string $exclude='', b
         if ($list[$i] != '.' && $list[$i] != '..') {
             $current = $directory . DIRECTORY_SEPARATOR . $list[$i];
             
-            if (is_file($current) && (empty($include) || preg_match($include, strtolower($current))) && (empty($exclude) || ! preg_match($exclude, strtolower($current)))) {    
+            if (is_file($current) && ($include == '' || preg_match($include, strtolower($current))) && ($exclude == '' || ! preg_match($exclude, strtolower($current)))) {    
                 $fileList[] = $current;
             }
             

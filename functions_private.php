@@ -396,7 +396,7 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
  */
 function pFormatSqlNull($value, string $type)
 {
-    return ($type != 'boolean' && empty($value)) ? 'NULL' : $value;
+    return ($type != 'boolean' && $value == '') ? 'NULL' : $value;
 }
 
 /**

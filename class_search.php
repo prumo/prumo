@@ -133,7 +133,7 @@ class PrumoSearch extends PrumoBasic
      */
     public function addFieldReturn(string $fieldName, string $idReturn='', bool $verbose=true, bool $linkInput=true, bool $noRetrieve=false) : string
     {
-        if (empty($idReturn)) {
+        if ($idReturn == '') {
             $idReturn = $fieldName;
         }
         
@@ -389,7 +389,7 @@ class PrumoSearch extends PrumoBasic
         $arrCondition = array();
         $iValue = 0;
         for ($i = 0; $i < count($fieldName); $i++) {
-            if (! empty($value[$i]) || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
+            if (! $value[$i] == '' || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
                 $field = $this->fieldByName($fieldName[$i]);
                 $condition = $this->pConnection->getSqlOperator($operator[$i]);
                 $condition = str_replace(':field:', $field['sqlname'], $condition);
