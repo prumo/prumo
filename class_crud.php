@@ -589,7 +589,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @return string: SQL pronto
      */
-    private function sqlGetSerials() : string
+    protected function sqlGetSerials() : string
     {
         $condition = '';
         for ($i = 0; $i < count($this->field); $i++) {
@@ -880,7 +880,7 @@ class PrumoCrud extends PrumoBasic
                 if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
                     $xmlSon = $this->son1x1[$i]->doCreate();
                     if (testXmlError($xmlSon)) {
-                        return $xml;
+                        return $xmlSon;
                     }
                 }
             }

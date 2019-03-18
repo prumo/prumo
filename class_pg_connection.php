@@ -340,7 +340,7 @@ class PrumoPgConnection
             'numeric'   => 'numeric',
             'date'      => 'date',
             'time'      => 'time',
-            'timestamp' => 'timestamp with timezone',
+            'timestamp' => 'timestamp with time zone',
             'boolean'   => 'boolean'
         );
         
