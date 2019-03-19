@@ -1287,7 +1287,7 @@ class PrumoCrud extends PrumoBasic
      *
      * @returns string: html do formulário
      */    
-    private function drawForms(bool $verbose=true, bool $withPhpCode=false) : string
+    public function drawForms(bool $verbose=true, bool $withPhpCode=false) : string
     {
         $form = '';
         if ($this->parent1x1 == null) {
