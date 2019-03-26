@@ -218,9 +218,8 @@ class PrumoPgConnection
             
             $row = pg_fetch_assoc($res);
             
-            if ($row === false && ($error = pg_last_error($this->connection))) {
-                $this->err = $error;
-                return false;
+            if ($row === false) {
+                return array();
             }
             
             return $row;
