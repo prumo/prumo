@@ -1322,7 +1322,7 @@ class PrumoCrud extends PrumoBasic
             if ($withPhpCode) {
                 
                 $form .= '<?php'."\n";
-                $form .= 'require_once \'prumo.php\';'."\n";
+                $form .= 'require_once __DIR__.\'/prumo.php\';'."\n";
                 
                 for ($i = 0; $i < count($this->field); $i++) {
                     

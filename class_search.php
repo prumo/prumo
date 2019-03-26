@@ -387,16 +387,14 @@ class PrumoSearch extends PrumoBasic
         $value2    = $this->pFilter->filter['value2'];
         
         $arrCondition = array();
-        $iValue = 0;
         for ($i = 0; $i < count($fieldName); $i++) {
-            if (! $value[$i] == '' || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
+            if ($value[$i] != '' || $operator[$i] == 'is null' || $operator[$i] == 'not is null') {
                 $field = $this->fieldByName($fieldName[$i]);
                 $condition = $this->pConnection->getSqlOperator($operator[$i]);
                 $condition = str_replace(':field:', $field['sqlname'], $condition);
                 $condition = str_replace(':value:', pFormatSql($value[$i], $field['type'], false, false), $condition);
                 $condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
-                $arrCondition[$iValue] = $condition;
-                $iValue++;
+                $arrCondition[] = $condition;
             }
         }
         

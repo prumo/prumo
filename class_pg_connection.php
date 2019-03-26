@@ -42,12 +42,12 @@ class PrumoPgConnection
         $this->sqlOperator = array();
         
         if ($GLOBALS['pConfig']['useUnaccent'] == 't') {
-            $this->sqlOperator['like']                  = 'unaccent(:field:) ilike unaccent(\'%:value:%\')';
-            $this->sqlOperator['not like']              = 'NOT unaccent(:field:) ilike unaccent(\'%:value:%\')';
-            $this->sqlOperator['begins with']           = 'unaccent(:field:) ilike unaccent(\':value:%\')';
-            $this->sqlOperator['ends with']             = 'unaccent(:field:) ilike unaccent(\'%:value:\')';
-            $this->sqlOperator['not begins with']       = 'NOT unaccent(:field:) ilike unaccent(\':value:%\')';
-            $this->sqlOperator['not ends with']         = 'NOT unaccent(:field:) ilike unaccent(\'%:value:\')';
+            $this->sqlOperator['like']                  = ':field: ilike unaccent(\'%:value:%\')';
+            $this->sqlOperator['not like']              = 'NOT :field: ilike unaccent(\'%:value:%\')';
+            $this->sqlOperator['begins with']           = ':field: ilike unaccent(\':value:%\')';
+            $this->sqlOperator['ends with']             = ':field: ilike unaccent(\'%:value:\')';
+            $this->sqlOperator['not begins with']       = 'NOT :field: ilike unaccent(\':value:%\')';
+            $this->sqlOperator['not ends with']         = 'NOT :field: ilike unaccent(\'%:value:\')';
         } else {
             $this->sqlOperator['like']                  = ':field: ilike \'%:value:%\'';
             $this->sqlOperator['not like']              = 'NOT :field: ilike \'%:value:%\'';
