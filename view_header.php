@@ -37,6 +37,6 @@ if (file_exists(dirname(__DIR__).'/style.css')) {
 }
 
 echo '</head>'."\n";
-echo '<script type="text/javascript" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/prumo-2.3.6.js"></script>'."\n";
+echo '<script type="text/javascript" src="'.$GLOBALS['pConfig']['prumoWebPath'].'/prumo-'.$GLOBALS['pConfig']['version'].'.js"></script>'."\n";
 echo '<body>'."\n";
 
