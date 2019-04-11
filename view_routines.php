@@ -132,6 +132,10 @@ $datalistIcons .= '                </datalist>'."\n";
         <table class="prumoFormTable">
             <tr>
                 <td class="prumoFormLabel"></td>
+                <td class="prumoFormFields" id="txt_sql_insert"></td>
+            </tr>
+            <tr>
+                <td class="prumoFormLabel"></td>
                 <td class="prumoFormFields"><?php $crudRoutines->drawControls();?></td>
             </tr>
         </table>
@@ -192,3 +196,22 @@ $datalistIcons .= '                </datalist>'."\n";
     $searchMenus2->setInvisibleFilter('type', 'equal', 'root_menu');
     ?>
 </fieldset>
+
+<script type="text/javascript">
+    crudRoutines.afterStateChange = function()
+    {
+        if (this.state == 'view') {
+            pSimpleAjax('prumo/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
+        } else {
+            document.getElementById('txt_sql_insert').innerHTML = '';
+        }
+    }
+    
+    crudRoutinesGroups.afterStateChange = function()
+    {
+        if (this.state == 'view') {
+            pSimpleAjax('prumo/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
+        }
+    }
+</script>
+

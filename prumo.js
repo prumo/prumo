@@ -75,7 +75,7 @@ function prumo()
  */
 function pSimpleAjax(file, param, result)
 {
-    var pAjax = new prumoAjax(file);
+    let pAjax = new prumoAjax(file);
     
     if (result == 'eval') {
         pAjax.process = function()
@@ -85,7 +85,7 @@ function pSimpleAjax(file, param, result)
     } else {
         document.getElementById(result).innerHTML = '';
         
-        var img = document.createElement("IMG");
+        let img = document.createElement("IMG");
         img.setAttribute('src', 'prumo/images/loading.gif');
         img.setAttribute('alt', 'carregando...');
         document.getElementById(result).appendChild(img);

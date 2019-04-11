@@ -178,7 +178,7 @@ function pCheckDate(string $date) : bool
  * @param $param string: campo que deveria ser enviado via método GET
  * @param $param array: lista de campos que deveriam ser enviado via método GET
  */
-function pCheckGET($param)
+function pCheckGET($param) : void
 {
     pParamCheck($param, 'GET');
 }
@@ -189,7 +189,7 @@ function pCheckGET($param)
  * @param $param string: campo que deveria ser enviado via método POST
  * @param $param array: lista de campos que deveriam ser enviado via método POST
  */
-function pCheckPOST($param)
+function pCheckPOST($param) : void
 {
     pParamCheck($param, 'POST');
 }
@@ -201,7 +201,7 @@ function pCheckPOST($param)
  * @param $param array: lista de campos que deveriam ser enviado via método POST ou GET
  * @param $method string: POST ou GET
  */
-function pParamCheck($param, $method='POST')
+function pParamCheck($param, $method='POST') : void
 {
     if (is_array($param)) {
         for ($i = 0; $i < count($param); $i++) {

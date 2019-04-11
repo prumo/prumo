@@ -1105,6 +1105,9 @@ class PrumoCrud extends PrumoBasic
         // se encontrou algum campo serial recupera os valores recem gerados automaticamente pelo sgdb
         if (count($serialField) > 0) {
             $arrPks = $this->pConnection->fetchAssoc($this->sqlValues($this->sqlGetSerials()));
+            if ($arrPks === false) {
+                $arrPks = array();
+            }
         } else {
             
             $arrPks = array();
@@ -1279,7 +1282,7 @@ class PrumoCrud extends PrumoBasic
             }
         }
         
-        return '//require_once \'\'; ATENÇÃO! não foi encontrado o nenhum arquivo controller para o objeto "'.$objName.'". Informe o nome do arquivo nesta linha.';
+        return '//require_once \'\'; ATENÇÃO! não foi encontrado nenhum arquivo controller para o objeto "'.$objName.'". Informe o nome do arquivo nesta linha.';
     }
     
     /**
