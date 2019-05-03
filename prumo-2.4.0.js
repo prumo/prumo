@@ -749,7 +749,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.clearSerials = function()
     {
-        for (iSerials in this.fieldType) {
+        for (let iSerials in this.fieldType) {
             if (this.fieldType[iSerials] == 'serial') {
                 this.fieldOldValue[this.fieldName[iSerials]] = '';
                 this.fieldNewValue[this.fieldName[iSerials]] = '';
@@ -1587,7 +1587,7 @@ function PrumoCrud(objName, ajaxFile)
     
     this.hideSon1xN = function()
     {
-        for (iSon in this.son1xN) {
+        for (let iSon in this.son1xN) {
             this.son1xN[iSon].hide();
         }
     }
@@ -1597,16 +1597,16 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.syncPkToSon1xN = function()
     {
-        for (iSon in this.son1xN) {
+        for (let iSon in this.son1xN) {
             if (this.son1xN[iSon].pCrudList) {
                 this.son1xN[iSon].pCrudList.pFilter.clearVisibleFilters();
             }
             if (this.son1xN[iSon].pSearch) {
                 this.son1xN[iSon].pSearch.pFilter.clearVisibleFilters();
             }
-            for (iField in this.fieldPk) {
+            for (let iField in this.fieldPk) {
                 if (this.fieldPk[iField] == true) {
-                    for (iFieldSon in this.son1xN[iSon].fieldId) {
+                    for (let iFieldSon in this.son1xN[iSon].fieldId) {
                         if (this.son1xN[iSon].fieldId[iFieldSon] == this.fieldId[iField]) {
                             var fieldName = this.son1xN[iSon].fieldName[iFieldSon];
                         }
@@ -1716,7 +1716,7 @@ function PrumoCrud(objName, ajaxFile)
             this.son1x1[i].stateChange(newState);
         }
         
-        for (iSon in this.son1xN) {
+        for (let iSon in this.son1xN) {
             divContainer = document.getElementById(this.son1xN[iSon].objName+'_container');
             if (divContainer != undefined && divContainer != null) {
                 if (newState == 'view') {
@@ -1788,7 +1788,7 @@ function PrumoCrud(objName, ajaxFile)
             var fieldName = this.fieldName[i];
             if (this.fieldValidator.hasOwnProperty(fieldName)) {
                 validators = this.fieldValidator[fieldName];
-                for (validator in validators) {
+                for (let validator in validators) {
                     pValidator = new prumoValidator({'type': validator, 'value': validators[validator]});
                     msg = pValidator.validate(fieldValue);
                     if (msg != true) {
@@ -2396,9 +2396,9 @@ function PrumoFilter(objName, useSimilaritySearch)
         var backupFilter = this.filter;
         this.clearFilters();
         
-        for (iFilter in backupFilter) {
-            if (backupFilter[iFilter].visible == false) {
-                this.filter.push(backupFilter[iFilter]);
+        for (let i in backupFilter) {
+            if (backupFilter[i].visible == false) {
+                this.filter.push(backupFilter[i]);
             }
         }
     }
@@ -3763,19 +3763,19 @@ function PrumoSearch(objName, ajaxFile)
         if (this.pAjax.working == false) {
             var objId = objField.getAttribute('id');
             
-            for (iFieldReturn in this.fieldReturn) {
+            for (let iFieldReturn in this.fieldReturn) {
                 
                 if (this.fieldReturn[iFieldReturn][1] == objId) {
                     //Compara o valor do campo ao entrar e ao sair se houve alteração, e dispara o search
                     if (this.fieldValueOnFocus != objField.value) {
                         
                         if (objField.value == '') {
-                            for (iReturn in this.fieldReturn) {
+                            for (let iReturn in this.fieldReturn) {
                                 document.getElementById(this.fieldReturn[iReturn][1]).value = '';
                             }
                         } 
                         
-                        for (iFieldSearch in this.pFilter.fieldName) {
+                        for (let iFieldSearch in this.pFilter.fieldName) {
                             if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
                                 var fieldType = this.pFilter.fieldType[iFieldSearch];
                             }
