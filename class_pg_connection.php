@@ -333,6 +333,7 @@ class PrumoPgConnection
             'integer'   => 'integer',
             'serial'    => 'serial',
             'numeric'   => 'numeric',
+            'money'     => 'numeric',
             'date'      => 'date',
             'time'      => 'time',
             'timestamp' => 'timestamp with time zone',

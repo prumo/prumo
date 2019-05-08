@@ -62,6 +62,7 @@ class PrumoCrud extends PrumoBasic
         'string'    => '<input type="text" size="20" />',
         'text'      => '<textarea></textarea>',
         'numeric'   => '<input type="text" size="5" />',
+        'money'     => '<input type="text" size="5" />',
         'date'      => '<input type="date" size="9" />',
         'time'      => '<input type="time" size="9" />',
         'timestamp' => '<input type="datetime-local" size="15" />',
@@ -288,7 +289,7 @@ class PrumoCrud extends PrumoBasic
                     case 'max':
                     case 'min':
                         $fieldType = $this->field[$index]['type'];
-                        if ($fieldType != 'integer' && $fieldType != 'numeric') {
+                        if (! in_array($fieldType, array('integer', 'numeric', 'money'))) {
                             echo "<script type=\"text/javascript\">alert('Validador $type disponível somente para tipos numéricos');</script>";
                         }
                         break;
@@ -2088,7 +2089,7 @@ class PrumoCrud extends PrumoBasic
                     $size = '('.$this->field[$i]['size'].')';
                     
                     // troca o ponto por virgula para os campos do tipo numeric
-                    if ($this->field[$i]['type'] == 'numeric') {
+                    if ($this->field[$i]['type'] == 'numeric' || $this->field[$i]['type'] == 'money') {
                         $size = str_replace('.', ',', $size);
                     }
                 } else {

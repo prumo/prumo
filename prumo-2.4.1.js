@@ -209,6 +209,11 @@ function prumoIsType(value, type)
                 isValid = false;
             }
             break;
+        case 'money':
+            if (! regexFloat.test(value)) {
+                isValid = false;
+            }
+            break;
         case 'date':
             if (! isDate(value)) {
                 isValid = false;
@@ -247,7 +252,7 @@ function gettext(str)
 /**
  * formata dados recebidos via XML
  *
- * @param type string: tipo de dado (timestamp, time, date, numeric, boolean, string)
+ * @param type string: tipo de dado (timestamp, time, date, numeric, money, boolean, string)
  * @param value string: valor
  * @param textStyle string: html ou text
  */
@@ -279,6 +284,8 @@ function pFormat(type, value, textStyle)
     } else if (type == 'numeric' && value != '') {
         var formatedValue = value.replace(',', '');
         formatedValue = formatedValue.replace('.', ',');
+    } else if (type == 'money' && value != '') {
+        var formatedValue = parseFloat(value).toLocaleString('pt-BR');
     } else if (type == 'boolean' && value != '' && textStyle == 'html') {
         if (value == 't') {
             var formatedValue = '<input type="checkbox" readonly="readonly" checked="checked" />';
@@ -1765,6 +1772,9 @@ function PrumoCrud(objName, ajaxFile)
                     case 'numeric':
                         msg = '- '+gettext('"%fieldValue%" não é um número válido, campo "%fieldLabel%"')+'.\n';
                         break;
+                    case 'money':
+                        msg = '- '+gettext('"%fieldValue%" não é um valor válido, campo "%fieldLabel%"')+'.\n';
+                        break;
                     case 'date':
                         msg = '- '+gettext('"%fieldValue%" não é uma data válida, campo "%fieldLabel%"')+'.\n';
                         break;
@@ -2204,6 +2214,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.inputType['string']    = 'text',
     this.inputType['text']      = 'text',
     this.inputType['numeric']   = 'number',
+    this.inputType['money']     = 'number',
     this.inputType['date']      = 'date',
     this.inputType['time']      = 'time',
     this.inputType['timestamp'] = 'datetime',
@@ -2458,6 +2469,9 @@ function PrumoFilter(objName, useSimilaritySearch)
             case 'numeric':
                 return 'numeric';
                 break;
+            case 'money':
+                return 'numeric';
+                break;
             case 'date':
                 return 'date_time';
                 break;
@@ -2505,6 +2519,10 @@ function PrumoFilter(objName, useSimilaritySearch)
             arrOperatorsName = this.dateTimeOperatorsName;
         }
         if (operatorType == 'numeric') {
+            arrOperators     = this.numericOperators;
+            arrOperatorsName = this.numericOperatorsName;
+        }
+        if (operatorType == 'money') {
             arrOperators     = this.numericOperators;
             arrOperatorsName = this.numericOperatorsName;
         }
@@ -2596,6 +2614,9 @@ function PrumoFilter(objName, useSimilaritySearch)
                         case 'numeric':
                             msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
                             break;
+                        case 'money':
+                            msg = '- '+gettext('"%fieldValue%" não é um valor válido, filtro "%fieldLabel%"');
+                            break;
                         case 'date':
                             msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
                             break;
@@ -2630,6 +2651,9 @@ function PrumoFilter(objName, useSimilaritySearch)
                             break;
                         case 'numeric':
                             msg = '- '+gettext('"%fieldValue%" não é um número válido, filtro "%fieldLabel%"');
+                            break;
+                        case 'money':
+                            msg = '- '+gettext('"%fieldValue%" não é um valor válido, filtro "%fieldLabel%"');
                             break;
                         case 'date':
                             msg = '- '+gettext('"%fieldValue%" não é uma data válida, filtro "%fieldLabel%"');
@@ -2830,6 +2854,9 @@ function PrumoFilter(objName, useSimilaritySearch)
             if (operator == '') {
                 switch (operatorType) {
                     case 'numeric':
+                        arrOperators = this.numericOperators;
+                        break;
+                    case 'money':
                         arrOperators = this.numericOperators;
                         break;
                     case 'date_time':

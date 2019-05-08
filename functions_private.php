@@ -340,7 +340,7 @@ function pParameters(string $params)
  * Parser para tratamento de Sql Injection
  *
  * @param $value string: o valor a ser tratado
- * @param $type string: o tipo de dado [string,text,longtext,integer,serial,numeric,date,time,timestamp,boolean]
+ * @param $type string: o tipo de dado [string,text,longtext,integer,serial,numeric,money,date,time,timestamp,boolean]
  *
  * @return string
  */
@@ -348,7 +348,7 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
 {
     $valueNoInjection = $value;
     
-    if (! in_array($type, array('string', 'text', 'longtext', 'integer', 'serial', 'numeric', 'date', 'time', 'timestamp', 'boolean'))) {
+    if (! in_array($type, array('string', 'text', 'longtext', 'integer', 'serial', 'numeric', 'money', 'date', 'time', 'timestamp', 'boolean'))) {
         $msg = _('Prumo: Tipo "%type%" desconhecido em pSqlNoInjection!');
         throw new Exception(str_replace('%type%', $type, $msg));
     }
@@ -367,6 +367,10 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
         break;
         
         case "numeric":
+            $valueNoInjection = preg_replace("/[^0-9\.\,\-\+\*\/]/", "", $valueNoInjection);
+        break;
+        
+        case "money":
             $valueNoInjection = preg_replace("/[^0-9\.\,\-\+\*\/]/", "", $valueNoInjection);
         break;
         

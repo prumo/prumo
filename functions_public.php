@@ -92,6 +92,39 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
             }
         break;
         
+        case "money":
+            
+            if ($valueNoInjection == '') {
+                return "NULL";
+            } else {
+                
+                $delimiterFound = false;
+                $newNum = '';
+                
+                for ($i = strlen($valueNoInjection)-1; $i >=0 ; $i--) {
+                    
+                    $char = $valueNoInjection[$i];
+                    
+                    if (in_array($char, array('+', '-'))) {
+                        $delimiterFound = false;
+                        $newNum = $char . $newNum;
+                    } else if (in_array($char, array('.', ','))) {
+                        
+                        if (! $delimiterFound) {
+                            $newNum = '.' . $newNum;
+                            $delimiterFound = true;
+                        }
+                    } else {
+                        $newNum = $char . $newNum;
+                    }
+                }
+                
+                $valueNoInjection = $newNum;
+                
+                return "$valueNoInjection";
+            }
+        break;
+        
         case "date":
             
             if ($valueNoInjection == '') {
@@ -343,6 +376,8 @@ function htmlFormat(string $type, $value)
         $formatedValue = plainFormat($type, $value);
     } else if ($type == 'numeric' && $value != '') {
         $formatedValue = plainFormat($type, $value);
+    } else if ($type == 'money' && $value != '') {
+        $formatedValue = 'R$ '.plainFormat($type, $value);
     } else if ($type == 'integer' && $value != '') {
         $formatedValue = plainFormat($type, $value);
     } else if ($type == 'boolean' && $value != '') {
@@ -376,9 +411,11 @@ function plainFormat(string $type, $value)
     if ($type == 'time' && $value != '') {
         $time = substr($value, 0, 8);
         $formatedValue = $time;
-    } else if ($type == 'numeric' && $value != '') {
+    } else if (($type == 'numeric') && $value != '') {
         $number = str_replace('.', ',', str_replace(',', '', $value));
         $formatedValue = $number;
+    } else if ($type == 'money' && $value != '') {
+        $formatedValue = number_format($value, 2, ',','.');
     } else {
         $formatedValue = $value;
     }
