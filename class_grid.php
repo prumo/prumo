@@ -61,7 +61,18 @@ class PrumoGrid
         
         $label = isset($param['label']) ? $param['label'] : $param['name'];
         $labelAlign = isset($param['labelalign']) ? $param['labelalign'] : 'center';
-        $align = isset($param['align']) ? $param['align'] : 'left';
+        
+        if (isset($param['align']) && ! empty($param['align'])) {
+            $align = $param['align'];
+        } else {
+            if (in_array($param['type'], array('numeric', 'money'))) {
+                $align = 'right';
+            } else if (in_array($param['type'], array('integer', 'serial', 'date', 'time', 'timestamp', 'boolean'))) {
+                $align = 'center';
+            } else {
+                $align = 'left';
+            }
+        }
         
         //visible - default true
         if (! isset($param['visible'])) {
