@@ -65,8 +65,9 @@ class PrumoBasic
             }
         }
         
-        // transforma o caminho do arquivo ajax de relatovo para absoluto
+        // transforma o caminho do arquivo ajax de relativo para absoluto
         $ajaxFileName = substr($this->param['xmlfile'], 0, 1) == '/' ? $this->param['xmlfile'] : $GLOBALS['pConfig']['appWebPath'].'/'.$this->param['xmlfile'];
+        $ajaxFileName = str_replace('\\', '/', $ajaxFileName);
         
         return $ajaxFileName;
     }

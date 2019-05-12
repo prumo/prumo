@@ -163,8 +163,6 @@ CREATE TABLE prumo.active_reminder
 );
 
 INSERT INTO prumo.routines (routine,enabled,audit,type) VALUES ('prumo_reminders','t','f','view');
-UPDATE prumo.routines SET routine='prumo_reminders',link='prumo/view_reminder.php',description=NULL,menu_parent='prumo_system',menu_label='Lembretes',menu_icon='prumo/images/icons/reminder.png' WHERE routine='prumo_reminders';
-INSERT INTO prumo.routines_groups (routine,groupname,c,r,u,d) VALUES ('prumo_reminders','sysadmin','t','t','t','t');
 
 INSERT INTO prumo.routines (routine, enabled, type, menu_label, menu_icon) VALUES ('prumo_system', 't', 'root_menu', 'SISTEMA', 'prumo/images/icons/example.png');
 INSERT INTO prumo.routines (routine, enabled, type, menu_parent, menu_label, menu_icon) VALUES ('prumo_access_control', 't', 'root_menu', 'prumo_system', 'Controle de Acesso', 'prumo/images/icons/example.png');
@@ -201,6 +199,9 @@ INSERT INTO prumo.routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo
 INSERT INTO prumo.groups(enabled, groupname) VALUES ('t', 'change_password');
 INSERT INTO prumo.routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo_system', 'change_password', 'f', 't', 'f', 'f');
 INSERT INTO prumo.routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo_changePassword', 'change_password', 'f', 't', 't', 'f');
+
+UPDATE prumo.routines SET routine='prumo_reminders',link='prumo/view_reminder.php',description=NULL,menu_parent='prumo_system',menu_label='Lembretes',menu_icon='prumo/images/icons/reminder.png' WHERE routine='prumo_reminders';
+INSERT INTO prumo.routines_groups (routine,groupname,c,r,u,d) VALUES ('prumo_reminders','sysadmin','t','t','t','t');
 
 CREATE VIEW prumo.v_menu AS
 SELECT routine,tree,type FROM

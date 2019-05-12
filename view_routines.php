@@ -201,7 +201,7 @@ $datalistIcons .= '                </datalist>'."\n";
     crudRoutines.afterStateChange = function()
     {
         if (this.state == 'view') {
-            pSimpleAjax('prumo/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
+            pSimpleAjax('<?php echo $GLOBALS['pConfig']['prumoWebPath']; ?>/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
         } else {
             document.getElementById('txt_sql_insert').innerHTML = '';
         }
@@ -210,7 +210,7 @@ $datalistIcons .= '                </datalist>'."\n";
     crudRoutinesGroups.afterStateChange = function()
     {
         if (this.state == 'view') {
-            pSimpleAjax('prumo/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
+            pSimpleAjax('<?php echo $GLOBALS['pConfig']['prumoWebPath']; ?>/ctrl_routines_sql_insert.php', 'routine='+document.getElementById('routine').value, 'txt_sql_insert');
         }
     }
 </script>

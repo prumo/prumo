@@ -24,15 +24,20 @@ require_once __DIR__.'/ctrl_connection_admin.php';
 
 class PrumoUsers extends PrumoCrud
 {
-    function sqlCreate()
+    function sqlCreate() : string
     {
         $tableName = $this->param['tablename'];
         $schema = $this->pConnection->getSchema($this->param['schema']);
-        $password = sodium_crypto_pwhash_str(
-            $_POST['new_username'],
-            SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE,
-            SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE
-        );
+        
+        if (function_exists('sodium_crypto_pwhash_str')) {
+            $password = sodium_crypto_pwhash_str(
+                $_POST['new_username'],
+                SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE,
+                SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE
+            );
+        } else {
+            $password = md5($_POST['new_username']);
+        }
         $sql = 'INSERT INTO '.$schema.$tableName.' (username,fullname,password,enabled) VALUES (:new_username:,:new_fullname:,\''.$password.'\',:new_enabled:);';
         return $sql;
     }
