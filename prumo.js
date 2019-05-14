@@ -285,14 +285,10 @@ function pFormat(type, value, textStyle)
         var formatedValue = value.replace(',', '');
         formatedValue = formatedValue.replace('.', ',');
     } else if (type == 'money' && value != '') {
-        var formatedValue = parseFloat(value).toLocaleString('pt-BR');
+        var formatedValue = parseFloat(value).toLocaleString('pt-BR', {minimumFractionDigits: 2});
     } else if (type == 'boolean' && value != '' && textStyle == 'html') {
-        if (value == 't') {
-            var formatedValue = '<input type="checkbox" readonly="readonly" checked="checked" />';
-        }
-        else {
-            var formatedValue = '<input type="checkbox" readonly="readonly" />';
-        }
+        let checked = (value == 't') ? 'checked="checked" ' : '';
+        var formatedValue = '<input type="checkbox" readonly="readonly" '+checked+'/>';
     } else {
         if (textStyle == 'html') {
             formatedValue = value.replace(/\\n/g, '<br />');
