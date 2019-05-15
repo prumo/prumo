@@ -35,7 +35,7 @@ require_once __DIR__.'/ctrl_connection_admin.php';
 $pMenu = new PrumoMenu();
 $pMenu->ind = '            ';
 $pHtmlMenu  = $pMenu->draw(false);
-$pHtmlPreLayout = str_replace(':menu:',$pHtmlMenu,$pHtmlPreLayout);
+$pHtmlPreLayout = str_replace(':menu:', $pHtmlMenu, $pHtmlPreLayout);
 
 //rodape
 $pHtmlFooter  = '    <a href="index.php">'._('Início').'</a>';
@@ -53,9 +53,9 @@ $reminder->verify();
 $reminder->show();
 
 //inclusao do desktop
-if (isset($_GET['page']) && $prumoPage[$_GET['page']]) {
+if (isset($_GET['page']) && isset($GLOBALS['prumoPage'][$_GET['page']]) && ! empty($GLOBALS['prumoPage'][$_GET['page']])) {
     pProtect($_GET['page']);
-    $pPage = $prumoPage[$_GET['page']];
+    $pPage = $GLOBALS['pConfig']['appPath'] . '/' . $GLOBALS['prumoPage'][$_GET['page']];
 } else {
     $pPage = file_exists(dirname(__DIR__).'/desktop.php') ? dirname(__DIR__).'/desktop.php' : __DIR__.'/view_submission.php';
 }

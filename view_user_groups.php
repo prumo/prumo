@@ -23,24 +23,29 @@ $schema = $pConnectionPrumo->getSchema();
 
 pProtect('prumo_users');
 
-
-$sql  = 'SELECT'."\n";
-$sql .= '    groupname'."\n";
-$sql .= 'FROM '.$schema.'groups'."\n";
-$sql .= 'WHERE NOT groupname IN ('."\n";
-$sql .= '    SELECT'."\n";
-$sql .= '        groupname'."\n";
-$sql .= '    FROM '.$schema.'groups_syslogin'."\n";
-$sql .= '    WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
-$sql .= ')'."\n";
-$sql .= 'ORDER BY groupname;';
+$sqlUserName = pFormatSql($_POST['username'], 'string');
+$sql = <<<SQL
+SELECT
+    groupname
+FROM {$schema}groups
+WHERE NOT groupname IN (
+    SELECT
+        groupname
+    FROM {$schema}groups_syslogin
+    WHERE username=$sqlUserName
+)
+ORDER BY groupname;
+SQL;
 $availableGroup = $pConnectionPrumo->sql2Array($sql);
 
-$sql  = 'SELECT'."\n";
-$sql .= '    groupname'."\n";
-$sql .= 'FROM '.$schema.'groups_syslogin'."\n";
-$sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
-$sql .= 'ORDER BY groupname;';
+$sqlUserName = pFormatSql($_POST['username'], 'string');
+$sql = <<<SQL
+SELECT
+    groupname
+FROM {$schema}groups_syslogin
+WHERE username=$sqlUserName
+ORDER BY groupname;
+SQL;
 $activeGroup = $pConnectionPrumo->sql2Array($sql);
 
 echo '<table align="center" width="600">'."\n";

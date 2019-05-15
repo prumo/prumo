@@ -62,13 +62,16 @@ $crudRoutines->pCrudList->addField('name=routine,label='._('Identificação').',
 $crudRoutines->pCrudList->addField('name=type,label='._('Tipo').'');
 $crudRoutines->pCrudList->addField('name=enabled,label='._('Ativo').',type=boolean,default=t');
 
-$sql  = 'SELECT'."\n";
-$sql .= '    v.tree,'."\n";
-$sql .= '    r.routine,'."\n";
-$sql .= '    r.type,'."\n";
-$sql .= '    r.enabled'."\n";
-$sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines r'."\n";
-$sql .= 'LEFT OUTER JOIN '.$pConnectionPrumo->getSchema().'v_menu v ON v.routine=r.routine'."\n";
+$sqlSchema = $pConnectionPrumo->getSchema();
+$sql = <<<SQL
+SELECT
+    v.tree,
+    r.routine,
+    r.type,
+    r.enabled
+FROM {$sqlSchema}routines r
+LEFT OUTER JOIN {$sqlSchema}v_menu v ON v.routine=r.routine
+SQL;
 
 $crudRoutines->pCrudList->setSqlSearch($sql);
 

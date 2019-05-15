@@ -98,23 +98,26 @@ class PrumoFilter
      */
     public function makeHtml() : string
     {
-        $htmlFilters  = "{$this->ind}<div class=\"prumoFilter\" align=\"center\" id=\"{$this->htmlId}\">\n";
-        $htmlFilters .= "{$this->ind}\t<table>\n";
-        $htmlFilters .= "{$this->ind}\t\t<tr>\n";
-        $htmlFilters .= "{$this->ind}\t\t\t<td id=\"{$this->htmlId}_filters\" style=\"text-align:left\">\n";
-        $htmlFilters .= "{$this->ind}\t\t\t</td>\n";
-        $htmlFilters .= "{$this->ind}\t\t\t<td id=\"{$this->htmlId}_controls\">\n";
-        $htmlFilters .= "{$this->ind}\t\t\t\t<div style=\"text-align:center;\">\n";
-        $htmlFilters .= "{$this->ind}\t\t\t\t\t<button class=\"pButton\" id=\"{$this->parentName}_btSearch\" onclick=\"{$this->parentName}.cmdSearch()\">"._('Pesquisar')."</button>\n";
-        $htmlFilters .= "{$this->ind}\t\t\t\t\t<button class=\"pButton\" id=\"{$this->parentName}_btSearchAll\" onclick=\"{$this->parentName}.cmdSearchAll()\">"._('Todos')."</button>\n";
-        if (! empty($this->shortcut)) {
-            $htmlFilters .= "{$this->ind}\t\t\t\t\t{$this->shortcut}\n";
-        }
-        $htmlFilters .= "{$this->ind}\t\t\t\t</div>\n";
-        $htmlFilters .= "{$this->ind}\t\t\t</td>\n";
-        $htmlFilters .= "{$this->ind}\t\t</tr>\n";
-        $htmlFilters .= "{$this->ind}\t</table>\n";
-        $htmlFilters .= "{$this->ind}</div>\n";
+        $sqlLabelPesquisar = _('Pesquisar');
+        $sqlLabelTodos = _('Todos');
+        $htmlFilters = <<<HTML
+        {$this->ind}<div class="prumoFilter" align="center" id="{$this->htmlId}">
+        {$this->ind}    <table>
+        {$this->ind}        <tr>
+        {$this->ind}            <td id="{$this->htmlId}_filters" style="text-align:left">
+        {$this->ind}            </td>
+        {$this->ind}            <td id="{$this->htmlId}_controls">
+        {$this->ind}                <div style="text-align:center;">
+        {$this->ind}                    <button class="pButton" id="{$this->parentName}_btSearch" onclick="{$this->parentName}.cmdSearch()">$sqlLabelPesquisar</button>
+        {$this->ind}                    <button class="pButton" id="{$this->parentName}_btSearchAll" onclick="{$this->parentName}.cmdSearchAll()">$sqlLabelTodos</button>
+        {$this->ind}                    <span>{$this->shortcut}</span>
+        {$this->ind}                </div>
+        {$this->ind}            </td>
+        {$this->ind}        </tr>
+        {$this->ind}    </table>
+        {$this->ind}</div>
+        
+        HTML;
         
         return $htmlFilters;
     }
@@ -128,11 +131,14 @@ class PrumoFilter
      */
     private function makeJs() : string
     {
-        $jsFilters  = "{$this->ind}<script type=\"text/javascript\">\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName} = new PrumoFilter('{$this->jsName}', '{$GLOBALS['pConfig']['useSimilaritySearch']}');\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.htmlId = '{$this->htmlId}';\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.prumoWebPath = '{$GLOBALS['pConfig']['prumoWebPath']}';\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.parent = {$this->parentName};\n";
+        $jsFilters = <<<HTML
+        {$this->ind}<script type="text/javascript">
+        {$this->ind}    {$this->jsName} = new PrumoFilter('{$this->jsName}', '{$GLOBALS['pConfig']['useSimilaritySearch']}');
+        {$this->ind}    {$this->jsName}.htmlId = '{$this->htmlId}';
+        {$this->ind}    {$this->jsName}.prumoWebPath = '{$GLOBALS['pConfig']['prumoWebPath']}';
+        {$this->ind}    {$this->jsName}.parent = {$this->parentName};
+        
+        HTML;
         
         // passa informação dos fields do servidor para o filter
         $filterName = '';
@@ -157,12 +163,15 @@ class PrumoFilter
             }
         }
         
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.fieldName  = new Array($filterName);\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.fieldLabel = new Array($filterLabel);\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.fieldType  = new Array($filterType);\n";
-        $jsFilters .= "{$this->ind}\t{$this->jsName}.draw();\n";
-        $jsFilters .= "{$this->ind}\tdocument.pFilter.push({$this->jsName});\n";
-        $jsFilters .= "{$this->ind}</script>\n";
+        $jsFilters .= <<<HTML
+        {$this->ind}    {$this->jsName}.fieldName  = new Array($filterName);
+        {$this->ind}    {$this->jsName}.fieldLabel = new Array($filterLabel);
+        {$this->ind}    {$this->jsName}.fieldType  = new Array($filterType);
+        {$this->ind}    {$this->jsName}.draw();
+        {$this->ind}    document.pFilter.push({$this->jsName});
+        {$this->ind}</script>
+        
+        HTML;
         
         return $jsFilters;
     }

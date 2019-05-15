@@ -48,16 +48,19 @@ class Reminder
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
         
-        $sql  = 'SELECT' . "\n";
-        $sql .= '    r.id' . "\n";
-        $sql .= 'FROM ' . $this->schema . 'reminder r' . "\n";
-        $sql .= "JOIN generate_series(r.reminder_date, now()::date, (r.repeat_every || ' ' || r.repeat_interval)::interval) as g(datas) ON datas::date=now()::date" . "\n";
-        $sql .= 'WHERE repeat_every IS NOT NULL AND last_seen!=now()::date' . $whereId . ' AND username=' . pFormatSql($this->activeUser, 'string') . "\n";
-        $sql .= 'UNION' . "\n";
-        $sql .= 'SELECT ' . "\n";
-        $sql .= '    r.id' . "\n";
-        $sql .= 'FROM ' . $this->schema . 'reminder r' . "\n";
-        $sql .= 'WHERE repeat_every IS NULL AND last_seen!=now()::date AND r.reminder_date=now()::date ' . $whereId . ' AND username=' . pFormatSql($this->activeUser, 'string') . "\n";
+        $sqlActiveUser = pFormatSql($this->activeUser, 'string');
+        $sql = <<<SQL
+        SELECT
+            r.id
+        FROM {$this->schema}reminder r
+        JOIN generate_series(r.reminder_date, now()::date, (r.repeat_every || ' ' || r.repeat_interval)::interval) as g(datas) ON datas::date=now()::date
+        WHERE repeat_every IS NOT NULL AND last_seen!=now()::date$whereId AND username=$sqlActiveUser
+        UNION
+        SELECT
+            r.id
+        FROM {$this->schema}reminder r
+        WHERE repeat_every IS NULL AND last_seen!=now()::date AND r.reminder_date=now()::date $whereId AND username=$sqlActiveUser;
+        SQL;
         
         $reminders = $this->pConnection->sql2Array($sql);
         
@@ -66,17 +69,28 @@ class Reminder
             $sql = 'SELECT count(*) FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($reminder['id'], 'integer');
             $reminderExists = (bool) (int) $this->pConnection->sqlQuery($sql);
             
+            $sqlReminderId = pFormatSql($reminder['id'], 'integer');
             if ($reminderExists) {
-                $sql  = 'UPDATE ' . $this->schema . 'active_reminder SET ' . "\n";
-                $sql .= 'reminder_date=now()::date,' . "\n";
-                $sql .= 'show_at=now()' . "\n";
-                $sql .= 'WHERE id=' . pFormatSql($reminder['id'], 'integer');
+                $sql = <<<SQL
+                UPDATE {$this->schema}active_reminder
+                SET
+                    reminder_date=now()::date,
+                    show_at=now()
+                WHERE id=$sqlReminderId;
+                SQL;
             } else {
-                $sql  = 'INSERT INTO ' . $this->schema . 'active_reminder (id, reminder_date, show_at) VALUES (';
-                $sql .= '    ' . pFormatSql($reminder['id'], 'integer') . ',' . "\n";
-                $sql .= '    now()::date,' . "\n";
-                $sql .= '    now()' . "\n";
-                $sql .= ')';
+                $sql = <<<SQL
+                INSERT INTO {$this->schema}active_reminder (
+                    id,
+                    reminder_date,
+                    show_at
+                )
+                VALUES (
+                    $sqlReminderId,
+                    now()::date
+                    now()
+                );
+                SQL;
             }
             
             $this->pConnection->sqlQuery($sql);
@@ -98,28 +112,34 @@ class Reminder
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
         
-        $sql  = 'SELECT ' . "\n";
-        $sql .= '    r.id,' . "\n";
-        $sql .= '    r.event,' . "\n";
-        $sql .= '    r.description' . "\n";
-        $sql .= 'FROM ' . $this->schema . 'active_reminder ar' . "\n";
-        $sql .= 'JOIN ' . $this->schema . 'reminder r ON ar.id=r.id' . "\n";
-        $sql .= 'WHERE r.username=' . pFormatSql($this->activeUser, 'string') . $whereId . "\n";
-        $sql .= 'AND ar.reminder_date=now()::date AND ar.show_at <= now()';
+        $sqlActiveUser = pFormatSql($this->activeUser, 'string');
+        $sql = <<<SQL
+        SELECT 
+            r.id,
+            r.event,
+            r.description
+        FROM {$this->schema}active_reminder ar
+        JOIN {$this->schema}reminder r ON ar.id=r.id
+        WHERE r.username=$sqlActiveUser$whereId
+        AND ar.reminder_date=now()::date AND ar.show_at <= now()
+        SQL;
         
         $reminders = $this->pConnection->sql2Array($sql);
         
-        $html = '<script type="text/javascript">' . PHP_EOL;
-        $html .= "    pAjaxReminder = new prumoAjax('prumo/ajax_reminder.php');". PHP_EOL;
-        $html .= '    pAjaxReminder.process = function() {'. PHP_EOL;
-        $html .= '        var response = this.responseText.trim();' . PHP_EOL;
-        $html .= '        if (isNaN(response)) {' . PHP_EOL;
-        $html .= '            alert(response);' . PHP_EOL;
-        $html .= '        } else {' . PHP_EOL;
-        $html .= "            this.pWindow.hide();". PHP_EOL;
-        $html .= '        }' . PHP_EOL;
-        $html .= '    }'. PHP_EOL;
-        $html .= '</script>' . PHP_EOL;
+        $html = <<<HTML
+        <script type="text/javascript">
+            pAjaxReminder = new prumoAjax('prumo/ajax_reminder.php');
+            pAjaxReminder.process = function() {
+                var response = this.responseText.trim();
+                if (isNaN(response)) {
+                    alert(response);
+                } else {
+                    this.pWindow.hide();
+                }
+            }
+        </script>
+        
+        HTML;
         
         $i = 0;
         foreach ($reminders as $reminder) {
@@ -135,17 +155,19 @@ class Reminder
             $content .= '</div>' . PHP_EOL;
             
             $html .= $pWindowReminder->draw(false, $content) . PHP_EOL;
-            $html .= '<script type="text/javascript">' . PHP_EOL;
-            $html .= '    pWindow_event' . $reminder['id'].'.show(1);' . PHP_EOL;
-            $html .= '    function btDelete_'.$reminder['id'].'_click() {' . PHP_EOL;
-            $html .= '        pAjaxReminder.pWindow = pWindow_event' . $reminder['id'] . ';' . PHP_EOL;
-            $html .= '        pAjaxReminder.goAjax(\'action=delete&id=' . $reminder['id'] . '\');' . PHP_EOL;
-            $html .= '    }' . PHP_EOL;
-            $html .= '    function btPutOff_'.$reminder['id'].'_click() {' . PHP_EOL;
-            $html .= '        pAjaxReminder.pWindow = pWindow_event' . $reminder['id'] . ';' . PHP_EOL;
-            $html .= '        pAjaxReminder.goAjax(\'action=postpone&id=' . $reminder['id'] . '\');' . PHP_EOL;
-            $html .= '    }' . PHP_EOL;
-            $html .= '</script>' . PHP_EOL;
+            $html .= <<<HTML
+            <script type="text/javascript">
+                pWindow_event{$reminder['id']}.show(1);
+                function btDelete_{$reminder['id']}_click() {
+                    pAjaxReminder.pWindow = pWindow_event{$reminder['id']};
+                    pAjaxReminder.goAjax('action=delete&id={$reminder['id']}');
+                }
+                function btPutOff_{$reminder['id']}_click() {
+                    pAjaxReminder.pWindow = pWindow_event{$reminder['id']};
+                    pAjaxReminder.goAjax('action=postpone&id={$reminder['id']}');
+                }
+            </script>
+            HTML;
             
             $i++;
         }
@@ -165,8 +187,13 @@ class Reminder
      */
     public function postponeActive (int $id, int $hours = 1)
     {
-        $sql  = 'UPDATE ' . $this->schema . 'active_reminder SET show_at=now()+ \'' . pFormatSql($hours, 'integer') . ' hours\'' . "\n";
-        $sql .= 'WHERE id=' . pFormatSql($id, 'integer');
+        $sqlHours = pFormatSql($hours, 'integer');
+        $sqlId = pFormatSql($id, 'integer');
+        
+        $sql = <<<SQL
+        UPDATE {$this->schema}active_reminder SET show_at=now()+ '$sqlHours hours'
+        WHERE id=$sqlId;
+        SQL;
         
         $this->pConnection->sqlQuery($sql);
     }

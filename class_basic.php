@@ -147,11 +147,14 @@ class PrumoBasic
      * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
      * @param $fieldValue string: valor
      */
-    public function setFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='')
+    public function setFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='') : void
     {
-        echo '<script type="text/javascript">'."\n";
-        echo "    ".$this->name.".setFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
-        echo '</script>'."\n";
+        $html = <<<HTML
+        <script type="text/javascript">
+            {$this->name}.setFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');
+        </script>
+        HTML;
+        echo $html;
     }
     
     /**
@@ -163,9 +166,12 @@ class PrumoBasic
      */
     public function setInvisibleFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='')
     {
-        echo '<script type="text/javascript">'."\n";
-        echo "    ".$this->name.".setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');\n";
-        echo '</script>'."\n";
+        $html = <<<HTML
+        <script type="text/javascript">
+            {$this->name}.setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');
+        </script>
+        HTML;
+        echo $html;
     }
     
     /**
@@ -173,7 +179,7 @@ class PrumoBasic
      *
      * @param $ind string: tabs para indentação no lado do cliente
      */
-    public function setIndentation(string $ind)
+    public function setIndentation(string $ind) : void
     {
         $this->ind = $ind;
     }

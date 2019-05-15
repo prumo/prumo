@@ -44,16 +44,31 @@ if (isset($_POST['action']) && $_POST['action'] == 'write') {
     
         // adiciona os novos
         for ($i = 0; $i < count($groupName); $i++) {
-            $sql  = 'SELECT'."\n";
-            $sql .= '    count(*)'."\n";
-            $sql .= 'FROM '.$schema.'groups_syslogin'."\n";
-            $sql .= 'WHERE username='.pFormatSql($_POST['username'], 'string')."\n";
-            $sql .= 'AND groupname='.pFormatSql($groupName[$i], 'string')."\n";
+            
+            $sqlUserName = pFormatSql($_POST['username'], 'string');
+            $sqlGroupName = pFormatSql($groupName[$i], 'string');
+            
+            $sql = <<<SQL
+            SELECT
+                count(*)
+            FROM {$schema}groups_syslogin
+            WHERE username=$sqlUserName
+            AND groupname=$sqlGroupName
+            SQL;
+            
             if ($pConnectionPrumo->sqlQuery($sql) == 0) {
-                $sql  = 'INSERT INTO '.$schema.'groups_syslogin (username, groupname) VALUES ('."\n";
-                $sql .= '    '.pFormatSql($_POST['username'], 'string').','."\n";
-                $sql .= '    '.pFormatSql($groupName[$i], 'string')."\n";
-                $sql .= ');';
+                
+                $sql = <<<SQL
+                INSERT INTO {$schema}groups_syslogin (
+                    username,
+                    groupname
+                )
+                VALUES (
+                    $sqlUserName,
+                    $sqlGroupName
+                );
+                SQL;
+                
                 $pConnectionPrumo->sqlQuery($sql);
             }
         }

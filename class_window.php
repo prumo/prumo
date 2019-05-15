@@ -76,20 +76,27 @@ class PrumoWindow
     {
         $this->getObjName();
         
-        $pWindow  = "{$this->ind}<div class=\"prumoVeil\" id=\"{$this->getObjName()}_veil\"></div>\n";
-        $pWindow .= "{$this->ind}<div class=\"prumoWindow\" id=\"{$this->getObjName()}\">\n";
-        $pWindow .= "{$this->ind}\t<div class=\"prumoWindowTitle\" id=\"{$this->getObjName()}_titleBar\">\n";
+        $htmlObjName = $this->getObjName();
+        $htmlCommandClose = $this->getCommandClose();
+        $htmlDisplayBtClose = $this->showBtClose == false ? 'style="display:none"' : '';
         
-        $pWindow .= "{$this->ind}\t\t<div class=\"prumoWindowClose\" id=\"{$this->getObjName()}_close\"".($this->showBtClose == false ? 'style="display:none"' : '').">\n";
-        $pWindow .= "{$this->ind}\t\t\t<a href=\"javascript:{$this->getCommandClose()}\">\n";
-        $pWindow .= "{$this->ind}\t\t\t\t<img src=\"{$GLOBALS['pConfig']['prumoWebPath']}/images/close.png\" alt=\"[X]\" />\n";
-        $pWindow .= "{$this->ind}\t\t\t</a>\n";
-        $pWindow .= "{$this->ind}\t\t</div>\n";
-            
-        $pWindow .= "{$this->ind}\t\t<div id=\"{$this->getObjName()}_title\" class=\"prumoWindowTitle\" onmousedown=\"{$this->getObjName()}.move()\" onmouseup=\"{$this->getObjName()}.dropMove()\">titulo</div>\n";
-        $pWindow .= "{$this->ind}\t\t<div id=\"{$this->getObjName()}_loading\" class=\"prumoWindowLoading\"><img src=\"{$GLOBALS['pConfig']['prumoWebPath']}/images/loading.gif\" alt=\"\" /></div>\n";
-        $pWindow .= "{$this->ind}\t</div>\n";
-        $pWindow .= "{$this->ind}\t<div class=\"prumoWindowBody\">\n";
+        $pWindow = <<<HTML
+        {$this->ind}<div class="prumoVeil" id="{$htmlObjName}_veil"></div>
+        {$this->ind}<div class="prumoWindow" id="$htmlObjName">
+        {$this->ind}    <div class="prumoWindowTitle" id="{$htmlObjName}_titleBar">
+                
+        {$this->ind}        <div class="prumoWindowClose" id="{$htmlObjName}_close"$htmlDisplayBtClose>
+        {$this->ind}            <a href="javascript:$htmlCommandClose">
+        {$this->ind}                <img src="{$GLOBALS['pConfig']['prumoWebPath']}/images/close.png" alt="[X]" />
+        {$this->ind}            </a>
+        {$this->ind}        </div>
+                    
+        {$this->ind}        <div id="{$htmlObjName}_title" class="prumoWindowTitle" onmousedown="$htmlObjName.move()" onmouseup="$htmlObjName.dropMove()">titulo</div>
+        {$this->ind}        <div id="{$htmlObjName}_loading" class="prumoWindowLoading"><img src="{$GLOBALS['pConfig']['prumoWebPath']}/images/loading.gif" alt="" /></div>
+        {$this->ind}    </div>
+        {$this->ind}    <div class="prumoWindowBody">
+        
+        HTML;
         
         if ($verbose) {
             echo $pWindow;
@@ -107,22 +114,23 @@ class PrumoWindow
      */
     public function drawFooter(bool $verbose=true) : string
     {
-        $this->getObjName();
+        $htmlObjName = $this->getObjName();
         
-        $pWindow  = "{$this->ind}\t</div>\n";
-        $pWindow .= "{$this->ind}</div>\n";
+        $pWindow = <<<HTML
+        {$this->ind}    </div>
+        {$this->ind}</div>
+        {$this->ind}
+        {$this->ind}<script type="text/javascript">
+        {$this->ind}    $htmlObjName = new PrumoWindow('$htmlObjName');
+        {$this->ind}    $htmlObjName.width = {$this->width};
+        {$this->ind}    $htmlObjName.title = '{$this->title}';
+        {$this->ind}    $htmlObjName.align = '{$this->align}';
+        {$this->ind}    $htmlObjName.vAlign = '{$this->vAlign}';
+        {$this->ind}    $htmlObjName.afterHide = function() { {$this->jsAfterHide} }
+        {$this->ind}    document.pWindow.push($htmlObjName);
+        {$this->ind}</script>
         
-        $pWindow .= "{$this->ind}<script type=\"text/javascript\">\n";
-        $pWindow .= "{$this->ind}\t{$this->getObjName()} = new PrumoWindow('{$this->getObjName()}');\n";
-        $pWindow .= "{$this->ind}\t{$this->getObjName()}.width = {$this->width};\n";
-        $pWindow .= "{$this->ind}\t{$this->getObjName()}.title = '{$this->title}';\n";
-        $pWindow .= "{$this->ind}\t{$this->getObjName()}.align = '{$this->align}';\n";
-        $pWindow .= "{$this->ind}\t{$this->getObjName()}.vAlign = '{$this->vAlign}';\n";
-        if ($this->jsAfterHide != null) {
-            $pWindow .= "{$this->ind}\t{$this->getObjName()}.afterHide = function() { {$this->jsAfterHide} }\n";
-        }
-        $pWindow .= "{$this->ind}\tdocument.pWindow.push({$this->getObjName()});\n";
-        $pWindow .= "{$this->ind}</script>\n";
+        HTML;
         
         if ($verbose) {
             echo $pWindow;

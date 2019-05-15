@@ -66,17 +66,21 @@ if (! file_exists(dirname(__DIR__).'/prumo.php')) {
 if ($error > 0) {
     
     header('Content-type: text/html; charset=utf-8');
-    echo '<!DOCTYPE HTML>'."\n";
-    echo '<html>'."\n\n";
-    echo '<head>'."\n";
-    echo '    <title>Prumo Framework para PHP</title>'."\n";
-    echo '</head>'."\n";
-    echo '<body>'."\n";
+    echo <<<HTML
+    <!DOCTYPE HTML>
+    <html>
+
+    <head>
+        <title>Prumo Framework para PHP</title>
+    </head>
+    <body>
     
-    echo $txtError;
+    $txtError
     
-    echo '</body>'."\n";
-    echo '</html>'."\n";
+    </body>
+    </html>
+    HTML;
+    
     exit;
 }
 

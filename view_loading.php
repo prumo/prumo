@@ -16,10 +16,15 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-echo '<div id="pLoading" class="loading">';
-echo '<img src="'.$GLOBALS['pConfig']['prumoWebPath'].'/images/loading_bar.gif" alt="" /><br />'._('Carregando').'...';
-echo '</div>'."\n\n";
-echo '<script type="text/javascript">'."\n";
-echo '    pLoading = new prumoLoading(\'pLoading\');'."\n";
-echo '</script>'."\n";
+$htmlLabelLoading = _('Carregando');
 
+echo <<<HTML
+<div id="pLoading" class="loading">';
+<img src="{$GLOBALS['pConfig']['prumoWebPath']}/images/loading_bar.gif" alt="" /><br />$htmlLabelLoading...
+</div>
+
+<script type="text/javascript">
+    pLoading = new prumoLoading('pLoading');
+</script>
+
+HTML;

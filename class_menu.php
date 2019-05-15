@@ -192,24 +192,27 @@ class PrumoMenu
         $htmlMenu .= $this->ind.'</script>'."\n";
         
         // input menu
-        $sql  = 'SELECT'."\n";
-        $sql .= '    v.tree,'."\n";
-        $sql .= '    v.routine'."\n";
-        $sql .= 'FROM '.$schema.'v_menu v'."\n";
-        $sql .= 'JOIN '.$schema.'routines r ON r.routine=v.routine'."\n";
-        $sql .= 'JOIN '.$schema.'routines_groups rg ON rg.routine=r.routine'."\n";
-        $sql .= 'JOIN '.$schema.'groups g ON g.groupname=rg.groupname'."\n";
-        $sql .= 'JOIN '.$schema.'groups_syslogin gs ON gs.groupname=g.groupname'."\n";
-        $sql .= 'JOIN '.$schema.'syslogin s ON s.username=gs.username'."\n";
-        $sql .= 'WHERE r.enabled=\'t\''."\n";
-        $sql .= 'AND g.enabled=\'t\''."\n";
-        $sql .= 'AND s.enabled=\'t\''."\n";
-        $sql .= 'AND (rg.c=\'t\' OR rg.r=\'t\' OR rg.u=\'t\' OR rg.d=\'t\')'."\n";
-        $sql .= 'AND s.username='.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').''."\n";
-        $sql .= 'AND NOT v.tree IS NULL'."\n";
-        $sql .= 'AND v.type=\'view\''."\n";
-        $sql .= 'GROUP BY v.tree, v.routine'."\n";
-        $sql .= 'ORDER BY v.tree;';
+        $sqlUsername = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+        $sql = <<<SQL
+        SELECT
+            v.tree,
+            v.routine
+        FROM {$schema}v_menu v
+        JOIN {$schema}routines r ON r.routine=v.routine
+        JOIN {$schema}routines_groups rg ON rg.routine=r.routine
+        JOIN {$schema}groups g ON g.groupname=rg.groupname
+        JOIN {$schema}groups_syslogin gs ON gs.groupname=g.groupname
+        JOIN {$schema}syslogin s ON s.username=gs.username
+        WHERE r.enabled='t'
+        AND g.enabled='t'
+        AND s.enabled='t'
+        AND (rg.c='t' OR rg.r='t' OR rg.u='t' OR rg.d='t')
+        AND s.username=$sqlUsername
+        AND NOT v.tree IS NULL
+        AND v.type='view'
+        GROUP BY v.tree, v.routine
+        ORDER BY v.tree;
+        SQL;
         $queryMenu = $pConnectionPrumo->sql2Array($sql);
         
         $htmlImputMenu  = '<center>'."\n";
@@ -378,26 +381,28 @@ class PrumoMenu
         
         $schema = $pConnectionPrumo->getSchema();
         
-        $sql  = 'SELECT '."\n";
-        $sql .= '    r.menu_parent,'."\n";
-        $sql .= '    r.menu_label,'."\n";
-        $sql .= '    r.routine,'."\n";
-        $sql .= '    r.menu_icon,'."\n";
-        $sql .= '    r.link,'."\n";
-        $sql .= '    (SELECT count(*) FROM '.$schema.'routines WHERE menu_parent=r.routine) as childs'."\n";
-        $sql .= 'FROM '.$schema.'routines r'."\n";
-        $sql .= 'JOIN '.$schema.'routines_groups rg ON rg.routine=r.routine'."\n";
-        $sql .= 'JOIN '.$schema.'groups g ON g.groupname=rg.groupname'."\n";
-        $sql .= 'JOIN '.$schema.'groups_syslogin gs ON gs.groupname=g.groupname'."\n";
-        $sql .= 'JOIN '.$schema.'syslogin s ON s.username=gs.username'."\n";
-        $sql .= 'WHERE r.enabled=\'t\''."\n";
-        $sql .= 'AND g.enabled=\'t\''."\n";
-        $sql .= 'AND s.enabled=\'t\''."\n"; 
-        $sql .= 'AND (rg.c=\'t\' OR rg.r=\'t\' OR rg.u=\'t\' OR rg.d=\'t\')'."\n";
-        $sql .= 'AND s.username='.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string')."\n";
-        $sql .= 'GROUP BY r.menu_parent,r.menu_label,r.routine,r.menu_icon,r.link'."\n";
-        $sql .= 'ORDER BY r.menu_label'."\n";
-        $sql .= ';';
+        $sqlUsername = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+        $sql = <<<SQL
+        SELECT
+            r.menu_parent,
+            r.menu_label,
+            r.routine,
+            r.menu_icon,
+            r.link,
+            (SELECT count(*) FROM {$schema}routines WHERE menu_parent=r.routine) as childs
+        FROM {$schema}routines r
+        JOIN {$schema}routines_groups rg ON rg.routine=r.routine
+        JOIN {$schema}groups g ON g.groupname=rg.groupname
+        JOIN {$schema}groups_syslogin gs ON gs.groupname=g.groupname
+        JOIN {$schema}syslogin s ON s.username=gs.username
+        WHERE r.enabled='t'
+        AND g.enabled='t'
+        AND s.enabled='t'
+        AND (rg.c='t' OR rg.r='t' OR rg.u='t' OR rg.d='t')
+        AND s.username=$sqlUsername
+        GROUP BY r.menu_parent,r.menu_label,r.routine,r.menu_icon,r.link
+        ORDER BY r.menu_label;
+        SQL;
         
         $sqlResult = $pConnectionPrumo->sql2Array($sql);
         

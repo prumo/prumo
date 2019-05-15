@@ -186,10 +186,12 @@ class PrumoTab
      */
     public function showTab(bool $verbose, string $tabName) : string
     {
-        $js = ''."\n";
-        $js .= $this->ind.'<script type="text/javascript">'."\n";
-        $js .= $this->ind.'    '.$this->getObjName().'.showTab(\''.$tabName.'\');'."\n";
-        $js .= $this->ind.'</script>'."\n";
+        $htmlObjName = $this->getObjName();
+        $js = <<<HTML
+        {$this->ind}<script type="text/javascript">
+        {$this->ind}    $htmlObjName.showTab('$tabName');
+        {$this->ind}</script>
+        HTML;
         
         if ($verbose) {
             echo $js;

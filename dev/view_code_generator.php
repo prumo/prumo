@@ -42,11 +42,14 @@ for ($i = 0; $i < count($arrObjSearch); $i++) {
 $dataListObjSearch .= '                        </datalist>'."\n";
 
 //datalist routines
-$sql  = 'SELECT'."\n";
-$sql .= '    routine,'."\n";
-$sql .= '    description'."\n";
-$sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines'."\n";
-$sql .= 'WHERE enabled='.pFormatSql(true, 'boolean').';';
+$schema = $pConnectionPrumo->getSchema();
+$sql = <<<SQL
+SELECT
+    routine,
+    description
+FROM {$schema}routines
+WHERE enabled='t';
+SQL;
 $routine = $pConnectionPrumo->sql2Array($sql);
 
 $dataListRoutine = '<datalist id="list_routine">'."\n";
@@ -61,10 +64,13 @@ for ($i = 0; $i < count($routine); $i++) {
 $dataListRoutine .= '                    </datalist>'."\n";
 
 //datalist link do atalho para menu no PrumoSearch
-$sql  = 'SELECT'."\n";
-$sql .= '    routine,'."\n";
-$sql .= '    tree'."\n";
-$sql .= 'FROM '.$pConnectionPrumo->getSchema().'v_menu;';
+$schema = $pConnectionPrumo->getSchema();
+$sql = <<<SQL
+SELECT
+    routine,
+    tree
+FROM {$schema}v_menu;
+SQL;
 $menu = $pConnectionPrumo->sql2Array($sql);
 
 $dataListMenuShortcut = '<datalist id="list_menu" style="{width:600px}">'."\n";

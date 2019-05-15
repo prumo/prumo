@@ -75,22 +75,25 @@ function loadPermission()
     
     $schema = $pConnectionPrumo->getSchema();
     
-    $sql  = 'SELECT '."\n";
-    $sql .= '    r.routine,'."\n";
-    $sql .= '    sum(CASE WHEN c=\'t\' THEN 1 ELSE 0 END) as c,'."\n";
-    $sql .= '    sum(CASE WHEN r=\'t\' THEN 1 ELSE 0 END) as r,'."\n";
-    $sql .= '    sum(CASE WHEN u=\'t\' THEN 1 ELSE 0 END) as u,'."\n";
-    $sql .= '    sum(CASE WHEN d=\'t\' THEN 1 ELSE 0 END) as d'."\n";
-    $sql .= 'FROM '.$schema.'routines r'."\n";
-    $sql .= 'JOIN '.$schema.'routines_groups rg ON rg.routine=r.routine'."\n";
-    $sql .= 'JOIN '.$schema.'groups_syslogin gs ON gs.groupname=rg.groupname'."\n";
-    $sql .= 'JOIN '.$schema.'groups g ON g.groupname=rg.groupname'."\n";
-    $sql .= 'JOIN '.$schema.'syslogin s ON s.username=gs.username'."\n";
-    $sql .= 'WHERE r.enabled=\'t\''."\n";
-    $sql .= 'AND g.enabled=\'t\''."\n";
-    $sql .= 'AND s.enabled=\'t\''."\n";
-    $sql .= 'AND gs.username=\''.$GLOBALS['prumoGlobal']['currentUser'].'\''."\n";
-    $sql .= 'GROUP BY r.routine;'."\n";
+    $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+    $sql = <<<SQL
+    SELECT
+        r.routine,
+        sum(CASE WHEN c='t' THEN 1 ELSE 0 END) as c,
+        sum(CASE WHEN r='t' THEN 1 ELSE 0 END) as r,
+        sum(CASE WHEN u='t' THEN 1 ELSE 0 END) as u,
+        sum(CASE WHEN d='t' THEN 1 ELSE 0 END) as d
+    FROM {$schema}routines r
+    JOIN {$schema}routines_groups rg ON rg.routine=r.routine
+    JOIN {$schema}groups_syslogin gs ON gs.groupname=rg.groupname
+    JOIN {$schema}groups g ON g.groupname=rg.groupname
+    JOIN {$schema}syslogin s ON s.username=gs.username
+    WHERE r.enabled='t'
+    AND g.enabled='t'
+    AND s.enabled='t'
+    AND gs.username=$sqlUserName
+    GROUP BY r.routine;
+    SQL;
     
     $prumoPermission = $pConnectionPrumo->sql2Array($sql);
 }
@@ -105,16 +108,23 @@ function pLogAcessDenied(string $routine, string $permission)
 {
     global $pConnectionPrumo;
     
-    $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'acess_denied ('."\n";
-    $sql .= '    username,'."\n";
-    $sql .= '    routine,'."\n";
-    $sql .= '    permission'."\n";
-    $sql .= ')'."\n";
-    $sql .= 'VALUES ('."\n";
-    $sql .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
-    $sql .= '    '.pFormatSql($routine, 'string').','."\n";
-    $sql .= '    '.pFormatSql($permission, 'string')."\n";
-    $sql .= ');';
+    $sqlSchema = $pConnectionPrumo->getSchema();
+    $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+    $sqlRoutine = pFormatSql($routine, 'string');
+    $sqlPermission = pFormatSql($permission, 'string');
+    
+    $sql = <<<SQL
+    INSERT INTO {$sqlSchema}acess_denied (
+        username,
+        routine,
+        permission
+    )
+    VALUES (
+        $sqlUserName,
+        $sqlRoutine,
+        $sqlPermission
+    );
+    SQL;
     
     $pConnectionPrumo->sqlQuery($sql);
 }
@@ -156,41 +166,54 @@ function writeAppUpdate(string $fileName)
     global $pConnectionPrumo;
     
     //verifica se a tabela existe na base de dados, caso não existe, cria
-    $sql  = 'SELECT'."\n";
-    $sql .= '    count(*)'."\n";
-    $sql .= 'FROM information_schema.tables'."\n";
-    $sql .= 'WHERE table_schema='.pFormatSql($GLOBALS['pConfig']['loginSchema_prumo'],'string')."\n";
-    $sql .= 'AND table_name=\'update_db_app\';';
+    $sqlTableSchema = pFormatSql($GLOBALS['pConfig']['loginSchema_prumo'],'string');
+    $sql = <<<SQL
+    SELECT
+        count(*)
+    FROM information_schema.tables
+    WHERE table_schema=$sqlTableSchema
+    AND table_name='update_db_app';
+    SQL;
     $table = $pConnection->sqlQuery($sql);
     
     if (! $table) {
         
-        $sql  = 'CREATE TABLE '.$pConnectionPrumo->getSchema().'update_db_app'."\n";
-        $sql .= '('."\n";
-        $sql .= '  file_name character varying(100) NOT NULL,'."\n";
-        $sql .= '  usr_login character varying(40),'."\n";
-        $sql .= '  date_time timestamp without time zone NOT NULL DEFAULT now(),'."\n";
-        $sql .= '  CONSTRAINT update_db_app_pkey PRIMARY KEY (file_name)'."\n";
-        $sql .= ')'."\n";
-        $sql .= 'WITH ('."\n";
-        $sql .= '  OIDS=FALSE'."\n";
-        $sql .= ');';
+        $sqlSchema = $pConnectionPrumo->getSchema();
+        
+        $sql = <<<SQL
+        CREATE TABLE {$sqlSchema}update_db_app
+        (
+          file_name character varying(100) NOT NULL,
+          usr_login character varying(40),
+          date_time timestamp without time zone NOT NULL DEFAULT now(),
+          CONSTRAINT update_db_app_pkey PRIMARY KEY (file_name)
+        )
+        WITH (
+          OIDS=FALSE
+        );
+        SQL;
         
         $pConnection->sqlQuery($sql);
     }
     
     if (! empty($fileName)) {
         
-        $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'update_db_app ('."\n";
-        $sql .= '    file_name,'."\n";
-        $sql .= '    usr_login,'."\n";
-        $sql .= '    date_time'."\n";
-        $sql .= ')'."\n";
-        $sql .= 'VALUES ('."\n";
-        $sql .= '    '.pFormatSql($fileName,'string').','."\n";
-        $sql .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'],'string').','."\n";
-        $sql .= '    now()'."\n";
-        $sql .= ');'."\n";
+        $sqlSchema = $pConnectionPrumo->getSchema();
+        $sqlFileName = pFormatSql($fileName, 'string');
+        $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+        
+        $sql = <<<SQL
+        INSERT INTO {$sqlSchema}update_db_app (
+            file_name,
+            usr_login,
+            date_time
+        )
+        VALUES (
+            $sqlFileName,
+            $sqlUserName,
+            now()
+        );
+        SQL;
         
         $pConnection->sqlQuery($sql);
     }
@@ -449,29 +472,38 @@ function pAuditLog(string $routine, string $objName, string $sqlCommand, string 
     require_once __DIR__.'/ctrl_connection_admin.php';
     
     if ($pConnectionPrumo->sgdb() == 'sqlite3') {
-        $now = 'datetime(\'now\')';
+        $sqlNow = 'datetime(\'now\')';
+    } else if ($pConnectionPrumo->sgdb() == 'pgsql') {
+        $sqlNow = 'now()';
+    } else {
+        throw new Exception(_('SGDB desconhecido'));
     }
     
-    if ($pConnectionPrumo->sgdb() == 'pgsql') {
-        $now = 'now()';
-    }
+    $sqlSchema = $pConnectionPrumo->getSchema();
+    $sqlRoutine = pFormatSql($routine, 'string');
+    $sqlObjName = pFormatSql($objName, 'string');
+    $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+    $sqlPrumoMethod = pFormatSql($crud, 'string');
+    $sqlStatement = pFormatSql($sqlCommand, 'string');
     
-    $sqlAuditLog  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'log_sql ('."\n";
-    $sqlAuditLog .= '    routine,'."\n";
-    $sqlAuditLog .= '    log_timestamp,'."\n";
-    $sqlAuditLog .= '    log_obj_name,'."\n";
-    $sqlAuditLog .= '    usr_login,'."\n";
-    $sqlAuditLog .= '    log_prumo_method,'."\n";
-    $sqlAuditLog .= '    log_statement'."\n";
-    $sqlAuditLog .= ')'."\n";
-    $sqlAuditLog .= 'VALUES('."\n";
-    $sqlAuditLog .= '    '.pFormatSql($routine, 'string').','."\n";
-    $sqlAuditLog .= '    '.$now.','."\n";
-    $sqlAuditLog .= '    '.pFormatSql($objName, 'string').','."\n";
-    $sqlAuditLog .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
-    $sqlAuditLog .= '    '.pFormatSql($crud, 'string').','."\n";
-    $sqlAuditLog .= '    '.pFormatSql($sqlCommand, 'string')."\n";
-    $sqlAuditLog .= ');'."\n";
+    $sqlAuditLog  = <<<SQL
+    INSERT INTO {$sqlSchema}log_sql (
+        routine,
+        log_timestamp,
+        log_obj_name,
+        usr_login,
+        log_prumo_method,
+        log_statement
+    )
+    VALUES(
+        $sqlRoutine,
+        $sqlNow,
+        $sqlObjName,
+        $sqlUserName,
+        $sqlPrumoMethod,
+        $sqlStatement
+    );
+    SQL;
     
     $sqlOk = $pConnectionPrumo->sqlQuery($sqlAuditLog, true);
     

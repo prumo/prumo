@@ -106,21 +106,30 @@ if ($_POST['update'] == 'framework') {
             $pConnectionPrumo->sqlQuery($sql);
             
             //marca o script como atualizado
-            $sql  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'update_framework ('."\n";
-            $sql .= '    file_name,'."\n";
-            $sql .= '    usr_login,'."\n";
-            $sql .= '    date_time'."\n";
-            $sql .= ')'."\n";
-            $sql .= 'VALUES ('."\n";
-            $sql .= '    '.pFormatSql($scriptUpdateNew[$i],'string').','."\n";
-            $sql .= '    '.pFormatSql($prumoGlobal['currentUser'],'string').','."\n";
             if ($pConnectionPrumo->sgdb() == 'pgsql') {
-                $sql .= '    now()'."\n";
+                $sqlNow = 'now()';
+            } else if ($pConnectionPrumo->sgdb() == 'sqlite3') {
+                $sqlNow = 'CURRENT_TIMESTAMP';
+            } else {
+                throw new Exception(_('SGDB desconhecido!'));
             }
-            if ($pConnectionPrumo->sgdb() == 'sqlite3') {
-                $sql .= '    CURRENT_TIMESTAMP'."\n";
-            }
-            $sql .= ');'."\n";
+            
+            $sqlSchema = $pConnectionPrumo->getSchema();
+            $sqlFileName = pFormatSql($scriptUpdateNew[$i], 'string');
+            $sqlLogin = pFormatSql($prumoGlobal['currentUser'], 'string');
+            
+            $sql = <<<SQL
+            INSERT INTO {$sqlSchema}update_framework (
+                file_name,
+                usr_login,
+                date_time
+            )
+            VALUES (
+                $sqlFileName,
+                $sqlLogin,
+                $sqlNow
+            );
+            SQL;
             
             $pConnectionPrumo->sqlQuery($sql);
         }

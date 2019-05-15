@@ -179,11 +179,14 @@ class PrumoGrid
      */
     private function clientObject() : string
     {
-        $client  = "{$this->ind}<script type=\"text/javascript\">\n";
-        $client .= "{$this->ind}\t{$this->jsName} = new PrumoGrid('{$this->jsName}');\n";
-        $client .= "{$this->ind}\t{$this->jsName}.lines = {$this->lines};\n";
-        $client .= "{$this->ind}\tdocument.pGrid.push({$this->jsName});\n";
-        $client .= "{$this->ind}</script>\n";
+        $client = <<<HTML
+        {$this->ind}<script type=text/javascript>
+        {$this->ind}    {$this->jsName} = new PrumoGrid('{$this->jsName}');
+        {$this->ind}    {$this->jsName}.lines = {$this->lines};
+        {$this->ind}    document.pGrid.push({$this->jsName});
+        {$this->ind}</script>
+        
+        HTML;
         
         return $client;
     }

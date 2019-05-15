@@ -67,10 +67,13 @@ class PrumoQueue extends PrumoSearch
         $pSearchChilds = $this->addWindow($pSearchChilds);
         
         // muda o evento click
-        $pQueue = "\n";
-        $pQueue .= '<script type="text/javascript">'."\n";
-        $pQueue .= '    '.$this->name.'.pGrid.lineEventOnData = \''.$this->name.'.lineClick(%)\';'."\n";
-        $pQueue .= '</script>'."\n";
+        $pQueue = <<<HTML
+        
+        <script type="text/javascript">
+            {$this->name}.pGrid.lineEventOnData = '{$this->name}.lineClick(%)';
+        </script>
+        
+        HTML;
         
         $pSearch = $pSearchInit . $pSearchChilds . $pQueue;
         

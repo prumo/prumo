@@ -313,12 +313,15 @@ class PrumoSearch extends PrumoBasic
         
         if (isset($this->param['menushortcut']) && pPermitted($this->param['menushortcut'], 'c')) {
             
-            $sql  = 'SELECT'."\n";
-            $sql .= '    routine,'."\n";
-            $sql .= '    link'."\n";
-            $sql .= 'FROM '.$pConnectionPrumo->getSchema().'routines'."\n";
-            $sql .= 'WHERE routine='.pFormatSql($this->param['menushortcut'], 'string').';';
-            
+            $schema = $pConnectionPrumo->getSchema();
+            $routine = pFormatSql($this->param['menushortcut'], 'string');
+            $sql = <<<SQL
+            SELECT
+                routine,
+                link
+            FROM {$schema}routines
+            WHERE routine=$routine;
+            SQL;
             $query = $pConnectionPrumo->fetchAssoc($sql);
             
             $isHttp = strtolower(substr($query['link'], 0, 4)) == 'http';

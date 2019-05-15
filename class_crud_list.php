@@ -136,9 +136,11 @@ class PrumoCrudList extends PrumoSearch
      */
     private function makeCrudLink() : string
     {
-        $htmlCrudLink  = "{$this->ind}\t\t<script type=\"text/javascript\">\n";
-        $htmlCrudLink .= "{$this->ind}\t\t\t{$this->param['crudname']}.pCrudList = {$this->name};\n";
-        $htmlCrudLink .= "{$this->ind}\t\t</script>\n";
+        $htmlCrudLink = <<<HTML
+        {$this->ind}        <script type="text/javascript">
+        {$this->ind}           {$this->param['crudname']}.pCrudList = {$this->name};
+        {$this->ind}        </script>
+        HTML;
         
         return $htmlCrudLink;
     }

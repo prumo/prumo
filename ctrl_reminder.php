@@ -40,19 +40,23 @@ $crudReminder->pCrudList->addField('name=reminder_date,label='._('Lembrar em').'
 $crudReminder->pCrudList->addField('name=repeat,label='._('Repetir a cada').'');
 $crudReminder->pCrudList->addField('name=id,label='._('Código').',visible=false,pk');
 
-$sql  = 'SELECT'."\n";
-$sql .= '    id,'."\n";
-$sql .= '    event,'."\n";
-$sql .= '    reminder_date,'."\n";
-$sql .= "    repeat_every || ' ' || "."\n";
-$sql .= '    CASE'."\n";
-$sql .= "        WHEN repeat_interval='days' THEN 'dias' "."\n";
-$sql .= "        WHEN repeat_interval='months' THEN 'mêses' "."\n";
-$sql .= "        WHEN repeat_interval = 'years' THEN 'anos' "."\n";
-$sql .= "        ELSE 'desconhecido' "."\n";
-$sql .= '    END as repeat'."\n";
-$sql .= 'FROM ' . $pConnectionPrumo->getSchema($GLOBALS['pConfig']['loginSchema_prumo']) . 'reminder'."\n";
-$sql .= 'WHERE username=' . pFormatSql($username, 'string');
+$sqlSchema = $pConnectionPrumo->getSchema($GLOBALS['pConfig']['loginSchema_prumo']);
+$sqlUserName = pFormatSql($username, 'string');
+$sql = <<<SQL
+SELECT
+    id,
+    event,
+    reminder_date,
+    repeat_every || ' ' ||
+    CASE
+        WHEN repeat_interval='days' THEN 'dias'
+        WHEN repeat_interval='months' THEN 'mêses'
+        WHEN repeat_interval = 'years' THEN 'anos'
+        ELSE 'desconhecido'
+    END as repeat
+FROM {$sqlSchema}reminder
+WHERE username=$sqlUserName
+SQL;
 $crudReminder->pCrudList->setSqlSearch($sql);
 
 $crudReminder->autoInit();

@@ -27,59 +27,80 @@ if (pPermitted('prumo_devtools') && $pConnectionPrumo->sgdb() == 'pgsql') {
         'SELECT * FROM '.$schema.'routines WHERE routine='.pFormatSql($_POST['routine'], 'string').';'
     );
     
-    $sql  = 'INSERT INTO prumo.routines ('."\n";
-    $sql .= '    routine,'."\n";
-    $sql .= '    link,'."\n";
-    $sql .= '    enabled,'."\n";
-    $sql .= '    description,'."\n";
-    $sql .= '    menu_parent,'."\n";
-    $sql .= '    menu_label,'."\n";
-    $sql .= '    menu_icon,'."\n";
-    $sql .= '    type,'."\n";
-    $sql .= '    audit'."\n";
-    $sql .= ')'."\n";
-    $sql .= '('."\n";
-    $sql .= '    SELECT'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['routine'], 'string').' as routine,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['link'], 'string').' as link,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['enabled'], 'boolean').' as enabled,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['description'], 'string').' as description,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['menu_parent'], 'string').' as menu_parent,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['menu_label'], 'string').' as menu_label,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['menu_icon'], 'string').' as menu_icon,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['type'], 'string').' as type,'."\n";
-    $sql .= '        '.pFormatSql($queryRoutine['audit'], 'boolean').' as audit'."\n";
-    $sql .= '    WHERE NOT EXISTS ('."\n";
-    $sql .= '        SELECT routine FROM prumo.routines WHERE routine='.pFormatSql($queryRoutine['routine'], 'string')."\n";
-    $sql .= '    )'."\n";
-    $sql .= ');';
+    $sqlRoutine = pFormatSql($queryRoutine['routine'], 'string');
+    $sqlLink = pFormatSql($queryRoutine['link'], 'string');
+    $sqlEnabled = pFormatSql($queryRoutine['enabled'], 'boolean');
+    $sqlDescription = pFormatSql($queryRoutine['description'], 'string');
+    $sqlMenuParent = pFormatSql($queryRoutine['menu_parent'], 'string');
+    $sqlMenuLabel = pFormatSql($queryRoutine['menu_label'], 'string');
+    $sqlMenuIcon = pFormatSql($queryRoutine['menu_icon'], 'string');
+    $sqlType = pFormatSql($queryRoutine['type'], 'string');
+    $sqlAudit = pFormatSql($queryRoutine['audit'], 'boolean');
+    
+    $sql = <<<SQL
+    INSERT INTO prumo.routines (
+        routine,
+        link,
+        enabled,
+        description,
+        menu_parent,
+        menu_label,
+        menu_icon,
+        type,
+        audit
+    )
+    (
+        SELECT
+            $sqlRoutine as routine,
+            $sqlLink as link,
+            $sqlEnabled as enabled,
+            $sqlDescription as description,
+            $sqlMenuParent as menu_parent,
+            $sqlMenuLabel as menu_label,
+            $sqlMenuIcon as menu_icon,
+            $sqlType as type,
+            $sqlAudit as audit
+        WHERE NOT EXISTS (
+            SELECT routine FROM prumo.routines WHERE routine=$sqlRoutine
+        )
+    );
+    SQL;
     
     $queryRoutineGroup = $pConnectionPrumo->sql2Array(
         'SELECT * FROM '.$schema.'routines_groups WHERE routine='.pFormatSql($_POST['routine'], 'string').';'
     );
     
     for ($i=0; $i < count($queryRoutineGroup); $i++) {
-        $sql .= "\n";
-        $sql .= 'INSERT INTO prumo.routines_groups ('."\n";
-        $sql .= '    routine,'."\n";
-        $sql .= '    groupname,'."\n";
-        $sql .= '    c,'."\n";
-        $sql .= '    r,'."\n";
-        $sql .= '    u,'."\n";
-        $sql .= '    d'."\n";
-        $sql .= ')'."\n";
-        $sql .= '('."\n";
-        $sql .= '    SELECT'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['routine'], 'string').' as routine,'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['groupname'], 'string').' as groupname,'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['c'], 'boolean').' as c,'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['r'], 'boolean').' as r,'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['u'], 'boolean').' as u,'."\n";
-        $sql .= '       '.pFormatSql($queryRoutineGroup[$i]['d'], 'boolean').' as d'."\n";
-        $sql .= '    WHERE NOT EXISTS ('."\n";
-        $sql .= '        SELECT routine FROM prumo.routines_groups WHERE routine='.pFormatSql($queryRoutineGroup[$i]['routine'], 'string')."\n";
-        $sql .= '    )'."\n";
-        $sql .= ');'."\n";
+    
+        $sqlRoutine = pFormatSql($queryRoutineGroup[$i]['routine'], 'string');
+        $sqlGroupName = pFormatSql($queryRoutineGroup[$i]['groupname'], 'string');
+        $sqlC = pFormatSql($queryRoutineGroup[$i]['c'], 'boolean');
+        $sqlR = pFormatSql($queryRoutineGroup[$i]['r'], 'boolean');
+        $sqlU = pFormatSql($queryRoutineGroup[$i]['u'], 'boolean');
+        $sqlD = pFormatSql($queryRoutineGroup[$i]['d'], 'boolean');
+        
+        $sql = <<<SQL
+        INSERT INTO prumo.routines_groups (
+            routine,
+            groupname,
+            c,
+            r,
+            u,
+            d
+        )
+        (
+            SELECT
+               $sqlRoutine as routine,
+               $sqlGroupName as groupname,
+               $sqlC as c,
+               $sqlR as r,
+               $sqlU as u,
+               $sqlD as d
+            WHERE NOT EXISTS (
+                SELECT routine FROM prumo.routines_groups WHERE routine=$sqlRoutine
+            )
+        );
+        SQL;
     }
     
     echo str_replace(" ", '&nbsp;', str_replace("\n", "<br>\n", $sql));

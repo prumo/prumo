@@ -163,27 +163,35 @@ class PrumoConnection
             ) {
                 
                 if ($pConnectionPrumo->sgdb() == 'sqlite3') {
-                    $now = 'datetime(\'now\')';
+                    $sqlNow = 'datetime(\'now\')';
+                } else if ($pConnectionPrumo->sgdb() == 'pgsql') {
+                    $sqlNow = 'now()';
+                } else {
+                    throw new Exception(_('SGDB desconhecido'));
                 }
                 
-                if ($pConnectionPrumo->sgdb() == 'pgsql') {
-                    $now = 'now()';
-                }
+                $sqlSchema = $pConnectionPrumo->getSchema();
+                $sqlObjName = $this->getObjName();
+                $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+                $sqlMethod = pFormatSql($method, 'string');
+                $sqlSql = pFormatSql($sql, 'string');
                 
-                $sqlLog  = 'INSERT INTO '.$pConnectionPrumo->getSchema().'log_sql ('."\n";
-                $sqlLog .= '    log_timestamp,'."\n";
-                $sqlLog .= '    log_obj_name,'."\n";
-                $sqlLog .= '    usr_login,'."\n";
-                $sqlLog .= '    log_prumo_method,'."\n";
-                $sqlLog .= '    log_statement'."\n";
-                $sqlLog .= ')'."\n";
-                $sqlLog .= 'VALUES('."\n";
-                $sqlLog .= '    '.$now.','."\n";
-                $sqlLog .= '    '.pFormatSql($this->getObjName(), 'string').','."\n";
-                $sqlLog .= '    '.pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string').','."\n";
-                $sqlLog .= '    '.pFormatSql($method, 'string').','."\n";
-                $sqlLog .= '    '.pFormatSql($sql, 'string')."\n";
-                $sqlLog .= ');'."\n";
+                $sqlLog = <<<SQL
+                INSERT INTO {$sqlSchema}log_sql (
+                    log_timestamp,
+                    log_obj_name,
+                    usr_login,
+                    log_prumo_method,
+                    log_statement
+                )
+                VALUES(
+                    $sqlNow,
+                    $sqlObjName,
+                    $sqlUserName,
+                    $sqlMethod,
+                    $sqlSql
+                );
+                SQL;
                 
                 $pConnectionPrumo->sqlQuery($sqlLog, true);
             }
