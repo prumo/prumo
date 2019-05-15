@@ -19,7 +19,7 @@
 $htmlLabelLoading = _('Carregando');
 
 echo <<<HTML
-<div id="pLoading" class="loading">';
+<div id="pLoading" class="loading">
 <img src="{$GLOBALS['pConfig']['prumoWebPath']}/images/loading_bar.gif" alt="" /><br />$htmlLabelLoading...
 </div>
 
