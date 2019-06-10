@@ -51,17 +51,32 @@ if ($_POST['update'] == 'app') {
             
             sort($scriptUpdateNew);
             
-            // Executa os scripts sql novos
-            for ($i = 0; $i < count($scriptUpdateNew); $i++) {
+            if (count($scriptUpdateNew) > 0) {
                 
-                $inclusionFile = $scriptUpdateDir.$scriptUpdateNew[$i];
-                $sql = '';
-                include $inclusionFile;
+                $pConnection->sqlQuery('BEGIN;');
                 
-                $pConnection->sqlQuery($sql);
+                // Executa os scripts sql novos
+                for ($i = 0; $i < count($scriptUpdateNew); $i++) {
+                    
+                    $inclusionFile = $scriptUpdateDir.$scriptUpdateNew[$i];
+                    $sql = '';
+                    include $inclusionFile;
+                    
+                    echo _('Executando atualização: ').$scriptUpdateNew[$i].'...';
+                    $result = $pConnection->sqlQuery($sql);
+                    if ($result === false) {
+                        $pConnection->sqlQuery('ROLLBACK;');
+                        echo "\n";
+                        echo $pConnection->getErr();
+                        break;
+                    } else {
+                        //marca o script como atualizado
+                        writeAppUpdate($scriptUpdateNew[$i]);
+                        echo "OK\n";
+                    }
+                }
                 
-                //marca o script como atualizado
-                writeAppUpdate($scriptUpdateNew[$i]);
+                $pConnection->sqlQuery('COMMIT;');
             }
         }
     }
