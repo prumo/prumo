@@ -62,7 +62,7 @@ if ($_POST['update'] == 'app') {
                     $sql = '';
                     include $inclusionFile;
                     
-                    echo _('Executando atualização: ').$scriptUpdateNew[$i].'...';
+                    echo _('Executando atualização de banco de dados: ').$scriptUpdateNew[$i].'...';
                     $result = $pConnection->sqlQuery($sql);
                     if ($result === false) {
                         $pConnection->sqlQuery('ROLLBACK;');
