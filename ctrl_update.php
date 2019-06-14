@@ -29,9 +29,10 @@ if ($_POST['update'] == 'app') {
         echo _('É necessário configurar o comando de atualização da aplicação no painel de controle');
     } else {
         
-        $return = shell_exec($GLOBALS['pConfig']['scriptUpdateApp']);
+        echo shell_exec($GLOBALS['pConfig']['scriptUpdateApp']);
+        echo "\n";
         
-        sleep(1);
+        usleep(250000);
         
         // prepara a lista de arquivos na pasta de atualização da aplicação
         $scriptUpdateDir = dirname(__DIR__).'/updatedb/';
@@ -80,8 +81,6 @@ if ($_POST['update'] == 'app') {
             }
         }
     }
-    
-    echo $return;
 }
 
 // Atualiza Framework
