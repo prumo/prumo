@@ -87,7 +87,7 @@ class Reminder
                 )
                 VALUES (
                     $sqlReminderId,
-                    now()::date
+                    now()::date,
                     now()
                 );
                 SQL;
