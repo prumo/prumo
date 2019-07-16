@@ -171,7 +171,7 @@ class PrumoConnection
                 }
                 
                 $sqlSchema = $pConnectionPrumo->getSchema();
-                $sqlObjName = $this->getObjName();
+                $sqlObjName = pFormatSql($this->getObjName(), 'string');
                 $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
                 $sqlMethod = pFormatSql($method, 'string');
                 $sqlSql = pFormatSql($sql, 'string');
