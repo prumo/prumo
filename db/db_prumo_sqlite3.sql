@@ -112,7 +112,6 @@ CREATE TABLE prumo_reminder
 CREATE TABLE prumo_active_reminder
 (
 	id integer PRIMARY KEY NOT NULL,
-	reminder_date DATE NOT NULL,
 	show_at DATETIME NOT NULL,
 	FOREIGN KEY (id) REFERENCES prumo_reminder (id) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE
 );

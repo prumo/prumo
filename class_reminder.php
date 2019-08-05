@@ -22,7 +22,7 @@ class Reminder
     protected $schema;
     protected $activeUser;
     
-    public function __construct (PrumoConnection $connection)
+    public function __construct(PrumoConnection $connection)
     {
         $this->setConnection($connection);
         $this->schema = $this->pConnection->getSchema($GLOBALS['pConfig']['loginSchema_prumo']);
@@ -32,67 +32,54 @@ class Reminder
     /**
      * Define a conexão com o banco de dados
      *
-     * @param $connection object: PrumoConnection já instanciado e configurado
+     * @param $connection PrumoConnection: PrumoConnection já instanciado e configurado
      */
-    public function setConnection (PrumoConnection $connection)
+    public function setConnection(PrumoConnection $connection)
     {
         $this->pConnection = $connection;
     }
     
     /**
      * Verifica pelos lembretes a serem mostrados na data atual e os salva na tabela de lembretes ativos
-     *  
+     *
      * @param integer $id Para verificar um lembrete específico
      */
-    public function verify (int $id = null)
+    public function verify(int $id = null)
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
-        
-        $sqlActiveUser = pFormatSql($this->activeUser, 'string');
+
         $sql = <<<SQL
         SELECT
-            r.id
+            r.id,
+            g.data as reminder_date
         FROM {$this->schema}reminder r
-        JOIN generate_series(r.reminder_date, now()::date, (r.repeat_every || ' ' || r.repeat_interval)::interval) as g(datas) ON datas::date=now()::date
-        WHERE repeat_every IS NOT NULL AND last_seen!=now()::date$whereId AND username=$sqlActiveUser
+        JOIN LATERAL generate_series(r.reminder_date, (now() + '1 month'::interval)::date, (r.repeat_every || ' ' || r.repeat_interval)::interval) as g(data) ON true
+        WHERE repeat_every IS NOT NULL AND last_seen!=now()::date AND g.data::date >= now()::date AND
+              r.id NOT IN (SELECT id FROM {$this->schema}active_reminder) $whereId
         UNION
         SELECT
-            r.id
+            r.id,
+            r.reminder_date
         FROM {$this->schema}reminder r
-        WHERE repeat_every IS NULL AND last_seen!=now()::date AND r.reminder_date=now()::date $whereId AND username=$sqlActiveUser;
+        WHERE repeat_every IS NULL AND last_seen!=now()::date AND
+              r.reminder_date IN (SELECT generate_series(now(), (now() + '1 month'::interval)::date, ('1 day')::interval)) AND
+              r.id NOT IN (SELECT id FROM {$this->schema}active_reminder) $whereId
         SQL;
-        
         $reminders = $this->pConnection->sql2Array($sql);
-        
+
         foreach ($reminders as $reminder) {
-            
-            $sql = 'SELECT count(*) FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($reminder['id'], 'integer');
-            $reminderExists = (bool) (int) $this->pConnection->sqlQuery($sql);
-            
             $sqlReminderId = pFormatSql($reminder['id'], 'integer');
-            if ($reminderExists) {
-                $sql = <<<SQL
-                UPDATE {$this->schema}active_reminder
-                SET
-                    reminder_date=now()::date,
-                    show_at=now()
-                WHERE id=$sqlReminderId;
-                SQL;
-            } else {
-                $sql = <<<SQL
+            $date = $reminder['reminder_date'];
+            $sql = <<<SQL
                 INSERT INTO {$this->schema}active_reminder (
                     id,
-                    reminder_date,
                     show_at
                 )
                 VALUES (
                     $sqlReminderId,
-                    now()::date,
-                    now()
+                    '$date'
                 );
-                SQL;
-            }
-            
+            SQL;
             $this->pConnection->sqlQuery($sql);
             
             $sql = 'UPDATE ' . $this->schema . 'reminder SET last_seen=now() WHERE id=' . pFormatSql($reminder['id'], 'integer');
@@ -101,14 +88,14 @@ class Reminder
     }
     
     /**
-     * Busca os lembretes ativos para o usuário logado e monta o HTML para mostrar o lembrete 
-     * 
+     * Busca os lembretes ativos para o usuário logado e monta o HTML para mostrar o lembrete
+     *
      * @param integer $id      Para mostrar um lembrete específico
      * @param boolean $verbose Se true dá um echo no HTML, caso contrário apenas retorna
-     *  
+     *
      * @return string O HTML gerado
      */
-    public function show (int $id = null, bool $verbose = true) : string
+    public function show(int $id = null, bool $verbose = true) : string
     {
         $whereId = $id != null ? ' AND r.id=' . pFormatSql($id, 'integer') : '';
         
@@ -120,10 +107,8 @@ class Reminder
             r.description
         FROM {$this->schema}active_reminder ar
         JOIN {$this->schema}reminder r ON ar.id=r.id
-        WHERE r.username=$sqlActiveUser$whereId
-        AND ar.reminder_date=now()::date AND ar.show_at <= now()
+        WHERE r.username=$sqlActiveUser AND ar.show_at <= now() $whereId
         SQL;
-        
         $reminders = $this->pConnection->sql2Array($sql);
         
         $html = <<<HTML
@@ -181,32 +166,30 @@ class Reminder
     
     /**
      * Não mostra o lembrete por X horas
-     * 
+     *
      * @param integer $id    O ID do lembrete a ser adiado
      * @param integer $hours A quantidade de horas até o lembrete ser mostrado novamente
      */
-    public function postponeActive (int $id, int $hours = 1)
+    public function postponeActive(int $id, int $hours = 1)
     {
         $sqlHours = pFormatSql($hours, 'integer');
         $sqlId = pFormatSql($id, 'integer');
         
         $sql = <<<SQL
-        UPDATE {$this->schema}active_reminder SET show_at=now()+ '$sqlHours hours'
-        WHERE id=$sqlId;
+            UPDATE {$this->schema}active_reminder SET show_at=now() + '$sqlHours hours'
+            WHERE id=$sqlId;
         SQL;
-        
         $this->pConnection->sqlQuery($sql);
     }
     
     /**
      * Remove um lembrete da lista de lembretes ativos
-     * 
+     *
      * @param integer $id O ID do lembrete a ser removido
      */
-    public function deleteActive (int $id)
+    public function deleteActive(int $id)
     {
         $sql = 'DELETE FROM ' . $this->schema . 'active_reminder WHERE id=' . pFormatSql($id, 'integer');
-        
         $this->pConnection->sqlQuery($sql);
     }
 }
