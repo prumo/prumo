@@ -217,6 +217,9 @@ class PrumoPgConnection
             }
             
             $row = pg_fetch_assoc($res);
+            if ($row === false) {
+                return null;
+            }
             
             return $row;
         } else {
