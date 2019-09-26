@@ -2197,30 +2197,31 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.xmlIdentification = 'pFilter';
     this.useSimilaritySearch = useSimilaritySearch;
     
-    this.fieldName  = new Array();
-    this.fieldLabel = new Array();
-    this.fieldType  = new Array();
+    this.fieldName  = [];
+    this.fieldLabel = [];
+    this.fieldType  = [];
     
-    this.filter = new Array();
+    this.filter = [];
     this.count = 0;
     
-    this.inputType = new Array();
-    this.inputType['serial']    = 'number',
-    this.inputType['integer']   = 'number',
-    this.inputType['string']    = 'text',
-    this.inputType['text']      = 'text',
-    this.inputType['numeric']   = 'number',
-    this.inputType['money']     = 'number',
-    this.inputType['date']      = 'date',
-    this.inputType['time']      = 'time',
-    this.inputType['timestamp'] = 'datetime',
-    this.inputType['boolean']   = 'select'
+    this.inputType = {
+        'serial'    : 'number',
+        'integer'   : 'number',
+        'string'    : 'text',
+        'text'      : 'text',
+        'numeric'   : 'number',
+        'money'     : 'number',
+        'date'      : 'date',
+        'time'      : 'time',
+        'timestamp' : 'datetime',
+        'boolean'   : 'select',
+    };
     
     //operadores lógicos para campos em formato texto
-    this.textOperators = Array(
-        'similarity',
+    this.textOperators = [
         'like',
         'not like',
+        'similarity',
         'begins with',
         'ends with',
         'not begins with',
@@ -2229,12 +2230,12 @@ function PrumoFilter(objName, useSimilaritySearch)
         'not equal',
         'is null',
         'not is null'
-    );
+    ];
     
-    this.textOperatorsName = Array(
-         gettext('similar à'),
+    this.textOperatorsName = [
          gettext('contém'),
          gettext('não contém'),
+         gettext('similar à'),
          gettext('começa com'),
          gettext('termina com'),
          gettext('não começa com'),
@@ -2243,10 +2244,10 @@ function PrumoFilter(objName, useSimilaritySearch)
          gettext('diferente de'),
          gettext('é nulo'),
          gettext('não é nulo')
-    );
+    ];
     
     //operadores lógicos para campos em formato data/hora
-    this.dateTimeOperators = Array(
+    this.dateTimeOperators = [
          'date_time equal',
          'date_time not equal',
          'date_time less than',
@@ -2256,9 +2257,9 @@ function PrumoFilter(objName, useSimilaritySearch)
          'date_time between',
          'is null',
          'not is null'
-    );
+    ];
     
-    this.dateTimeOperatorsName = Array(
+    this.dateTimeOperatorsName = [
          gettext('igual a'),
          gettext('diferente de'),
          gettext('menor que'),
@@ -2268,15 +2269,19 @@ function PrumoFilter(objName, useSimilaritySearch)
          gettext('entre'),
          gettext('é nulo'),
          gettext('não é nulo')
-    );
-    
-    if (this.useSimilaritySearch == 'f') {
-        this.textOperators.shift();
-        this.textOperatorsName.shift();
+    ];
+
+    if (this.useSimilaritySearch === 'f') {
+        for (let i = 0; i < this.textOperators.length; i++) {
+            if (this.textOperators[i] === 'similarity') {
+                this.textOperators.splice(i, 1);
+                this.textOperatorsName.splice(i, 1);
+            }
+        }
     }
     
     //operadores lógicos para campos em formato numerico
-    this.numericOperators = Array(
+    this.numericOperators = [
          'numeric equal',
          'numeric not equal',
          'less than',
@@ -2286,9 +2291,9 @@ function PrumoFilter(objName, useSimilaritySearch)
          'between',
          'is null',
          'not is null'
-    );
+    ];
     
-    this.numericOperatorsName = Array(
+    this.numericOperatorsName = [
          gettext('igual a'),
          gettext('diferente de'),
          gettext('menor que'),
@@ -2298,22 +2303,22 @@ function PrumoFilter(objName, useSimilaritySearch)
          gettext('entre'),
          gettext('é nulo'),
          gettext('não é nulo')
-    );
+    ];
     
     //operadores lógicos para campos boleanos
-    this.booleanOperators = Array(
+    this.booleanOperators = [
          'equal',
          'not equal',
          'is null',
          'not is null'
-    );
+    ];
     
-    this.booleanOperatorsName = Array(
+    this.booleanOperatorsName = [
          gettext('igual a'),
          gettext('diferente de'),
          gettext('é nulo'),
          gettext('não é nulo')
-    );
+    ];
     
     /**
      * Adiciona um filtro
