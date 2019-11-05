@@ -5,10 +5,10 @@
  * documentation files (the “Software”), to deal in the Software without restriction, including without limitation
  * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
  * Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
  * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
@@ -21,15 +21,15 @@ function prumo()
     this.button = function(type, elementId)
     {
         switch (type) {
-        case 'upload':
-            this.uploadButton(elementId);
-            break;
-        default:
-            throw 'unsupported type';
-            break;
+            case 'upload':
+                this.uploadButton(elementId);
+                break;
+            default:
+                throw 'unsupported type';
+                break;
         }
     }
-    
+
     this.uploadButton = function(elementId)
     {
         var inputs = [];
@@ -41,13 +41,13 @@ function prumo()
         }
         Array.prototype.forEach.call(inputs, function(input) {
             var html = '<label for="' + input.id + '">'
-                     + '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>'
-                     + '<span>Escolher arquivo&hellip;</span></label>';
+                + '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="17" viewBox="0 0 20 17"><path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/></svg>'
+                + '<span>Escolher arquivo&hellip;</span></label>';
             input.insertAdjacentHTML('afterend', html);
             input.classList.add('inputFile');
             var label = input.nextElementSibling;
             var labelVal = label.innerHTML;
-            
+
             input.addEventListener('change', function(e) {
                 var fileName = '';
                 if (this.files && this.files.length > 1) {
@@ -55,7 +55,7 @@ function prumo()
                 } else {
                     fileName = e.target.value.split('\\').pop();
                 }
-        
+
                 if (fileName) {
                     label.querySelector('span').innerHTML = fileName;
                 } else {
@@ -76,7 +76,7 @@ function prumo()
 function pSimpleAjax(file, param, result)
 {
     let pAjax = new prumoAjax(file);
-    
+
     if (result == 'eval') {
         pAjax.process = function()
         {
@@ -84,12 +84,12 @@ function pSimpleAjax(file, param, result)
         }
     } else {
         document.getElementById(result).innerHTML = '';
-        
+
         let img = document.createElement("IMG");
         img.setAttribute('src', 'prumo/images/loading.gif');
         img.setAttribute('alt', 'carregando...');
         document.getElementById(result).appendChild(img);
-        
+
         pAjax.process = function()
         {
             document.getElementById(result).innerHTML = this.responseText;
@@ -120,7 +120,7 @@ function isDate(value)
     } else {
         return false;
     }
-    
+
     if (((month == 1) || (month == 3) || (month == 5) || (month == 7) || (month == 8) || (month == 10) || (month == 12)) && (day < 1 || day > 31)) {
         return false;
     } else if (((month == 4) || (month == 6) || (month == 9) || (month == 11)) && (day < 1 || day > 30)) {
@@ -147,7 +147,7 @@ function isTime(value)
 {
     var partValue = value.split(":");
     var s = '00';
-    
+
     if (partValue.length == 2) {
         var h = partValue[0];
         var m = partValue[1];
@@ -158,23 +158,23 @@ function isTime(value)
     } else {
         return false;
     }
-    
+
     if (! isFinite(h)) {
         return false;
     }
-    
+
     if (! isFinite(m)) {
         return false;
     }
-    
+
     if (! isFinite(s)) {
         return false;
     }
-    
+
     if (h > 23 || m > 59 || s > 59 || h < 0 || m < 0 || s < 0) {
         return false;
     }
-    
+
     return true;
 }
 
@@ -190,9 +190,9 @@ function prumoIsType(value, type)
 {
     var regexInteger = /^-?[0-9]*([+\-*/]?[0-9]){0,50}$/;
     var regexFloat = /^-?[0-9]*[.,]?[0-9]*([+\-*/]?[0-9]*[.,]?[0-9]){0,50}$/;
-    
+
     var isValid = true;
-    
+
     switch(type) {
         case 'serial':
             if (! regexInteger.test(value)) {
@@ -226,7 +226,7 @@ function prumoIsType(value, type)
             break;
         case 'timestamp':
             let partValue = value.replace("T", " ").split(" ");
-            
+
             if (partValue.length != 2) {
                 isValid = false;
             } else if (! isDate(partValue[0])) {
@@ -296,11 +296,11 @@ function pFormat(type, value, textStyle)
             formatedValue = value;
         }
     }
-    
+
     if (formatedValue == '//' || formatedValue == '//::') {
         formatedValue = '';
     }
-    
+
     return formatedValue;
 }
 
@@ -338,14 +338,14 @@ function prumoAjax(ajaxFile, process)
     this.responseText;
     this.working         = false;
     this.formName        = '';
-    
+
     this.goAjax = function(params)
     {
         if (this.working == false) {
             this.pLoading.show(this);
         }
         this.working = true;
-    
+
         this.ajax.open("POST", this.ajaxFile, true);
         this.ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         this.ajax.parent = this;
@@ -354,7 +354,7 @@ function prumoAjax(ajaxFile, process)
             if (this.readyState == 1) {
                 //state 1
             }
-            if (this.readyState == 4) {                
+            if (this.readyState == 4) {
                 if (this.parent.debug) {
                     alert(this.responseText);
                 }
@@ -410,7 +410,7 @@ function prumoAjax(ajaxFile, process)
         }
         this.ajax.send(params);
     }
-    
+
     this.setFormName = function(formName)
     {
         if (document.getElementById(formName) !== null) {
@@ -419,29 +419,29 @@ function prumoAjax(ajaxFile, process)
             alert('Error (setFormName): Elemento "' + formName + '" não encontrado!');
         }
     }
-    
+
     this.beforeProcess = function()
     {
         if (this.ajaxFormat == 'xml') {
             this.xmlData = this.responseXML.getElementsByTagName(this.identification);
-            this.process();            
+            this.process();
         } else {
             this.process();
         }
     }
-    
+
     this.ajaxXmlOk = function()
     {
         //para ajaxFormat xml, sobrescrever este método após o constructor
         alert('Implementar o método ajaxXmlOk');
     }
-    
+
     this.ajaxXmlError = function(err, msg)
     {
         //para ajaxFormat xml, sobrescrever este método após o constructor
         alert(msg);
     }
-    
+
     // para ajaxFormat texto, sobrescrever este método após o constructor
     if (process == undefined) {
         this.process = function()
@@ -459,7 +459,7 @@ function prumoAjax(ajaxFile, process)
                 }
                 catch(e) {
                     this.ajaxXmlOk();
-                }            
+                }
             }
         }
     } else {
@@ -474,38 +474,38 @@ function PrumoCrud(objName, ajaxFile)
     this.modal;
     this.identification = objName;
     this.state = 'new'; //suport new, edit, view, list, copy
-    
+
     this.fieldName;
     this.fieldPk;
     this.fieldId;
     this.fieldLabel;
     this.fieldType;
     this.fieldNotNull;
-    
+
     this.fieldOldValue = Array();
     this.fieldNewValue = Array();
     this.fieldAutoClearValue = Array();
     this.sonSearch = Array();
-    
+
     this.pAjax;
     this.pCrudList = false;
     this.pSearch;
-    
+
     // para relação 1x1
     this.parent1x1 = false;
     this.parent1x1Condition = new Array();
     this.son1x1 = new Array();
-    
+
     // para relação 1xN
     this.parent1xN = false;
     this.son1xN = new Array();
-    
+
     this.isVisible = true;
-    
+
     this.defaultParamCreate;
-    
+
     this.initialState = '';
-    
+
     this.pAjax = new prumoAjax(ajaxFile);
     this.pAjax.ajaxFormat = 'xml';
     this.pAjax.parent = this;
@@ -516,7 +516,7 @@ function PrumoCrud(objName, ajaxFile)
         for (let i in this.parent.son1x1) {
             this.parent.son1x1[i].pAjax.cmd = this.cmd;
         }
-        
+
         var status = this.responseXML.getElementsByTagName('status').length > 0 ? this.responseXML.getElementsByTagName('status')[0].firstChild.nodeValue : 'ok';
         if (status == 'err') {
             var msg = this.responseXML.getElementsByTagName('msg')[0].firstChild.nodeValue;
@@ -526,13 +526,13 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.toggleFreezeControls(false);
             }
         } else {
-            
+
             if (this.cmd == 'create') {
                 this.parent.assignResponseXML(this.responseXML);
                 this.parent.stateChange('view');
                 this.parent.visibleSon1x1();
                 this.parent.retrieveVirtual();
-                
+
                 var controls = document.getElementById(this.parent.objName+'_control_view');
                 for (let i in controls.childNodes) {
                     if (controls.childNodes[i].nodeType == 1) {
@@ -540,7 +540,7 @@ function PrumoCrud(objName, ajaxFile)
                         break;
                     }
                 }
-                
+
                 this.parent.afterCreateRecursive();
                 this.parent.afterCreate2Recursive();
             } else if (this.cmd == 'fast_create') {
@@ -589,14 +589,14 @@ function PrumoCrud(objName, ajaxFile)
                 this.parent.stateChange('new');
                 this.parent.visibleSon1x1();
             }
-            
+
             if (this.cmd != 'copyFrom') {
                 this.parent.resetFieldOldValue();
             }
             this.parent.toggleFreezeControls(false);
         }
     }
-    
+
     /**
      * Trata erro XML em objeto CRUD
      */
@@ -611,14 +611,14 @@ function PrumoCrud(objName, ajaxFile)
             this.parent.toggleFreezeControls(false);
         }
     }
-    
+
     /**
      * Verifica se existe algum search ligado a algum campo "virtual"
      */
     this.retrieveVirtual = function()
     {
         for (let i in this.sonSearch) {
-        
+
             var canVirtual = false;
             for (let j in this.sonSearch[i].fieldReturn) {
                 for (let k in this.fieldId) {
@@ -627,12 +627,12 @@ function PrumoCrud(objName, ajaxFile)
                     }
                 }
             }
-            
+
             if (canVirtual) {
                 this.sonSearch[i].goRetrieve();
             }
         }
-        
+
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
         for (let i in this.son1x1) {
             if (this.verifySon(i)) {
@@ -640,7 +640,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.addParent1x1 = function(parent, parentFieldCondition, conditionValue, conditionOperator)
     {
         this.parent1x1 = parent;
@@ -651,32 +651,32 @@ function PrumoCrud(objName, ajaxFile)
         arrCondition['operator'] = conditionOperator;
         this.parent1x1Condition = arrCondition;
     }
-    
+
     this.addParent1xN = function(parent)
     {
         this.parent1xN = parent;
         parent.son1xN.push(this);
     }
-    
+
     this.addSonSearch = function(son)
     {
         this.sonSearch[this.sonSearch.length] = son;
     }
-    
+
     this.assignResponseXML = function(responseXML)
     {
         this.xmlData = responseXML.getElementsByTagName(this.objName);
-        
+
         //limpa o formulário
         if (this.parent1x1 == false) {
             this.clear();
         }
-        
+
         //limpa o array de valores
         this.fieldNewValue = Array();
-        
+
         // laço que percorre os campos
-        
+
         if (this.xmlData.length == 0) {
             if (this.isVisible) {
                 alert(this.objName + ': ' + gettext('Falta preencher alguns campos'));
@@ -702,12 +702,12 @@ function PrumoCrud(objName, ajaxFile)
                 if (value != '') {
                     value = pFormat(this.fieldType[i], value, 'text');
                 }
-                
+
                 this.fieldNewValue[this.fieldName[i]] = value;
             }
             this.writeNewValues();
         }
-        
+
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
         for (let i in this.son1x1) {
             if (this.verifySon(i)) {
@@ -715,15 +715,15 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.resetFieldOldValue = function()
     {
         this.fieldOldValue = Array();
-        
+
         for (let i in this.fieldName) {
             this.fieldOldValue[this.fieldName[i]] = this.fieldNewValue[this.fieldName[i]];
         }
-        
+
         // Aplica o mesmo método recursivamente aos relacionamentos 1x1
         for (let i in this.son1x1) {
             if (this.verifySon(i)) {
@@ -731,7 +731,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Verifica se as condições do crud filho estão satisfeitas
      *
@@ -749,7 +749,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         return false;
     }
-    
+
     this.clearSerials = function()
     {
         for (let iSerials in this.fieldType) {
@@ -759,7 +759,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.visibleSon1x1 = function()
     {
         this.readNewValues();
@@ -769,11 +769,11 @@ function PrumoCrud(objName, ajaxFile)
             } else {
                 this.son1x1[i].visibleForm(false);
             }
-            
+
             this.son1x1[i].visibleSon1x1();
         }
     }
-    
+
     /**
      * Gatilho disparado quando o formulário passa a ser visível ou invisível pela regra do relacionamento 1x1
      */
@@ -781,7 +781,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     this.visibleForm = function(stateVisible)
     {
         if (stateVisible) {
@@ -793,7 +793,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         this.onVisibleForm(stateVisible);
     }
-    
+
     /**
      * Valida se não possui campos com id duplicado entre os objetos com relacionamento 1x1 (exceto chave primária)
      */
@@ -801,7 +801,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         var msg = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" duplicado entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%"');
         var msgPk = 'PrumoCrud: '+gettext('Campo com propriedade "fieldId" difirente entre objetos "%crudParent%" e "%crudSon%" fieldId="%fieldId%", para campo chave primária do relacionamento 1x1');
-        
+
         for (let i in this.son1x1) {
             for (let j in this.fieldId) {
                 for (let k in this.son1x1[i].fieldId) {
@@ -834,7 +834,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         return true;
     }
-    
+
     this.readNewValues = function()
     {
         for (let i=0; i < this.fieldName.length; i++) {
@@ -853,12 +853,12 @@ function PrumoCrud(objName, ajaxFile)
                 this.fieldNewValue[this.fieldName[i]] = inputField.value;
             }
         }
-        
+
         for (let i in this.son1x1) {
             this.son1x1[i].readNewValues();
         }
     }
-    
+
     this.writeNewValues = function()
     {
         for (let i=0; i < this.fieldName.length; i++) {
@@ -878,7 +878,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Limpa os campos do formulário
      */
@@ -906,7 +906,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         this.setDefault();
     }
-    
+
     /**
      * Seta o valor padrão
      */
@@ -929,7 +929,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.paramPk = function()
     {
         param = '';
@@ -941,11 +941,11 @@ function PrumoCrud(objName, ajaxFile)
         }
         return param;
     }
-    
+
     this.syncPkSon = function()
     {
         let arrRel = Array();
-        
+
         //prepara um array com as chaves do objeto atual
         let parentPk = Array();
         for (let i in this.fieldId) {
@@ -953,7 +953,7 @@ function PrumoCrud(objName, ajaxFile)
                 parentPk.push(this.fieldId[i]);
             }
         }
-        
+
         //laço que percorre os filhos 1x1
         for (let i in this.son1x1) {
             let sonPk = Array();
@@ -970,20 +970,20 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         // replica o valor entre os campos chave
         for (let i in this.son1x1) {
             for (let j in arrRel) {
                 this.son1x1[i].fieldNewValue[arrRel[j][1]] = document.getElementById(arrRel[j][0]).value;
             }
         }
-        
+
         // aplica o mesmo método recursivamente
         for (let i in this.son1x1) {
             this.son1x1[i].syncPkSon();
         }
     }
-    
+
     this.paramCreate = function()
     {
         let params = '';
@@ -993,28 +993,28 @@ function PrumoCrud(objName, ajaxFile)
                 params += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldValue);
             }
         }
-        
+
         if (this.parent1x1 == false) {
-            params = 'objName='+this.objName + '&' + this.objName+'_action=c'+params;        
+            params = 'objName='+this.objName + '&' + this.objName+'_action=c'+params;
         } else {
             params = this.objName+'_action=c'+params;
         }
-        
+
         for (let i in this.son1x1) {
-            if (this.son1x1[i].isVisible) {            
+            if (this.son1x1[i].isVisible) {
                 if (this.verifySon(i)) {
                     params += '&'+this.son1x1[i].paramCreate();
                 }
             }
         }
-        
+
         if (this.defaultParamCreate != '') {
             params += '&' + this.defaultParamCreate;
         }
-        
+
         return params
     }
-    
+
     this.doCreate = function()
     {
         if (this.beforeCreateRecursive()) {
@@ -1027,7 +1027,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.doFastCreate = function()
     {
         if (this.beforeCreateRecursive()) {
@@ -1040,7 +1040,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.paramRetrieve = function()
     {
         if (this.parent1x1 == false) {
@@ -1048,14 +1048,14 @@ function PrumoCrud(objName, ajaxFile)
         } else {
             var    params = '';
         }
-        
+
         params += this.objName+'_action=r'+this.paramPk();
         for (let i in this.son1x1) {
             params += '&'+this.son1x1[i].paramRetrieve();
         }
         return params;
     }
-    
+
     this.doRetrieve = function()
     {
         if (this.beforeRetrieveRecursive()) {
@@ -1068,7 +1068,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.doCopyFrom = function()
     {
         if (this.validateDuplicatedIds()) {
@@ -1078,7 +1078,7 @@ function PrumoCrud(objName, ajaxFile)
             this.pAjax.goAjax(this.paramRetrieve());
         }
     }
-    
+
     this.paramUpdate = function()
     {
         var params = '';
@@ -1090,13 +1090,13 @@ function PrumoCrud(objName, ajaxFile)
                 params += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldNewValue);
             }
         }
-        
+
         if (this.parent1x1 == false) {
             params = 'objName='+this.objName + '&' + this.objName+'_action=u'+params;
         } else {
             params = this.objName+'_action=u'+params;
         }
-        
+
         for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 params += '&'+this.son1x1[i].paramUpdate();
@@ -1104,7 +1104,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         return params;
     }
-    
+
     this.doUpdate = function()
     {
         if (this.beforeUpdateRecursive()) {
@@ -1118,7 +1118,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.doFastUpdate = function()
     {
         if (this.beforeUpdateRecursive()) {
@@ -1132,45 +1132,45 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.doDelete = function()
     {
         if (this.beforeDeleteRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
                 var param = this.paramPk();
-            
+
                 if (this.parent1x1 == false) {
                     param += '&objName='+this.objName;
                 }
-                
+
                 this.toggleFreezeControls(true);
-                
+
                 this.pAjax.cmd = 'delete';
                 this.pAjax.goAjax(this.objName+'_action=d&'+param);
             }
         }
     }
-    
+
     this.doFastDelete = function()
     {
         if (this.beforeDeleteRecursive()) {
             if (this.validateDuplicatedIds()) {
                 this.readNewValues();
                 var    param = this.paramPk();
-            
+
                 if (this.parent1x1 == false) {
                     param += '&objName='+this.objName;
                 }
-                
+
                 this.toggleFreezeControls(true);
-                
+
                 this.pAjax.cmd = 'fast_delete';
                 this.pAjax.goAjax(this.objName+'_action=d&'+param);
             }
         }
     }
-    
+
     this.toggleFreezeControls = function(freeze)
     {
         var btName = Array('write_new', 'copy_from', 'clear', 'search', 'write_edit', 'cancel_edit', 'search_view', 'edit', 'delete', 'new', 'fast_create', 'fast_update');
@@ -1184,7 +1184,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.freezeFields = function()
     {
         var fieldCount = this.fieldId.length;
@@ -1192,74 +1192,74 @@ function PrumoCrud(objName, ajaxFile)
             var inputField = document.getElementById(this.fieldId[i]);
             inputField.setAttribute('title',inputField.value);
             if (this.parent1x1 == false || !this.fieldPk[i]) {
-                
+
                 inputField.setAttribute('disabled','disabled');
-                
+
                 var inputFastCreate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_add');
                 if (inputFastCreate != undefined) {
                     inputFastCreate.setAttribute('disabled','disabled');
                 }
-                
+
                 var inputFastUpdate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit');
                 if (inputFastUpdate != undefined) {
                     inputFastUpdate.setAttribute('disabled','disabled');
                 }
             }
         }
-        
+
         for (let i=0; i < this.sonSearch.length; i++) {
             document.getElementById(this.sonSearch[i].objName+'Bt').setAttribute('disabled','disabled');
         }
     }
-    
+
     this.unFreezeFields = function()
     {
-        
+
         for (let i=0; i < this.sonSearch.length; i++) {
             document.getElementById(this.sonSearch[i].objName+'Bt').setAttribute('disabled','disabled')
         }
-        
+
         var fieldCount = this.fieldId.length;
         for (let i=0; i < fieldCount; i++) {
-            
+
             var inputField = document.getElementById(this.fieldId[i]);
             var inputFastCreate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_add');
             var inputFastUpdate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit');
-            
+
             inputField.removeAttribute('title');
-            
+
             if (this.parent1x1 == false || ! this.fieldPk[i]) {
-                
+
                 if (this.fieldType[i] != 'serial' && this.fieldReadonly[i] == false && (this.state != 'edit' || this.fieldNoUpdate[i] == false)) {
-                    
+
                     inputField.removeAttribute('disabled');
-                    
+
                     if (inputFastCreate != undefined) {
                         inputFastCreate.removeAttribute('disabled');
                     }
-                    
+
                     if (inputFastUpdate != undefined) {
                         inputFastUpdate.removeAttribute('disabled');
                     }
-                    
+
                     if (inputField.pSearch != undefined) {
                         document.getElementById(inputField.pSearch.objName+'Bt').removeAttribute('disabled');
                     }
                 } else {
-                    
+
                     inputField.setAttribute('disabled','disabled');
-                    
+
                     if (inputFastCreate != undefined) {
                         inputFastCreate.setAttribute('disabled','disabled');
                     }
-                    
+
                     if (inputFastUpdate != undefined) {
                         inputFastUpdate.setAttribute('disabled','disabled');
                     }
                 }
             }
         }
-        
+
         //desativa search que não tem ligação com nenhum campo
         for (let i=0; i < this.sonSearch.length; i++) {
             var linkInput = false;
@@ -1269,15 +1269,15 @@ function PrumoCrud(objName, ajaxFile)
                     linkInput = true;
                 }
             }
-            
+
             if (! linkInput) {
                 document.getElementById(this.sonSearch[i].objName+'Bt').removeAttribute('disabled');
             }
         }
-        
+
         this.formFocus();
     }
-    
+
     this.backToForms = function()
     {
         divForms = document.getElementById(this.objName+'_form');
@@ -1288,7 +1288,7 @@ function PrumoCrud(objName, ajaxFile)
             this.pCrudList.hide();
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
      */
@@ -1296,7 +1296,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o stateChange do PrumoCrud
      */
@@ -1304,7 +1304,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     this.beforeStateChange = function()
     {
         return true;
@@ -1319,7 +1319,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o beforeCreate recursivamente para filhos 1x1
      *
@@ -1330,7 +1330,7 @@ function PrumoCrud(objName, ajaxFile)
         if (! this.beforeCreate()) {
             return false;
         }
-        
+
         for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeCreateRecursive()) {
@@ -1338,10 +1338,10 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         return true;
     }
-        
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado antes do doRetrieve do PrumoCrud,
      * continuando somente se o retorno for true
@@ -1352,7 +1352,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o beforeRetrieve recursivamente para filhos 1x1
      *
@@ -1363,7 +1363,7 @@ function PrumoCrud(objName, ajaxFile)
         if (! this.beforeRetrieve()) {
             return false;
         }
-        
+
         for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeRetrieveRecursive()) {
@@ -1371,10 +1371,10 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado antes do doUpdate do PrumoCrud,
      * continuando somente se o retorno for true
@@ -1385,7 +1385,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o beforeUpdate recursivamente para filhos 1x1
      *
@@ -1396,7 +1396,7 @@ function PrumoCrud(objName, ajaxFile)
         if (! this.beforeUpdate()) {
             return false;
         }
-        
+
         for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeUpdateRecursive()) {
@@ -1404,10 +1404,10 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado antes do doDelete do PrumoCrud,
      * continuando somente se o retorno for true
@@ -1418,7 +1418,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o beforeDelete recursivamente para filhos 1x1
      *
@@ -1429,7 +1429,7 @@ function PrumoCrud(objName, ajaxFile)
         if (! this.beforeDelete()) {
             return false;
         }
-        
+
         for (let i in this.son1x1) {
             if (this.son1x1[i].isVisible) {
                 if (! this.son1x1[i].beforeDeleteRecursive()) {
@@ -1437,10 +1437,10 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
@@ -1448,7 +1448,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     /**
      * Chama o afterCreate recursivamente para filhos 1x1
      */
@@ -1461,7 +1461,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
@@ -1469,7 +1469,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     /**
      * Chama o afterCreate2 recursivamente para filhos 1x1
      */
@@ -1482,7 +1482,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
      */
@@ -1490,7 +1490,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     /**
      * Chama o afterUpdate recursivamente para filhos 1x1
      */
@@ -1503,7 +1503,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o update do PrumoCrud
      */
@@ -1511,7 +1511,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     /**
      * Chama o afterUpdate2 recursivamente para filhos 1x1
      */
@@ -1524,7 +1524,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
@@ -1532,7 +1532,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o afterRetrieve recursivamente para filhos 1x1
      */
@@ -1545,7 +1545,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o retrieve do PrumoCrud
      */
@@ -1553,7 +1553,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Chama o afterRetrieve2 recursivamente para filhos 1x1
      */
@@ -1566,7 +1566,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após o delete do PrumoCrud
      */
@@ -1574,7 +1574,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         //
     }
-    
+
     /**
      * Chama o afterDelete recursivamente para filhos 1x1
      */
@@ -1587,14 +1587,14 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.hideSon1xN = function()
     {
         for (let iSon in this.son1xN) {
             this.son1xN[iSon].hide();
         }
     }
-    
+
     /**
      * Sincroniza os filtros dos objetos filhos com as chaves primárias do objeto pai
      */
@@ -1639,16 +1639,16 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Muda o stado do objeto crud
-     * 
+     *
      * @param newState string: suporta new, view, edit, copy e list
      */
     this.stateChange = function(newState)
     {
         this.state = newState;
-        
+
         if (! this.beforeStateChange()) {
             return;
         }
@@ -1690,10 +1690,10 @@ function PrumoCrud(objName, ajaxFile)
             }
         } else if (newState == 'list') {
             divForms = document.getElementById(this.objName+'_form');
-            
+
             if (divForms != undefined && divForms != null) {
                 divForms.style.display = 'none';
-                
+
                 if (this.pCrudList == false) {
                     if (this.parent1x1 == false) {
                         alert(this.objName+': '+'Listagem não disponível');
@@ -1704,7 +1704,7 @@ function PrumoCrud(objName, ajaxFile)
             } else {
                 alert(this.objName+': ('+this.objName+'_form'+') '+'Formulário não encontrado');
             }
-            
+
             this.hideSon1xN();
             if (this.parent1xN) {
                 this.parent1xN.showControls();
@@ -1714,11 +1714,11 @@ function PrumoCrud(objName, ajaxFile)
             msg = msg.replace('%newState%',newState);
             alert(msg);
         }
-        
+
         for (let i in this.son1x1) {
             this.son1x1[i].stateChange(newState);
         }
-        
+
         for (let iSon in this.son1xN) {
             divContainer = document.getElementById(this.son1xN[iSon].objName+'_container');
             if (divContainer != undefined && divContainer != null) {
@@ -1729,11 +1729,11 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         this.afterStateChange();
         this.afterStateChange2();
     }
-    
+
     /**
      * Evento reservado para implementação pelo desenvolvedor da aplicação, disparado após a validação de notNull
      */
@@ -1741,7 +1741,7 @@ function PrumoCrud(objName, ajaxFile)
     {
         return true;
     }
-    
+
     /**
      * Valida formato dos campos
      */
@@ -1750,15 +1750,15 @@ function PrumoCrud(objName, ajaxFile)
         var msg = '';
         var err = '';
         var fieldValue = '';
-        
+
         for (let i in this.fieldName) {
-            
+
             msg = '';
             fieldValue = this.fieldNewValue[this.fieldName[i]];
             if (fieldValue != '' && prumoIsType(fieldValue, this.fieldType[i]) == false) {
-                
+
                 switch (this.fieldType[i]) {
-                    
+
                     case 'serial':
                         msg = '- '+gettext('"%fieldValue%" não é um número inteiro, campo "%fieldLabel%"')+'.\n';
                         break;
@@ -1784,13 +1784,13 @@ function PrumoCrud(objName, ajaxFile)
                         msg = '- '+gettext('"%fieldValue%" não é boleano válido, campo "%fieldLabel%"')+'.\n';
                         break;
                 }
-                
+
                 if (msg != '') {
                     msg = msg.replace('%fieldLabel%', this.fieldLabel[i]);
                     err += msg.replace('%fieldValue%', fieldValue);
                 }
             }
-            
+
             var fieldName = this.fieldName[i];
             if (this.fieldValidator.hasOwnProperty(fieldName)) {
                 validators = this.fieldValidator[fieldName];
@@ -1804,16 +1804,16 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateType();
             }
         }
-        
+
         return err;
     }
-    
+
     /**
      * Valida campos notNull
      */
@@ -1827,21 +1827,21 @@ function PrumoCrud(objName, ajaxFile)
                 err += msg.replace('%fieldLabel%',this.fieldLabel[i]);
             }
         }
-        
+
         for (let i in this.son1x1) {
             if (this.verifySon(i)) {
                 err += this.son1x1[i].errValidateNotNull();
             }
         }
-        
+
         return err;
     }
-    
+
     this.validateNotNull = function()
     {
         var err = this.errValidateNotNull();
         err += this.errValidateType();
-        
+
         if (err == '') {
             return this.preValidate();
         } else {
@@ -1850,15 +1850,15 @@ function PrumoCrud(objName, ajaxFile)
             return false;
         }
     }
-    
+
     this.focusNotNull = function()
     {
-        
+
         var fucusOk = false;
         for (let i in this.fieldName) {
             if (this.fieldNotNull[i] && this.fieldNewValue[this.fieldName[i]] == '') {
                 if (this.parent1x1 == false || !this.fieldPk[i]) {
-                    
+
                     if (document.getElementById(this.objName+'_'+this.fieldName[i]+'_add') != undefined) {
                         document.getElementById(this.objName+'_'+this.fieldName[i]+'_add').focus();
                     } else if (document.getElementById(this.objName+'_'+this.fieldName[i]+'_edit') != undefined) {
@@ -1870,7 +1870,7 @@ function PrumoCrud(objName, ajaxFile)
                         }
                         document.getElementById(this.fieldId[i]).focus();
                     }
-                    
+
                     fucusOk = true;
                     break;
                 }
@@ -1882,7 +1882,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.formFocus = function()
     {
         if (this.parent1x1 == false) {
@@ -1895,7 +1895,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.bt_write_new = function()
     {
         if (this.validateNotNull()) {
@@ -1903,7 +1903,7 @@ function PrumoCrud(objName, ajaxFile)
         }
         this.visibleSon1x1();
     }
-    
+
     this.bt_search = function()
     {
         if (this.pCrudList == false) {
@@ -1912,31 +1912,31 @@ function PrumoCrud(objName, ajaxFile)
             this.stateChange('list');
         }
     }
-    
+
     this.bt_write_edit = function()
     {
         if (this.validateNotNull()) {
             this.doUpdate();
         }
     }
-    
+
     this.bt_cancel_edit = function()
     {
         this.doRetrieve();
     }
-    
+
     this.bt_edit = function()
     {
         this.stateChange('edit');
     }
-    
+
     this.bt_delete = function()
     {
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
             this.doDelete();
         }
     }
-    
+
     this.readAutoClearValues = function()
     {
         for (let i in this.fieldName) {
@@ -1951,12 +1951,12 @@ function PrumoCrud(objName, ajaxFile)
                 this.fieldAutoClearValue[this.fieldName[i]] = inputField.value;
             }
         }
-        
+
         for (let i in this.son1x1) {
             this.son1x1[i].readAutoClearValues();
         }
     }
-    
+
     this.writeAutoClearValues = function()
     {
         for (let i in this.fieldName) {
@@ -1967,12 +1967,12 @@ function PrumoCrud(objName, ajaxFile)
                 }
             }
         }
-        
+
         for (let i in this.son1x1) {
             this.son1x1[i].writeAutoClearValues();
         }
     }
-    
+
     this.autoClear = function() {
         this.backToForms();
         this.readAutoClearValues();
@@ -1981,7 +1981,7 @@ function PrumoCrud(objName, ajaxFile)
         this.visibleSon1x1();
         this.retrieveVirtual();
     }
-    
+
     this.bt_new = function()
     {
         this.backToForms();
@@ -1989,17 +1989,17 @@ function PrumoCrud(objName, ajaxFile)
         this.visibleSon1x1();
         this.retrieveVirtual();
     }
-    
+
     this.bt_list = function()
     {
         this.stateChange('list');
     }
-    
+
     this.bt_copyFrom = function()
     {
         this.pSearch.goSearch();
     }
-    
+
     this.hide = function()
     {
         if (document.getElementById(this.objName+'_form') != undefined) {
@@ -2009,7 +2009,7 @@ function PrumoCrud(objName, ajaxFile)
             document.getElementById('pCrudList_'+this.objName).style.display = 'none';
         }
     }
-    
+
     /**
      * Torna visível os controles do crud
      */
@@ -2025,7 +2025,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Torna invisível os controles do crud
      */
@@ -2041,7 +2041,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
      */
@@ -2052,7 +2052,7 @@ function PrumoCrud(objName, ajaxFile)
             this.pCrudList.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         }
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
      */
@@ -2063,13 +2063,13 @@ function PrumoCrud(objName, ajaxFile)
             this.pCrudList.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         }
     }
-    
+
     this.inputSetValue = function(id, value)
     {
         var inputField = document.getElementById(id);
-        
+
         if (inputField != undefined) {
-            
+
             if (inputField.getAttribute('type') == 'checkbox') {
                 if (value == 't') {
                     inputField.checked = true;
@@ -2081,7 +2081,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     this.inputGetValue = function(id)
     {
         var inputField = document.getElementById(id);
@@ -2095,29 +2095,29 @@ function PrumoCrud(objName, ajaxFile)
             return inputField.value;
         }
     }
-    
+
     this.bt_fastCreate = function()
     {
-        
+
         this.stateChange('new');
-        
+
         var fieldCount = this.fieldId.length;
         for (let i=0; i < fieldCount; i++) {
-            
+
             var id = this.objName+'_'+this.fieldName[i]+'_add';
             if (document.getElementById(id) != undefined) {
                 this.inputSetValue(this.fieldId[i], this.inputGetValue(id));
             }
         }
-        
+
         this.visibleSon1x1();
-        
+
         if (this.validateNotNull()) {
             document.getElementById(this.objName+'_bt_fast_create').setAttribute('disabled', 'disabled');
             this.doFastCreate();
         }
     }
-    
+
     this.bt_fastCreate_onKeyDown = function(event)
     {
         //Enter
@@ -2125,40 +2125,40 @@ function PrumoCrud(objName, ajaxFile)
             this.bt_fastCreate();
         }
     }
-    
+
     this.bt_fastUpdate = function(lineIndex)
     {
-        
+
         this.stateChange('edit');
         this.clear();
-        
+
         var fieldCount = this.fieldId.length;
         for (let i=0; i < fieldCount; i++) {
-            
+
             var id = this.objName+'_'+this.fieldName[i]+'_edit';
             inputFastUpdate = document.getElementById(id);
-            
-            var oldValue = this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex);            
+
+            var oldValue = this.pCrudList.pGrid.getValue(this.fieldName[i], lineIndex);
             if (inputFastUpdate == undefined) {
                 var newValue = pFormat(this.fieldType[i], oldValue, 'text');
             } else {
                 var newValue = this.inputGetValue(id);
             }
-            
+
             this.fieldOldValue[this.fieldName[i]] = pFormat(this.fieldType[i], oldValue, 'text');
             this.fieldNewValue[this.fieldName[i]] = newValue;
-            
+
             this.inputSetValue(this.fieldId[i], newValue);
         }
-        
+
         this.visibleSon1x1();
-        
+
         if (this.validateNotNull()) {
             document.getElementById(this.objName+'_bt_fast_update').setAttribute('disabled', 'disabled');
             this.doFastUpdate();
         }
     }
-    
+
     this.bt_fastUpdate_onKeyDown = function(event, lineIndex)
     {
         //Enter
@@ -2166,7 +2166,7 @@ function PrumoCrud(objName, ajaxFile)
             this.bt_fastUpdate(lineIndex);
         }
     }
-    
+
     this.bt_fastDelete = function(lineIndex)
     {
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
@@ -2196,31 +2196,32 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.prumoWebPath;
     this.xmlIdentification = 'pFilter';
     this.useSimilaritySearch = useSimilaritySearch;
-    
-    this.fieldName  = new Array();
-    this.fieldLabel = new Array();
-    this.fieldType  = new Array();
-    
-    this.filter = new Array();
+
+    this.fieldName  = [];
+    this.fieldLabel = [];
+    this.fieldType  = [];
+
+    this.filter = [];
     this.count = 0;
-    
-    this.inputType = new Array();
-    this.inputType['serial']    = 'number',
-    this.inputType['integer']   = 'number',
-    this.inputType['string']    = 'text',
-    this.inputType['text']      = 'text',
-    this.inputType['numeric']   = 'number',
-    this.inputType['money']     = 'number',
-    this.inputType['date']      = 'date',
-    this.inputType['time']      = 'time',
-    this.inputType['timestamp'] = 'datetime',
-    this.inputType['boolean']   = 'select'
-    
+
+    this.inputType = {
+        'serial'    : 'number',
+        'integer'   : 'number',
+        'string'    : 'text',
+        'text'      : 'text',
+        'numeric'   : 'number',
+        'money'     : 'number',
+        'date'      : 'date',
+        'time'      : 'time',
+        'timestamp' : 'datetime',
+        'boolean'   : 'select',
+    };
+
     //operadores lógicos para campos em formato texto
-    this.textOperators = Array(
-        'similarity',
+    this.textOperators = [
         'like',
         'not like',
+        'similarity',
         'begins with',
         'ends with',
         'not begins with',
@@ -2229,92 +2230,96 @@ function PrumoFilter(objName, useSimilaritySearch)
         'not equal',
         'is null',
         'not is null'
-    );
-    
-    this.textOperatorsName = Array(
-         gettext('similar à'),
-         gettext('contém'),
-         gettext('não contém'),
-         gettext('começa com'),
-         gettext('termina com'),
-         gettext('não começa com'),
-         gettext('não termina com'),
-         gettext('igual a'),
-         gettext('diferente de'),
-         gettext('é nulo'),
-         gettext('não é nulo')
-    );
-    
+    ];
+
+    this.textOperatorsName = [
+        gettext('contém'),
+        gettext('não contém'),
+        gettext('similar à'),
+        gettext('começa com'),
+        gettext('termina com'),
+        gettext('não começa com'),
+        gettext('não termina com'),
+        gettext('igual a'),
+        gettext('diferente de'),
+        gettext('é nulo'),
+        gettext('não é nulo')
+    ];
+
     //operadores lógicos para campos em formato data/hora
-    this.dateTimeOperators = Array(
-         'date_time equal',
-         'date_time not equal',
-         'date_time less than',
-         'date_time greater than',
-         'date_time less than or equal',
-         'date_time greater than or equal',
-         'date_time between',
-         'is null',
-         'not is null'
-    );
-    
-    this.dateTimeOperatorsName = Array(
-         gettext('igual a'),
-         gettext('diferente de'),
-         gettext('menor que'),
-         gettext('maior que'),
-         gettext('menor ou igual a'),
-         gettext('maior ou igual a'),
-         gettext('entre'),
-         gettext('é nulo'),
-         gettext('não é nulo')
-    );
-    
-    if (this.useSimilaritySearch == 'f') {
-        this.textOperators.shift();
-        this.textOperatorsName.shift();
+    this.dateTimeOperators = [
+        'date_time equal',
+        'date_time not equal',
+        'date_time less than',
+        'date_time greater than',
+        'date_time less than or equal',
+        'date_time greater than or equal',
+        'date_time between',
+        'is null',
+        'not is null'
+    ];
+
+    this.dateTimeOperatorsName = [
+        gettext('igual a'),
+        gettext('diferente de'),
+        gettext('menor que'),
+        gettext('maior que'),
+        gettext('menor ou igual a'),
+        gettext('maior ou igual a'),
+        gettext('entre'),
+        gettext('é nulo'),
+        gettext('não é nulo')
+    ];
+
+    if (this.useSimilaritySearch === 'f') {
+        for (let i = 0; i < this.textOperators.length; i++) {
+            if (this.textOperators[i] === 'similarity') {
+                this.textOperators.splice(i, 1);
+                this.textOperatorsName.splice(i, 1);
+            }
+        }
     }
-    
+
     //operadores lógicos para campos em formato numerico
-    this.numericOperators = Array(
-         'numeric equal',
-         'numeric not equal',
-         'less than',
-         'greater than',
-         'less than or equal',
-         'greater than or equal',
-         'between',
-         'is null',
-         'not is null'
-    );
-    
-    this.numericOperatorsName = Array(
-         gettext('igual a'),
-         gettext('diferente de'),
-         gettext('menor que'),
-         gettext('maior que'),
-         gettext('menor ou igual a'),
-         gettext('maior ou igual a'),
-         gettext('entre'),
-         gettext('é nulo'),
-         gettext('não é nulo')
-    );
-    
+    this.numericOperators = [
+        'numeric equal',
+        'numeric not equal',
+        'less than',
+        'greater than',
+        'less than or equal',
+        'greater than or equal',
+        'between',
+        'is null',
+        'not is null'
+    ];
+
+    this.numericOperatorsName = [
+        gettext('igual a'),
+        gettext('diferente de'),
+        gettext('menor que'),
+        gettext('maior que'),
+        gettext('menor ou igual a'),
+        gettext('maior ou igual a'),
+        gettext('entre'),
+        gettext('é nulo'),
+        gettext('não é nulo')
+    ];
+
     //operadores lógicos para campos boleanos
-    this.booleanOperators = Array(
-         'equal',
-         'not equal',
-         'is null',
-         'not is null'
-    );
-    
-    this.booleanOperatorsName = Array(
-         gettext('igual a'),
-         gettext('diferente de'),
-         gettext('é nulo'),
-         gettext('não é nulo')
-    );
-    
+    this.booleanOperators = [
+        'equal',
+        'not equal',
+        'is null',
+        'not is null'
+    ];
+
+    this.booleanOperatorsName = [
+        gettext('igual a'),
+        gettext('diferente de'),
+        gettext('é nulo'),
+        gettext('não é nulo')
+    ];
+
     /**
      * Adiciona um filtro
      *
@@ -2342,7 +2347,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         }
         this.count++;
     }
-    
+
     /**
      * Coloca o foco no primeiro filtro
      */
@@ -2355,7 +2360,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             }
         }
     }
-    
+
     /**
      * Evento do botão (+) do filtro
      */
@@ -2364,7 +2369,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         this.addFilter(filterIndex, '', '', '', '', true);
         this.draw();
     }
-    
+
     /**
      * Remove um determinado filtro
      *
@@ -2376,7 +2381,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         this.count--;
         return removed;
     }
-    
+
     /**
      * Evento do botão (-) do filtro
      *
@@ -2387,14 +2392,14 @@ function PrumoFilter(objName, useSimilaritySearch)
         this.removeFilter(filterIndex);
         this.draw();
     }
-    
+
     /**
      * Remove todos os filtros
      */
     this.clearFilters = function() {
         this.filter = new Array();
     }
-    
+
     /**
      * Remove apenas os filtros visíveis
      */
@@ -2402,14 +2407,14 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         var backupFilter = this.filter;
         this.clearFilters();
-        
+
         for (let i in backupFilter) {
             if (backupFilter[i].visible == false) {
                 this.filter.push(backupFilter[i]);
             }
         }
     }
-    
+
     /**
      * Pega o tipo do campo
      *
@@ -2425,7 +2430,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         }
         return null;
     }
-    
+
     /**
      * Pega o rotulo do campo
      *
@@ -2441,7 +2446,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         }
         return null;
     }
-    
+
     /**
      * Pega o nome do operador
      *
@@ -2451,7 +2456,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.operatorTypeByName = function(fieldName)
     {
         var fieldType = this.fieldTypeByName(fieldName);
-        
+
         switch (fieldType) {
             case 'string':
                 return 'text';
@@ -2480,21 +2485,21 @@ function PrumoFilter(objName, useSimilaritySearch)
             case 'boolean':
                 return 'boolean';
                 break;
-        default:
-            return 'text';
+            default:
+                return 'text';
         }
     }
-    
+
     /**
      * gatilho disparado depois do selectFieldChange
      */
     this.afterSelectFieldChange = function() {
         // método que pode ser usado pelo desenvolvedor da aplicação
     }
-    
+
     /**
      * Evento disparado pelo onChange do select "nome do campo"
-     * 
+     *
      * @param selectFieldName string: nome do campo
      * @param index integer: número do filtro
      */
@@ -2502,10 +2507,10 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         let operatorType = this.operatorTypeByName(selectFieldName.value);
         let selectOperator = document.getElementById(this.htmlId+'_'+index+'_operator');
-        
+
         let arrOperators = Array();
         let arrOperatorsName = Array();
-        
+
         if (operatorType == 'text') {
             arrOperators     = this.textOperators;
             arrOperatorsName = this.textOperatorsName;
@@ -2526,25 +2531,25 @@ function PrumoFilter(objName, useSimilaritySearch)
             arrOperators     = this.booleanOperators;
             arrOperatorsName = this.booleanOperatorsName;
         }
-        
+
         let htmlOptions = '';
         for (let j=0; j < arrOperators.length; j++) {
             htmlOptions += '<option value="'+arrOperators[j]+'">'+arrOperatorsName[j]+'</option>\n';
         }
-        
-        selectOperator.innerHTML = htmlOptions;    
+
+        selectOperator.innerHTML = htmlOptions;
         this.filter[index].fieldName = selectFieldName.value;
-        
+
         selectOperator.value = arrOperators[0];
         this.selectOperatorChange(selectOperator, index);
-        
+
         // coloca o foco no campo de pesquisa
         document.getElementById(this.htmlId+'_'+index+'_value').focus();
-        
+
         // redesenha o input
         let currentValue = document.getElementById(this.htmlId+'_'+index+'_value').value;
         let currentValue2 = document.getElementById(this.htmlId+'_'+index+'_value2').value;
-        
+
         let htmlInput = '';
         let htmlInput2 = '';
         let labelTrue = gettext('Sim');
@@ -2565,16 +2570,16 @@ function PrumoFilter(objName, useSimilaritySearch)
             htmlInput = '<input type="'+fieldType+'" id="'+this.htmlId+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
             htmlInput2 = '<input type="'+fieldType+'" id="'+this.htmlId+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValue2Change(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
         }
-        
+
         document.getElementById(this.htmlId+'_'+index+'_input').innerHTML = htmlInput;
         document.getElementById(this.htmlId+'_'+index+'_value').value = currentValue;
         document.getElementById(this.htmlId+'_'+index+'_value').focus();
         document.getElementById(this.htmlId+'_'+index+'_input2').innerHTML = htmlInput2;
         document.getElementById(this.htmlId+'_'+index+'_value2').value = currentValue2;
-        
+
         this.afterSelectFieldChange();
     }
-    
+
     /**
      * Valida o valor dos filtros
      *
@@ -2584,23 +2589,23 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         var err = '';
         var msg = '';
-        
+
         for (let i in this.filter) {
-            
+
             if (this.filter[i].visible) {
-                
+
                 var fieldName = this.filter[i].fieldName;
                 var fieldLabel = this.fieldLabelByName(fieldName);
                 var fieldType = this.fieldTypeByName(fieldName);
                 var fieldOperator = this.filter[i].operator;
                 var fieldValue = this.filter[i].value;
                 var fieldValue2 = this.filter[i].value2;
-                
+
                 msg = '';
                 if (fieldValue != '' && prumoIsType(fieldValue, fieldType) == false) {
-                    
+
                     switch (fieldType) {
-                        
+
                         case 'serial':
                             msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
                             break;
@@ -2626,7 +2631,7 @@ function PrumoFilter(objName, useSimilaritySearch)
                             msg = '- '+gettext('"%fieldValue%" não é um boleano válido, filtro "%fieldLabel%"');
                             break;
                     }
-                    
+
                     msg = msg.replace('%fieldValue%', fieldValue);
                     if (err == '') {
                         if (document.getElementById(this.htmlId+'_'+i+'_value') != undefined) {
@@ -2634,11 +2639,11 @@ function PrumoFilter(objName, useSimilaritySearch)
                         }
                     }
                 }
-                
+
                 if ((fieldOperator == 'between' || fieldOperator == 'date_time between') && fieldValue2 != '' && prumoIsType(fieldValue2, fieldType) == false) {
-                    
+
                     switch (fieldType) {
-                        
+
                         case 'serial':
                             msg = '- '+gettext('"%fieldValue%" não é um número inteiro, filtro "%fieldLabel%"');
                             break;
@@ -2661,7 +2666,7 @@ function PrumoFilter(objName, useSimilaritySearch)
                             msg = '- '+gettext('"%fieldValue%" não é uma data e hora válida, filtro "%fieldLabel%"');
                             break;
                     }
-                    
+
                     msg = msg.replace('%fieldValue%', fieldValue2);
                     if (err == '') {
                         if (document.getElementById(this.htmlId+'_'+i+'_value2') != undefined) {
@@ -2670,13 +2675,13 @@ function PrumoFilter(objName, useSimilaritySearch)
                     }
                 }
             }
-            
+
             if (msg != '') {
                 msg = msg.replace('%fieldLabel%', fieldLabel);
                 err += (err == '') ? msg : '\n'+msg;
             }
         }
-        
+
         if (err != '') {
             alert(err);
             return false;
@@ -2684,10 +2689,10 @@ function PrumoFilter(objName, useSimilaritySearch)
             return true;
         }
     }
-    
+
     /**
      * Evento disparado pelo onChange do select "nome do campo"
-     * 
+     *
      * @param selectFieldName string: nome do campo
      * @param index integer: número do filtro
      */
@@ -2695,23 +2700,23 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         // passa o valor escolhido para o objeto filter
         this.filter[index].operator = selectOperator.value;
-        
+
         if (selectOperator.value == 'is null' || selectOperator.value == 'not is null') {
             document.getElementById(this.htmlId+'_'+index+'_input').style.display = 'none';
         } else {
             document.getElementById(this.htmlId+'_'+index+'_input').style.display = 'block';
         }
-        
+
         if (selectOperator.value == 'between' || selectOperator.value == 'date_time between') {
             document.getElementById(this.htmlId+'_'+index+'_input2').style.display = 'block';
         } else {
             document.getElementById(this.htmlId+'_'+index+'_input2').style.display = 'none';
         }
-        
+
         // coloca o foco no campo de pesquisa
         document.getElementById(this.htmlId+'_'+index+'_value').focus();
     }
-    
+
     /**
      * Copia o valor de um input para a propriedade filter[index] do objeto PrumoFilter
      *
@@ -2722,7 +2727,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         this.filter[index].value = inputObject.value;
     }
-    
+
     /**
      * Copia o valor de um input para a propriedade filter[index] do objeto PrumoFilter
      *
@@ -2733,7 +2738,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         this.filter[index].value2 = inputObject.value;
     }
-    
+
     /**
      * Evento disparado pelo onKeyup das caixas de texto dos filtros
      * @param event: evento
@@ -2752,13 +2757,13 @@ function PrumoFilter(objName, useSimilaritySearch)
                 break;
             case 38: //Seta para cima
                 this.parent.upArrow();
-            break;
+                break;
             case 40: //Seta para baixo
                 this.parent.downArrow();
                 break;
         }
     }
-    
+
     /**
      * Evento disparado pelo onKeydown das caixas de texto dos filtros
      * @param event: evento
@@ -2771,7 +2776,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             this.parent.keyDown();
         }
     }
-    
+
     /**
      * Desenha/Redesenha os botões (+) e (-) dos filtros
      */
@@ -2784,10 +2789,10 @@ function PrumoFilter(objName, useSimilaritySearch)
                 visibleFilters++;
             }
         }
-        
+
         // laço que corre todos os filtros
         for (let i=0; i < this.filter.length; i++) {
-        
+
             // coloca o botão apenas se o filtro é visível
             if (this.filter[i].visible) {
                 // coloca o botão (+)
@@ -2795,19 +2800,19 @@ function PrumoFilter(objName, useSimilaritySearch)
                 filterControl  = '&nbsp;<a href="javascript:'+this.objName+'.cmdAddFilter('+filterIndex+')">';
                 filterControl += '<img src="'+this.prumoWebPath+'/images/add.png" alt="add" />';
                 filterControl += '</a>\n';
-                
+
                 // se possui mais de um filtro visível coloca o botão (-)
                 if (visibleFilters > 1) {
                     filterControl += '<a href="javascript:'+this.objName+'.cmdRemoveFilter('+i+')">';
                     filterControl += '<img src="'+this.prumoWebPath+'/images/remove.png" alt="del" />';
                     filterControl += '</a>\n';
                 }
-                
+
                 document.getElementById(this.htmlId+'_'+i+'_controls').innerHTML = filterControl;
             }
         }
     }
-    
+
     /**
      * Limpa os valores de todos os filtros visíveis
      */
@@ -2820,7 +2825,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             }
         }
     }
-    
+
     /**
      * Configura os filtros, passando as propriedades do objeto para a interface
      */
@@ -2832,7 +2837,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             var inputValue      = document.getElementById(this.htmlId+'_'+filterIndex+'_value');
             var inputValue2     = document.getElementById(this.htmlId+'_'+filterIndex+'_value2');
             var operator        = this.filter[filterIndex].operator;
-            
+
             // configura selectFilter e o inputValue com o valor anteriormente passado via XML
             if (this.filter[filterIndex].fieldName == '') {
                 selectFieldName.value = this.filter[0].fieldName;
@@ -2841,10 +2846,10 @@ function PrumoFilter(objName, useSimilaritySearch)
             }
             inputValue.value = this.filter[filterIndex].value;
             inputValue2.value = this.filter[filterIndex].value2;
-            
+
             // preenche o combo selectOperator
             this.selectFieldChange(selectFieldName, filterIndex);
-            
+
             // configura o selectOperator
             var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
             if (operator == '') {
@@ -2858,8 +2863,8 @@ function PrumoFilter(objName, useSimilaritySearch)
                     case 'date_time':
                         arrOperators = this.dateTimeOperators;
                         break;
-                default:
-                    arrOperators = this.textOperators;
+                    default:
+                        arrOperators = this.textOperators;
                 }
                 operator = arrOperators[0];
             }
@@ -2870,7 +2875,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             }
         }
     }
-    
+
     /**
      * Desenha/Redesenha a interface (apenas a parte do PrumoFilter)
      */
@@ -2908,18 +2913,18 @@ function PrumoFilter(objName, useSimilaritySearch)
             }
         }
         htmlFilters += '</table>\n';
-        
+
         document.getElementById(this.htmlId+'_filters').innerHTML = htmlFilters;
-        
+
         // chama o metodo configure filter para passar os valores do objeto para a interface
         for (let i=0; i < this.filter.length; i++) {
             this.configureFilter(this.filter[i].fieldName,i);
         }
-        
+
         // redesenha os botões (+) e (-)
         this.drawFilterControls();
     }
-    
+
     /**
      * Pega um valor na tabela que foi retornada via XML
      *
@@ -2935,7 +2940,7 @@ function PrumoFilter(objName, useSimilaritySearch)
         }
         return value;
     }
-    
+
     /**
      * Evento disparado após o assignResponseXML para ser implementado conforme necessidade do desenvolvedor da aplicação
      */
@@ -2943,7 +2948,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         // implementar conforme necessidade
     }
-    
+
     /**
      * Configura as propriedades do objeto PrumoFilter de acordo com o resultado XML passado como parâmetro
      *
@@ -2952,10 +2957,10 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.assignResponseXML = function(responseXML)
     {
         this.xmlData = responseXML.getElementsByTagName(this.xmlIdentification);
-        
+
         // limpa os filtros
         this.filter = new Array()
-        
+
         // laço que percorre o xml
         for (let i=0; i < this.xmlData.length; i++) {
             fieldName    = this.getValue('fieldName', i);
@@ -2968,15 +2973,15 @@ function PrumoFilter(objName, useSimilaritySearch)
             } else {
                 visible = true;
             }
-            
+
             this.addFilter(i, fieldName, operator, value, value2, visible);
         }
         // redesenha
         this.draw();
-        
+
         this.afterAssignResponseXML();
     }
-    
+
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
@@ -2993,13 +2998,13 @@ function PrumoFilter(objName, useSimilaritySearch)
                 break;
             }
         }
-        
+
         // caso não encontrou nenhum filtro, cria
         if (nothing) {
             this.addFilter(null, fieldName, filterOperator, fieldValue, fieldValue2, visible);
         }
     }
-    
+
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
@@ -3007,7 +3012,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, true);
     }
-    
+
     /**
      * Seta o valor para o primeiro filtro que encontrar com o id passado, caso não encontre cria um filtro
      */
@@ -3020,22 +3025,22 @@ function PrumoFilter(objName, useSimilaritySearch)
 function prumoValidator(validator)
 {
     this.validator = validator;
-    
+
     this.validate = function(value)
     {
         switch (validator.type) {
-        case 'max':
-            if (parseFloat(value) > parseFloat(validator.value)) {
-                return 'Valor não pode ser maior que ' + validator.value;
-            }
-            break;
-        case 'min':
-            if (parseFloat(value) < parseFloat(validator.value)) {
-                return 'Valor não pode ser menor que ' + validator.value;
-            }
-            break;
-        default:
-            break;
+            case 'max':
+                if (parseFloat(value) > parseFloat(validator.value)) {
+                    return 'Valor não pode ser maior que ' + validator.value;
+                }
+                break;
+            case 'min':
+                if (parseFloat(value) < parseFloat(validator.value)) {
+                    return 'Valor não pode ser menor que ' + validator.value;
+                }
+                break;
+            default:
+                break;
         }
         return true;
     }
@@ -3052,41 +3057,41 @@ function PrumoGrid(objName)
     this.lineEventOnData = '';
     this.pointerCursorOnData = false;
     this.selectedLine = 0;
-    
+
     this.field;
     this.fieldType;
     this.fieldVisible;
-    
+
     this.table = document.getElementById(this.htmlId);
-    
+
     for (let i=1; i <= this.table.rows.length -1; i++) {
         this.table.rows[i].setAttribute('onmouseover', objName+'.onmouseover('+i+')');
     }
-    
+
     this.onmouseover = function(i)
     {
         this.selectedLine = i;
         if (i != 0) {
             this.table.rows[i].setAttribute('class', 'prumoGridTrSelected');
         }
-        
+
         for (let j=1; j <= this.table.rows.length -1; j++) {
             if (j != i) {
                 if (j % 2 != 0) {
                     this.table.rows[j].setAttribute('class', 'prumoGridTrEven');
                 } else {
                     this.table.rows[j].setAttribute('class', 'prumoGridTrOdd');
-                }                
+                }
             }
         }
     }
-    
+
     this.clear = function()
     {
         pGrid = document.getElementById(this.htmlId);
-        
+
         for (let i=1; i < pGrid.rows.length; i++) {
-            
+
             pGridRow = pGrid.rows[i];
             for (let j=0; j < pGridRow.cells.length; j++) {
                 pGridRow.cells[j].style.cursor = 'default';
@@ -3095,54 +3100,54 @@ function PrumoGrid(objName)
             }
         }
     }
-    
+
     this.assignResponseXML = function(responseXML)
     {
         this.onmouseover(0);
         this.xmlData = responseXML.getElementsByTagName(this.xmlIdentification);
-        
+
         //limpa o grid
         this.clear();
-        
+
         //laço que percorre o xml
         for (let i=0; i < this.xmlData.length; i++) {
-            
+
             // faz referencia a celua do grid
             var pGridRowCells = document.getElementById(this.htmlId).rows[i+1].cells;
-            
+
             var iColumn = 0;
             for (let j=0; j < this.field.length; j++) {
-                
+
                 var valueCell = pFormat(this.fieldType[j], this.getValue(this.field[j], i), 'html');
-                
+
                 if (this.fieldVisible[j] == true) {
-                    
+
                     //coloca o cursor pointer
                     if (this.pointerCursorOnData) {
                         pGridRowCells[iColumn].style.cursor = 'pointer';
                     }
-                    
+
                     //coloca o evento click na celula do grid
                     if (this.lineEventOnData != '') {
                         pGridRowCells[iColumn].setAttribute('onClick', this.lineEventOnData.replace('%', i));
                     }
-                    
+
                     pGridRowCells[iColumn].innerHTML = valueCell;
-                    
+
                     iColumn++;
                 }
             }
         }
     }
-    
+
     this.getValue = function(fieldName, index)
     {
         var value = this.xmlData[index].getElementsByTagName(fieldName)[0].childNodes[0].nodeValue;
-        
+
         if (value == 'NULL') {
             value = '';
         }
-        
+
         return value;
     }
 }
@@ -3154,32 +3159,32 @@ function PrumoGridNavigation()
     this.pageLines;
     this.page;
     this.maxPages = 10;
-    
+
     //recalc
     this.registersFrom;
     this.registersTo;
     this.pages;
-    
+
     this.getParentName = function()
     {
         return this.parent.objName;
     }
-    
+
     this.getObjName = function()
     {
         return this.getParentName() + '.pGridNavigation';
     }
-    
+
     this.getElement = function()
     {
         return document.getElementById(this.getObjName().replace('.', '_'));
     }
-    
+
     this.clear = function()
     {
         this.getElement().innerHTML = gettext('Carregando')+'...';
     }
-    
+
     this.recalc = function()
     {
         this.registersFrom = (this.page - 1) * this.pageLines + 1;
@@ -3189,40 +3194,40 @@ function PrumoGridNavigation()
         }
         this.pages = Math.ceil(this.count / this.pageLines);
     }
-    
+
     this.redraw = function()
     {
         this.recalc();
-        htmlOut = '';        
-        
+        htmlOut = '';
+
         // calculos
         var bars = Math.ceil(this.pages / this.maxPages);
         var thisBar = Math.ceil(this.page / this.maxPages);
         var pageFrom = (thisBar -1) * this.maxPages + 1;
         var pageTo = pageFrom + this.maxPages - 1;
-        
+
         //quando nenhum registro encontrado
         if (this.registersTo == 0) {
             this.registersFrom = 0;
             this.page = 0;
         }
-        
+
         // quando não há paginas suficientes para completar a barra
         if (pageTo > this.pages) {
             pageTo = this.pages;
         }
-        
+
         // botão primeira página
         if (thisBar > 2) {
             htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch(1)">1...</button>';
         }
-        
+
         // botão pagina anterior
         if (thisBar > 1) {
             var lastPage = pageFrom - 1;
             htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+lastPage+')">&lt;</button>';
         }
-        
+
         // Laço que cria os botões da barra
         for (let i=0; i < pageTo - pageFrom +1; i++) {
             var iPage = pageFrom + i;
@@ -3232,28 +3237,28 @@ function PrumoGridNavigation()
                 htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+iPage+')">'+iPage+'</button>';
             }
         }
-        
+
         // botão próxima pagina
         if (iPage != this.pages && this.page != 0) {
             var nextPage = iPage + 1;
             htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+nextPage+')">&gt;</button>';
         }
-        
+
         // botão última página
         if (bars - thisBar > 1) {
             htmlOut += '<button class="pButton-outline prumoPagination" onclick="'+this.getParentName()+'.goSearch('+this.pages+')">...'+this.pages+'</button>';
         }
-        
+
         // monta a barra de status
         htmlOut += '<br />';
         htmlOut += gettext('Registros encontrados')+': '+this.count+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
         htmlOut += gettext('Mostrando de')+' '+this.registersFrom+' '+gettext('até')+' '+this.registersTo+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
         htmlOut += gettext('Página')+' '+this.page+' '+gettext('de')+' '+this.pages;
         htmlOut += '<br />';
-    
+
         this.getElement().innerHTML = htmlOut;
     }
-    
+
     /**
      * Evento disparado após o assignResponseXML para ser implementado conforme necessidade do desenvolvedor da aplicação
      */
@@ -3261,7 +3266,7 @@ function PrumoGridNavigation()
     {
         // implementar conforme necessidade
     }
-    
+
     this.assignResponseXML = function(responseXML)
     {
         var x=responseXML.getElementsByTagName(this.xmlIdentification);
@@ -3269,9 +3274,9 @@ function PrumoGridNavigation()
         this.count     = x[0].getElementsByTagName('count')[0].childNodes[0].nodeValue;
         this.pageLines = x[0].getElementsByTagName('pageLines')[0].childNodes[0].nodeValue;
         this.page      = x[0].getElementsByTagName('page')[0].childNodes[0].nodeValue;
-        
+
         this.redraw();
-        
+
         this.afterAssignResponseXML();
     }
 }
@@ -3280,13 +3285,13 @@ function prumoLoading(divName)
 {
     this.divName = divName;
     this.count = 0;
-    
+
     this.show = function(loadId)
     {
-        this.count++;        
+        this.count++;
         this.visible();
     }
-    
+
     this.hide = function(loadId)
     {
         if (this.count > 0) {
@@ -3294,7 +3299,7 @@ function prumoLoading(divName)
         }
         this.visible();
     }
-    
+
     this.visible = function()
     {
         if (this.count == 0) {
@@ -3303,26 +3308,26 @@ function prumoLoading(divName)
             document.getElementById(this.divName).style.display = 'block';
         }
     }
-    
+
     this.visible();
 }
 
 function PrumoMenu(objName)
 {
     this.objName = objName;
-    
+
     this.open = function(id)
     {
         subMenu = document.getElementById(this.objName+'_'+id);
         subMenu.style.display = 'block';
     }
-    
+
     this.close = function(id)
     {
         subMenu = document.getElementById(this.objName+'_'+id);
         subMenu.style.display = 'none';
     }
-    
+
     this.onClick = function(id, link, element)
     {
         if (link == '') {
@@ -3340,7 +3345,7 @@ function PrumoMenu(objName)
             }
         }
     }
-    
+
     this.onInput = function()
     {
         var inputMenuValue = document.getElementById('prumo_input_menu').value;
@@ -3351,13 +3356,13 @@ function PrumoMenu(objName)
             }
         }
     }
-    
+
     this.showInputMenu = function()
     {
         pWindowsImputMenu.show(1);
         document.getElementById('prumo_input_menu').focus();
     }
-    
+
     this.imputMenuKeyDown = function(event)
     {
         if (event.keyCode == 27) { //ESC
@@ -3373,37 +3378,37 @@ function PrumoSearch(objName, ajaxFile)
     this.identification = objName;
     this.page;
     this.orderBy;
-    
+
     this.crudName;
-    
+
     this.pAjax;
     this.pFilter;
     this.pGrid;
     this.pGridNavigation = new PrumoGridNavigation();
     this.pGridNavigation.parent = this;
-    
+
     this.autoClick = true;
-    
+
     this.fieldReturn = Array();
-    
+
     this.selected = false;
-    
+
     this.responseXml;
-    
+
     this.lineIndex;
-    
+
     this.pAjax = new prumoAjax(ajaxFile);
     this.pAjax.ajaxFormat = 'xml';
     this.pAjax.parent = this;
     this.pAjax.identification = this.identification;
     this.pAjax.pLoading = pLoading;
-    
+
     this.fieldValueOnFocus;
     this.fieldFocusId = '';
-    
+
     this.pWindow = false;
     this.modal = true;
-    
+
     this.fieldName;
     this.fieldPk;
     this.pAjax.ajaxXmlOk = function()
@@ -3421,15 +3426,15 @@ function PrumoSearch(objName, ajaxFile)
         }
         document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
         document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
-        
+
         this.parent.afterList();
     }
-    
+
     this.afterRetrieve = function()
     {
         //implementar conforme necessidade
     }
-    
+
     this.assignResponseXML = function(responseXML)
     {
         this.responseXML = responseXML;
@@ -3438,27 +3443,27 @@ function PrumoSearch(objName, ajaxFile)
         this.pFilter.assignResponseXML(responseXML);
         this.fastCRUD();
     }
-    
+
     this.fastCRUD = function()
     {
         // evento do PrumoCrudList
     }
-    
+
     this.afterSearch = function()
     {
         //implementar conforme necessidade
     }
-    
+
     this.afterSearch2 = function()
     {
         //implementar conforme necessidade
     }
-    
+
     this.afterList = function()
     {
         //implementar conforme necessidade
     }
-    
+
     this.parametersFilters = function()
     {
         param = '';
@@ -3469,33 +3474,33 @@ function PrumoSearch(objName, ajaxFile)
             param += '&fValue2[]='+encodeURIComponent(this.pFilter.filter[i].value2);
             param += '&fVisible[]='+this.pFilter.filter[i].visible;
         }
-        
+
         return param;
     }
-    
+
     this.parameters = function()
     {
         if (this.page == undefined) {
             this.page = 1;
         }
-        
+
         if (this.crudName != undefined) {
             var param = 'objName='+this.crudName;
         } else {
             var param = 'objName='+this.objName;
         }
-        
+
         param += '&'+this.objName+'_action=makeXml';
         param += '&page='+this.page;
         if (this.orderBy != undefined) {
             param += '&orderBy='+ this.orderBy;
         }
-        
+
         param += this.parametersFilters();
-        
+
         return param;
     }
-    
+
     this.lineClick = function(lineIndex)
     {
         this.lineIndex = lineIndex;
@@ -3505,7 +3510,7 @@ function PrumoSearch(objName, ajaxFile)
             var noRetrieve = this.fieldReturn[i][3];
             if (noRetrieve == false || this.pAjax.cmd != 'r') {
                 if (fieldReturn != undefined) {
-                    
+
                     var type = this.fieldReturn[i][2];
                     if (type == 'date') {
                         fieldReturn.value = pFormat(type, value, 'text');
@@ -3527,7 +3532,7 @@ function PrumoSearch(objName, ajaxFile)
                         }
                     }
                 } else {
-                
+
                     var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
                     msg = msg.replace('%fieldName%',this.fieldReturn[i][1]);
                     msg = msg.replace('%objName%',this.objName);
@@ -3536,30 +3541,30 @@ function PrumoSearch(objName, ajaxFile)
             }
         }
         this.hide();
-        
+
         var lastReturn = document.getElementById(this.fieldReturn[this.fieldReturn.length -1][1]);
         lastReturn.focus();
-        
+
         this.afterSearch();
         this.afterSearch2();
     }
-    
+
     this.beforeSearch = function()
     {
         //implementar conforme necessidade
         return true;
     }
-    
+
     this.goSearch = function(page)
     {
         if (this.pAjax.working) {
             alert(this.objName + ': ' + gettext('já está trabalhando'));
         } else if (this.pFilter.validateFilters()) {
-            
+
             if (page != undefined) {
                 this.page = page;
             }
-            
+
             if (this.beforeSearch()) {
                 this.selected = false;
                 if (page == undefined) {
@@ -3569,7 +3574,7 @@ function PrumoSearch(objName, ajaxFile)
                     this.pGrid.clear();
                     this.pGridNavigation.clear();
                 }
-                
+
                 this.show();
                 this.pAjax.cmd = 'search';
                 document.getElementById(this.objName+'_btSearch').setAttribute('disabled', 'disabled');
@@ -3578,11 +3583,11 @@ function PrumoSearch(objName, ajaxFile)
             }
         }
     }
-    
+
     this.paramRetrieve = function()
     {
         var param = 'objName='+this.objName+'&'+this.objName+'_action=r';
-        
+
         for (let i in this.fieldPk) {
             if (this.fieldPk[i] == true) {
                 var idReturn = '';
@@ -3600,10 +3605,10 @@ function PrumoSearch(objName, ajaxFile)
                 param += '&'+this.fieldName[i]+'='+document.getElementById(idReturn).value;
             }
         }
-        
+
         return param;
     }
-    
+
     this.goRetrieve = function()
     {
         var havePk = false;
@@ -3622,19 +3627,19 @@ function PrumoSearch(objName, ajaxFile)
                 }
             }
         }
-        
+
         if (havePk && !pkNull) {
             this.pAjax.cmd = 'r';
             this.pAjax.goAjax(this.paramRetrieve());
         }
-        
+
         if (havePk && pkNull) {
             for (let i=0; i < this.fieldReturn.length; i++) {
                 document.getElementById(this.fieldReturn[i][1]).value = '';
             }
         }
     }
-    
+
     this.fieldKeyDown = function(event)
     {
         if (event.keyCode == 113) { //F2
@@ -3644,29 +3649,29 @@ function PrumoSearch(objName, ajaxFile)
             this.fieldBlur(document.getElementById(this.fieldFocusId));
         }
     }
-    
+
     this.cmdSearch = function()
     {
         this.goSearch(1);
     }
-    
+
     this.cmdSearchAll = function()
     {
         this.pFilter.clearValues();
         this.cmdSearch();
         this.pFilter.draw();
     }
-    
+
     this.addFieldReturn = function(fieldName, idReturn, fieldType, noRetrieve)
     {
         this.fieldReturn[this.fieldReturn.length] = Array(fieldName, idReturn, fieldType, noRetrieve);
     }
-    
+
     this.afterShow = function()
     {
         //
     }
-    
+
     this.show = function()
     {
         if (this.pWindow != false) {
@@ -3678,28 +3683,28 @@ function PrumoSearch(objName, ajaxFile)
         }
         this.afterShow();
     }
-    
+
     this.cancel = function()
     {
         if (this.fieldFocusId != '') {
             inputField = document.getElementById(this.fieldFocusId);
             // Caso o usuário tenha digitado algum valor no campo
             if (this.fieldValueOnFocus != inputField.value) {
-                for (let i in this.fieldReturn) {            
+                for (let i in this.fieldReturn) {
                     document.getElementById(this.fieldReturn[i][1]).value = "";
                 }
             }
-            
+
             inputField.focus();
         }
         this.hide();
     }
-    
+
     this.afterHide = function()
     {
         //
     }
-    
+
     this.hide = function()
     {
         if (this.pWindow) {
@@ -3711,50 +3716,50 @@ function PrumoSearch(objName, ajaxFile)
         }
         this.afterHide();
     }
-    
+
     this.upArrow = function()
     {
         this.selected = true;
-        
+
         if (this.pGrid.selectedLine == 0) {
             this.pGrid.selectedLine = this.pGrid.lines + 1;
         }
-        
+
         var nextLine = this.pGrid.selectedLine - 1;
-        
+
         if (this.pGrid.selectedLine > 1) {
-            
+
             this.pGrid.selectedLine = nextLine;
             this.pGrid.onmouseover(this.pGrid.selectedLine);
         }
-        
+
         if (nextLine == 0) {
-            
+
             if (this.pGridNavigation.page > 1) {
                 this.goSearch(this.pGridNavigation.page * 1 - 1);
             }
         }
     }
-    
+
     this.downArrow = function()
     {
         this.selected = true;
         var nextLine = this.pGrid.selectedLine + 1;
-        
+
         if (this.pGrid.selectedLine < this.pGrid.lines) {
-            
+
             this.pGrid.selectedLine = nextLine;
             this.pGrid.onmouseover(this.pGrid.selectedLine);
         }
-        
+
         if (nextLine == this.pGrid.lines + 1) {
-            
+
             if (this.pGridNavigation.page < this.pGridNavigation.pages) {
                 this.goSearch(this.pGridNavigation.page * 1 + 1);
             }
         }
     }
-    
+
     this.enterKey = function()
     {
         if (this.selected) {
@@ -3763,12 +3768,12 @@ function PrumoSearch(objName, ajaxFile)
             this.cmdSearch();
         }
     }
-    
+
     this.keyDown = function()
     {
         this.selected = false;
     }
-    
+
     /**
      * Grava o valor em this.fieldValueOnFocus ao receber o foco para posteriormente ser comparado no evento blur
      */
@@ -3777,7 +3782,7 @@ function PrumoSearch(objName, ajaxFile)
         this.fieldValueOnFocus = objField.value;
         this.fieldFocusId = objField.getAttribute('id');
     }
-    
+
     /**
      * Verifica se o usuário digitou ou alterou alguma informação no field
      */
@@ -3785,31 +3790,31 @@ function PrumoSearch(objName, ajaxFile)
     {
         if (this.pAjax.working == false) {
             var objId = objField.getAttribute('id');
-            
+
             for (let iFieldReturn in this.fieldReturn) {
-                
+
                 if (this.fieldReturn[iFieldReturn][1] == objId) {
                     //Compara o valor do campo ao entrar e ao sair se houve alteração, e dispara o search
                     if (this.fieldValueOnFocus != objField.value) {
-                        
+
                         if (objField.value == '') {
                             for (let iReturn in this.fieldReturn) {
                                 document.getElementById(this.fieldReturn[iReturn][1]).value = '';
                             }
-                        } 
-                        
+                        }
+
                         for (let iFieldSearch in this.pFilter.fieldName) {
                             if (this.pFilter.fieldName[iFieldSearch] == this.fieldReturn[iFieldReturn][0]) {
                                 var fieldType = this.pFilter.fieldType[iFieldSearch];
                             }
                         }
-                        
+
                         if (fieldType == 'string') {
                             var operator = 'like';
                         } else {
                             var operator = 'equal';
                         }
-                        
+
                         this.pFilter.clearValues();
                         this.pFilter.setFilter(this.fieldReturn[iFieldReturn][0], operator, objField.value, '');
                         if (objField.value != '') {
@@ -3820,7 +3825,7 @@ function PrumoSearch(objName, ajaxFile)
             }
         }
     }
-    
+
     this.sort = function(field, order)
     {
         if (order == undefined) {
@@ -3828,34 +3833,34 @@ function PrumoSearch(objName, ajaxFile)
             var className = element.className;
             var arr = className.match(/sort(.*)/g) || [''];
             switch (arr[0]) {
-            case '':
-                element.setAttribute('class', 'prumoGridTh sortAsc');
-                order = 'asc';
-                break;
-            case 'sortAsc':
-                element.className = 'prumoGridTh sortDesc';
-                order = 'desc';
-                break;
-            case 'sortDesc':
-                element.className = 'prumoGridTh sortAsc';
-                order = 'asc';
-                break;
-            default:
-                element.className = 'prumoGridTh sortAsc';
-                order = 'asc';
+                case '':
+                    element.setAttribute('class', 'prumoGridTh sortAsc');
+                    order = 'asc';
+                    break;
+                case 'sortAsc':
+                    element.className = 'prumoGridTh sortDesc';
+                    order = 'desc';
+                    break;
+                case 'sortDesc':
+                    element.className = 'prumoGridTh sortAsc';
+                    order = 'asc';
+                    break;
+                default:
+                    element.className = 'prumoGridTh sortAsc';
+                    order = 'asc';
             }
             var elements = this.pGrid.field;
             for (let i in elements) {
                 element = document.getElementById('PrumoGridTh_' + this.objName + '_' + elements[i]);
                 if (elements[i] != field && this.pGrid.fieldVisible[i] == true) {
-                    element.setAttribute('class', 'prumoGridTh');    
+                    element.setAttribute('class', 'prumoGridTh');
                 }
             }
         }
         this.orderBy = field + ' ' + order;
         this.goSearch(this.page);
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pFilter
      */
@@ -3864,7 +3869,7 @@ function PrumoSearch(objName, ajaxFile)
         this.pGridNavigation.count = 0;
         this.pFilter.setFilter(fieldName, filterOperator, fieldValue, fieldValue2);
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pFilter
      */
@@ -3878,26 +3883,26 @@ document.pCrudList = Array();
 function PrumoCrudList(objName, ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
-    
+
     this.autoClick = false;
-    
+
     this.fastCreate = false;
     this.fastUpdate = false;
     this.fastDelete = false;
-    
+
     this.afterFastCrud = function() {
         // gatilho
     }
-    
+
     this.fastCRUD = function()
     {
         if (this.fastCreate || this.fastUpdate || this.fastDelete) {
-            
+
             let xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
-            
+
             //laço que com a quantidade de linhas do xml
             if (this.fastDelete) {
-                
+
                 // pega o id da coluna onde será colocado o botão excluir
                 var iColumnControls = 0;
                 for (let j=0; j < this.pGrid.field.length; j++) {
@@ -3905,108 +3910,108 @@ function PrumoCrudList(objName, ajaxFile)
                         iColumnControls++;
                     }
                 }
-                
+
                 for (let i=0; i < xmlData.length; i++) {
-                    
+
                     // linha do grid
                     var pGridRowCells = document.getElementById(this.pGrid.htmlId).rows[i+1].cells;
-                    
+
                     // botão de excluir
                     var htmlInputDelete = '<button class="pButton-outline" onclick="'+this.crudName+'.bt_fastDelete('+i+')"><img src="prumo/images/bt_remove.png" /></button>';
                     pGridRowCells[iColumnControls].innerHTML = htmlInputDelete;
                 }
             }
-            
+
             if (this.fastCreate) {
-                
+
                 this.parent.clear();
-                
+
                 // percorre as colunas
                 var iColumn = 0;
                 for (let j=0; j < this.pGrid.field.length; j++) {
-                
+
                     if (this.pGrid.fieldVisible[j]) {
-                        
+
                         // faz referencia a linha do grid
                         var pGridRowCells = document.getElementById(this.pGrid.htmlId).rows[xmlData.length+1].cells;
-                        
+
                         var id = this.crudName+'_'+this.pGrid.field[j]+'_add';
                         var htmlInput = this.parent.fieldTemplate[j];
                         var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
-                        
+
                         htmlInput = htmlInput.replace(':id:', id);
                         pGridRowCells[iColumn].innerHTML = htmlInput;
                         document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastCreate_onKeyDown(event)');
                         this.parent.inputSetValue(id, document.getElementById(this.parent.fieldId[j]).value);
-                        
+
                         iColumn++;
                     }
                 }
-                
+
                 // botão gravar novo
                 var htmlInputNew = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_create" onclick="'+this.crudName+'.bt_fastCreate()"><img src="prumo/images/bt_ok.png" /></button>';
                 pGridRowCells[iColumn].innerHTML = htmlInputNew;
-                
+
                 this.parent.unFreezeFields();
             }
-            
+
             this.afterFastCrud();
         }
     }
-    
+
     this.lineClick = function(lineIndex)
     {
         this.lineIndex = lineIndex;
         this.assignResponseXML(this.responseXML);
-        
+
         if (this.fastUpdate) {
-            
+
             // percorre as colunas e adiciona os campos de edição
             var iColumn = 0;
             for (let j=0; j < this.pGrid.field.length; j++) {
-                
+
                 if (this.pGrid.fieldVisible[j]) {
-                    
+
                     var value = pFormat(this.pGrid.fieldType[j], this.pGrid.getValue(this.pGrid.field[j], lineIndex), 'text');
                     var pGridRowCells = document.getElementById(this.pGrid.htmlId).rows[lineIndex+1].cells;
                     var id = this.crudName+'_'+this.pGrid.field[j]+'_edit';
                     var htmlInput = this.parent.fieldTemplate[j];
                     var htmlInput = htmlInput.replace('id=""', 'id="'+id+'"');
-                    
+
                     pGridRowCells[iColumn].innerHTML = htmlInput;
                     document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastUpdate_onKeyDown(event, '+lineIndex+')');
                     this.parent.inputSetValue(id, value);
-                    
+
                     pGridRowCells[iColumn].removeAttribute('onClick');
                     pGridRowCells[iColumn].style.cursor = 'default';
-                    
+
                     if (j == 0) {
                         document.getElementById(id).focus();
                     }
-                    
+
                     iColumn++;
                 }
             }
-            
+
             //botão de atualizar
             var htmlInputUpdate = '<button class="pButton-outline" id="'+this.crudName+'_bt_fast_update" onclick="'+this.crudName+'.bt_fastUpdate('+lineIndex+')"><img src="prumo/images/bt_ok.png" /></button>';
-            
+
             // botão de excluir
             //var htmlInputDelete = '<button onclick="'+this.crudName+'.bt_fastDelete('+lineIndex+')"><img src="prumo/images/bt_remove.png" /></button>';
-            
+
             pGridRowCells[iColumn].innerHTML = htmlInputUpdate;
-            
+
             ////limpa o campo de inserir
             var xmlData = this.responseXML.getElementsByTagName(this.pGrid.xmlIdentification);
             var i = xmlData.length + 1;
-            
+
             var pGridRow = document.getElementById(this.pGrid.htmlId).rows[i];
             for (let j=0; j < pGridRow.cells.length; j++) {
                 pGridRow.cells[j].style.cursor = 'default';
                 pGridRow.cells[j].removeAttribute('onClick');
                 pGridRow.cells[j].innerHTML = '<br />';
             }
-            
+
             // limpa os botoes de excluir dos outros registros
             for (let i=0; i < xmlData.length; i++) {
                 if (i != lineIndex) {
@@ -4014,21 +4019,21 @@ function PrumoCrudList(objName, ajaxFile)
                     pGridRowCells[iColumn].innerHTML = '<br />';
                 }
             }
-            
+
             this.parent.unFreezeFields();
             this.afterFastCrud();
         } else {
-            
+
             for (let i=0; i < this.fieldReturn.length; i++) {
-            
+
                 var value = this.pGrid.getValue(this.fieldReturn[i][0], lineIndex);
                 var fieldReturn = document.getElementById(this.fieldReturn[i][1]);
-                
+
                 if (fieldReturn != undefined) {
-                    
+
                     var type = this.fieldReturn[i][2];
                     if (fieldReturn.getAttribute('type') == 'checkbox') {
-                        
+
                         if (value == 't') {
                             fieldReturn.checked = true;
                         } else {
@@ -4038,14 +4043,14 @@ function PrumoCrudList(objName, ajaxFile)
                         fieldReturn.value = pFormat(type, value, 'text');
                     }
                 } else {
-                
+
                     var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
                     msg = msg.replace('%fieldName%', this.fieldReturn[i][1]);
                     msg = msg.replace('%objName%', this.objName);
                     alert(msg);
                 }
             }
-            
+
             this.hide();
             this.parent.doRetrieve();
             this.parent.backToForms();
@@ -4059,7 +4064,7 @@ document.pQueue = Array();
 function PrumoQueue(objName,ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
-    
+
     this.pAjax.ajaxXmlOk = function()
     {
         this.parent.pGrid.assignResponseXML(this.responseXML);
@@ -4069,18 +4074,18 @@ function PrumoQueue(objName,ajaxFile)
         document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
         this.parent.afterList();
     }
-    
+
     this.lineClick = function(lineIndex)
     {
         var msg = gettext('Falta implementar o método lineClick do objeto ')+this.objName;
         alert(msg);
     }
-    
+
     this.afterList = function()
     {
         //disponivel para implementação
     }
-    
+
 }
 
 document.pTab = Array();
@@ -4088,22 +4093,22 @@ function PrumoTab(objName)
 {
     this.objName = objName;
     this.tabName = new Array();
-    
+
     this.addTab = function(tabName)
     {
         this.tabName.push(tabName);
     }
-    
+
     this.show = function()
     {
         document.getElementById(this.objName).style.display = 'block';
     }
-    
+
     this.hide = function()
     {
         document.getElementById(this.objName).style.display = 'none';
     }
-    
+
     this.showTab = function(tabName)
     {
         this.show();
@@ -4127,39 +4132,60 @@ function PrumoWindow(objName)
     this.title   = 'PrumoWindow';
     this.align   = 'center';
     this.vAlign  = 'top';
-    
+
     this.div = document.getElementById(objName);
-    
+    this.showCount = 0;
+
+    this.beforeShow = function()
+    {
+        return true;
+    }
+
+    this.afterShow = function()
+    {
+        //
+    }
+
     this.show = function(modal)
     {
-        document.getElementById(this.objName+'_title').innerHTML = this.title;
-        
-        if (modal) {
-            document.getElementById(this.objName+'_veil').style.display = 'block';
+        if (this.beforeShow()) {
+            document.getElementById(this.objName+'_title').innerHTML = this.title;
+
+            if (modal) {
+                document.getElementById(this.objName+'_veil').style.display = 'block';
+            }
+            this.div.style.display = 'block';
+            this.position();
+            this.showCount++;
         }
-        this.div.style.display = 'block';
-        this.position();
     }
-    
+
+    this.beforeHide = function()
+    {
+        return true;
+    }
+
     this.afterHide = function() {
         //
     }
-    
+
     this.hide = function()
     {
-        document.getElementById(this.objName+'_veil').style.display = 'none';
-        this.div.style.display = 'none';
-        this.afterHide();
+        if (this.beforeHide()) {
+            document.getElementById(this.objName+'_veil').style.display = 'none';
+            this.div.style.display = 'none';
+            this.afterHide();
+        }
     }
-    
+
     this.move = function()
     {
         thisDiv = document.getElementById(this.objName)
         diffX = 0;
         diffY = 0;
-        
+
         document.getElementById(this.objName+'_title').style.cursor = 'move';
-        
+
         document.onmousemove = function Mouse(event)
         {
             if (diffX == 0) {
@@ -4171,42 +4197,42 @@ function PrumoWindow(objName)
             x = event.clientX - diffX;
             y = event.clientY - diffY;
             thisDiv.style.left = x + "px";
-            thisDiv.style.top  = y + "px";            
+            thisDiv.style.top  = y + "px";
         }
         document.onclick = null;
     }
-    
+
     this.dropMove = function()
     {
         document.getElementById(this.objName+'_title').style.cursor = '';
         document.onmousemove = false;
     }
-    
+
     this.position = function()
     {
         var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         var topPosition = 0;
         var leftPosition = 0;
-        
+
         this.div.style.width = this.width + "px";
-        
+
         if (this.vAlign == 'middle') {
             topPosition = (document.body.offsetHeight/2)-(this.div.offsetHeight/2);
             if (topPosition < scrollTop) {
                 topPosition = scrollTop + 1;
             }
         }
-        
+
         if (this.vAlign == 'top') {
             var topPosition = scrollTop + 20;
             if (topPosition < 0) {
                 topPosition = 1;
             }
         }
-        
+
         this.div.style.top = topPosition + "px";
         this.top = topPosition;
-        
+
         if (this.align == 'center') {
             leftPosition = (document.body.clientWidth/2)-(this.width/2);
             if (leftPosition < 0) {
@@ -4222,4 +4248,3 @@ function PrumoWindow(objName)
         this.div.style.left = leftPosition + "px";
     }
 }
-
