@@ -63,7 +63,7 @@ if (isset($_POST['date_start'])) {
         <option value="week">$week</option>
         <option value="month">$month</option>
     </select>
-     <button onClick="goDateCalculator()">=</button> <input id="date_result" type="date" size="20" readonly="readonly" />
+     <button class="pButton" onClick="goDateCalculator()">=</button> <input id="date_result" type="date" size="20" readonly="readonly" />
      <span id="day_of_week"></span>
     HTML;
 }
