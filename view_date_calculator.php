@@ -16,37 +16,37 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * Este arquivo controla a interface do sistema
- */
+require_once __DIR__.'/../prumo.php';
 
-require_once __DIR__.'/view_header.php';
+$pWindowDateCalculator = new prumoWindow();
+$pWindowDateCalculator->title = _('Calculadora de datas');
+$pWindowDateCalculator->width = '750';
+$pWindowDateCalculator->draw(true,'<div id="div_date_calculator" style="padding:20px"></div>');
+?>
+<script type="text/javascript">
     
-$pLogin = new PrumoLogin($GLOBALS['pConfig']['appIdent'], '', '');
-
-if (isset($_GET['action']) && $_GET['action'] == 'logoff') {
+    var pAjaxDateCalculator = new prumoAjax('prumo/ctrl_date_calculator.php', function() {
+        var objResult = JSON.parse(this.responseText); 
+        document.getElementById('date_result').value = objResult.date_result;
+        document.getElementById('day_of_week').innerHTML = objResult.day_of_week;
+    });
     
-    $pLogin->logoff();
-    pRedirect($GLOBALS['pConfig']['appWebPath'].'/index.php');
-} else {
-    
-    if ($pLogin->isSession()) {
+    function goDateCalculator()
+    {
+        var dateStart = document.getElementById('date_start').value;
+        var dateAdd = document.getElementById('date_add').value;
+        var dateInterval = document.getElementById('date_interval').value;
         
-        if ($GLOBALS['pConfig']['afterLogin'] == 'index.php') {
-            
-            include __DIR__.'/view_loading.php';
-            include __DIR__.'/view_date_calculator.php';
-            include __DIR__.'/view_page.php';
-            include __DIR__.'/view_footer.php';
-        } else {
-            
-            if (empty($GLOBALS['pConfig']['appWebPath']) || $GLOBALS['pConfig']['appWebPath'] == '/') {
-                pRedirect($GLOBALS['pConfig']['afterLogin']);
-            } else {
-                pRedirect($GLOBALS['pConfig']['appWebPath'].'/'.$GLOBALS['pConfig']['afterLogin']);
-            }
-        }
-    } else {
-        include __DIR__.'/view_login.php';
+        pAjaxDateCalculator.goAjax('date_start='+dateStart+'&date_add='+dateAdd+'&date_interval='+dateInterval);
     }
-}
+    
+    pWindowDateCalculator.beforeShow = function()
+    {
+        if (this.showCount == 0) {
+            pSimpleAjax('prumo/ctrl_date_calculator.php', '', 'div_date_calculator');
+        }
+        return true;
+    }
+    
+</script>
+

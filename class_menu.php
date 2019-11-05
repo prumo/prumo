@@ -230,7 +230,8 @@ class PrumoMenu
         $pWindowsImputMenu = new PrumoWindow('pWindowsImputMenu');
         $pWindowsImputMenu->title = _('Menu principal');
         $htmlMenu .= $pWindowsImputMenu->draw(false, $htmlImputMenu);
-        $htmlMenu .= '<button onclick="'.$this->getObjName().'.showInputMenu()" class="pButton">...</button><br><br>'."\n";
+        $htmlMenu .= '<button onclick="'.$this->getObjName().'.showInputMenu()" class="pButton">...</button> '."\n";
+        $htmlMenu .= '<button onclick="pWindowDateCalculator.show(0)" class="pButton">d+n</button><br><br>'."\n";
         
         $xml = simplexml_load_string($this->dbXml());
         

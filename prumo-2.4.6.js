@@ -4129,16 +4129,35 @@ function PrumoWindow(objName)
     this.vAlign  = 'top';
     
     this.div = document.getElementById(objName);
+    this.showCount = 0;
+    
+    this.beforeShow = function()
+    {
+        return true;
+    }
+    
+    this.afterShow = function()
+    {
+        //
+    }
     
     this.show = function(modal)
     {
-        document.getElementById(this.objName+'_title').innerHTML = this.title;
-        
-        if (modal) {
-            document.getElementById(this.objName+'_veil').style.display = 'block';
+        if (this.beforeShow()) {
+            document.getElementById(this.objName+'_title').innerHTML = this.title;
+            
+            if (modal) {
+                document.getElementById(this.objName+'_veil').style.display = 'block';
+            }
+            this.div.style.display = 'block';
+            this.position();
+            this.showCount++;
         }
-        this.div.style.display = 'block';
-        this.position();
+    }
+    
+    this.beforeHide = function()
+    {
+        return true;
     }
     
     this.afterHide = function() {
@@ -4147,9 +4166,11 @@ function PrumoWindow(objName)
     
     this.hide = function()
     {
-        document.getElementById(this.objName+'_veil').style.display = 'none';
-        this.div.style.display = 'none';
-        this.afterHide();
+        if (this.beforeHide()) {
+            document.getElementById(this.objName+'_veil').style.display = 'none';
+            this.div.style.display = 'none';
+            this.afterHide();
+        }
     }
     
     this.move = function()
