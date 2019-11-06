@@ -21,7 +21,6 @@ require_once __DIR__.'/ctrl_connection_admin.php';
 
 if (isset($_POST['date_start'])) {
     if ($_POST['date_start'] != '' && $_POST['date_add'] != '' && $_POST['date_interval'] != '') {
-        
         $sqlDateStart = pFormatSql($_POST['date_start'], 'date');
         $sqlDateAdd = pFormatSql($_POST['date_add'], 'integer');
         $sqlDateInterval = in_array($_POST['date_interval'], array('day', 'week', 'month')) ? $_POST['date_interval'] : 'day';
@@ -49,14 +48,14 @@ if (isset($_POST['date_start'])) {
             'date_result' => '',
             'day_of_week' => ''
         ));
-    } 
+    }
 } else {
     $today = $pConnectionPrumo->sqlQuery('SELECT now()::date;');
     $day = _('dias');
     $week = _('semanas');
     $month = _('meses');
     echo <<<HTML
-    Date: <input id="date_start" type="date" value="$today" onchange="goDateCalculator()" />
+    Data: <input id="date_start" type="date" value="$today" onchange="goDateCalculator()" />
      + <input id="date_add" type="number" onchange="goDateCalculator()" /> 
     <select id="date_interval" onchange="goDateCalculator()">
         <option value="day" selected>$day</option>
@@ -67,4 +66,3 @@ if (isset($_POST['date_start'])) {
      <span id="day_of_week"></span>
     HTML;
 }
-
