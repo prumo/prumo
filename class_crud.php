@@ -2041,7 +2041,7 @@ class PrumoCrud extends PrumoBasic
                     
                     if ($this->getPermission('r')) {
                         Header('Content-type: application/xml; charset=UTF-8');
-                        echo $this->pCrudList->makeXml();
+                        echo $this->pCrudList->autoInit();
                     } else {
                         
                         if (isset($this->param['routine']) && ! empty($this->param['routine'])) {

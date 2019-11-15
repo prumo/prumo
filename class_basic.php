@@ -100,6 +100,7 @@ class PrumoBasic
         $default = isset($param['default']) ? $param['default'] : null;
         $type    = isset($param['type']) ? $param['type'] : 'string';
         $notNull = (isset($param['notnull']) && $param['notnull']);
+        $markNew = (isset($param['marknew']) && $param['marknew']);
         $visible = (! isset($param['visible']) || $param['visible'] != 'false');
         
         $field = array(
@@ -109,6 +110,7 @@ class PrumoBasic
                     'default' => $default,
                     'type' => $type,
                     'notnull' => $notNull,
+                    'marknew' => $markNew,
                     'visible' => $visible
                  );
         

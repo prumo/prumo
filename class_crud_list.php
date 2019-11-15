@@ -50,6 +50,26 @@ class PrumoCrudList extends PrumoSearch
         $clientObject .= "{$this->ind}\t{$this->name}.objName = '{$this->name}';\n";
         $clientObject .= "{$this->ind}\t{$this->name}.parent = {$this->param['crudname']};\n";
         
+        // repassa fields para o objeto cliente
+        $fieldName = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            if (! empty($fieldName)) {
+                $fieldName .= ',';
+            }
+            $fieldName .= "\"{$this->field[$i]['name']}\"";
+        }
+        
+        $fieldPk = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            if (! empty($fieldPk)) {
+                $fieldPk .= ',';
+            }
+            $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
+        }
+        
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldPk = Array($fieldPk);\n";
+        
         // repassa condicionalmente o pog debug para o objeto ajax
         if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= "{$this->ind}\t{$this->name}.pAjax.debug = true;\n";

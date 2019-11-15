@@ -30,6 +30,7 @@ class PrumoGrid
     public $ind = '';
     public $lineEventOnData;
     public $pointerCursorOnData;
+    public $fieldNameMarkNew = '';
     
     /**
      * Construtos da calsse PrumoGrid
@@ -183,6 +184,7 @@ class PrumoGrid
         {$this->ind}<script type=text/javascript>
         {$this->ind}    {$this->jsName} = new PrumoGrid('{$this->jsName}');
         {$this->ind}    {$this->jsName}.lines = {$this->lines};
+        {$this->ind}    {$this->jsName}.fieldNameMarkNew = '{$this->fieldNameMarkNew}';
         {$this->ind}    document.pGrid.push({$this->jsName});
         {$this->ind}</script>
         

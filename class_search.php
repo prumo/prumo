@@ -28,6 +28,7 @@ class PrumoSearch extends PrumoBasic
     protected $pConnection;
     protected $pGrid;
     protected $fieldReturn;
+    protected $fieldNameMarkNew = '';
     
     public $page;
     public $pFilter;
@@ -68,7 +69,7 @@ class PrumoSearch extends PrumoBasic
         $lines = $pageLines ? $pageLines : $this->pageLines();
         $this->pGrid = new PrumoGrid($this->name, $lines);
         $this->pGrid->ind = $this->ind . "\t\t";
-        $this->pGrid->lineEventOnData = $this->name.'.lineClick(%)';
+        $this->pGrid->lineEventOnData = $this->name.'.beforeLineClick(%)';
         $this->pGrid->pointerCursorOnData = true;
     }
     
@@ -112,6 +113,16 @@ class PrumoSearch extends PrumoBasic
         
         $this->field[$lastField]['sqlname'] = isset($param['sqlname']) ? $param['sqlname'] : $param['name'];
         $this->field[$lastField]['pk'] = isset($param['pk']) ? true : false;
+        
+        if ($this->field[$lastField]['marknew']) {
+            if ($this->field[$lastField]['type'] != 'boolean') {
+                $msg = _('Apenas campos do tipo boolean podem ser "markNew" (fieldName=%fieldName%).');
+                throw new Exception(str_replace('%fieldName%', $this->field[$lastField]['name'], $msg));
+            } else {
+                $this->fieldNameMarkNew = $this->field[$lastField]['name'];
+                $this->pGrid->fieldNameMarkNew = $this->field[$lastField]['name'];
+            }
+        }
         
         if (empty($this->orderby)) {
             $this->setOrderby($param['name']);
@@ -600,6 +611,8 @@ class PrumoSearch extends PrumoBasic
         } else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'r') {
             Header('Content-type: application/xml; charset=UTF-8');
             echo $this->doRetrieve();
+        } else if (isset($_POST[$this->name.'_action']) && $_POST[$this->name.'_action'] == 'unMarkNew') {
+            echo $this->unMarkNew();
         } else {
             $this->draw(true);
         }
@@ -655,6 +668,30 @@ class PrumoSearch extends PrumoBasic
         $pSearchReturn .= "{$this->ind}</script>\n";
         
         return $pSearchReturn;
+    }
+    
+    /**
+     * Monta um comando SQL para desmarcar novo
+     *
+     * @return string: comando SQL
+     */
+    public function sqlUnMarkNew() : string
+    {
+        $condition = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            $fieldName = $this->field[$i]['name'];
+            if ($this->field[$i]['pk']) {
+                $condition .= empty($condition) ? ' WHERE ' : ' AND ';
+                $value = pFormatSql($_POST[$this->field[$i]['name']],$this->field[$i]['type']);
+                $condition .= $fieldName.'='.$value;
+            }
+        }
+        
+        $tableName = $this->param['tablename'];
+        $schema = $this->pConnection->getSchema($this->param['schema']);
+        $sql = 'UPDATE '.$schema.$tableName.' SET '.$this->fieldNameMarkNew.'=false '.$condition.';';
+        
+        return $sql;
     }
     
     /**
@@ -716,5 +753,25 @@ class PrumoSearch extends PrumoBasic
         }
         
         return $xml;
+    }
+
+    /**
+     * Desmarca novo
+     *
+     * @return string: OK em caso de sucesso ou mensagem de erro
+     */
+    private function unMarkNew() : string
+    {
+        if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+            return _('Sua sessão expirou, faça login novamente.');
+        }
+        
+        $sql = $this->sqlUnMarkNew();
+        
+        if ($this->pConnection->sqlQuery($sql) === false) {
+            return $this->pConnection->getErr();
+        } else {
+            return 'OK';
+        }
     }
 }

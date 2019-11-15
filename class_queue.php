@@ -104,6 +104,27 @@ class PrumoQueue extends PrumoSearch
         if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= $this->ind. '    '.$this->name.'.pAjax.debug = true;'."\n";
         }
+        
+        // repassa fields para o objeto cliente
+        $fieldName = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            if (! empty($fieldName)) {
+                $fieldName .= ',';
+            }
+            $fieldName .= "\"{$this->field[$i]['name']}\"";
+        }
+        
+        $fieldPk = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            if (! empty($fieldPk)) {
+                $fieldPk .= ',';
+            }
+            $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
+        }
+        
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldPk = Array($fieldPk);\n";
+        
         $clientObject .= $this->ind.'    document.pQueue.push('.$this->name.');'."\n";
         $clientObject .= $this->ind. '</script>'."\n";
         
