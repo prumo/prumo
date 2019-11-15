@@ -54,8 +54,9 @@ if (isset($_POST['date_start'])) {
     $day = _('dias');
     $week = _('semanas');
     $month = _('meses');
+    $htmlData = _('Data');
     echo <<<HTML
-    Data: <input id="date_start" type="date" value="$today" onchange="goDateCalculator()" />
+    $htmlData: <input id="date_start" type="date" value="$today" onchange="goDateCalculator()" />
      + <input id="date_add" type="number" onchange="goDateCalculator()" /> 
     <select id="date_interval" onchange="goDateCalculator()">
         <option value="day" selected>$day</option>
