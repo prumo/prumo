@@ -370,6 +370,7 @@ function classCode() {
 		document.getElementById('prumo_field_noupdate').checked = false;
 		document.getElementById('prumo_field_unique').checked = false;
 		document.getElementById('prumo_field_nohtml').checked = false;
+		document.getElementById('prumo_field_marknew').checked = false;
 		
 		for (var i in param) {
 			var paramPart = explode('=',param[i]);
@@ -462,6 +463,10 @@ function classCode() {
 				break;
 				case 'nohtml':
 					document.getElementById('prumo_field_nohtml').checked = true;
+					this.btPrumoFieldMaisOpcoes_click();
+				break;
+				case 'marknew':
+					document.getElementById('prumo_field_marknew').checked = true;
 					this.btPrumoFieldMaisOpcoes_click();
 				break;
 			}
@@ -584,6 +589,10 @@ function classCode() {
 					else {
 						document.getElementById('prumo_search_field_visible').checked = true;
 					}
+				break;
+				case 'marknew':
+					document.getElementById('prumo_search_field_marknew').checked = true;
+					this.btPrumoFieldMaisOpcoes_click();
 				break;
 			}
 		}
@@ -741,6 +750,7 @@ function classCode() {
 		var noupdate = document.getElementById('prumo_field_noupdate').checked;
 		var unique = document.getElementById('prumo_field_unique').checked;
 		var nohtml = document.getElementById('prumo_field_nohtml').checked;
+		var markNew = document.getElementById('prumo_field_marknew').checked;
 		
 		if (type == 'string') {
 			document.getElementById('prumo_field_size').removeAttribute('disabled');
@@ -775,6 +785,7 @@ function classCode() {
 			if (noupdate) codeLine += ',noUpdate';
 			if (unique) codeLine += ',unique';
 			if (nohtml) codeLine += ',nohtml';
+			if (markNew) codeLine += ',markNew';
 			codeLine += '\');'
 			
 			this.replaceTextboxLine(codeLine, this.lineIndex);
@@ -848,6 +859,7 @@ function classCode() {
 		var label = document.getElementById('prumo_search_field_label').value;
 		var type = document.getElementById('prumo_search_field_type').value;
 		var visible = document.getElementById('prumo_search_field_visible').checked;
+		var markNew = document.getElementById('prumo_search_field_marknew').checked;
 		
 		if (name == '') {
 			alert('É necessário informar o nome do campo.');
@@ -860,6 +872,7 @@ function classCode() {
 			if (label != '') codeLine += ',label='+label;
 			if (type != '' && type != 'string') codeLine += ',type='+type;
 			if (visible == false) codeLine += ',visible=false';
+			if (markNew) codeLine += ',markNew';
 			codeLine += '\');'
 		
 			this.replaceTextboxLine(codeLine, this.lineIndex);
@@ -979,6 +992,7 @@ function classCode() {
 		document.getElementById('prumo_field_noupdate').checked = false;
 		document.getElementById('prumo_field_unique').checked = false;
 		document.getElementById('prumo_field_nohtml').checked = false;
+		document.getElementById('prumo_field_marknew').checked = false;
 	}
 	
 	this.showPrumoSearchEdit = function() {
@@ -1028,7 +1042,7 @@ function classCode() {
 		document.getElementById('prumo_search_field_label').value = '';
 		document.getElementById('prumo_search_field_type').value = '';
 		document.getElementById('prumo_search_field_visible').checked = true;
-
+		document.getElementById('prumo_search_field_marknew').checked = false;
 	}
 	
 	this.navigate = function() {

@@ -381,6 +381,10 @@ $dataListMenuShortcut .= '                    </datalist>'."\n";
                     <td class="prumoFormLabel"><br /></td>
                     <td class="prumoFormFields"><input id="prumo_field_nohtml" type="checkbox" onchange="code.writePrumoField()" /><?=_('Não desenhar o campo na tela');?> (nohtml)</td>
                 </tr>
+                <tr>
+                    <td class="prumoFormLabel"><br /></td>
+                    <td class="prumoFormFields"><input id="prumo_field_marknew" type="checkbox" onchange="code.writePrumoField()" /><?=_('Indica registro novo');?> (markNew)</td>
+                </tr>
             </table>
         </div>
         
@@ -486,6 +490,10 @@ $dataListMenuShortcut .= '                    </datalist>'."\n";
             <tr>
                 <td class="prumoFormLabel"><br /></td>
                 <td class="prumoFormFields"><input id="prumo_search_field_visible" onchange="code.writePrumoSearchField()" type="checkbox" /><?=_('Visível');?> (visible)</td>
+            </tr>
+            <tr>
+                <td class="prumoFormLabel"><br /></td>
+                <td class="prumoFormFields"><input id="prumo_search_field_marknew" onchange="code.writePrumoSearchField()"  type="checkbox" /><?=_('Indica registro novo');?> (markNew)</td>
             </tr>
         </table>
         <table class="prumoFormTable">
