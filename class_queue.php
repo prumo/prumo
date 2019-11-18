@@ -70,7 +70,7 @@ class PrumoQueue extends PrumoSearch
         $pQueue = <<<HTML
         
         <script type="text/javascript">
-            {$this->name}.pGrid.lineEventOnData = '{$this->name}.lineClick(%)';
+            {$this->name}.pGrid.lineEventOnData = '{$this->name}.beforeLineClick(%)';
         </script>
         
         HTML;

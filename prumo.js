@@ -3554,8 +3554,20 @@ function PrumoSearch(objName, ajaxFile)
         this.afterSearch2();
     }
 
+    this.pAjaxUnMarkNew = new prumoAjax(ajaxFile, function()
+    {
+        if (this.responseText != 'OK') {
+            alert(this.responseText);
+        }
+    });
+    this.pAjaxUnMarkNew.sync = false;
+
     this.beforeLineClick = function(lineIndex)
     {
+        if (this.pGrid.fieldNameMarkNew != '' && this.pGrid.getValue(this.pGrid.fieldNameMarkNew, lineIndex) == 't') {
+            this.pAjaxUnMarkNew.goAjax(this.paramUnMarkNew(lineIndex));
+        }
+        
         this.lineClick(lineIndex);
     }
 
@@ -4081,23 +4093,6 @@ function PrumoCrudList(objName, ajaxFile)
             this.afterSearch2();
         }
     }
-
-    this.pAjaxUnMarkNew = new prumoAjax(ajaxFile, function()
-    {
-        if (this.responseText != 'OK') {
-            alert(this.responseText);
-        }
-    });
-    this.pAjaxUnMarkNew.sync = false;
-
-    this.beforeLineClick = function(lineIndex)
-    {
-        if (this.pGrid.fieldNameMarkNew != '' && this.pGrid.getValue(this.pGrid.fieldNameMarkNew, lineIndex) == 't') {
-            this.pAjaxUnMarkNew.goAjax(this.paramUnMarkNew(lineIndex));
-        }
-        
-        this.lineClick(lineIndex);
-    }
 }
 
 document.pQueue = Array();
@@ -4114,23 +4109,6 @@ function PrumoQueue(objName,ajaxFile)
         document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
         this.parent.afterList();
     }
-
-    this.lineClick = function(lineIndex)
-    {
-        var msg = gettext('Falta implementar o método lineClick do objeto ')+this.objName;
-        alert(msg);
-    }
-    
-    this.beforeLineClick = function(lineIndex)
-    {
-        this.lineClick(lineIndex);
-    }
-
-    this.afterList = function()
-    {
-        //disponivel para implementação
-    }
-
 }
 
 document.pTab = Array();
