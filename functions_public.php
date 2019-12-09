@@ -358,43 +358,55 @@ function testXmlError(string $xml) : bool
  */
 function htmlFormat(string $type, $value)
 {
-    if ($type == 'timestamp' && $value != '') {
+    if ($value == '') {
+        return $value;
+    }
+
+    if ($type === 'timestamp') {
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
         $day = substr($value, 8, 2);
         $hour = substr($value, 11, 2);
         $minute = substr($value, 14, 2);
         $second = substr($value, 17, 2);
-        $timestamp = substr($value, 17, 2);
-        $formatedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
-    } else if ($type == 'date' && $value != '') {
+        $formattedValue = $day . '/' . $month . '/' . $year . ' ' . $hour . ':' . $minute . ':' . $second;
+    } elseif ($type === 'date') {
         $year = substr($value, 0, 4);
         $month = substr($value, 5, 2);
         $day = substr($value, 8, 2);
-        $formatedValue = $day . '/' . $month . '/' . $year;
-    } else if ($type == 'time' && $value != '') {
-        $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'numeric' && $value != '') {
-        $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'money' && $value != '') {
-        $formatedValue = 'R$ '.plainFormat($type, $value);
-    } else if ($type == 'integer' && $value != '') {
-        $formatedValue = plainFormat($type, $value);
-    } else if ($type == 'boolean' && $value != '') {
+        $formattedValue = $day . '/' . $month . '/' . $year;
+    } elseif ($type === 'time') {
+        $formattedValue = plainFormat($type, $value);
+    } elseif ($type === 'numeric') {
+        $formattedValue = plainFormat($type, $value);
+    } elseif ($type === 'money') {
+        $formattedValue = 'R$ '.plainFormat($type, $value);
+    } elseif ($type === 'integer') {
+        $formattedValue = plainFormat($type, $value);
+    } elseif ($type === 'boolean') {
         if ($value == 't') {
-            $formatedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" checked="checked" />';
+            $formattedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" checked="checked" />';
         } else {
-            $formatedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" />';
+            $formattedValue = '<input type="checkbox" readonly="readonly" disabled="disabled" />';
         }
+    } elseif ($type === 'cnpj') {
+        $value = str_replace(' ', '', trim(strtoupper(preg_replace("/[^0-9]/", "", $value))));
+        $formattedValue = substr($value, 0, 2) . '.' . substr($value, 2, 3) . '.'
+                        . substr($value, 5, 3) . '/' . substr($value, 8, 4) . '-'
+                        . substr($value, 12, 2);
+    } elseif ($type === 'cpf') {
+        $value = str_replace(' ', '', trim(strtoupper(preg_replace("/[^0-9]/", "", $value))));
+        $formattedValue = substr($value, 0, 3) . '.' . substr($value, 3, 3) . '.'
+                        . substr($value, 6, 3) . '-' . substr($value, 9, 2);
     } else {
-        $formatedValue = str_replace($value, '\\n', '<br />');
+        $formattedValue = str_replace($value, '\\n', '<br />');
     }
     
-    if ($formatedValue == '//' || $formatedValue == '//::') {
-        $formatedValue = '';
+    if ($formattedValue == '//' || $formattedValue == '//::') {
+        $formattedValue = '';
     }
     
-    return $formatedValue;
+    return $formattedValue;
 }
 
 /**
@@ -410,17 +422,17 @@ function plainFormat(string $type, $value)
     //@todo converter no lado do cliente o formato da data e hora
     if ($type == 'time' && $value != '') {
         $time = substr($value, 0, 8);
-        $formatedValue = $time;
+        $formattedValue = $time;
     } else if (($type == 'numeric') && $value != '') {
         $number = str_replace('.', ',', str_replace(',', '', $value));
-        $formatedValue = $number;
+        $formattedValue = $number;
     } else if ($type == 'money' && $value != '') {
-        $formatedValue = number_format($value, 2, ',','.');
+        $formattedValue = number_format($value, 2, ',','.');
     } else {
-        $formatedValue = $value;
+        $formattedValue = $value;
     }
     
-    return $formatedValue;
+    return $formattedValue;
 }
 
 /**
