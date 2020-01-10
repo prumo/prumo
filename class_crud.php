@@ -1104,7 +1104,7 @@ class PrumoCrud extends PrumoBasic
         }
         
         // se encontrou algum campo serial recupera os valores recem gerados automaticamente pelo sgdb
-        if (count($serialField) > 0) {
+        if (count($serialField) > 0 && $this->action == 'c') {
             $arrPks = $this->pConnection->fetchAssoc($this->sqlValues($this->sqlGetSerials()));
             if ($arrPks === false) {
                 $arrPks = array();
