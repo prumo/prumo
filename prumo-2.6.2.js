@@ -897,7 +897,6 @@ function PrumoCrud(objName, ajaxFile)
                         inputField.checked = false;
                     } else {
                         inputField.value = '';
-                        inputField.checked = true;
                     }
                 }
             }
@@ -1656,6 +1655,9 @@ function PrumoCrud(objName, ajaxFile)
         if (newState == 'new' || newState == 'copy') {
             if (newState == 'new') {
                 this.clear();
+            }
+            if (newState == 'copy') {
+                this.setDefault();
             }
             this.unFreezeFields();
             if (this.parent1x1 == false) {
