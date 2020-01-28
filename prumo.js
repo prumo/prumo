@@ -504,6 +504,7 @@ function PrumoCrud(objName, ajaxFile)
     this.isVisible = true;
 
     this.defaultParamCreate;
+    this.defaultParamUpdate;
 
     this.initialState = '';
 
@@ -1102,6 +1103,11 @@ function PrumoCrud(objName, ajaxFile)
                 params += '&'+this.son1x1[i].paramUpdate();
             }
         }
+
+        if (this.defaultParamUpdate != '') {
+            params += '&' + this.defaultParamUpdate;
+        }
+
         return params;
     }
 
