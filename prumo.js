@@ -3690,6 +3690,7 @@ function PrumoSearch(objName, ajaxFile)
         }
         if (event.keyCode == 13) { //ENTER
             this.fieldBlur(document.getElementById(this.fieldFocusId));
+            event.preventDefault();
         }
     }
 
