@@ -3544,6 +3544,10 @@ function PrumoSearch(objName, ajaxFile)
                             }
                         }
                     }
+
+                    if (fieldReturn.onchange != undefined) {
+                        fieldReturn.onchange();
+                    }
                 } else {
 
                     var msg = gettext('Campo "%fieldName%" não encontrado, verifique a chamada "addFieldReturn" do objeto "%objName%"');
