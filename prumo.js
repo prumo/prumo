@@ -2072,6 +2072,17 @@ function PrumoCrud(objName, ajaxFile)
             this.pCrudList.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         }
     }
+    
+    /**
+     * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
+     */
+    this.addInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
+        this.pSearch.pFilter.addInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
+        if (this.pCrudList != false) {
+            this.pCrudList.pFilter.addInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
+        }
+    }
 
     this.inputSetValue = function(id, value)
     {
@@ -3029,6 +3040,14 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, false);
     }
+    
+    /**
+     * Adiciona um novo filtro invisível
+     */
+    this.addInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
+        this.addFilter(null, fieldName, filterOperator, fieldValue, fieldValue2, false);
+    }
 }
 
 function prumoValidator(validator)
@@ -3924,6 +3943,14 @@ function PrumoSearch(objName, ajaxFile)
     this.setInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
     {
         this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
+    }
+    
+    /**
+     * Redirecionamento para o mesmo método em this.pFilter
+     */
+    this.addInvisibleFilter = function(fieldName, filterOperator, fieldValue, fieldValue2)
+    {
+        this.pFilter.addInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
     }
 }
 

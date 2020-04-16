@@ -160,7 +160,7 @@ class PrumoBasic
     }
     
     /**
-     * Adiciona um filtro invisibel no pFilter no lado do cliente (javascript)
+     * Seta um filtro invisibel no pFilter no lado do cliente (javascript)
      *
      * @param $fieldName string: nome do campo
      * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
@@ -171,6 +171,24 @@ class PrumoBasic
         $html = <<<HTML
         <script type="text/javascript">
             {$this->name}.setInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');
+        </script>
+        HTML;
+        echo $html;
+    }
+    
+    
+    /**
+     * Adiciona um filtro invisibel no pFilter no lado do cliente (javascript)
+     *
+     * @param $fieldName string: nome do campo
+     * @param $filterOperator string: operador (verificar operadores do banco em class_pg_connection.php)
+     * @param $fieldValue string: valor
+     */
+    public function addInvisibleFilter(string $fieldName, string $filterOperator, string $fieldValue, string $fieldValue2='')
+    {
+        $html = <<<HTML
+        <script type="text/javascript">
+            {$this->name}.addInvisibleFilter('$fieldName', '$filterOperator', '$fieldValue', '$fieldValue2');
         </script>
         HTML;
         echo $html;
