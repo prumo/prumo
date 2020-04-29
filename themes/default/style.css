@@ -673,15 +673,9 @@ label > input:checked + img{ /* (RADIO CHECKED) IMAGE STYLES */
   border:2px solid #f00;
 }
 
-/* Remove default bullets */
-ul, .ul-arvore {
-    list-style-type: none;
-}
-
 /* Remove margins and padding from the parent ul */
 .ul-arvore {
-    margin: 0;
-    padding: 0;
+    list-style-type: none;
 }
 
 /* Style the caret/arrow */
@@ -703,12 +697,12 @@ ul, .ul-arvore {
 }
 
 /* Hide the nested list */
-.nested {
+ul.nested {
     display: none;
 }
 
 /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
-.active {
+ul.active {
     display: block;
 }
 
