@@ -138,7 +138,7 @@ class PrumoBasic
             }
         }
         
-        $msg = _('Campo %fielName% não encontrado!');
+        $msg = _('Campo %fieldName% não encontrado!');
         throw new Exception(str_replace('%fieldName%', $fieldName, $msg));
     }
     
