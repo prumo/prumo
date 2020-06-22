@@ -1992,7 +1992,7 @@ function PrumoCrud(objName, ajaxFile)
                 fields += '&'+this.fieldName[i]+'='+this.fieldNewValue[this.fieldName[i]];
             }
         }
-        window.open(pCrudPessoa.pAjax.ajaxFile + '?' + this.objName + '_action=download&downloadField=' + fieldName + fields);
+        window.open(this.pAjax.ajaxFile + '?' + this.objName + '_action=download&downloadField=' + fieldName + fields);
     }
 
     this.readAutoClearValues = function()
