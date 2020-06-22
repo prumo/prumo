@@ -371,43 +371,32 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
 {
     $valueNoInjection = $value;
     
-    if (! in_array($type, array('string', 'text', 'longtext', 'integer', 'serial', 'numeric', 'money', 'date', 'time', 'timestamp', 'boolean'))) {
-        $msg = _('Prumo: Tipo "%type%" desconhecido em pSqlNoInjection!');
-        throw new Exception(str_replace('%type%', $type, $msg));
-    }
-    
     switch ($type) {
-        
-        case "string":
-        case "text":
-        case "longtext":
-            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
-        break;
-        
         case "integer":
         case "serial":
             $valueNoInjection = preg_replace("/[^0-9\-\+\*\/]/", "", $valueNoInjection);
-        break;
-        
+            break;
         case "numeric":
-            $valueNoInjection = preg_replace("/[^0-9\.\,\-\+\*\/]/", "", $valueNoInjection);
-        break;
-        
         case "money":
             $valueNoInjection = preg_replace("/[^0-9\.\,\-\+\*\/]/", "", $valueNoInjection);
-        break;
-        
+            break;
         case "date":
             $valueNoInjection = preg_replace("/[^0-9\-\/\/]/", "", $valueNoInjection);
-        break;
-        
+            break;
         case "time":
             $valueNoInjection = preg_replace("/[^0-9:]/", "", $valueNoInjection);
-        break;
-        
+            break;
         case "timestamp":
             $valueNoInjection = preg_replace("/[^0-9\T\:\+\-\/\ ]/", "", $valueNoInjection);
-        break;
+            break;
+        case "boolean":
+            break;
+        case "string":
+        case "text":
+        case "longtext":
+        default:
+            $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
+            break;
     }
     
     return $formatSqlNull ? pFormatSqlNull($valueNoInjection, $type) : $valueNoInjection;

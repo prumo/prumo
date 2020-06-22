@@ -70,6 +70,7 @@ class PrumoPgConnection
         $this->sqlOperator['between']               = ':field: BETWEEN :value: AND :value2:';
         $this->sqlOperator['is null']               = ':field: IS NULL';
         $this->sqlOperator['not is null']           = 'NOT :field: IS NULL';
+        
         $this->sqlOperator['date_time equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['date_time not equal']             = 'NOT :field: = \':value:\'';
         $this->sqlOperator['date_time less than']             = ':field: < \':value:\'';
@@ -77,6 +78,13 @@ class PrumoPgConnection
         $this->sqlOperator['date_time less than or equal']    = ':field: <= \':value:\'';
         $this->sqlOperator['date_time greater than or equal'] = ':field: >= \':value:\'';
         $this->sqlOperator['date_time between']               = ':field: BETWEEN \':value:\' AND \':value2:\'';
+        $this->sqlOperator['date_time is null']               = ':field: IS NULL';
+        $this->sqlOperator['date_time not is null']           = 'NOT :field: IS NULL';
+        
+        $this->sqlOperator['file equal']                 = ':field:::text = \':value:\'';
+        $this->sqlOperator['file not equal']             = 'NOT :field:::text = \':value:\'';
+        $this->sqlOperator['file is null']               = ':field: IS NULL';
+        $this->sqlOperator['file not is null']           = 'NOT :field: IS NULL';
     }
     
     /**
@@ -340,7 +348,8 @@ class PrumoPgConnection
             'date'      => 'date',
             'time'      => 'time',
             'timestamp' => 'timestamp with time zone',
-            'boolean'   => 'boolean'
+            'boolean'   => 'boolean',
+            'file'      => 'json'
         );
         
         return isset($types[$type]) ? $types[$type] : $type;

@@ -35,10 +35,11 @@ function pAddQuote(string $value, bool $useQuote=true) : string
  * @param $value string: o valor a ser tratado
  * @param $type string: o tipo de dado [string,text,longtext,integer,numeric,serial,date,time,timestamp,boolean]
  * @param $capsLock boolean: quando true, adiciona um strtoupper em $value
+ * @param $useQuote boolean: quando true, adiciona aspas em $value
  *
  * @returns string
  */
-function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=true) : string
+function pFormatSql($value, string $type, bool $capsLock = false, bool $useQuote = true) : string
 {
     $valueNoInjection = pSqlNoInjection($value, $type);
     
@@ -47,69 +48,25 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
     }
     
     switch ($type) {
-        
-        case "string":
-        case "text":
-        case "longtext":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
-        break;
-        
         case "integer":
         case "serial":
-            return $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
-        break;
-        
+            $valueNoInjection = $valueNoInjection == '' ? "NULL" : "$valueNoInjection";
+            break;
         case "numeric":
-            
-            if ($valueNoInjection == '') {
-                return "NULL";
-            } else {
-                
-                $delimiterFound = false;
-                $newNum = '';
-                
-                for ($i = strlen($valueNoInjection)-1; $i >=0 ; $i--) {
-                    
-                    $char = $valueNoInjection[$i];
-                    
-                    if (in_array($char, array('+', '-'))) {
-                        $delimiterFound = false;
-                        $newNum = $char . $newNum;
-                    } else if (in_array($char, array('.', ','))) {
-                        
-                        if (! $delimiterFound) {
-                            $newNum = '.' . $newNum;
-                            $delimiterFound = true;
-                        }
-                    } else {
-                        $newNum = $char . $newNum;
-                    }
-                }
-                
-                $valueNoInjection = $newNum;
-                
-                return "$valueNoInjection";
-            }
-        break;
-        
         case "money":
-            
             if ($valueNoInjection == '') {
-                return "NULL";
+                $valueNoInjection = "NULL";
             } else {
-                
                 $delimiterFound = false;
                 $newNum = '';
                 
-                for ($i = strlen($valueNoInjection)-1; $i >=0 ; $i--) {
-                    
+                for ($i = strlen($valueNoInjection) - 1; $i >= 0; $i--) {
                     $char = $valueNoInjection[$i];
                     
                     if (in_array($char, array('+', '-'))) {
                         $delimiterFound = false;
                         $newNum = $char . $newNum;
-                    } else if (in_array($char, array('.', ','))) {
-                        
+                    } elseif (in_array($char, array('.', ','))) {
                         if (! $delimiterFound) {
                             $newNum = '.' . $newNum;
                             $delimiterFound = true;
@@ -119,34 +76,24 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
                     }
                 }
                 
-                $valueNoInjection = $newNum;
-                
-                return "$valueNoInjection";
+                $valueNoInjection = "$newNum";
             }
-        break;
-        
+            break;
         case "date":
-            
             if ($valueNoInjection == '') {
-                return "NULL";
+                $valueNoInjection = "NULL";
             } else {
                 if (pCheckDate($valueNoInjection)) {
                     $arrDate = pParseDate($valueNoInjection);
-                    return pAddQuote($arrDate['year'].'-'.$arrDate['month'].'-'.$arrDate['day'], $useQuote);
+                    $valueNoInjection = pAddQuote($arrDate['year'].'-'.$arrDate['month'].'-'.$arrDate['day'], $useQuote);
                 } else {
-                    return "NULL";
+                    $valueNoInjection = "NULL";
                 }
             }
-        break;
-        
-        case "time":
-            return $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
-        break;
-        
+            break;
         case "timestamp":
-            
             if ($valueNoInjection == '') {
-                return "NULL";
+                $valueNoInjection = "NULL";
             } else {
                 while ($valueNoInjection != str_replace('  ', ' ', $valueNoInjection)) {
                     $valueNoInjection = str_replace('  ', ' ', $valueNoInjection);
@@ -175,15 +122,23 @@ function pFormatSql($value, string $type, bool $capsLock=false, bool $useQuote=t
                 $hour   = $arrTime['hour'];
                 $minute = $arrTime['minute'];
                 $second = $arrTime['second'];
-                
-                return pAddQuote("$year-$month-$day $hour:$minute:$second$fuso", $useQuote);
-            }
-        break;
 
+                $valueNoInjection = pAddQuote("$year-$month-$day $hour:$minute:$second$fuso", $useQuote);
+            }
+            break;
         case "boolean":
-            return ($valueNoInjection == 't') ? pAddQuote('t', $useQuote) : pAddQuote('f', $useQuote);
-        break;
+            $valueNoInjection = ($valueNoInjection == 't') ? pAddQuote('t', $useQuote) : pAddQuote('f', $useQuote);
+            break;
+        case "string":
+        case "text":
+        case "longtext":
+        case "time":
+        default:
+            $valueNoInjection = $valueNoInjection == '' ? "NULL" : pAddQuote($valueNoInjection, $useQuote);
+            break;
     }
+
+    return $valueNoInjection;
 }
 
 /**

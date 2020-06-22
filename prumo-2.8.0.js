@@ -483,10 +483,10 @@ function PrumoCrud(objName, ajaxFile)
     this.fieldType;
     this.fieldNotNull;
 
-    this.fieldOldValue = Array();
-    this.fieldNewValue = Array();
-    this.fieldAutoClearValue = Array();
-    this.sonSearch = Array();
+    this.fieldOldValue = [];
+    this.fieldNewValue = [];
+    this.fieldAutoClearValue = [];
+    this.sonSearch = [];
 
     this.pAjax;
     this.pCrudList = false;
@@ -494,17 +494,19 @@ function PrumoCrud(objName, ajaxFile)
 
     // para relação 1x1
     this.parent1x1 = false;
-    this.parent1x1Condition = new Array();
-    this.son1x1 = new Array();
+    this.parent1x1Condition = [];
+    this.son1x1 = [];
 
     // para relação 1xN
     this.parent1xN = false;
-    this.son1xN = new Array();
+    this.son1xN = [];
 
     this.isVisible = true;
 
     this.defaultParamCreate;
     this.defaultParamUpdate;
+
+    this.fileReader = [];
 
     this.initialState = '';
 
@@ -841,15 +843,30 @@ function PrumoCrud(objName, ajaxFile)
     {
         for (let i=0; i < this.fieldName.length; i++) {
             // verifica se tem pai ou campo não é chave primaria
-            inputField = document.getElementById(this.fieldId[i]);
+            let inputField = document.getElementById(this.fieldId[i]);
             if (inputField == null) {
                 alert(this.objName+' Error: Campo "'+this.fieldId[i]+'" não encontrado!');
             }
-            if (inputField.getAttribute('type') == 'checkbox') {
+            if (inputField.getAttribute('type') === 'checkbox') {
                 if (inputField.checked) {
                     this.fieldNewValue[this.fieldName[i]] = 't';
                 } else {
                     this.fieldNewValue[this.fieldName[i]] = 'f';
+                }
+            } else if (inputField.getAttribute('type') === 'file') {
+                let file = inputField.files[0];
+                if (file) {
+                    let fileContent = this.fileReader[this.fieldName[i]].result;
+                    let base64 = btoa(fileContent);
+                    let mimeType = file.type !== '' ? file.type : 'text/plain';
+                    let fileName = file.name;
+                    this.fieldNewValue[this.fieldName[i]] = '{'
+                        + '"nome": "' + fileName + '",'
+                        + '"mime-type": "' + mimeType + '",'
+                        + '"conteudo": "' + base64 + '"'
+                        + '}';
+                } else {
+                    this.fieldNewValue[this.fieldName[i]] = '';
                 }
             } else {
                 this.fieldNewValue[this.fieldName[i]] = inputField.value;
@@ -868,13 +885,13 @@ function PrumoCrud(objName, ajaxFile)
             // verifica se tem pai ou campo não é chave primaria
             if (this.parent1x1 == false || !this.fieldPk[i]) {
                 inputField = document.getElementById(this.fieldId[i]);
-                if (inputField.getAttribute('type') == 'checkbox') {
+                if (inputField.getAttribute('type') === 'checkbox') {
                     if (value == 't') {
                         inputField.checked = true;
                     } else {
                         inputField.checked = false;
                     }
-                } else {
+                } else if (inputField.getAttribute('type') !== 'file') {
                     inputField.value = value;
                 }
             }
@@ -991,6 +1008,7 @@ function PrumoCrud(objName, ajaxFile)
         for (let i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
                 let fieldValue = this.fieldNewValue[this.fieldName[i]];
+
                 params += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldValue);
             }
         }
@@ -1198,7 +1216,6 @@ function PrumoCrud(objName, ajaxFile)
             var inputField = document.getElementById(this.fieldId[i]);
             inputField.setAttribute('title',inputField.value);
             if (this.parent1x1 == false || !this.fieldPk[i]) {
-
                 inputField.setAttribute('disabled','disabled');
 
                 var inputFastCreate = document.getElementById(this.objName+'_'+this.fieldName[i]+'_add');
@@ -1905,9 +1922,30 @@ function PrumoCrud(objName, ajaxFile)
         }
     }
 
+    this.verifyUploadIsComplete = function (callback, firstCall) {
+        for (const fieldName in this.fileReader) {
+            if (this.fileReader[fieldName].readyState !== FileReader.DONE) {
+                let a = this;
+                setTimeout(
+                    function () {
+                        a.verifyUploadIsComplete(callback, false);
+                    },
+                    500
+                );
+                return false;
+            }
+        }
+
+        if (firstCall === false) {
+            callback();
+        }
+
+        return true;
+    }
+
     this.bt_write_new = function()
     {
-        if (this.validateNotNull()) {
+        if (this.verifyUploadIsComplete(this.bt_write_new, true) && this.validateNotNull()) {
             this.doCreate();
         }
         this.visibleSon1x1();
@@ -1924,7 +1962,7 @@ function PrumoCrud(objName, ajaxFile)
 
     this.bt_write_edit = function()
     {
-        if (this.validateNotNull()) {
+        if (this.verifyUploadIsComplete(this.bt_write_edit, true) && this.validateNotNull()) {
             this.doUpdate();
         }
     }
@@ -1944,6 +1982,17 @@ function PrumoCrud(objName, ajaxFile)
         if (confirm(gettext('Confirma a exclusão do registro?'))) {
             this.doDelete();
         }
+    }
+
+    this.bt_download = function(fieldName)
+    {
+        let fields = '';
+        for (let i in this.fieldPk) {
+            if (this.fieldPk[i] == true) {
+                fields += '&'+this.fieldName[i]+'='+this.fieldNewValue[this.fieldName[i]];
+            }
+        }
+        window.open(pCrudPessoa.pAjax.ajaxFile + '?' + this.objName + '_action=download&downloadField=' + fieldName + fields);
     }
 
     this.readAutoClearValues = function()
@@ -2290,7 +2339,18 @@ function PrumoFilter(objName, useSimilaritySearch)
         gettext('é nulo'),
         gettext('não é nulo')
     ];
-
+    
+    //operadores lógicos para campos file
+    this.fileOperators = [
+        'file is null',
+        'file not is null'
+    ];
+    
+    this.fileOperatorsName = [
+        gettext('é nulo'),
+        gettext('não é nulo')
+    ];
+    
     if (this.useSimilaritySearch === 'f') {
         for (let i = 0; i < this.textOperators.length; i++) {
             if (this.textOperators[i] === 'similarity') {
@@ -2502,6 +2562,9 @@ function PrumoFilter(objName, useSimilaritySearch)
             case 'timestamp':
                 return 'date_time';
                 break;
+            case 'file':
+                return 'file';
+                break;
             case 'boolean':
                 return 'boolean';
                 break;
@@ -2538,6 +2601,10 @@ function PrumoFilter(objName, useSimilaritySearch)
         if (operatorType == 'date_time') {
             arrOperators     = this.dateTimeOperators;
             arrOperatorsName = this.dateTimeOperatorsName;
+        }
+        if (operatorType == 'file') {
+            arrOperators     = this.fileOperators;
+            arrOperatorsName = this.fileOperatorsName;
         }
         if (operatorType == 'numeric') {
             arrOperators     = this.numericOperators;
@@ -2585,6 +2652,9 @@ function PrumoFilter(objName, useSimilaritySearch)
             htmlInput2 += '<option value="f">'+labelFalse+'</option>';
             htmlInput2 += '<option value=""></option>';
             htmlInput2 += '</select>';
+        } else if (operatorType == 'file') {
+            htmlInput = '<input type="hidden" id="'+this.htmlId+'_'+index+'_value" />\n';
+            htmlInput2 = '<input type="hidden" id="'+this.htmlId+'_'+index+'_value2" />\n';
         } else {
             let fieldType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
             htmlInput = '<input type="'+fieldType+'" id="'+this.htmlId+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
@@ -2882,6 +2952,9 @@ function PrumoFilter(objName, useSimilaritySearch)
                         break;
                     case 'date_time':
                         arrOperators = this.dateTimeOperators;
+                        break;
+                    case 'file':
+                        arrOperators = this.fileOperators;
                         break;
                     default:
                         arrOperators = this.textOperators;

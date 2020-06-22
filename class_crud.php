@@ -66,7 +66,8 @@ class PrumoCrud extends PrumoBasic
         'date'      => '<input type="date" size="9" />',
         'time'      => '<input type="time" size="9" />',
         'timestamp' => '<input type="datetime-local" size="15" />',
-        'boolean'   => '<input type="checkbox" />'
+        'boolean'   => '<input type="checkbox" />',
+        'file'      => '<input type="file" />'
     );
     
     /**
@@ -237,7 +238,9 @@ class PrumoCrud extends PrumoBasic
         $this->field[$fieldIndex]['virtual'] = isset($param['virtual']) ? true : false;
         $this->field[$fieldIndex]['nohtml'] = isset($param['nohtml']) ? true : false;
         $this->field[$fieldIndex]['unique'] = isset($param['unique']) ? true : false;
-        
+
+        $this->field[$fieldIndex]['sizelimit'] = isset($param['sizelimit']) ? $param['sizelimit'] : 0;
+
         $this->field[$fieldIndex]['template'] = isset($param['template']) ? $param['template'] : $this->fieldTemplate[$this->field[$fieldIndex]['type']];
         $this->field[$fieldIndex]['template'] = str_replace("\r", '', $this->field[$fieldIndex]['template']);
         $this->field[$fieldIndex]['template'] = str_replace("\n", '', $this->field[$fieldIndex]['template']);
@@ -600,7 +603,7 @@ class PrumoCrud extends PrumoBasic
             if ($this->field[$i]['type'] != 'serial' && $this->field[$i]['nocreate'] == false && $this->field[$i]['virtual'] == false) {
                 
                 $condition .= empty($condition) ? ' WHERE ' : ' AND ';
-                $value = ':new_'.$fieldName.':';
+                $value = $this->field[$i]['type'] == 'file' ? ':new_'.$fieldName.':::text' : ':new_'.$fieldName.':';
                 $condition .= $fieldName.'='.$value;
             }
         }
@@ -1427,6 +1430,10 @@ class PrumoCrud extends PrumoBasic
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
                     $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="datetime-local"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+                } else if ($this->field[$i]['type'] == 'file') {
+                    
+                    $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
+                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="file"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
                 } else if ($this->field[$i]['type'] == 'text') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
@@ -1649,7 +1656,9 @@ class PrumoCrud extends PrumoBasic
         if (isset($this->param['debug']) && $this->param['debug']) {
             $clientObject .= "{$this->ind}\t{$this->name}.pAjax.debug = true;\n";
         }
-        
+
+        $onload = '';
+
         // repassa fields para o objeto cliente
         $fieldName = '';
         $fieldPk = '';
@@ -1664,7 +1673,6 @@ class PrumoCrud extends PrumoBasic
         $fieldDefault = '';
         $fieldTemplate = '';
         for ($i = 0; $i < count($this->field); $i++) {
-            
             if (! empty($fieldName)) {
                 $fieldName .= ',';
             }
@@ -1689,6 +1697,33 @@ class PrumoCrud extends PrumoBasic
                 $fieldType .= ',';
             }
             $fieldType .= '"'.$this->field[$i]['type'].'"';
+            if ($this->field[$i]['type'] === 'file') {
+                $fieldNameJs = $this->field[$i]['name'];
+                $sizeLimit = $this->field[$i]['sizelimit'];
+
+                $onload .= "{$this->ind}\t{$this->name}.fileReader['$fieldNameJs'] = new FileReader();\n";
+                $onload .= "{$this->ind}\tdocument.getElementById('$fieldNameJs').addEventListener(\n";
+                $onload .= "{$this->ind}\t\t'change',\n";
+                $onload .= "{$this->ind}\t\tfunction() {\n";
+                $onload .= "{$this->ind}\t\t\tlet input = document.getElementById('$fieldNameJs');\n";
+                $onload .= "{$this->ind}\t\t\tlet fileSize = input.files[0].size;\n";
+                $onload .= "{$this->ind}\t\t\tif ($sizeLimit > 0 && fileSize >= $sizeLimit) {\n";
+                $onload .= "{$this->ind}\t\t\t\talert('Tamanho do arquivo informado maior que o máximo permitido');\n";
+                $onload .= "{$this->ind}\t\t\t\tthis.value = '';\n";
+                $onload .= "{$this->ind}\t\t\t\treturn false;\n";
+                $onload .= "{$this->ind}\t\t\t}\n";
+                $onload .= "{$this->ind}\t\t\t{$this->name}.fileReader['$fieldNameJs'].readAsBinaryString(input.files[0]);\n";
+                $onload .= "{$this->ind}\t\t\treturn true;\n";
+                $onload .= "{$this->ind}\t\t}\n";
+                $onload .= "{$this->ind}\t);\n";
+                $onload .= "{$this->ind}\tlet button = document.createElement(\"button\");\n";
+                $onload .= "{$this->ind}\tbutton.innerText = 'Download';\n";
+                $onload .= "{$this->ind}\tbutton.setAttribute('class', 'pButton-outline');\n";
+                $onload .= "{$this->ind}\tbutton.setAttribute('id', '{$this->name}_bt_download');\n";
+                $onload .= "{$this->ind}\tbutton.setAttribute('onclick', '{$this->name}.bt_download(\'$fieldNameJs\')');\n";
+                $onload .= "{$this->ind}\tdocument.getElementById('$fieldNameJs').parentNode.appendChild(button);\n";
+                $onload .= "\n";
+            }
             
             if (! empty($fieldNotNull)) {
                 $fieldNotNull .= ',';
@@ -1731,8 +1766,6 @@ class PrumoCrud extends PrumoBasic
                 }
             }
             $fieldTemplate .= $template;
-            
-            
         }
         
         $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
@@ -1748,7 +1781,7 @@ class PrumoCrud extends PrumoBasic
         $clientObject .= "{$this->ind}\t{$this->name}.fieldDefault = Array($fieldDefault);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldTemplate = Array($fieldTemplate);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldValidator = ".json_encode($this->validator)."\n";
-        
+
         // repassa as permissões CRUD para o cliente
         $clientObject .= "\n";
         $clientObject .= "{$this->ind}\t{$this->name}.permC = " . ($this->getPermission('c') ? 'true' : 'false').";\n";
@@ -1779,8 +1812,6 @@ class PrumoCrud extends PrumoBasic
         }
         
         //// trata onload
-        $onload = '';
-        
         if (isset($_GET['initialState'])) {
             $clientObject .= "{$this->ind}\t{$this->name}.initialState = '{$_GET['initialState']}';\n";
         }
@@ -1960,16 +1991,13 @@ class PrumoCrud extends PrumoBasic
                 echo $this->executeDdl();
             }
         } else {
-            
-            if (isset($_POST[$this->name.'_action']) && ! empty($_POST[$this->name.'_action'])) {
-                
-                $this->action = $_POST[$this->name.'_action'];
+
+            $this->action = $_POST[$this->name.'_action'] ?? $_GET[$this->name.'_action'] ?? null;
+            if ($this->action != null) {
                 $this->cascadeAction();
                 
                 switch ($this->action) {
-                    
                     case 'c':
-                        
                         if ($this->getPermission('c')) {
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doCreate();
@@ -1980,11 +2008,9 @@ class PrumoCrud extends PrumoBasic
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doAccessDenied();
                         }
-                        
+
                         break;
-                        
                     case 'r':
-                        
                         if ($this->getPermission('r')) {
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doRetrieve();
@@ -1995,11 +2021,9 @@ class PrumoCrud extends PrumoBasic
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doAccessDenied();
                         }
-                        
+
                         break;
-                        
                     case 'u':
-                        
                         if ($this->getPermission('u')) {
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doUpdate();
@@ -2010,11 +2034,9 @@ class PrumoCrud extends PrumoBasic
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doAccessDenied();
                         }
-                        
+
                         break;
-                        
                     case 'd':
-                        
                         if ($this->getPermission('d')) {
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doDelete();
@@ -2025,16 +2047,58 @@ class PrumoCrud extends PrumoBasic
                             Header('Content-type: application/xml; charset=UTF-8');
                             echo $this->doAccessDenied();
                         }
-                        
+
                         break;
-                        
+                    case 'download':
+                        if ($this->getPermission('r')) {
+                            $downloadField = pFormatSql($_GET['downloadField'] ?? null, 'string', false, false);
+                            $tableName = $this->param['tablename'];
+                            $schema = $this->pConnection->getSchema($this->param['schema']);
+
+                            $condition = '';
+                            for ($i = 0; $i < count($this->field); $i++) {
+                                if ($this->field[$i]['pk']) {
+                                    $condition .= empty($condition) ? ' WHERE ' : ' AND ';
+                                    $condition .= $this->field[$i]['name'].'=:new_'.$this->field[$i]['name'].':';
+                                }
+                            }
+
+                            $sql = <<<SQL
+                                SELECT
+                                    $downloadField
+                                FROM $schema$tableName
+                                $condition
+                            SQL;
+                            $sql = $this->sqlValues($sql, $_GET);
+                            $arquivo = $this->pConnection->sqlQuery($sql);
+
+                            if ($arquivo) {
+                                $dados = json_decode($arquivo, true);
+
+                                header('Content-type: ' . $dados['mime-type']);
+                                header('Content-Disposition:inline; filename="' . $dados['nome'] . '"');
+                                header('Cache-Control: private, max-age=0, must-revalidate');
+                                header('Pragma: public');
+
+                                echo base64_decode($dados['conteudo']);
+                            } else {
+                                echo 'Nenhum arquivo encontrado. ';
+                                echo '<a href="javascript: window.close()">Voltar</a>';
+                            }
+                        } else {
+                            if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
+                                pLogAcessDenied($this->param['routine'], 'r');
+                            }
+                            Header('Content-type: application/xml; charset=UTF-8');
+                            echo $this->doAccessDenied();
+                        }
+                        break;
                     default:
-                    
                         echo 'Error';
                         break;
                 }
             } else {
-                
+
                 if (isset($_POST['pSearch_'.$this->name.'_action']) && ! empty($_POST['pSearch_'.$this->name.'_action'])) {
                     $this->pSearch->autoInit();
                 } else if (isset($_POST['pCrudList_'.$this->name.'_action']) && ! empty($_POST['pCrudList_'.$this->name.'_action'])) {
