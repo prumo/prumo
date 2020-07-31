@@ -64,7 +64,7 @@ class PrumoCrud extends PrumoBasic
         'numeric'   => '<input type="text" size="5" style="text-align:right;" />',
         'money'     => '<input type="text" size="9" style="text-align:right;" />',
         'date'      => '<input type="date" size="9" />',
-        'time'      => '<input type="time" size="9" />',
+        'time'      => '<input type="text" size="9" />',
         'timestamp' => '<input type="datetime-local" size="15" />',
         'boolean'   => '<input type="checkbox" />',
         'file'      => '<input type="file" />'
@@ -1421,7 +1421,7 @@ class PrumoCrud extends PrumoBasic
                 } else if ($this->field[$i]['type'] == 'time') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
-                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="time"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
+                    $form .= $ind.'    <td class="prumoFormFields"><input id="'.$id.'" type="text"'.$disabled.$onChange.' value="'.$defaultValue.'" />'.$search.$notNull.'</td>'."\n";
                 } else if ($this->field[$i]['type'] == 'integer' || $this->field[$i]['type'] == 'serial') {
                     
                     $form .= $ind.'    <td class="prumoFormLabel">'.$label.':</td>'."\n";
