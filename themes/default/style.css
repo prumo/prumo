@@ -839,6 +839,11 @@ table td[class*="col-"],table th[class*="col-"]{
     background-color:#ebcccc;
 }
 
+th {
+    position: sticky;
+    top: 0; /* Don't forget this, required for the stickiness */
+}
+
 .text-left{text-align:left !important;}
 .text-right{text-align:right !important;}
 .text-center{text-align:center !important;}
