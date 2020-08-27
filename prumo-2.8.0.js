@@ -1924,7 +1924,9 @@ function PrumoCrud(objName, ajaxFile)
 
     this.verifyUploadIsComplete = function (callback, firstCall) {
         for (const fieldName in this.fileReader) {
-            if (this.fileReader[fieldName].readyState !== FileReader.DONE) {
+            if (document.getElementById('fta_documento').value != '' &&
+                this.fileReader[fieldName].readyState !== FileReader.DONE
+            ) {
                 let a = this;
                 setTimeout(
                     function () {
