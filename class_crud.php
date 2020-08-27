@@ -1716,12 +1716,12 @@ class PrumoCrud extends PrumoBasic
                 $onload .= "{$this->ind}\t\t\treturn true;\n";
                 $onload .= "{$this->ind}\t\t}\n";
                 $onload .= "{$this->ind}\t);\n";
-                $onload .= "{$this->ind}\tlet button = document.createElement(\"button\");\n";
-                $onload .= "{$this->ind}\tbutton.innerText = 'Download';\n";
-                $onload .= "{$this->ind}\tbutton.setAttribute('class', 'pButton-outline');\n";
-                $onload .= "{$this->ind}\tbutton.setAttribute('id', '{$this->name}_bt_download');\n";
-                $onload .= "{$this->ind}\tbutton.setAttribute('onclick', '{$this->name}.bt_download(\'$fieldNameJs\')');\n";
-                $onload .= "{$this->ind}\tdocument.getElementById('$fieldNameJs').parentNode.appendChild(button);\n";
+                $onload .= "{$this->ind}\tlet button_$fieldNameJs = document.createElement(\"button\");\n";
+                $onload .= "{$this->ind}\tbutton_$fieldNameJs.innerText = 'Download';\n";
+                $onload .= "{$this->ind}\tbutton_$fieldNameJs.setAttribute('class', 'pButton-outline');\n";
+                $onload .= "{$this->ind}\tbutton_$fieldNameJs.setAttribute('id', '{$this->name}_bt_download');\n";
+                $onload .= "{$this->ind}\tbutton_$fieldNameJs.setAttribute('onclick', '{$this->name}.bt_download(\'$fieldNameJs\')');\n";
+                $onload .= "{$this->ind}\tdocument.getElementById('$fieldNameJs').parentNode.appendChild(button_$fieldNameJs);\n";
                 $onload .= "\n";
             }
             
