@@ -1816,18 +1816,29 @@ class PrumoCrud extends PrumoBasic
             $clientObject .= "{$this->ind}\t{$this->name}.initialState = '{$_GET['initialState']}';\n";
         }
         
-        $inicialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
-        if ($inicialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
+        $initialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
+        if ($initialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
             $onload .= "{$this->ind}\t\t{$this->name}.bt_new();\n";
         }
+        
+        $initialStateEdit = (isset($_GET['initialState']) && $_GET['initialState'] == 'edit');
         
         // preenche os campos
         for ($i = 0; $i < count($this->field); $i++) {
             $id = $this->field[$i]['fieldid'];
-            if (isset($_GET[$id]) && ! empty($_GET[$id]) && ($inicialStateNew == false || $this->field[$i]['type'] != 'serial')) {
-                $onload .= "{$this->ind}\t\t{$this->name}.inputSetValue('$id', '".str_replace("\n", '\n', urldecode($_GET[$id]))."');\n";
+            if (isset($_GET[$id]) && ! empty($_GET[$id]) && ($initialStateNew == false || $this->field[$i]['type'] != 'serial')) {
+                if ($this->field[$i]['pk'] || $initialStateNew) {
+                    $onload .= "{$this->ind}\t\t{$this->name}.inputSetValue('$id', '".str_replace("\n", '\n', urldecode($_GET[$id]))."');\n";
+                } else {
+                    $onload .= "{$this->ind}\t\t{$this->name}.initialFieldId.push('{$this->field[$i]['name']}');\n";
+                    $onload .= "{$this->ind}\t\t{$this->name}.initialFieldValue.push('".str_replace("\n", '\n', urldecode($_GET[$id]))."');\n";
+                }
             }
         }
+        if ($initialStateNew) {
+            $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
+        }
+        
         $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
         
         // verifica se deve abrir algum registro ou a listagem
@@ -1848,7 +1859,7 @@ class PrumoCrud extends PrumoBasic
             
             $autoList = (! isset($this->param['autolist']) || $this->param['autolist'] != 'false');
             
-            if ($inicialStateNew == false && $autoList == true) {
+            if ($initialStateNew == false && $autoList == true) {
                 if ($countPk > 0 && $countPk == $countPkValue) {
                     $onload .= "{$this->ind}\t\t{$this->name}.doRetrieve();\n";
                 } else if ($this->pCrudList) {
@@ -1867,7 +1878,7 @@ class PrumoCrud extends PrumoBasic
         $clientObject .= "{$this->ind}</script>\n";
         $clientObject .= $this->initClientObject1x1();
         
-        if ($inicialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
+        if ($initialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
             $clientObject .= "{$this->ind}<script type=\"text/javascript\">\n";
             $clientObject .= "{$this->ind}\twindow.addEventListener(\"load\", function() {\n";
             $clientObject .= "{$this->ind}\t\t{$this->name}.visibleSon1x1();\n";
