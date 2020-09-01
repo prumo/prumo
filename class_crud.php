@@ -1978,6 +1978,53 @@ class PrumoCrud extends PrumoBasic
     }
     
     /**
+     * Faz o download de um arquivo (campo do tipo file)
+     */
+    public function downloadFile() : void
+    {
+        $downloadField = '';
+        for ($i=0; $i < count($this->field); $i++) {
+            if ($_GET['downloadField'] == $this->field[$i]['name'] && $this->field[$i]['type'] == 'file') {
+                $downloadField = $this->field[$i]['name'];
+            }
+        }
+        
+        $tableName = $this->param['tablename'];
+        $schema = $this->pConnection->getSchema($this->param['schema']);
+
+        $condition = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            if ($this->field[$i]['pk']) {
+                $condition .= empty($condition) ? ' WHERE ' : ' AND ';
+                $condition .= $this->field[$i]['name'].'=:new_'.$this->field[$i]['name'].':';
+            }
+        }
+
+        $sql = <<<SQL
+            SELECT
+                $downloadField
+            FROM $schema$tableName
+            $condition
+        SQL;
+        $sql = $this->sqlValues($sql, $_GET);
+        $arquivo = $this->pConnection->sqlQuery($sql);
+
+        if ($arquivo) {
+            $dados = json_decode($arquivo, true);
+
+            header('Content-type: ' . $dados['mime-type']);
+            header('Content-Disposition:inline; filename="' . $dados['nome'] . '"');
+            header('Cache-Control: private, max-age=0, must-revalidate');
+            header('Pragma: public');
+
+            echo base64_decode($dados['conteudo']);
+        } else {
+            echo 'Nenhum arquivo encontrado. ';
+            echo '<a href="javascript: window.close()">Voltar</a>';
+        }
+    }
+    
+    /**
      * Decide qual ação tomar de acordo com os parametros passados via GET ou POST
      */
     public function autoInit()
@@ -2062,39 +2109,12 @@ class PrumoCrud extends PrumoBasic
                         break;
                     case 'download':
                         if ($this->getPermission('r')) {
-                            $downloadField = pFormatSql($_GET['downloadField'] ?? null, 'string', false, false);
-                            $tableName = $this->param['tablename'];
-                            $schema = $this->pConnection->getSchema($this->param['schema']);
-
-                            $condition = '';
-                            for ($i = 0; $i < count($this->field); $i++) {
-                                if ($this->field[$i]['pk']) {
-                                    $condition .= empty($condition) ? ' WHERE ' : ' AND ';
-                                    $condition .= $this->field[$i]['name'].'=:new_'.$this->field[$i]['name'].':';
-                                }
-                            }
-
-                            $sql = <<<SQL
-                                SELECT
-                                    $downloadField
-                                FROM $schema$tableName
-                                $condition
-                            SQL;
-                            $sql = $this->sqlValues($sql, $_GET);
-                            $arquivo = $this->pConnection->sqlQuery($sql);
-
-                            if ($arquivo) {
-                                $dados = json_decode($arquivo, true);
-
-                                header('Content-type: ' . $dados['mime-type']);
-                                header('Content-Disposition:inline; filename="' . $dados['nome'] . '"');
-                                header('Cache-Control: private, max-age=0, must-revalidate');
-                                header('Pragma: public');
-
-                                echo base64_decode($dados['conteudo']);
+                            if (isset($_GET['crudDownload'])) {
+                                $objName = $_GET['crudDownload'];
+                                global $$objName;
+                                $$objName->downloadFile();
                             } else {
-                                echo 'Nenhum arquivo encontrado. ';
-                                echo '<a href="javascript: window.close()">Voltar</a>';
+                                $this->downloadFile();
                             }
                         } else {
                             if (isset($this->param['routine']) && ! empty($this->param['routine'])) {
