@@ -307,6 +307,7 @@ $dataListMenuShortcut .= '                    </datalist>'."\n";
                         <option value="time"><?=_('hora');?></option>
                         <option value="timestamp"><?=_('data e hora');?></option>
                         <option value="boolean"><?=_('boleano');?></option>
+                        <option value="file"><?=_('arquivo');?></option>
                     </select>*
                 </td>
             </tr>
