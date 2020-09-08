@@ -2660,8 +2660,10 @@ function PrumoFilter(objName, useSimilaritySearch)
 
         // coloca o foco no campo de pesquisa
         document.getElementById(this.htmlId+'_'+index+'_value').focus();
-
-        this.inputRedraw(index);
+        
+        if (this.filter[index].visible) {
+            this.inputRedraw(index);
+        }
 
         this.afterSelectFieldChange();
     }
@@ -2675,11 +2677,11 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         let selectFieldName = document.getElementById(this.parent.objName+'_pFilter_'+index+'_field');
         let selectFieldOperator = document.getElementById(this.parent.objName+'_pFilter_'+index+'_operator');
-        let operatorType = this.operatorTypeByName(selectFieldName.value);
+        let operatorType = this.filter[index].type;
         
         let currentValue = document.getElementById(this.htmlId+'_'+index+'_value').value;
         let currentValue2 = document.getElementById(this.htmlId+'_'+index+'_value2').value;
-
+        
         let htmlInput = '';
         let htmlInput2 = '';
         let labelTrue = gettext('Sim');
@@ -2847,7 +2849,9 @@ function PrumoFilter(objName, useSimilaritySearch)
             document.getElementById(this.htmlId+'_'+index+'_input2').style.display = 'none';
         }
         
-        this.inputRedraw(index);
+        if (this.filter[index].visible) {
+            this.inputRedraw(index);
+        }
         
         if (selectOperator.value == 'in') {
             document.getElementById(this.htmlId+'_'+index+'_input').setAttribute('type', 'text');
@@ -2972,11 +2976,11 @@ function PrumoFilter(objName, useSimilaritySearch)
     this.configureFilter = function(fieldName, filterIndex)
     {
         if (this.filter[filterIndex].visible) {
-            var selectFieldName = document.getElementById(this.htmlId+'_'+filterIndex+'_field');
-            var selectOperator  = document.getElementById(this.htmlId+'_'+filterIndex+'_operator');
-            var inputValue      = document.getElementById(this.htmlId+'_'+filterIndex+'_value');
-            var inputValue2     = document.getElementById(this.htmlId+'_'+filterIndex+'_value2');
-            var operator        = this.filter[filterIndex].operator;
+            let selectFieldName = document.getElementById(this.htmlId+'_'+filterIndex+'_field');
+            let selectOperator  = document.getElementById(this.htmlId+'_'+filterIndex+'_operator');
+            let inputValue      = document.getElementById(this.htmlId+'_'+filterIndex+'_value');
+            let inputValue2     = document.getElementById(this.htmlId+'_'+filterIndex+'_value2');
+            let operator        = this.filter[filterIndex].operator;
 
             // configura selectFilter e o inputValue com o valor anteriormente passado via XML
             if (this.filter[filterIndex].fieldName == '') {
@@ -2991,7 +2995,7 @@ function PrumoFilter(objName, useSimilaritySearch)
             this.selectFieldChange(selectFieldName, filterIndex);
 
             // configura o selectOperator
-            var operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
+            let operatorType = this.operatorTypeByName(this.filter[filterIndex].fieldName);
             if (operator == '') {
                 switch (operatorType) {
                     case 'numeric':
@@ -3061,7 +3065,7 @@ function PrumoFilter(objName, useSimilaritySearch)
 
         // chama o metodo configure filter para passar os valores do objeto para a interface
         for (let i=0; i < this.filter.length; i++) {
-            this.configureFilter(this.filter[i].fieldName,i);
+            this.configureFilter(this.filter[i].fieldName, i);
         }
 
         // redesenha os botões (+) e (-)

@@ -363,7 +363,7 @@ class PrumoSearch extends PrumoBasic
         
         $pSearchChilds .=<<<HTML
         <script type="text/javascript">
-            {$this->name}.pFilter.parent = '{$this->name}';
+            {$this->name}.pFilter.parent = {$this->name};
         </script>
         HTML;
         
