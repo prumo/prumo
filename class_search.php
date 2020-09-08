@@ -415,7 +415,7 @@ class PrumoSearch extends PrumoBasic
                 if ($operator[$i] == 'in') {
                     $partValue = explode(',', $value[$i]);
                     for ($j=0; $j < count($partValue); $j++) {
-                        $partValue[$j] = pFormatSql($partValue[$j], $field['type']);
+                        $partValue[$j] = pFormatSql(trim($partValue[$j]), $field['type']);
                     }
                     $condition = str_replace(':value:', '(' . implode(',', $partValue) . ')', $condition);
                 } else {
