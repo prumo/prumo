@@ -361,6 +361,12 @@ class PrumoSearch extends PrumoBasic
         $pSearchChilds .= $this->makeGridNavigation();        
         $pSearchChilds = $this->addWindow($pSearchChilds);
         
+        $pSearchChilds .=<<<HTML
+        <script type="text/javascript">
+            {$this->name}.pFilter.parent = '{$this->name}';
+        </script>
+        HTML;
+        
         $pSearch = $pSearchInit . $pSearchChilds;
         
         if ($verbose) {
@@ -406,8 +412,17 @@ class PrumoSearch extends PrumoBasic
                 $field = $this->fieldByName($fieldName[$i]);
                 $condition = $this->pConnection->getSqlOperator($operator[$i]);
                 $condition = str_replace(':field:', $field['sqlname'], $condition);
-                $condition = str_replace(':value:', pFormatSql($value[$i], $field['type'], false, false), $condition);
-                $condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
+                if ($operator[$i] == 'in') {
+                    $partValue = explode(',', $value[$i]);
+                    for ($j=0; $j < count($partValue); $j++) {
+                        $partValue[$j] = pFormatSql($partValue[$j], $field['type']);
+                    }
+                    $condition = str_replace(':value:', '(' . implode(',', $partValue) . ')', $condition);
+                } else {
+                    $condition = str_replace(':value:', pFormatSql($value[$i], $field['type'], false, false), $condition);
+                    $condition = str_replace(':value2:', pFormatSql($value2[$i], $field['type'], false, false), $condition);
+                }
+                
                 $arrCondition[] = $condition;
             }
         }

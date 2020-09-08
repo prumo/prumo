@@ -81,10 +81,12 @@ class PrumoPgConnection
         $this->sqlOperator['date_time is null']               = ':field: IS NULL';
         $this->sqlOperator['date_time not is null']           = 'NOT :field: IS NULL';
         
-        $this->sqlOperator['file equal']                 = ':field:::text = \':value:\'';
-        $this->sqlOperator['file not equal']             = 'NOT :field:::text = \':value:\'';
-        $this->sqlOperator['file is null']               = ':field: IS NULL';
-        $this->sqlOperator['file not is null']           = 'NOT :field: IS NULL';
+        $this->sqlOperator['file equal']            = ':field:::text = \':value:\'';
+        $this->sqlOperator['file not equal']        = 'NOT :field:::text = \':value:\'';
+        $this->sqlOperator['file is null']          = ':field: IS NULL';
+        $this->sqlOperator['file not is null']      = 'NOT :field: IS NULL';
+        
+        $this->sqlOperator['in']                    = ':field: IN :value:';
     }
     
     /**

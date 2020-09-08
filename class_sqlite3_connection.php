@@ -40,6 +40,7 @@ class PrumoSqlite3Connection
         $this->err = '';
         
         $this->sqlOperator = array();
+        
         if ($GLOBALS['pConfig']['useSimilaritySearch'] == 't') {
             $this->sqlOperator['similarity'] = 'similarity(:field:, \'%:value:\') > ' . $GLOBALS['pConfig']['similarityThreshold'];
         }
@@ -49,6 +50,7 @@ class PrumoSqlite3Connection
         $this->sqlOperator['ends with']             = ':field: like \'%:value:\'';
         $this->sqlOperator['not begins with']       = 'NOT :field: like \':value:%\'';
         $this->sqlOperator['not ends with']         = 'NOT :field: like \'%:value:\'';
+        
         $this->sqlOperator['equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['not equal']             = 'NOT :field: = \':value:\'';
         $this->sqlOperator['numeric equal']         = ':field: = :value:';
@@ -57,8 +59,10 @@ class PrumoSqlite3Connection
         $this->sqlOperator['greater than']          = ':field: > \':value:\'';
         $this->sqlOperator['less than or equal']    = ':field: <= \':value:\'';
         $this->sqlOperator['greater than or equal'] = ':field: >= \':value:\'';
+        $this->sqlOperator['between']               = ':field: BETWEEN \':value:\' AND \':value2:\'';
         $this->sqlOperator['is null']               = ':field: IS NULL';
         $this->sqlOperator['not is null']           = 'NOT :field: IS NULL';
+        
         $this->sqlOperator['date_time equal']                 = ':field: = \':value:\'';
         $this->sqlOperator['date_time not equal']             = 'NOT :field: = \':value:\'';
         $this->sqlOperator['date_time less than']             = ':field: < \':value:\'';
@@ -66,6 +70,15 @@ class PrumoSqlite3Connection
         $this->sqlOperator['date_time less than or equal']    = ':field: <= \':value:\'';
         $this->sqlOperator['date_time greater than or equal'] = ':field: >= \':value:\'';
         $this->sqlOperator['date_time between']               = ':field: BETWEEN \':value:\' AND \':value2:\'';
+        $this->sqlOperator['date_time is null']               = ':field: IS NULL';
+        $this->sqlOperator['date_time not is null']           = 'NOT :field: IS NULL';
+        
+        $this->sqlOperator['file equal']            = ':field:::text = \':value:\'';
+        $this->sqlOperator['file not equal']        = 'NOT :field:::text = \':value:\'';
+        $this->sqlOperator['file is null']          = ':field: IS NULL';
+        $this->sqlOperator['file not is null']      = 'NOT :field: IS NULL';
+        
+        $this->sqlOperator['in']                    = ':field: IN :value:';
     }
     
     /**
