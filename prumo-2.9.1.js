@@ -2677,7 +2677,8 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         let selectFieldName = document.getElementById(this.parent.objName+'_pFilter_'+index+'_field');
         let selectFieldOperator = document.getElementById(this.parent.objName+'_pFilter_'+index+'_operator');
-        let operatorType = this.filter[index].type;
+        let fieldType = this.fieldTypeByName(this.filter[index].fieldName);
+        let inputType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
         
         let currentValue = document.getElementById(this.htmlId+'_'+index+'_value').value;
         let currentValue2 = document.getElementById(this.htmlId+'_'+index+'_value2').value;
@@ -2686,7 +2687,8 @@ function PrumoFilter(objName, useSimilaritySearch)
         let htmlInput2 = '';
         let labelTrue = gettext('Sim');
         let labelFalse = gettext('Não');
-        if (operatorType == 'boolean') {
+        
+        if (fieldType == 'boolean') {
             htmlInput  = '<select id="'+this.htmlId+'_'+index+'_value" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')">';
             htmlInput += '<option value="t">'+labelTrue+'</option>';
             htmlInput += '<option value="f">'+labelFalse+'</option>';
@@ -2697,16 +2699,15 @@ function PrumoFilter(objName, useSimilaritySearch)
             htmlInput2 += '<option value="f">'+labelFalse+'</option>';
             htmlInput2 += '<option value=""></option>';
             htmlInput2 += '</select>';
-        } else if (operatorType == 'file') {
+        } else if (fieldType == 'file') {
             htmlInput = '<input type="hidden" id="'+this.htmlId+'_'+index+'_value" />\n';
             htmlInput2 = '<input type="hidden" id="'+this.htmlId+'_'+index+'_value2" />\n';
         } else if (selectFieldOperator != 'undefined' && selectFieldOperator.value == 'in') {
             htmlInput = '<input type="text" value="" id="'+this.htmlId+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
             htmlInput2 = '<input type="hidden" id="'+this.htmlId+'_'+index+'_value2" />\n';
         } else {
-            let fieldType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
-            htmlInput = '<input type="'+fieldType+'" id="'+this.htmlId+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
-            htmlInput2 = '<input type="'+fieldType+'" id="'+this.htmlId+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValue2Change(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
+            htmlInput = '<input type="'+inputType+'" id="'+this.htmlId+'_'+index+'_value" size="15" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
+            htmlInput2 = '<input type="'+inputType+'" id="'+this.htmlId+'_'+index+'_value2" size="15" onchange="'+this.objName+'.inputValue2Change(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')" />\n';
         }
 
         document.getElementById(this.htmlId+'_'+index+'_input').innerHTML = htmlInput;
