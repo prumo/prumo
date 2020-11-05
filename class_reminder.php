@@ -62,7 +62,7 @@ class Reminder
             r.reminder_date
         FROM {$this->schema}reminder r
         WHERE repeat_every IS NULL AND last_seen!=now()::date AND
-              r.reminder_date IN (SELECT generate_series(now(), (now() + '1 month'::interval)::date, ('1 day')::interval)) AND
+              r.reminder_date IN (SELECT generate_series(now(), (now() + '1 month'::interval)::date, ('1 day')::interval)::date) AND
               r.id NOT IN (SELECT id FROM {$this->schema}active_reminder) $whereId
         SQL;
         $reminders = $this->pConnection->sql2Array($sql);
