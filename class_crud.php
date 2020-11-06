@@ -670,7 +670,8 @@ class PrumoCrud extends PrumoBasic
                         ! isset($_POST['old_'.$this->field[$i]['fieldid']]) ||
                         pFormatSql($_POST['new_'.$this->field[$i]['fieldid']], $this->field[$i]['type']) != pFormatSql(plainFormat($this->field[$i]['type'], $currentValue[$this->field[$i]['name']]), $this->field[$i]['type']) &&
                         $this->field[$i]['name'] != 'prumoUser' &&
-                        $this->field[$i]['noupdate'] == false
+                        $this->field[$i]['noupdate'] == false &&
+                        ($this->field[$i]['type'] != 'file' || $_POST['new_'.$this->field[$i]['fieldid']] != '')
                     ) {
                         if (! empty($values)) {
                             $values .= ',';
