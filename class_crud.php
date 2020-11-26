@@ -347,6 +347,7 @@ class PrumoCrud extends PrumoBasic
         $fixedCondition = '';
         for ($i = 0; $i<count($arrSql); $i++) {
             $sqlPart = $i == 0 ? $arrSql[$i] : str_replace('=NULL', ' IS NULL', $arrSql[$i]);
+            $sqlPart = str_replace(' IS NULL::text', '::text IS NULL', $sqlPart);
             $fixedCondition .= empty($fixedCondition) ? $sqlPart : 'WHERE'.$sqlPart;
         }
 
