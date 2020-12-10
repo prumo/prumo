@@ -867,8 +867,6 @@ function PrumoCrud(objName, ajaxFile)
                         + '"mime-type": "' + mimeType + '",'
                         + '"conteudo": "' + base64 + '"'
                         + '}';
-                } else {
-                    this.fieldNewValue[this.fieldName[i]] = '';
                 }
             } else {
                 this.fieldNewValue[this.fieldName[i]] = inputField.value;
@@ -1866,7 +1864,7 @@ function PrumoCrud(objName, ajaxFile)
         var err = '';
         for (let i in this.fieldName) {
             if (this.fieldNotNull[i] && this.fieldNewValue[this.fieldName[i]] == '') {
-                var msg = '- '+gettext('Campo "%fieldLabel%" não pode ficar em branco')+'.\n'
+                let msg = '- '+gettext('Campo "%fieldLabel%" não pode ficar em branco')+'.\n';
                 err += msg.replace('%fieldLabel%',this.fieldLabel[i]);
             }
         }
