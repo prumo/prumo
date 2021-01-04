@@ -19,16 +19,8 @@ select {
     font: normal 12px/20px "Advent Pro", Helvetica, sans-serif;
 }
 
-table.prumoFormTable tr {
-    
-}
-
 table.center {
     margin: auto;
-}
-
-tr:not(table.prumoFormTable):hover {
-    background-color: #FFCC99;
 }
 
 tr.info {
