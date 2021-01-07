@@ -4274,6 +4274,9 @@ document.pQueue = Array();
 function PrumoQueue(objName,ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
+    this.prumoQueueSetName = '';
+    this.loadCount = 0;
+    this.hideEmptyQueue = false;
 
     this.pAjax.ajaxXmlOk = function()
     {
@@ -4283,6 +4286,20 @@ function PrumoQueue(objName,ajaxFile)
         document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
         document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
         this.parent.afterList();
+        
+        if (this.parent.loadCount == 0 && this.parent.hideEmptyQueue) {
+            if (this.parent.pGridNavigation.count == 0) {
+                document.getElementById(this.parent.prumoQueueSetName+'_bt_'+this.parent.objName).style.display = 'none';
+            } else {
+                if (queueLoaded == false) {
+                    document.getElementById('div_'+this.parent.objName).style.display = 'block';
+                    document.getElementById(this.parent.prumoQueueSetName+'_bt_'+this.parent.objName).style.fontWeight = 'bold';
+                    document.getElementById(this.parent.prumoQueueSetName+'_bt_'+this.parent.objName).className = 'pButton-outline active';
+                    queueLoaded = true;
+                }
+            }
+        }
+        this.parent.loadCount++;
     }
 }
 

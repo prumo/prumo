@@ -31,6 +31,7 @@ class PrumoQueueSet
     
     public $classBt;
     public $classBtFocus;
+    public $hideEmptyQueue = false;
     
     /**
      * Construtor da classe PrumoQueueSet
@@ -89,6 +90,10 @@ class PrumoQueueSet
     {
         echo $this->ind.'<fieldset class="pQueueSet">'."\n";
         
+        echo $this->ind.'<script type="text/javascript">'."\n";
+        echo $this->ind.'    var queueLoaded = false;'."\n";
+        echo $this->ind.'</script>'."\n";
+        
         // adiciona os botões
         echo $this->ind.'<legend>';
         for ($i = 0; $i < count($this->pQueueLabel); $i++) {
@@ -119,11 +124,14 @@ class PrumoQueueSet
                 global $$pQueue;
                 require dirname(__DIR__).'/'.$this->pQueueFilename[$i];
                 
-                if ($i > 0) {
-                    echo $this->ind.'<script type="text/javascript">'."\n";        
+                echo $this->ind.'<script type="text/javascript">'."\n";
+                echo $this->ind.'    '.$this->pQueueName[$i].'.prumoQueueSetName = \''.$this->getObjName().'\';'."\n";
+                $valueHideEmptyQueue = $this->hideEmptyQueue ? 'true' : 'false';
+                echo $this->ind.'    '.$this->pQueueName[$i].'.hideEmptyQueue = '.$valueHideEmptyQueue.';'."\n";
+                if ($i > 0 || $this->hideEmptyQueue == true) {
                     echo $this->ind.'    document.getElementById(\'div_'.$this->pQueueName[$i].'\').style.display = \'none\';'."\n";
-                    echo $this->ind.'</script>'."\n";
                 }
+                echo $this->ind.'</script>'."\n";
             }
             
             if ($this->pQueueType[$i] == 'tab') {
