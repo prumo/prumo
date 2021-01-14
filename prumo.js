@@ -1662,7 +1662,7 @@ function PrumoCrud(objName, ajaxFile)
             }
         }
     }
-    
+
     /**
      * Seta o valor inicial dos campos passado pelo metodo GET
      */
@@ -2141,7 +2141,7 @@ function PrumoCrud(objName, ajaxFile)
             this.pCrudList.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
         }
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pCrudList.pFilter e this.pSearch.pFilter
      */
@@ -2363,18 +2363,18 @@ function PrumoFilter(objName, useSimilaritySearch)
         gettext('não é nulo'),
         gettext('partence ao conjunto')
     ];
-    
+
     //operadores lógicos para campos file
     this.fileOperators = [
         'file is null',
         'file not is null'
     ];
-    
+
     this.fileOperatorsName = [
         gettext('é nulo'),
         gettext('não é nulo')
     ];
-    
+
     if (this.useSimilaritySearch === 'f') {
         for (let i = 0; i < this.textOperators.length; i++) {
             if (this.textOperators[i] === 'similarity') {
@@ -2658,14 +2658,14 @@ function PrumoFilter(objName, useSimilaritySearch)
 
         // coloca o foco no campo de pesquisa
         document.getElementById(this.htmlId+'_'+index+'_value').focus();
-        
+
         if (this.filter[index].visible) {
             this.inputRedraw(index);
         }
 
         this.afterSelectFieldChange();
     }
-    
+
     /**
      * Redesenha o input
      *
@@ -2677,15 +2677,15 @@ function PrumoFilter(objName, useSimilaritySearch)
         let selectFieldOperator = document.getElementById(this.parent.objName+'_pFilter_'+index+'_operator');
         let fieldType = this.fieldTypeByName(this.filter[index].fieldName);
         let inputType = this.inputType[this.fieldTypeByName(selectFieldName.value)];
-        
+
         let currentValue = document.getElementById(this.htmlId+'_'+index+'_value').value;
         let currentValue2 = document.getElementById(this.htmlId+'_'+index+'_value2').value;
-        
+
         let htmlInput = '';
         let htmlInput2 = '';
         let labelTrue = gettext('Sim');
         let labelFalse = gettext('Não');
-        
+
         if (fieldType == 'boolean') {
             htmlInput  = '<select id="'+this.htmlId+'_'+index+'_value" onchange="'+this.objName+'.inputValueChange(this,'+index+')" onkeyup="'+this.objName+'.inputValueKeyUp(event,'+index+')" onkeydown="'+this.objName+'.inputValueKeyDown(event,'+index+')">';
             htmlInput += '<option value="t">'+labelTrue+'</option>';
@@ -2847,11 +2847,11 @@ function PrumoFilter(objName, useSimilaritySearch)
         } else {
             document.getElementById(this.htmlId+'_'+index+'_input2').style.display = 'none';
         }
-        
+
         if (this.filter[index].visible) {
             this.inputRedraw(index);
         }
-        
+
         if (selectOperator.value == 'in') {
             document.getElementById(this.htmlId+'_'+index+'_input').setAttribute('type', 'text');
         }
@@ -3166,7 +3166,7 @@ function PrumoFilter(objName, useSimilaritySearch)
     {
         this.privateSetFilter(fieldName, filterOperator, fieldValue, fieldValue2, false);
     }
-    
+
     /**
      * Adiciona um novo filtro invisível
      */
@@ -3268,7 +3268,7 @@ function PrumoGrid(objName)
 
             // faz referencia a celua do grid
             let pGridRowCells = document.getElementById(this.htmlId).rows[i+1].cells;
-            
+
             let fieldNew = (this.fieldNameMarkNew != '' && this.getValue(this.fieldNameMarkNew, i) == 't');
 
             let iColumn = 0;
@@ -3724,7 +3724,7 @@ function PrumoSearch(objName, ajaxFile)
         if (this.pGrid.fieldNameMarkNew != '' && this.pGrid.getValue(this.pGrid.fieldNameMarkNew, lineIndex) == 't') {
             this.pAjaxUnMarkNew.goAjax(this.paramUnMarkNew(lineIndex));
         }
-        
+
         this.lineClick(lineIndex);
     }
 
@@ -3762,17 +3762,17 @@ function PrumoSearch(objName, ajaxFile)
             }
         }
     }
-    
+
     this.paramUnMarkNew = function(lineIndex)
     {
         let param = 'objName='+this.objName+'&'+this.objName+'_action=unMarkNew';
-        
+
         for (let i in this.fieldPk) {
             if (this.fieldPk[i] == true) {
                 param += '&'+this.fieldName[i]+'='+this.pGrid.getValue(this.fieldName[i], lineIndex);
             }
         }
-        
+
         return param;
     }
 
@@ -4070,7 +4070,7 @@ function PrumoSearch(objName, ajaxFile)
     {
         this.pFilter.setInvisibleFilter(fieldName, filterOperator, fieldValue, fieldValue2);
     }
-    
+
     /**
      * Redirecionamento para o mesmo método em this.pFilter
      */
@@ -4143,7 +4143,7 @@ function PrumoCrudList(objName, ajaxFile)
                         htmlInput = htmlInput.replace(':id:', id);
                         pGridRowCells[iColumn].innerHTML = htmlInput;
                         document.getElementById(id).setAttribute('onkeydown', this.crudName+'.bt_fastCreate_onKeyDown(event)');
-                        
+
                         let value = '';
                         if (document.getElementById(this.parent.fieldId[j]).type == 'checkbox') {
                             value = document.getElementById(this.parent.fieldId[j]).checked ? 't' : 'f';
@@ -4273,6 +4273,7 @@ function PrumoQueue(objName,ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
     this.prumoQueueSetName = '';
+    this.prumoQueueSetLabel = '';
     this.loadCount = 0;
     this.hideEmptyQueue = false;
 
@@ -4284,7 +4285,7 @@ function PrumoQueue(objName,ajaxFile)
         document.getElementById(this.parent.objName+'_btSearch').removeAttribute('disabled');
         document.getElementById(this.parent.objName+'_btSearchAll').removeAttribute('disabled');
         this.parent.afterList();
-        
+
         if (this.parent.loadCount == 0 && this.parent.hideEmptyQueue) {
             if (this.parent.pGridNavigation.count == 0) {
                 document.getElementById(this.parent.prumoQueueSetName+'_bt_'+this.parent.objName).style.display = 'none';
@@ -4298,6 +4299,14 @@ function PrumoQueue(objName,ajaxFile)
             }
         }
         this.parent.loadCount++;
+    }
+
+    this.updateQueueCount = function () {
+        if (this.pGridNavigation.count == 0) {
+            document.getElementById(this.prumoQueueSetName + '_bt_' + this.objName).innerHTML = this.prumoQueueSetLabel;
+        } else {
+            document.getElementById(this.prumoQueueSetName + '_bt_' + this.objName).innerHTML = this.prumoQueueSetLabel + ' (' + this.pGridNavigation.count + ')';
+        }
     }
 }
 

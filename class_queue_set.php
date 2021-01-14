@@ -126,6 +126,7 @@ class PrumoQueueSet
                 
                 echo $this->ind.'<script type="text/javascript">'."\n";
                 echo $this->ind.'    '.$this->pQueueName[$i].'.prumoQueueSetName = \''.$this->getObjName().'\';'."\n";
+                echo $this->ind.'    '.$this->pQueueName[$i].'.prumoQueueSetLabel = \''.$this->pQueueLabel[$i].'\';'."\n";
                 $valueHideEmptyQueue = $this->hideEmptyQueue ? 'true' : 'false';
                 echo $this->ind.'    '.$this->pQueueName[$i].'.hideEmptyQueue = '.$valueHideEmptyQueue.';'."\n";
                 if ($i > 0 || $this->hideEmptyQueue == true) {
@@ -152,22 +153,15 @@ class PrumoQueueSet
         echo $this->ind.'<script type="text/javascript">'."\n";
         
         for ($i = 0; $i < count($this->pQueueName); $i++) {
-            
             if ($this->pQueueType[$i] == 'PrumoQueue') {
-                
                 echo $this->ind.'    '.$this->pQueueName[$i].'.afterList = function() {'."\n";
-                echo $this->ind.'        if (this.pGridNavigation.count == 0) {'."\n";
-                echo $this->ind.'            document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].'\';'."\n";
-                echo $this->ind.'        } else {'."\n";
-                echo $this->ind.'            document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$i].'\').innerHTML = \''.$this->pQueueLabel[$i].' (\'+this.pGridNavigation.count+\')\';'."\n";
-                echo $this->ind.'        }'."\n";
+                echo $this->ind.'        this.updateQueueCount();'."\n";
                 echo $this->ind.'    }'."\n";
                 echo $this->ind."\n";
             }
             
             echo $this->ind.'    function '.$this->getObjName().'BtMouseover'.$i.'() {'."\n";
             for ($j=0; $j < count($this->pQueueName); $j++) {
-                
                 if ($j == $i) {
                     echo $this->ind.'        document.getElementById(\''.$this->getObjName().'_bt_'.$this->pQueueName[$j].'\').style.fontWeight = \'bold\';'."\n";
                     echo $this->ind.'        document.getElementById(\'div_'.$this->pQueueName[$j].'\').style.display = \'block\';'."\n";

@@ -4273,6 +4273,7 @@ function PrumoQueue(objName,ajaxFile)
 {
     PrumoSearch.apply(this, arguments);
     this.prumoQueueSetName = '';
+    this.prumoQueueSetLabel = '';
     this.loadCount = 0;
     this.hideEmptyQueue = false;
 
@@ -4298,6 +4299,14 @@ function PrumoQueue(objName,ajaxFile)
             }
         }
         this.parent.loadCount++;
+    }
+
+    this.updateQueueCount = function () {
+        if (this.pGridNavigation.count == 0) {
+            document.getElementById(this.prumoQueueSetName + '_bt_' + this.objName).innerHTML = this.prumoQueueSetLabel;
+        } else {
+            document.getElementById(this.prumoQueueSetName + '_bt_' + this.objName).innerHTML = this.prumoQueueSetLabel + ' (' + this.pGridNavigation.count + ')';
+        }
     }
 }
 
