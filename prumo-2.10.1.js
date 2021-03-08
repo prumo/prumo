@@ -1008,7 +1008,9 @@ function PrumoCrud(objName, ajaxFile)
         for (let i=0; i < this.fieldPk.length; i++) {
             if (this.parent1x1 == false || this.fieldPk[i] == false) {
                 let fieldValue = this.fieldNewValue[this.fieldName[i]];
-
+                if (typeof fieldValue === 'undefined' && this.fieldType[i] === 'file') {
+                    fieldValue = '';
+                }
                 params += '&new_'+this.fieldId[i]+'='+encodeURIComponent(fieldValue);
             }
         }
