@@ -86,16 +86,28 @@ function pFormatSql($value, string $type, bool $capsLock = false, bool $useQuote
                 
                 if (strlen($valueNoInjection) <= 20) {
                     
-                    $valueNoInjection = preg_replace("/[^0-9+]/", "", $valueNoInjection);
+                    $phoneNumber = preg_replace("/[^0-9+]/", "", $valueNoInjection);
                     
                     // remove o codigo do pais
-                    if (strlen($valueNoInjection) > 12 && substr($valueNoInjection, 0, 3) == '+55') {
-                        $valueNoInjection = substr($valueNoInjection, (strlen($valueNoInjection)-3) * -1);
+                    if (strlen($phoneNumber) > 12 && substr($phoneNumber, 0, 3) == '+55') {
+                        $phoneNumber = substr($phoneNumber, (strlen($phoneNumber)-3) * -1);
                     }
                     
                     // remove zero a esquerda do código DDD
-                    if ((strlen($valueNoInjection) == 11 || strlen($valueNoInjection) == 12) && substr($valueNoInjection, 0, 1) == '0') {
-                        $valueNoInjection = substr($valueNoInjection, (strlen($valueNoInjection)-1) * -1);
+                    if ((strlen($phoneNumber) == 11 || strlen($phoneNumber) == 12) && substr($phoneNumber, 0, 1) == '0') {
+                        $phoneNumber = substr($phoneNumber, (strlen($phoneNumber)-1) * -1);
+                    }
+                    
+                    // valida número de telefone
+                    if (
+                        is_numeric(substr($phoneNumber, 0, 1))
+                        && substr($phoneNumber, 0, 1) != '0'
+                        && (
+                            strlen($phoneNumber) == 11 && substr($phoneNumber, 2, 1) == '9'
+                            || strlen($phoneNumber) == 10
+                        )
+                    ) {
+                        $valueNoInjection = $phoneNumber;
                     }
                 }
                 
@@ -409,21 +421,19 @@ function plainFormat(string $type, $value)
     } else if (($type == 'phone') && $value != '') {
         $phoneNumber = pFormatSql($value, 'phone', false, false);
         
-        if (strlen($phoneNumber) == '10') {
+        if (strlen($phoneNumber) == '10' && substr($phoneNumber, 0, 1) != '0') {
             $ddd = substr($phoneNumber, 0, 2);
             $part1 = substr($phoneNumber, 2, 4);
             $part2 = substr($phoneNumber, 6, 4);
-            $phoneNumber = "($ddd) $part1-$part2";
-        }
-        
-        if (strlen($phoneNumber) == '11') {
+            $formattedValue = "($ddd) $part1-$part2";
+        } elseif (strlen($phoneNumber) == '11' && substr($phoneNumber, 0, 1) != '0' && substr($phoneNumber, 2, 1) == '9') {
             $ddd = substr($phoneNumber, 0, 2);
             $part1 = substr($phoneNumber, 2, 5);
             $part2 = substr($phoneNumber, 7, 4);
-            $phoneNumber = "($ddd) $part1-$part2";
+            $formattedValue = "($ddd) $part1-$part2";
+        } else {
+            $formattedValue = $value;
         }
-        
-        $formattedValue = $phoneNumber;
     } else if ($type == 'money' && $value != '') {
         $formattedValue = number_format($value, 2, ',','.');
     } else {
