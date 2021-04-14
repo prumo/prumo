@@ -411,7 +411,6 @@ function htmlFormat(string $type, $value)
  */
 function plainFormat(string $type, $value)
 {
-    //@todo converter no lado do cliente o formato da data e hora
     if ($type == 'time' && $value != '') {
         $time = substr($value, 0, 8);
         $formattedValue = $time;

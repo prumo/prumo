@@ -363,7 +363,7 @@ function pParameters(string $params)
  * Parser para tratamento de Sql Injection
  *
  * @param $value string: o valor a ser tratado
- * @param $type string: o tipo de dado [string,text,longtext,integer,serial,numeric,money,date,time,timestamp,boolean]
+ * @param $type string: o tipo de dado [string,text,longtext,integer,serial,numeric,money,date,time,timestamp,boolean,phone]
  *
  * @return string
  */

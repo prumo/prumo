@@ -347,6 +347,7 @@ class PrumoPgConnection
             'serial'    => 'serial',
             'numeric'   => 'numeric',
             'money'     => 'numeric',
+            'phone'     => 'character varying',
             'date'      => 'date',
             'time'      => 'time',
             'timestamp' => 'timestamp with time zone',

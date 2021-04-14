@@ -69,7 +69,7 @@ class PrumoGrid
         } else {
             if (in_array($type, array('numeric', 'money'))) {
                 $align = 'right';
-            } else if (in_array($type, array('integer', 'serial', 'date', 'time', 'timestamp', 'boolean'))) {
+            } else if (in_array($type, array('integer', 'serial', 'date', 'time', 'timestamp', 'boolean', 'phone'))) {
                 $align = 'center';
             } else {
                 $align = 'left';

@@ -63,6 +63,7 @@ class PrumoCrud extends PrumoBasic
         'text'      => '<textarea></textarea>',
         'numeric'   => '<input type="text" size="5" style="text-align:right;" />',
         'money'     => '<input type="text" size="9" style="text-align:right;" />',
+        'phone'   => '<input type="text" size="20" style="text-align:right;" />',
         'date'      => '<input type="date" size="9" />',
         'time'      => '<input type="text" size="9" />',
         'timestamp' => '<input type="datetime-local" size="15" />',
