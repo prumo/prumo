@@ -33,7 +33,7 @@ function pAddQuote(string $value, bool $useQuote=true) : string
  * Parser para adicionar valores a comandos SQL
  *
  * @param $value string: o valor a ser tratado
- * @param $type string: o tipo de dado [string,text,longtext,integer,numeric,serial,date,time,timestamp,boolean]
+ * @param $type string: o tipo de dado [string,text,longtext,integer,numeric,serial,date,time,timestamp,boolean,phone]
  * @param $capsLock boolean: quando true, adiciona um strtoupper em $value
  * @param $useQuote boolean: quando true, adiciona aspas em $value
  *
@@ -77,6 +77,29 @@ function pFormatSql($value, string $type, bool $capsLock = false, bool $useQuote
                 }
                 
                 $valueNoInjection = "$newNum";
+            }
+            break;
+        case "phone":
+            if ($valueNoInjection == '') {
+                $valueNoInjection = "NULL";
+            } else {
+                
+                if (strlen($valueNoInjection) <= 20) {
+                    
+                    $valueNoInjection = preg_replace("/[^0-9+]/", "", $valueNoInjection);
+                    
+                    // remove o codigo do pais
+                    if (strlen($valueNoInjection) > 12 && substr($valueNoInjection, 0, 3) == '+55') {
+                        $valueNoInjection = substr($valueNoInjection, (strlen($valueNoInjection)-3) * -1);
+                    }
+                    
+                    // remove zero a esquerda do código DDD
+                    if ((strlen($valueNoInjection) == 11 || strlen($valueNoInjection) == 12) && substr($valueNoInjection, 0, 1) == '0') {
+                        $valueNoInjection = substr($valueNoInjection, (strlen($valueNoInjection)-1) * -1);
+                    }
+                }
+                
+                $valueNoInjection = pAddQuote($valueNoInjection, $useQuote);
             }
             break;
         case "date":
@@ -334,6 +357,8 @@ function htmlFormat(string $type, $value)
         $formattedValue = plainFormat($type, $value);
     } elseif ($type === 'numeric') {
         $formattedValue = plainFormat($type, $value);
+    } elseif ($type === 'phone') {
+        $formattedValue = plainFormat($type, $value);
     } elseif ($type === 'money') {
         $formattedValue = 'R$ '.plainFormat($type, $value);
     } elseif ($type === 'integer') {
@@ -381,6 +406,24 @@ function plainFormat(string $type, $value)
     } else if (($type == 'numeric') && $value != '') {
         $number = str_replace('.', ',', str_replace(',', '', $value));
         $formattedValue = $number;
+    } else if (($type == 'phone') && $value != '') {
+        $phoneNumber = pFormatSql($value, 'phone', false, false);
+        
+        if (strlen($phoneNumber) == '10') {
+            $ddd = substr($phoneNumber, 0, 2);
+            $part1 = substr($phoneNumber, 2, 4);
+            $part2 = substr($phoneNumber, 6, 4);
+            $phoneNumber = "($ddd) $part1-$part2";
+        }
+        
+        if (strlen($phoneNumber) == '11') {
+            $ddd = substr($phoneNumber, 0, 2);
+            $part1 = substr($phoneNumber, 2, 5);
+            $part2 = substr($phoneNumber, 7, 4);
+            $phoneNumber = "($ddd) $part1-$part2";
+        }
+        
+        $formattedValue = $phoneNumber;
     } else if ($type == 'money' && $value != '') {
         $formattedValue = number_format($value, 2, ',','.');
     } else {

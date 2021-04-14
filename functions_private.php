@@ -394,6 +394,7 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
         case "string":
         case "text":
         case "longtext":
+        case "phone":
         default:
             $valueNoInjection = str_replace('\'', '\'\'', $valueNoInjection);
             break;
