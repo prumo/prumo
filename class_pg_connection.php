@@ -201,7 +201,7 @@ class PrumoPgConnection
                 return false;
             }
             
-            return $row[0];
+            return is_array($row) ? $row[0] : null;
         } else {
             return false;
         }
