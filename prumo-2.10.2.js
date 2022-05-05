@@ -2029,10 +2029,16 @@ function PrumoCrud(objName, ajaxFile)
                 fields += '&'+this.fieldName[i]+'='+this.fieldNewValue[this.fieldName[i]];
             }
         }
-        let objName = this.parent1x1 == false ? this.objName : this.parent1x1.objName;
+
+        let objName = this.getParentNameRecursive();
         let crudDownload = this.parent1x1 == false ? '' : '&crudDownload='+this.objName;
         let url = this.pAjax.ajaxFile + '?' + objName + '_action=download&downloadField=' + fieldName + fields + crudDownload;
         window.open(url);
+    }
+
+    this.getParentNameRecursive = function ()
+    {
+        return this.parent1x1 == false ? this.objName : this.parent1x1.getParentNameRecursive();
     }
 
     this.readAutoClearValues = function()

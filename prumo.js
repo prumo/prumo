@@ -258,37 +258,55 @@ function gettext(str)
  */
 function pFormat(type, value, textStyle)
 {
+    let formatedValue = '';
+
     if (type == 'timestamp' && value != '') {
-        var year = value.substring(0, 4);
-        var month = value.substring(5, 7);
-        var day = value.substring(8, 10);
-        var hour = value.substring(11, 13);
-        var minute = value.substring(14, 16);
-        var second = value.substring(17, 19);
-        var timestamp = value.substring(17, 19);
+        let year = value.substring(0, 4);
+        let month = value.substring(5, 7);
+        let day = value.substring(8, 10);
+        let hour = value.substring(11, 13);
+        let minute = value.substring(14, 16);
+        let second = value.substring(17, 19);
+        let timestamp = value.substring(17, 19);
         if (textStyle == 'html') {
-            var formatedValue = day + '/' + month + '/' + year + ' ' + hour + ':' + minute + ':' + second;
+            formatedValue = day + '/' + month + '/' + year + ' ' + hour + ':' + minute + ':' + second;
         } else {
-            var formatedValue = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
+            formatedValue = year + '-' + month + '-' + day + 'T' + hour + ':' + minute + ':' + second;
         }
     } else if (type == 'time' && value != '' && textStyle == 'html') {
-        var hour = value.substring(0, 2);
-        var minute = value.substring(3, 5);
-        var second = value.substring(6, 8)
-        var formatedValue = hour + ':' + minute + ':' + second;
+        let hour = value.substring(0, 2);
+        let minute = value.substring(3, 5);
+        let second = value.substring(6, 8)
+        formatedValue = hour + ':' + minute + ':' + second;
     } else if (type == 'date' && value != '' && textStyle == 'html') {
-        var year = value.substring(0, 4);
-        var month = value.substring(5, 7);
-        var day = value.substring(8, 10);
-        var formatedValue = day + '/' + month + '/' + year;
+        let year = value.substring(0, 4);
+        let month = value.substring(5, 7);
+        let day = value.substring(8, 10);
+        formatedValue = day + '/' + month + '/' + year;
     } else if (type == 'numeric' && value != '') {
-        var formatedValue = value.replace(',', '');
+        formatedValue = value.replace(',', '');
         formatedValue = formatedValue.replace('.', ',');
     } else if (type == 'money' && value != '') {
-        var formatedValue = parseFloat(value).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        formatedValue = parseFloat(value).toLocaleString('pt-BR', {minimumFractionDigits: 2});
+    } else if (type == 'phone' && value != '') {
+
+        if (value.length == '10' && value.substring(0, 1) != '0') {
+            let ddd = value.substring(0, 2);
+            let part1 = value.substring(2, 6);
+            let part2 = value.substring(6, 10);
+            formatedValue = '('+ddd+') '+part1+'-'+part2;
+        } else if (value.length == '11' && value.substring(0, 1) != '0' && value.substring(2, 3) == '9') {
+            let ddd = value.substring(0, 2);
+            let part1 = value.substring(2, 7);
+            let part2 = value.substring(7, 11);
+            formatedValue = '('+ddd+') '+part1+'-'+part2;
+        } else {
+            formatedValue = value;
+        }
+
     } else if (type == 'boolean' && value != '' && textStyle == 'html') {
         let checked = (value == 't') ? 'checked="checked" ' : '';
-        var formatedValue = '<input type="checkbox" readonly="readonly" '+checked+'/>';
+        formatedValue = '<input type="checkbox" readonly="readonly" '+checked+'/>';
     } else {
         if (textStyle == 'html') {
             formatedValue = value.replace(/\\n/g, '<br />');
@@ -2011,10 +2029,16 @@ function PrumoCrud(objName, ajaxFile)
                 fields += '&'+this.fieldName[i]+'='+this.fieldNewValue[this.fieldName[i]];
             }
         }
-        let objName = this.parent1x1 == false ? this.objName : this.parent1x1.objName;
+
+        let objName = this.getParentNameRecursive();
         let crudDownload = this.parent1x1 == false ? '' : '&crudDownload='+this.objName;
         let url = this.pAjax.ajaxFile + '?' + objName + '_action=download&downloadField=' + fieldName + fields + crudDownload;
         window.open(url);
+    }
+
+    this.getParentNameRecursive = function ()
+    {
+        return this.parent1x1 == false ? this.objName : this.parent1x1.getParentNameRecursive();
     }
 
     this.readAutoClearValues = function()
