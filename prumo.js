@@ -4377,6 +4377,7 @@ function PrumoWindow(objName)
 {
     this.objName = objName;
     this.width   = 730;
+    this.height  = 0;
     this.title   = 'PrumoWindow';
     this.align   = 'center';
     this.vAlign  = 'top';
@@ -4463,6 +4464,9 @@ function PrumoWindow(objName)
         var leftPosition = 0;
 
         this.div.style.width = this.width + "px";
+        if (this.height > 0) {
+            this.div.style.height = this.height + "px";
+        }
 
         if (this.vAlign == 'middle') {
             topPosition = (document.body.offsetHeight/2)-(this.div.offsetHeight/2);
