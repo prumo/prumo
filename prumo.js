@@ -1643,6 +1643,7 @@ function PrumoCrud(objName, ajaxFile)
      */
     this.syncPkToSon1xN = function()
     {
+        let fieldName = '';
         for (let iSon in this.son1xN) {
             if (this.son1xN[iSon].pCrudList) {
                 this.son1xN[iSon].pCrudList.pFilter.clearVisibleFilters();
@@ -1651,19 +1652,23 @@ function PrumoCrud(objName, ajaxFile)
                 this.son1xN[iSon].pSearch.pFilter.clearVisibleFilters();
             }
             for (let iField in this.fieldPk) {
-                if (this.fieldPk[iField] == true) {
+                if (this.fieldPk[iField] == true || this.fieldUnique[iField] == true) {
+                    let strike = false;
                     for (let iFieldSon in this.son1xN[iSon].fieldId) {
                         if (this.son1xN[iSon].fieldId[iFieldSon] == this.fieldId[iField]) {
-                            var fieldName = this.son1xN[iSon].fieldName[iFieldSon];
+                            fieldName = this.son1xN[iSon].fieldName[iFieldSon];
+                            strike = true;
                         }
                     }
-                    var fieldId = this.fieldId[iField];
-                    var fieldValue = document.getElementById(fieldId).value;
-                    if (this.son1xN[iSon].pCrudList) {
-                        this.son1xN[iSon].pCrudList.pFilter.setInvisibleFilter(fieldName,'equal',fieldValue);
-                    }
-                    if (this.son1xN[iSon].pSearch) {
-                        this.son1xN[iSon].pSearch.pFilter.setInvisibleFilter(fieldName,'equal',fieldValue);
+                    if (strike) {
+                        var fieldId = this.fieldId[iField];
+                        var fieldValue = document.getElementById(fieldId).value;
+                        if (this.son1xN[iSon].pCrudList) {
+                            this.son1xN[iSon].pCrudList.pFilter.setInvisibleFilter(fieldName,'equal',fieldValue);
+                        }
+                        if (this.son1xN[iSon].pSearch) {
+                            this.son1xN[iSon].pSearch.pFilter.setInvisibleFilter(fieldName,'equal',fieldValue);
+                        }
                     }
                 }
             }

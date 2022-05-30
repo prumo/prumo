@@ -1665,6 +1665,7 @@ class PrumoCrud extends PrumoBasic
         // repassa fields para o objeto cliente
         $fieldName = '';
         $fieldPk = '';
+        $fieldUnique = '';
         $fieldId = '';
         $fieldLabel = '';
         $fieldType = '';
@@ -1685,6 +1686,11 @@ class PrumoCrud extends PrumoBasic
                 $fieldPk .= ',';
             }
             $fieldPk .= $this->field[$i]['pk'] ? 'true' : 'false';
+            
+            if (! empty($fieldUnique)) {
+                $fieldUnique .= ',';
+            }
+            $fieldUnique .= $this->field[$i]['unique'] ? 'true' : 'false';
             
             if (! empty($fieldId)) {
                 $fieldId .= ',';
@@ -1773,6 +1779,7 @@ class PrumoCrud extends PrumoBasic
         
         $clientObject .= "{$this->ind}\t{$this->name}.fieldName = Array($fieldName);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldPk = Array($fieldPk);\n";
+        $clientObject .= "{$this->ind}\t{$this->name}.fieldUnique = Array($fieldUnique);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldId = Array($fieldId);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldLabel = Array($fieldLabel);\n";
         $clientObject .= "{$this->ind}\t{$this->name}.fieldType = Array($fieldType);\n";

@@ -523,7 +523,7 @@ class PrumoSearch extends PrumoBasic
     }
     
     /**
-     * Gera o comando SQL que conta os registro
+     * Gera o comando SQL que conta os registros
      *
      * @return string: comando SQL
      */
