@@ -17,7 +17,7 @@
  */
 
 require_once dirname(__DIR__).'/prumo.php';
-require_once __DIR__.'/ctrl_connection_admin.php';
+include __DIR__.'/ctrl_connection_admin.php';
 
 $schema = $GLOBALS['pConfig']['loginSchema_prumo'];
 $xmlFile = $GLOBALS['pConfig']['prumoWebPath'].'/ctrl_search_routines.php';
