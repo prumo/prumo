@@ -804,7 +804,11 @@ class PrumoCrud extends PrumoBasic
         if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
             return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
         }
-            
+        
+        if ($this->parent1x1 == null) {
+            $this->pConnection->sqlQuery('BEGIN;');
+        }
+        
         if ($this->callBeforeCreate()) {
             
             if (isset($this->param['onduplicate']) && $this->param['onduplicate'] == 'error') {
@@ -819,10 +823,16 @@ class PrumoCrud extends PrumoBasic
                 
                 $count = $this->pConnection->sqlQuery($sqlCount);
                 if ($count === false) {
+                    if ($this->parent1x1 == null) {
+                        $this->pConnection->sqlQuery('ROLLBACK;');
+                    }
                     return pXmlError('SqlError', $this->pConnection->getErr());
                 }
                 
                 if ($count > 0) {
+                    if ($this->parent1x1 == null) {
+                        $this->pConnection->sqlQuery('ROLLBACK;');
+                    }
                     return pXmlError('Duplicated', _('Registro duplicado.').' - '.$this->name);
                 }
             }
@@ -833,6 +843,7 @@ class PrumoCrud extends PrumoBasic
                 
                 $sqlOk = $this->pConnection->sqlQuery($sql);
                 if ($sqlOk === false) {
+                    $this->pConnection->sqlQuery('ROLLBACK;');
                     return pXmlError('SqlError', $this->pConnection->getErr());
                 }
                 
@@ -851,6 +862,9 @@ class PrumoCrud extends PrumoBasic
                     $sqlCount = $this->sqlValues($this->sqlCount(), $pkValue);
                     $count = $this->pConnection->sqlQuery($sqlCount);
                     if ($count === false) {
+                        if ($this->parent1x1 == null) {
+                            $this->pConnection->sqlQuery('ROLLBACK;');
+                        }
                         return pXmlError('SqlError', $this->pConnection->getErr());
                     }
                     
@@ -872,6 +886,9 @@ class PrumoCrud extends PrumoBasic
                     
                     $sqlOk = $this->pConnection->sqlQuery($sql);
                     if ($sqlOk === false) {
+                        if ($this->parent1x1 == null) {
+                            $this->pConnection->sqlQuery('ROLLBACK;');
+                        }
                         return pXmlError('SqlError', $this->pConnection->getErr());
                     }
                     
@@ -887,6 +904,9 @@ class PrumoCrud extends PrumoBasic
                 if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
                     $xmlSon = $this->son1x1[$i]->doCreate();
                     if (testXmlError($xmlSon)) {
+                        if ($this->parent1x1 == null) {
+                            $this->pConnection->sqlQuery('ROLLBACK;');
+                        }
                         return $xmlSon;
                     }
                 }
@@ -894,12 +914,16 @@ class PrumoCrud extends PrumoBasic
             
             if ($this->parent1x1 == null) {
                 $this->afterCreate();
+                $this->pConnection->sqlQuery('COMMIT;');
                 return $this->doRetrieve($this->serialFields);
             }
             else {
                 return '';
             }
         } else {
+            if ($this->parent1x1 == null) {
+                $this->pConnection->sqlQuery('ROLLBACK;');
+            }
             $xml = '<status>err</status>';
             $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeCreate).'</msg>';
             $xml = pXmlAddParent($xml, $this->name);
@@ -1144,6 +1168,10 @@ class PrumoCrud extends PrumoBasic
             return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
         }
         
+        if ($this->parent1x1 == null) {
+            $this->pConnection->sqlQuery('BEGIN;');
+        }
+        
         if ($this->callBeforeUpdate()) {
             
             if ($this->parent1x1 == null) {
@@ -1168,6 +1196,9 @@ class PrumoCrud extends PrumoBasic
                 
                 $sqlOk = $this->pConnection->sqlQuery($sql);
                 if ($sqlOk === false) {
+                    if ($this->parent1x1 == null) {
+                        $this->pConnection->sqlQuery('ROLLBACK;');
+                    }
                     return pXmlError('SqlError', $this->pConnection->getErr());
                 }
                 
@@ -1183,6 +1214,9 @@ class PrumoCrud extends PrumoBasic
                 if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
                     $sonXml = $this->son1x1[$i]->doUpdate($this->serialFields);
                     if (testXmlError($sonXml)) {
+                        if ($this->parent1x1 == null) {
+                            $this->pConnection->sqlQuery('ROLLBACK;');
+                        }
                         return $sonXml;
                     }
                 }
@@ -1192,10 +1226,16 @@ class PrumoCrud extends PrumoBasic
             
             if ($this->parent1x1 == null) {
                 $xml = $this->doRetrieve();
+                if ($this->parent1x1 == null) {
+                    $this->pConnection->sqlQuery('COMMIT;');
+                }
             } else {
                 $xml = '';
             }
         } else {
+            if ($this->parent1x1 == null) {
+                $this->pConnection->sqlQuery('ROLLBACK;');
+            }
             $xml = '<status>err</status>';
             $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeUpdate).'</msg>';
             $xml = pXmlAddParent($xml, $this->name);
