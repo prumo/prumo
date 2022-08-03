@@ -188,11 +188,21 @@ function pCheckDate(string $date) : bool
     $arrDate = pParseDate($date);
     if ($arrDate === false) {
         return false;
-    } else if (checkdate($arrDate['month'], $arrDate['day'], $arrDate['year'])) {
-        return true;
-    } else {
+    }
+    
+    if ($arrDate['month'] < 1 || $arrDate['month'] > 12) {
         return false;
     }
+    
+    if ($arrDate['day'] < 1 || $arrDate['day'] > 31) {
+        return false;
+    }
+    
+    if ($arrDate['year'] < 1000 || strlen($arrDate['year']) != 4) {
+        return false;
+    }
+    
+    return true;
 }
 
 /**
