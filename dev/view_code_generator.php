@@ -303,6 +303,8 @@ $dataListMenuShortcut .= '                    </datalist>'."\n";
                         <option value="integer"><?=_('inteiro');?></option>
                         <option value="serial"><?=_('inteiro auto incrementado');?></option>
                         <option value="numeric"><?=_('numérico');?></option>
+                        <option value="money"><?=_('moeda');?></option>
+                        <option value="phone"><?=_('número de telefone');?></option>
                         <option value="date"><?=_('data');?></option>
                         <option value="time"><?=_('hora');?></option>
                         <option value="timestamp"><?=_('data e hora');?></option>
@@ -481,6 +483,8 @@ $dataListMenuShortcut .= '                    </datalist>'."\n";
                         <option value="integer"><?=_('inteiro');?></option>
                         <option value="serial"><?=_('inteiro auto incrementado');?></option>
                         <option value="numeric"><?=_('numérico');?></option>
+                        <option value="money"><?=_('moeda');?></option>
+                        <option value="phone"><?=_('número de telefone');?></option>
                         <option value="date"><?=_('data');?></option>
                         <option value="time"><?=_('hora');?></option>
                         <option value="timestamp"><?=_('data e hora');?></option>
