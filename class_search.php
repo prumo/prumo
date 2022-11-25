@@ -25,7 +25,7 @@ class PrumoSearch extends PrumoBasic
     private $constructedGrid;
     private $orderby;
     
-    protected $pConnection;
+    public $pConnection;
     protected $pGrid;
     protected $fieldReturn;
     protected $fieldNameMarkNew = '';
