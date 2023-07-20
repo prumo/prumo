@@ -202,7 +202,7 @@ function pCheckDate(string $date) : bool
         return false;
     }
     
-    return true;
+    return checkdate($arrDate['month'], $arrDate['day'], $arrDate['year']);
 }
 
 /**
