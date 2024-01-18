@@ -1863,15 +1863,13 @@ class PrumoCrud extends PrumoBasic
         
         //// trata onload
         if (isset($_GET['initialState'])) {
-            $clientObject .= "{$this->ind}\t{$this->name}.initialState = '{$_GET['initialState']}';\n";
+            $onload .= "{$this->ind}\t{$this->name}.initialState = '{$_GET['initialState']}';\n";
         }
         
         $initialStateNew = (isset($_GET['initialState']) && $_GET['initialState'] == 'new');
         if ($initialStateNew && $this->parent1x1 == null && empty($this->parent1xN)) {
             $onload .= "{$this->ind}\t\t{$this->name}.bt_new();\n";
         }
-        
-        $initialStateEdit = (isset($_GET['initialState']) && $_GET['initialState'] == 'edit');
         
         // preenche os campos
         for ($i = 0; $i < count($this->field); $i++) {
@@ -1888,8 +1886,6 @@ class PrumoCrud extends PrumoBasic
         if ($initialStateNew) {
             $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
         }
-        
-        $onload .= "{$this->ind}\t{$this->name}.retrieveVirtual();\n";
         
         // verifica se deve abrir algum registro ou a listagem
         if ($this->parent1x1 == null && empty($this->parent1xN)) {
