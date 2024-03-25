@@ -23,11 +23,14 @@
 if ($GLOBALS['pConfig']['dbSingle']) {
     $pConnection = clone $pConnectionPrumo;
 } else {
-    $pConnection = new PrumoConnection('sgdb='.$GLOBALS['pConfig']['sgdb'].',dbHost='.$GLOBALS['pConfig']['dbHost']
-                                            .',dbPort='.$GLOBALS['pConfig']['dbPort'].',dbName='.$GLOBALS['pConfig']['dbName']
-                                            .',dbUserName='.$GLOBALS['pConfig']['dbUserName'].',dbPassword='
-                                            .$GLOBALS['pConfig']['dbPassword']
-                                           );
+    $pConnection = new PrumoConnection(
+        'sgdb='.$GLOBALS['pConfig']['sgdb']
+        .',dbHost='.$GLOBALS['pConfig']['dbHost']
+        .',dbPort='.$GLOBALS['pConfig']['dbPort']
+        .',dbName='.$GLOBALS['pConfig']['dbName']
+        .',dbUserName='.$GLOBALS['pConfig']['dbUserName']
+        .',dbPassword='.$GLOBALS['pConfig']['dbPassword']
+    );
 }
 
 $pConnection->setDefaultSchema($GLOBALS['pConfig']['appSchema']);

@@ -20,10 +20,18 @@
  * Este arquivo contém o objeto de conexão com o banco de dados.
  */
 
-$pConnectionPrumo = new PrumoConnection('sgdb='.$GLOBALS['pConfig']['sgdb_prumo'].',dbHost='.$GLOBALS['pConfig']['dbHost_prumo']
-                                        .',dbPort='.$GLOBALS['pConfig']['dbPort_prumo'].',dbName='.$GLOBALS['pConfig']['dbName_prumo']
-                                        .',dbUserName='.$GLOBALS['pConfig']['dbUserName_prumo'].',dbPassword='
-                                        .$GLOBALS['pConfig']['dbPassword_prumo']
-                                       );
+$pConnectionPrumo = new PrumoConnection(
+    'sgdb='.$GLOBALS['pConfig']['sgdb_prumo']
+    .',dbHost='.$GLOBALS['pConfig']['dbHost_prumo']
+    .',dbPort='.$GLOBALS['pConfig']['dbPort_prumo']
+    .',dbName='.$GLOBALS['pConfig']['dbName_prumo']
+    .',dbUserName='.$GLOBALS['pConfig']['dbUserName_prumo']
+    .',dbPassword='.$GLOBALS['pConfig']['dbPassword_prumo']
+    
+);
 
 $pConnectionPrumo->setDefaultSchema($GLOBALS['pConfig']['loginSchema_prumo']);
+$pConnectionPrumo->setLogType('insert');
+$pConnectionPrumo->setLogType('update');
+$pConnectionPrumo->setLogType('delete');
+
