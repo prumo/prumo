@@ -31,7 +31,10 @@ require_once __DIR__.'/ctrl_search_users.php';
     <table class="prumoFormTable">
         <tr>
             <td class="prumoFormLabel"><?=_('Usuário');?>:</td>
-            <td class="prumoFormFields"><input id="username" type="text" size="45" autofocus="autofocus" />*</td>
+            <td class="prumoFormFields">
+                <input id="username" type="text" size="45" autofocus="autofocus" />* 
+                <button class="pButton" id="btResetPassword" onclick="btResetPassword_click()" disabled="disabled"><?=_('Resetar senha');?></button>
+            </td>
         </tr>
         <tr>
             <td class="prumoFormLabel"><?=_('Nome completo');?>:</td>
@@ -161,13 +164,25 @@ $searchUsers->addFieldReturn('username', 'username_copy_from');
     crudUsers.afterStateChange = function() {
         if (this.state == 'view') {
             document.getElementById('div_groups').style.display = 'block';
+            document.getElementById('btResetPassword').removeAttribute('disabled');
             refreshLists();
         } else {
             document.getElementById('div_groups').style.display = 'none';
+            document.getElementById('btResetPassword').setAttribute('disabled', 'disabled');
         }
     }
     
     searchUsers.afterSearch = function() {
         pSimpleAjax('prumo/ctrl_user_groups.php', 'username='+document.getElementById('username_copy_from').value, 'div_lists');
+    }
+    
+    pAjaxResetPassword = new prumoAjax('prumo/ctrl_reset_password.php', function()
+    {
+        alert(this.responseText);
+        document.getElementById('btResetPassword').removeAttribute('disabled');
+    });
+    function btResetPassword_click() {
+        document.getElementById('btResetPassword').setAttribute('disabled', 'disabled');
+        pAjaxResetPassword.goAjax('username='+document.getElementById('username').value);
     }
 </script>

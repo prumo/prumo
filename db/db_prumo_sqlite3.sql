@@ -132,6 +132,7 @@ INSERT INTO prumo_routines (routine, link, enabled, type, menu_parent, menu_labe
 INSERT INTO prumo_routines (routine, link, enabled, type, menu_parent, menu_label, menu_icon, audit) VALUES ('prumo_submission',     'prumo/view_submission.php',      't', 'view', 'prumo_system',         'Instruções iniciais',  'prumo/images/icons/exclamation.png', 'f');
 INSERT INTO prumo_routines (routine, link, enabled, type, menu_parent, menu_label, menu_icon, audit) VALUES ('prumo_update',         'prumo/view_update.php',          't', 'view', 'prumo_system',         'Atualização',          'prumo/images/icons/system.png', 'f');
 INSERT INTO prumo_routines (routine, link, enabled, type, menu_parent, menu_label, menu_icon, audit) VALUES ('prumo_devtools',       'prumo/ctrl_devtools.php',        't', 'view', 'prumo_system',         'Desenvolvimento',      'prumo/images/icons/system.png', 'f');
+INSERT INTO prumo_routines (routine,enabled,audit,type) VALUES ('prumo_resetPassword','t','t','menu_less');
 
 INSERT INTO prumo_syslogin(username, fullname, "password") VALUES ('admin', 'Administrador do sistema', '$argon2id$v=19$m=65536,t=2,p=1$Rul0StMsJYFfy/LJuWn8aw$crsoRO623LuQFT7ZcgRcLrFWJbMT/E27eNzl8yVp33A');
 
@@ -155,6 +156,8 @@ INSERT INTO prumo_routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo
 INSERT INTO prumo_groups(enabled, groupname) VALUES ('t', 'change_password');
 INSERT INTO prumo_routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo_system', 'change_password', 'f', 't', 'f', 'f');
 INSERT INTO prumo_routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo_changePassword', 'change_password', 'f', 't', 't', 'f');
+
+INSERT INTO prumo_routines_groups(routine, groupname, c, r, u, d) VALUES ('prumo_resetPassword', 'dev', 't', 't', 't', 't');
 
 CREATE VIEW prumo_v_menu AS
 SELECT routine,tree,type FROM
