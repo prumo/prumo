@@ -50,6 +50,7 @@ class PrumoCrud extends PrumoBasic
     public $containerType = ''; //div, fieldset, window
     public $containerVisible = true;
     
+    public $msgErrorBeforeRetrieve;
     public $msgErrorBeforeCreate;
     public $msgErrorBeforeUpdate;
     public $msgErrorBeforeDelete;
@@ -77,7 +78,8 @@ class PrumoCrud extends PrumoBasic
     function __construct(string $params)
     {
         parent::__construct($params);
-        
+
+        $this->msgErrorBeforeRetrieve = _('PrumoCrud Error: beforeRetrieve retornou false para objeto ":o:"!');
         $this->msgErrorBeforeCreate = _('PrumoCrud Error: beforeCreate retornou false para objeto ":o:"!');
         $this->msgErrorBeforeUpdate = _('PrumoCrud Error: beforeUpdate retornou false para objeto ":o:"!');
         $this->msgErrorBeforeDelete = _('PrumoCrud Error: beforeDelete retornou false para objeto ":o:"!');
@@ -969,6 +971,38 @@ class PrumoCrud extends PrumoBasic
     }
     
     /**
+     * Gatilho disparado depois do evento retrieve
+     * Função reservada para desenvolvedor da aplicação
+     */
+    public function beforeRetrieve() : bool
+    {
+        // Reservado para desenvolvedor da aplicação, deve retornar true ou false
+        return true;
+    }
+    
+    /**
+     * Chama o gatilho before create em todos os CRUDs recursivamente
+     */
+    public function callBeforeRetrieve() : bool
+    {
+        if ($this->beforeRetrieve() == false) {
+            return false;
+        }
+        
+        $resultBeforeRetrieve = true;
+        for ($i = 0; $i < count($this->son1x1); $i++) {
+            if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
+                if ($this->son1x1[$i]->callBeforeRetrieve() == false) {
+                    $resultBeforeRetrieve = false;
+                    $this->msgErrorBeforeRetrieve = $this->son1x1[$i]->msgErrorBeforeRetrieve;
+                }
+            }
+        }
+        
+        return $resultBeforeRetrieve;
+    }
+    
+    /**
      * Chama o gatilho before update em todos os CRUDs recursivamente
      */
     public function callBeforeUpdate() : bool
@@ -1097,22 +1131,30 @@ class PrumoCrud extends PrumoBasic
             return pXmlError('session expires', _('Sua sessão expirou, faça login novamente.'));
         }
         
-        $sql = $this->sqlValues($this->sqlRetrieve(), $this->syncPk($values));
-        $this->xmlRetrieve = $this->pConnection->sqlXml($sql, $this->name);
-        if ($this->xmlRetrieve === false) {
-            return pXmlError('SqlError', $this->pConnection->getErr());
-        }
-        
-        // laço que trata os objetos filhos recursivamente
-        for ($i = 0; $i < count($this->son1x1); $i++) {
-            if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
-                $this->xmlRetrieve .= $this->son1x1[$i]->doRetrieve();
+        if ($this->callBeforeRetrieve()) {
+            $sql = $this->sqlValues($this->sqlRetrieve(), $this->syncPk($values));
+            $this->xmlRetrieve = $this->pConnection->sqlXml($sql, $this->name);
+            if ($this->xmlRetrieve === false) {
+                return pXmlError('SqlError', $this->pConnection->getErr());
             }
-        }
-        
-        // adiciona o appIdent no XML
-        if ($this->parent1x1 == null) {
-            $this->xmlRetrieve = pXmlAddParent($this->xmlRetrieve, $GLOBALS['pConfig']['appIdent']);
+            
+            // laço que trata os objetos filhos recursivamente
+            for ($i = 0; $i < count($this->son1x1); $i++) {
+                if (isset($_POST[$this->son1x1[$i]->name.'_action'])) {
+                    $this->xmlRetrieve .= $this->son1x1[$i]->doRetrieve();
+                }
+            }
+            
+            // adiciona o appIdent no XML
+            if ($this->parent1x1 == null) {
+                $this->xmlRetrieve = pXmlAddParent($this->xmlRetrieve, $GLOBALS['pConfig']['appIdent']);
+            }
+        } else {
+            $xml = '<status>err</status>';
+            $xml .= '<msg>'.str_replace(':o:', $this->name, $this->msgErrorBeforeRetrieve).'</msg>';
+            $xml = pXmlAddParent($xml, $this->name);
+            
+            $this->xmlRetrieve = $xml;
         }
         
         return $this->xmlRetrieve;

@@ -19,7 +19,7 @@
 
 ////////////////////////////////// configurações padrão ////////////////////////////////////
 
-$pConfig['version'] = '2.10.6';
+$pConfig['version'] = '2.11.0';
 
 // Configurações de path e identificação
 if (! isset($pConfig['appIdent']))              $pConfig['appIdent']              = 'Prumo';
@@ -66,6 +66,8 @@ if (! isset($pConfig['logInsert_prumo']))       $pConfig['logInsert_prumo']     
 if (! isset($pConfig['logSelect_prumo']))       $pConfig['logSelect_prumo']       = 'f';
 if (! isset($pConfig['logUpdate_prumo']))       $pConfig['logUpdate_prumo']       = 'f';
 if (! isset($pConfig['logDelete_prumo']))       $pConfig['logDelete_prumo']       = 'f';
+
+if (! isset($pConfig['minQueryCountTimeLog']))  $pConfig['minQueryCountTimeLog']  = 0;
 
 if (! isset($pConfig['preferHttps']))           $pConfig['preferHttps']           = true;
 ////////////////////////////////// fim da configurações padrão //////////////////////////////
