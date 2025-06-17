@@ -554,39 +554,39 @@ class PrumoCrud extends PrumoBasic
     {
         // monta condicao
         $condition = '';
-        if (! empty($this->customSqlRetrieve)) {
-            $sql = $this->customSqlRetrieve;
-        } else {
+        
+        for ($i = 0; $i < count($this->field); $i++) {
             
-            for ($i = 0; $i < count($this->field); $i++) {
+            $fieldName = $this->field[$i]['name'];
+            
+            if ($this->field[$i]['pk']) {
                 
-                $fieldName = $this->field[$i]['name'];
-                
-                if ($this->field[$i]['pk']) {
-                    
-                    $condition .= empty($condition) ? ' WHERE ' : ' AND ';
-                    $value = ':new_'.$fieldName.':';
-                    $condition .= $fieldName.'='.$value;
-                }
+                $condition .= empty($condition) ? ' WHERE ' : ' AND ';
+                $value = ':new_'.$fieldName.':';
+                $condition .= $fieldName.'='.$value;
             }
+        }
 
-            // monta campos
-            $fields = '';
-            for ($i = 0; $i < count($this->field); $i++) {
+        // monta campos
+        $fields = '';
+        for ($i = 0; $i < count($this->field); $i++) {
+            
+            if ($this->field[$i]['virtual'] == false) {
                 
-                if ($this->field[$i]['virtual'] == false) {
-                    
-                    if (! empty($fields)) {
-                        $fields .= ',';
-                    }
-                    $fields .= $this->field[$i]['name'];
+                if (! empty($fields)) {
+                    $fields .= ',';
                 }
+                $fields .= $this->field[$i]['name'];
             }
+        }
 
-            $tableName = $this->param['tablename'];
-            $schema = $this->pConnection->getSchema($this->param['schema']);
+        $tableName = $this->param['tablename'];
+        $schema = $this->pConnection->getSchema($this->param['schema']);
 
+        if (empty($this->customSqlRetrieve)) {
             $sql = 'SELECT '.$fields.' FROM '.$schema.$tableName.$condition.';';
+        } else {
+            $sql = $this->customSqlRetrieve.$condition.';';
         }
         
         return $sql;
