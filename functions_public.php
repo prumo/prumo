@@ -468,11 +468,28 @@ function pPermitted(string $routine, string $permission='any') : bool
     
     $arrPermission = getPermission($routine);
     
-    if ($permission == 'any') {
-        return ($arrPermission['c'] || $arrPermission['r'] || $arrPermission['u'] || $arrPermission['d']);
-    } else {
-        return $arrPermission[$permission];
+    return $permission == 'any' ? ($arrPermission['c'] || $arrPermission['r'] || $arrPermission['u'] || $arrPermission['d']) : $arrPermission[$permission];
+}
+
+/**
+ * Cria uma autorização remota
+ *
+ * @return string: uuid
+ */
+function pCreateRemoteAutorization() : string
+{
+    global $pConnectionPrumo;
+    
+    if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+        throw new Exception(_('Sua sessão expirou, faça login novamente!'));
     }
+    $sqlUsername = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+    $sql = 'INSERT INTO prumo.remote_authorization (username) VALUES ('.$sqlUsername.') RETURNING uuid;';
+    $uuid = $pConnectionPrumo->sqlQuery($sql);
+    if ($uuid === false) {
+        throw new Exception($pConnectionPrumo->getErr());
+    }
+    return $uuid;
 }
 
 /**
@@ -483,7 +500,7 @@ function pPermitted(string $routine, string $permission='any') : bool
  */
 function pProtect(string $routine, string $permission='any')
 {
-    if (empty($GLOBALS['prumoGlobal']['currentUser'])) {
+    if (empty($GLOBALS['prumoGlobal']['currentUser']) && empty($_GET['authorization']) && empty($_POST['authorization'])) {
         echo _('Sua sessão expirou, faça login novamente!');
         exit;
     }

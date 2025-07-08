@@ -62,6 +62,41 @@ function pGetConfigDb()
 }
 
 /**
+ * Pega o username de uma autorização válida e marca consumed=true
+ *
+ * @param $authorizationUuid string: uuid da autorização
+ *
+ * @return string: nome do usuário
+ */
+function pGetUsenameFromAuthorization() : string
+{
+    global $pConnectionPrumo;
+    
+    if (empty($_GET['authorization']) && empty($_POST['authorization'])) {
+        return '';
+    }
+    
+    $sqlSchema = $pConnectionPrumo->getSchema();
+    $sqlUuid = pFormatSql($_GET['authorization'] ?? $_POST['authorization'], 'string');
+    $sql =<<<SQL
+    SELECT
+        username
+    FROM {$sqlSchema}remote_authorization
+    WHERE validity >= now()
+    AND consumed=false
+    AND uuid=$sqlUuid
+    SQL;
+    $username = $pConnectionPrumo->sqlQuery($sql);
+    
+    if (! empty($username)) {
+        $sql = 'UPDATE prumo.remote_authorization SET consumed=true WHERE uuid='.$sqlUuid.';';
+        $pConnectionPrumo->sqlQuery($sql);
+    }
+    
+    return $username;
+}
+
+/**
  * Carrega um array com as permissões de todas as rotinas
  */
 function loadPermission()
@@ -73,9 +108,10 @@ function loadPermission()
         require_once __DIR__.'/ctrl_connection_admin.php';
     }
     
-    $schema = $pConnectionPrumo->getSchema();
+    $username = empty($GLOBALS['prumoGlobal']['currentUser']) ? pGetUsenameFromAuthorization() : $GLOBALS['prumoGlobal']['currentUser'];    
     
-    $sqlUserName = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
+    $sqlUserName = pFormatSql($username, 'string');
+    $sqlSchema = $pConnectionPrumo->getSchema();
     $sql = <<<SQL
     SELECT
         r.routine,
@@ -83,11 +119,11 @@ function loadPermission()
         sum(CASE WHEN r='t' THEN 1 ELSE 0 END) as r,
         sum(CASE WHEN u='t' THEN 1 ELSE 0 END) as u,
         sum(CASE WHEN d='t' THEN 1 ELSE 0 END) as d
-    FROM {$schema}routines r
-    JOIN {$schema}routines_groups rg ON rg.routine=r.routine
-    JOIN {$schema}groups_syslogin gs ON gs.groupname=rg.groupname
-    JOIN {$schema}groups g ON g.groupname=rg.groupname
-    JOIN {$schema}syslogin s ON s.username=gs.username
+    FROM {$sqlSchema}routines r
+    JOIN {$sqlSchema}routines_groups rg ON rg.routine=r.routine
+    JOIN {$sqlSchema}groups_syslogin gs ON gs.groupname=rg.groupname
+    JOIN {$sqlSchema}groups g ON g.groupname=rg.groupname
+    JOIN {$sqlSchema}syslogin s ON s.username=gs.username
     WHERE r.enabled='t'
     AND g.enabled='t'
     AND s.enabled='t'
