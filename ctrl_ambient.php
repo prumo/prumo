@@ -19,7 +19,7 @@
 
 ////////////////////////////////// configurações padrão ////////////////////////////////////
 
-$pConfig['version'] = '2.11.0';
+$pConfig['version'] = '2.11.1';
 
 // Configurações de path e identificação
 if (! isset($pConfig['appIdent']))              $pConfig['appIdent']              = 'Prumo';
@@ -91,6 +91,10 @@ require_once __DIR__.'/class_menu.php';
 require_once __DIR__.'/class_crud.php';
 require_once __DIR__.'/class_crud_list.php';
 require_once __DIR__.'/class_tab.php';
+
+if (file_exists($pConfig['appPath'].'/global_functions.php')) {
+    require_once $pConfig['appPath'].'/global_functions.php';
+}
 
 session_start();
 
