@@ -20,5 +20,5 @@ require_once dirname(__DIR__).'/prumo.php';
 require_once __DIR__.'/ctrl_connection_admin.php';
 
 pCheckGET(['authorization', 'routine']);
-pProtect('scf_analise_dados');
+pProtect($_GET['routine']);
 echo 'OK';
