@@ -90,6 +90,7 @@ function pGetUsenameFromAuthorization() : string
     $query = $pConnectionPrumo->fetchAssoc($sql);
     $username = $query['username'];
     $_SERVER['REMOTE_ADDR'] = $query['remote_addr'];
+    $GLOBALS['prumoGlobal']['currentUser'] = $query['username'];
     
     if (! empty($username)) {
         $sql = 'UPDATE prumo.remote_authorization SET consumed=true WHERE uuid='.$sqlUuid.';';
