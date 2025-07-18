@@ -423,7 +423,7 @@ function pSqlNoInjection($value, string $type, bool $formatSqlNull=false)
             $valueNoInjection = preg_replace("/[^0-9:]/", "", $valueNoInjection);
             break;
         case "timestamp":
-            $valueNoInjection = preg_replace("/[^0-9\T\:\+\-\/\ ]/", "", $valueNoInjection);
+            $valueNoInjection = preg_replace("/[^0-9T\:\+\-\/\ ]/", "", $valueNoInjection);
             break;
         case "boolean":
             break;

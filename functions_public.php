@@ -484,7 +484,8 @@ function pCreateRemoteAutorization() : string
         throw new Exception(_('Sua sessão expirou, faça login novamente!'));
     }
     $sqlUsername = pFormatSql($GLOBALS['prumoGlobal']['currentUser'], 'string');
-    $sql = 'INSERT INTO prumo.remote_authorization (username) VALUES ('.$sqlUsername.') RETURNING uuid;';
+    $sqlRemoteAddr = pFormatSql($_SERVER["REMOTE_ADDR"], 'string');
+    $sql = 'INSERT INTO prumo.remote_authorization (username, remote_addr) VALUES ('.$sqlUsername.', '.$sqlRemoteAddr.') RETURNING uuid;';
     $uuid = $pConnectionPrumo->sqlQuery($sql);
     if ($uuid === false) {
         throw new Exception($pConnectionPrumo->getErr());
