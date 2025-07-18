@@ -515,6 +515,36 @@ function pProtect(string $routine, string $permission='any')
 }
 
 /**
+ * Roda o presente script no node $ip, deve ser usado no começo do script assim como pProtect.
+ * O endereço IP deve ser o mesmo usado para o node conectar-se ao gateway padrão
+ * 
+ * @param string $nodeIp: Endereço IPv4 do node
+ *
+ * @return void: não precisa retornar nada, vai dar um echo no resultado do script remoto
+ */
+function pRunOn(string $nodeIp) : void
+{
+    if (! filter_var($nodeIp, FILTER_VALIDATE_IP)) {
+        throw new Exception('Endereço IP inválido! "'.$nodeIp.'"');
+    }
+    
+    if (trim(shell_exec("ip route get 8.8.8.8 2>/dev/null | grep -oP 'src \\K[\\d.]+'")) !== $nodeIp) {
+        
+        if (filter_var($nodeIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $nodeIp = "[$nodeIp]";
+        }
+        
+        $param = 'authorization='.pCreateRemoteAutorization();
+        foreach ($_GET as $key => $value) {
+            $param .= '&'.$key.'='.$value;
+        }
+        $url = 'http://'.$nodeIp.'/sid/'.basename($_SERVER['SCRIPT_NAME']).'?'.$param;
+        echo file_get_contents($url);
+        exit;
+    }
+}
+
+/**
  * Gera uma lista de arquivos em determinado diretório recursivamente
  *
  * @param $directory string: caminho do diretório
